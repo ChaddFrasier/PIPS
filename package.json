@@ -1,0 +1,23 @@
+{
+  "name": "captionwriter",
+  "version": "1.0.0",
+  "description": "Planetary Image CVaption Writer w/ ISIS3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChaddFrasier/Orion_Writer.git"
+  },
+  "author": "Chadd Frasier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChaddFrasier/Orion_Writer/issues"
+  },
+  "homepage": "https://github.com/ChaddFrasier/Orion_Writer#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "i": "^0.3.6"
+  }
+}
