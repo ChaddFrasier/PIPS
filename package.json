@@ -2,7 +2,7 @@
   "name": "captionwriter",
   "version": "1.0.0",
   "description": "Planetary Image CVaption Writer w/ ISIS3",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/ChaddFrasier/Orion_Writer#readme",
   "dependencies": {
+    "ejs": "^2.6.1",
     "express": "^4.17.1",
-    "i": "^0.3.6"
+    "i": "^0.3.6",
+    "jimp": "^0.6.4"
   }
 }
