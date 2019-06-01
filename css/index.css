@@ -1,0 +1,8 @@
+ body,html{
+    background-image: url('../images/webAppBackground.jpg');
+    background-repeat: round;
+    backface-visibility: visible;
+}
+ p {
+    color: red;
+    font-size:2em;}

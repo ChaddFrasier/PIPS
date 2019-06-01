@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+    <head>
+
+        <title>Orion Project</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+        <script type="text/javascript"
+                src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+    </head>
+
+    <body>
+
+        <div class="jumbotron jumbotron-fluid text-center">
+
+            <h1 class="display-4">Planetary Image Caption Writer - Orion</h1>
+            <p class="lead">You can upload .cub file and .tpl file in this page</p>
+
+            <hr class="my-4">
+            <p>Powered by ISIS3</p>
+
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
+                    role="button">Learn More</a>
+            </p>
+
+        </div>
+
+
+
+
+
+        <div class="container">
+            <div id="loading" style="display:none;">
+                        <img src="../images/loading.gif" height="70" weight="70"/> Loading
+        	</div>
+
+            <form class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="btn btn-primary btn-lg form-group">
+                    <label for="cubUpload">Choose an ISIS Cube File</label>
+                    <input name="uploadFile" id="cubUpload" type="file" class="form-control-file" />
+                </div>
+
+                <br>
+
+                <hr class="style5">
+                <div class="btn btn-primary btn-lg form-group">
+                    <label for="tplUpload">Choose a Template File</label>
+                    <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
+                </div>
+
+                <br>
+
+                <input type="submit" name="SubmitCube" value="Upload" class="btn btn btn-outline-dark btn-lg"
+                    onclick="$('#loading').show();" />
+
+            </form>
+
+        </div>
+
+    </body>
