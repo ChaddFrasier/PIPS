@@ -18,7 +18,7 @@ var app = express();
 
 // give app access to routes
 app.use("/css" , express.static("css"));
-app.use("/images" , express.static("images"));+
+app.use("/images" , express.static("images"));
 
 // start view engine
 app.set('view engine', 'ejs');
