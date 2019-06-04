@@ -3,7 +3,7 @@
  * 
  * Author: Chadd Frasier
  * Date Started: 05/31/19
- * Version: 2.1
+ * Version: 2.2
  * Last Modified: 06/04/19
  * Description: 
  *      This is the driver for the Caption Writer server 
@@ -11,7 +11,7 @@
 
 // require dependencies
 const express = require('express');
-const fileUpload = require('express-fileupload');
+const fileUpload = require('`express-fileupload`');
 const path = require('path');
 const jimp = require('jimp');
 const fs = require('fs');
@@ -25,9 +25,6 @@ var app = express();
 // use express upload
 app.use(fileUpload());
 
-/* ===================== Test Area -================*/
-console.log(util.makeSystemCalls('testfile.cub'));
-/* ============= End Test================= */
 
 // give app access to routes
 app.use("/css" , express.static("css"));
@@ -68,6 +65,8 @@ app.post('/upload', function(request, response){
                 }
             });
 
+            // run real command
+            console.log('running ISIS commands on upload');
             console.log(util.makeSystemCalls(cubeFile.name));
         }
         else{
