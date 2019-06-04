@@ -11,7 +11,7 @@
 
 // require dependencies
 const express = require('express');
-const fileUpload = require('`express-fileupload`');
+const fileUpload = require('express-fileupload');
 const path = require('path');
 const jimp = require('jimp');
 const fs = require('fs');
