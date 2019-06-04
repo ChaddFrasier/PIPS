@@ -71,12 +71,6 @@ app.post('/upload', function(request, response){
 
     // template file section
     try{
-
-        if(request.files.templateFile == null){
-            // read in the default template
-            //TODO
-        }
-
         // template file slot
         if(/^[A-Za-z0-9_]*.tpl$/.test(request.files.templateFile.name)){
             console.log(request.files.templateFile);
@@ -99,9 +93,10 @@ app.post('/upload', function(request, response){
             response.end();
         }
     }catch(err){
-        console.log('Template File Error');
-        response.redirect('/');
-        response.end();
+        // tpl is null
+        console.log('Default Template Being Used');
+        templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+        console.log('default.tpl says: '+ templateText);
     }
 
 
