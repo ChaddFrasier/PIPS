@@ -10,15 +10,28 @@
 
 // require dependencies
 const express = require('express');
+const fileUpload = require('express-fileupload');
 const path = require('path');
 const jimp = require('jimp');
+const fs = require('fs');
+
+// include custom utils 
+const util = require('./src/util');
 
 // start app env
 var app = express();
 
+// use express upload
+app.use(fileUpload());
+
+/* ===================== Test Area -================*/
+console.log(util.makeSystemCalls('testfile.cub'));
+/* ============= End Test================= */
+
 // give app access to routes
 app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
+app.use("/tpl" , express.static("tpl"));
 
 // start view engine
 app.set('view engine', 'ejs');
@@ -29,10 +42,75 @@ app.get('/', function(request, response){
     response.render("index.ejs");
 });
 
-// caption writing page
+// post action to caption writing page
 app.post('/upload', function(request, response){
     console.log(request.path);
-    response.render("writer.ejs");
+
+    var templateText = '';
+    var cubeFileData= '';
+    // cube file section
+    try{
+        if(request.files == null ){
+            console.log('User Error Upload a Cube File to begin');
+            response.redirect('/');
+        }
+        else if(/^[A-Za-z0-9_]*.cub$/.test(request.files.uploadFile.name) ){
+            // grab the name of the cube file slot
+            console.log(request.files.uploadFile.name + 'is the cube');
+        }
+        else{
+            console.log('wrong file type uploaded for cube section');
+            response.redirect('/');
+            response.end();
+        }
+    }catch(err){
+        console.log('No Cube File uploaded');
+        response.redirect('/');
+        response.end();
+    }
+
+    // template file section
+    try{
+
+        if(request.files.templateFile == null){
+            // read in the default template
+            //TODO
+        }
+
+        // template file slot
+        if(/^[A-Za-z0-9_]*.tpl$/.test(request.files.templateFile.name)){
+            console.log(request.files.templateFile);
+            console.log('template file passes');
+
+            let tplFile = request.files.templateFile;
+
+            // save to server
+            tplFile.mv('./tpl/'+tplFile.name, function(err){
+                if(err){
+                    return response.status(500).send(err);
+                }
+            });
+            // set output for template
+            templateText = tplFile.data.toString();
+        }
+        else{
+            console.log('Wrong file type for template');
+            response.redirect('/');
+            response.end();
+        }
+    }catch(err){
+        console.log('Template File Error');
+        response.redirect('/');
+        response.end();
+    }
+
+
+    // set output and render
+    // TODO:
+    response.render('writer.ejs',
+        { templateText: templateText, 
+        dictionaryString: 'dict strring',
+        csvString: 'hello,world\n'} ); 
 });
 
 // image editing page

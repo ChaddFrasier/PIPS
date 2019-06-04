@@ -7,13 +7,14 @@ This Project is the continuation of the Planetary Image Caption Writing Project 
 
 We will be switching languages because node.js has photo editing modules that will simplify the whole editing process. 
 
-#### Modules Used
+#### Third Party Modules Used
 ========================================================================
 
 1. Express
 2. Jimp
 3. EJS
 4. Path
+5. shelljs
 
 
 ## Install
