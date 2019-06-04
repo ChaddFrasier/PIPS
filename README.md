@@ -15,6 +15,8 @@ We will be switching languages because node.js has photo editing modules that wi
 3. EJS
 4. Path
 5. shelljs
+6. express-fileupload
+7. fs
 
 
 ## Install
