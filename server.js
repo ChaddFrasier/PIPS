@@ -58,6 +58,17 @@ app.post('/upload', function(request, response){
         else if(/^[A-Za-z0-9_]*.cub$/.test(request.files.uploadFile.name) ){
             // grab the name of the cube file slot
             console.log(request.files.uploadFile.name + 'is the cube');
+            
+            let cubeFile = request.files.uploadFile;
+
+            // save the cube upload to upload folder
+            cubeFile.mv('./uploads/' + cubeFile.name, function(err){
+                if(err){
+                    return response.status(500).send(err);
+                }
+            });
+
+            console.log(util.makeSystemCalls(cubeFile.name));
         }
         else{
             console.log('wrong file type uploaded for cube section');
