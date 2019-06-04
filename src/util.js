@@ -2,7 +2,8 @@
  * Utility JS for Caption Writer
  * 
  * Author: Chadd Frasier
- * Date: 06/03/19
+ * Date Created: 06/03/19
+ * Date Last Modified: 06/04/19
  * Version: 1.1
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  

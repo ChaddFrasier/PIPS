@@ -2,8 +2,9 @@
  * Caption Writer Application
  * 
  * Author: Chadd Frasier
- * Date: 5/31/19
+ * Date Started: 05/31/19
  * Version: 2.1
+ * Last Modified: 06/04/19
  * Description: 
  *      This is the driver for the Caption Writer server 
  */
