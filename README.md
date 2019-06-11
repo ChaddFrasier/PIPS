@@ -10,16 +10,18 @@ We will be switching languages because node.js has photo editing modules that wi
 #### Third Party Modules Used
 ========================================================================
 
-1. Express
-2. Jimp
-3. EJS
-4. Path
-5. shelljs
-6. express-fileupload
-7. fs
+- Express
+- Jimp
+- EJS
+- Path
+- child_process
+- express-fileupload
+- fs
 
 
 ## Install
 Clone the repo or download the zip and extract
 
-run using the command `node server` in the project directory
+1. run `npm install` to install all dependencies
+
+2. run server using `node server` in the project directory
