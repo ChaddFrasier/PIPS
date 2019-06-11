@@ -17,7 +17,7 @@ const jimp = require('jimp');
 const fs = require('fs');
 
 // include custom utils 
-const util = require('./src/util');
+const util = require('./util');
 
 // start app env
 var app = express();
@@ -37,6 +37,7 @@ app.set('view engine', 'ejs');
 // index page
 app.get('/', function(request, response){
     console.log(request.path);
+
     response.render("index.ejs");
 });
 
@@ -46,13 +47,15 @@ app.post('/upload', function(request, response){
 
     var templateText = '';
     var cubeFileData= '';
+
     // cube file section
     try{
         if(request.files == null ){
             console.log('User Error Upload a Cube File to begin');
             response.redirect('/');
+            response.end();
         }
-        else if(/^[A-Za-z0-9_]*.cub$/.test(request.files.uploadFile.name) ){
+        else if(/^.*\.(cub|CUB)$/gm.test(request.files.uploadFile.name)){
             // grab the name of the cube file slot
             console.log(request.files.uploadFile.name + 'is the cube');
             
@@ -65,17 +68,25 @@ app.post('/upload', function(request, response){
                 }
             });
 
+
             // run real command
             console.log('running ISIS commands on upload');
-            console.log(util.makeSystemCalls(cubeFile.name));
+
+            console.log(util.makeSystemCalls(cubeFile.name,
+                 path.join('uploads',cubeFile.name),
+                    path.join('pvl','return.pvl'),
+                    'images')
+                    );
         }
         else{
             console.log('wrong file type uploaded for cube section');
+            console.log('file name is: ' + request.files.uploadFile.name);
             response.redirect('/');
             response.end();
-        }
+            }
     }catch(err){
         console.log('No Cube File uploaded');
+        console.log(err);
         response.redirect('/');
         response.end();
     }
@@ -108,16 +119,21 @@ app.post('/upload', function(request, response){
         console.log('Default Template Being Used');
         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
         console.log('default.tpl says: '+ templateText);
+
     }
+
+// do more stuff
 
 
     // set output and render
     // TODO: DICTIONARY DATA
     //      CSVSTRING Data
+   
     response.render('writer.ejs',
         { templateText: templateText, 
         dictionaryString: 'dict strring',
         csvString: 'hello,world\n'} ); 
+    
 });
 
 // image editing page
