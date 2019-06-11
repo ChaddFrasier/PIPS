@@ -3,10 +3,12 @@
  * 
  * Author: Chadd Frasier
  * Date Started: 05/31/19
- * Version: 2.2
- * Last Modified: 06/04/19
+ * Version: 2.2.1
+ * Last Modified: 06/10/19
  * Description: 
  *      This is the driver for the Caption Writer server 
+ * 
+ * TODO: unit test all componets
  */
 
 // require dependencies
@@ -14,6 +16,7 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const jimp = require('jimp');
+const exec = require('child_process').exec;
 const fs = require('fs');
 
 // include custom utils 
@@ -37,7 +40,10 @@ app.set('view engine', 'ejs');
 // index page
 app.get('/', function(request, response){
     console.log(request.path);
+    // clean print.prt files from isis3
+    exec('rm print.prt');
 
+    // render the index page
     response.render("index.ejs");
 });
 
@@ -45,47 +51,52 @@ app.get('/', function(request, response){
 app.post('/upload', function(request, response){
     console.log(request.path);
 
+    // prepare the variables for response to user
     var templateText = '';
     var cubeFileData= '';
 
     // cube file section
     try{
         if(request.files == null ){
+            // if no cube file uploaded
             console.log('User Error Upload a Cube File to begin');
+            // redirect the user
             response.redirect('/');
             response.end();
         }
+        // cube (.cub) file regexp
         else if(/^.*\.(cub|CUB)$/gm.test(request.files.uploadFile.name)){
-            // grab the name of the cube file slot
-            console.log(request.files.uploadFile.name + 'is the cube');
-            
+            // get the file from request
             let cubeFile = request.files.uploadFile;
 
             // save the cube upload to upload folder
             cubeFile.mv('./uploads/' + cubeFile.name, function(err){
                 if(err){
+                    // send error if uploaded folder doesn't exist
+                    console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
                 }
             });
-
-
-            // run real command
+            // log run real command
             console.log('running ISIS commands on upload');
 
-            console.log(util.makeSystemCalls(cubeFile.name,
+            // make command and check error status
+            if(util.makeSystemCalls(cubeFile.name,
                  path.join('uploads',cubeFile.name),
                     path.join('pvl','return.pvl'),
-                    'images')
-                    );
+                    'images') !== 0){
+                        console.log('makeSystemCalls ended with a non-zero status');
+                    }
         }
         else{
+            // wrong file type uploaded
             console.log('wrong file type uploaded for cube section');
             console.log('file name is: ' + request.files.uploadFile.name);
             response.redirect('/');
             response.end();
             }
     }catch(err){
-        console.log('No Cube File uploaded');
+        console.log('Fatal Error Occured');
         console.log(err);
         response.redirect('/');
         response.end();
@@ -93,11 +104,9 @@ app.post('/upload', function(request, response){
 
     // template file section
     try{
-        // template file slot
-        if(/^[A-Za-z0-9_]*.tpl$/.test(request.files.templateFile.name)){
-            console.log(request.files.templateFile);
-            console.log('template file passes');
-
+        // reexp for verifing tpl file
+        if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
+            // get file object
             let tplFile = request.files.templateFile;
 
             // save to server
@@ -122,12 +131,9 @@ app.post('/upload', function(request, response){
 
     }
 
-// do more stuff
-
-
     // set output and render
     // TODO: DICTIONARY DATA
-    //      CSVSTRING Data
+    // TODO: CSVSTRING Data
    
     response.render('writer.ejs',
         { templateText: templateText, 
@@ -139,10 +145,12 @@ app.post('/upload', function(request, response){
 // image editing page
 app.post('/showImage', function(request, response){
     console.log(request.path);
+
+    // render image
     response.render("imagePage.ejs");
 });
 
-// listen on 3030
+// listen on 8080 or open port
 const PORT = 8080 || process.env.PORT;
 app.listen(PORT);
 
