@@ -17,6 +17,7 @@ We will be switching languages because node.js has photo editing modules that wi
 - child_process
 - express-fileupload
 - fs
+- cookie-parser
 
 
 ## Install
