@@ -138,7 +138,7 @@
     
     <form method="POST" action="/getImage" class="lg-form text-center">
         <div class=" form-group">
-            <input type="hidden" value="<%= image>" name="passedIMG">
+            <input type="hidden" value='<%= image %>' name="passedIMG">
             <input type="submit" value="Download Full Image" class="btn btn-secondary btn-lg" />
         </div>
     </form>
@@ -151,7 +151,7 @@
             $('.image-editor').cropit({
                 maxZoom: 10,
                 imageState: {
-                    src: '<%= image %>',
+                    src: url('<%= image %>'),
                 },
             });
             $('.export').click(function() {

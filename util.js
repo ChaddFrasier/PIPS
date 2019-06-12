@@ -29,7 +29,8 @@ module.exports = {
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath){
         // get image name 
-        let imagename = getimagename(cubeName, 'png');
+        
+        let imagename = this.getimagename(cubeName, 'png');
         // remove a pvl if it exists
         exec('rm ' + returnPath);
         // execute the campt function
@@ -74,7 +75,7 @@ module.exports = {
             });
         
         return 0;
-    }, 
+    },
 
     /**
      * 
@@ -85,7 +86,7 @@ module.exports = {
      */
     getimagename: function(cubeName, format){
         // get an array of peieces of the filename
-        let namearr = cubeName.split('.');
+        let namearr = cubeName.toString().split('.');
         // set the last element of the array to the format specified
         namearr[namearr.length - 1] = format;
         console.log(namearr);

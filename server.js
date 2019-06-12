@@ -21,12 +21,12 @@ const fs = require('fs');
 const cookieparser = require('cookie-parser');
 
 // include custom utils 
-const util = require('./util');
+const util = require('./util.js');
 
 // start app env
 var app = express();
 
-// use express upload
+// use express upload and cookie parser
 app.use(fileUpload());
 app.use(cookieparser());
 
@@ -103,6 +103,8 @@ app.post('/upload', function(request, response){
             // log run real command
             console.log('running ISIS commands on upload');
 
+            response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
+            console.log('cookie created for cube file');
             // make command and check error status
             if(util.makeSystemCalls(cubeFile.name,
                  path.join('uploads',cubeFile.name),
@@ -171,10 +173,15 @@ app.post('/upload', function(request, response){
 app.post('/showImage', function(request, response){
     //TODO: image page
     console.log(request.path);
-    let cookie = request.cookies['cubefile'];
-    let image = util.getimagename(cookie);
+    var cookieval = request.cookies['cubeFile'];
+    var imagepath;
 
-    let imagepath = path.join('/images/', image);
+    if(cookieval != undefined){
+        let image = util.getimagename(cookieval, 'png');
+        imagepath = '../images/' + image;
+    }else{
+        imagepath = 'none';
+    }
 
     // render image
     response.render("imagePage.ejs", {image:imagepath});
