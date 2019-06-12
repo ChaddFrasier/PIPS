@@ -18,6 +18,7 @@ const path = require('path');
 const jimp = require('jimp');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const alert = require('alert-node');
 
 // include custom utils 
 const util = require('./util');
@@ -40,11 +41,18 @@ app.set('view engine', 'ejs');
 // index page
 app.get('/', function(request, response){
     console.log(request.path);
+    let code = request.query.alertCode;
+    console.log(code);
     // clean print.prt files from isis3
     exec('rm print.prt');
 
     // render the index page
-    response.render("index.ejs");
+    if(code == undefined){
+        response.render("index.ejs", {alertCode: 0});
+    }else{
+        response.render("index.ejs", {alertCode: code});
+    }
+    
 });
 
 // post action to caption writing page
@@ -61,7 +69,9 @@ app.post('/upload', function(request, response){
             // if no cube file uploaded
             console.log('User Error Upload a Cube File to begin');
             // redirect the user
-            response.redirect('/');
+            //alert('Upload a cube file (.cub)');
+
+            response.redirect('/?alertCode=3');
             response.end();
         }
         // cube (.cub) file regexp
@@ -92,13 +102,13 @@ app.post('/upload', function(request, response){
             // wrong file type uploaded
             console.log('wrong file type uploaded for cube section');
             console.log('file name is: ' + request.files.uploadFile.name);
-            response.redirect('/');
+            response.redirect('/?alertCode=1');
             response.end();
             }
     }catch(err){
         console.log('Fatal Error Occured');
         console.log(err);
-        response.redirect('/');
+        response.redirect('/?alertCode=1');
         response.end();
     }
 
@@ -120,7 +130,7 @@ app.post('/upload', function(request, response){
         }
         else{
             console.log('Wrong file type for template');
-            response.redirect('/');
+            response.redirect('/?alertCode=2');
             response.end();
         }
     }catch(err){

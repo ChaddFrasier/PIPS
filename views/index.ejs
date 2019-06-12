@@ -16,7 +16,7 @@
     </head>
 
     <body>
-
+        
 
         <div class="jumbotron jumbotron-fluid text-center">
 
@@ -52,7 +52,21 @@
                     <label for="tplUpload">Choose a Template File</label>
                     <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
                 </div>
+                <div id="alert-info" style= 'visibility:hidden;' class = "alert alert-info alert-dismissable">
+                        <button type = "button" class = "close" data-dismiss = "alert" aria-hidden = "true">
+                           &times;
+                        </button>
+                        Upload a .cub file
+                    </div>
 
+
+                <div id="tplAlert" style="visibility: hidden;" class = "alert alert-warning alert-dismissable">
+                        <button type = "button" class = "close" data-dismiss = "alert" aria-hidden = "true">
+                            &times;
+                        </button>
+                             
+                        Template must be (.tpl) or left blank.
+                    </div>
                 <br>
 
                 <input type="submit" name="SubmitCube" value="Upload" class="btn btn btn-outline-dark btn-lg"
@@ -62,4 +76,27 @@
 
         </div>
 
+
+        <script>
+        function fixLoader(){
+            if(<%= alertCode %> == 1){
+                var alert = document.getElementById('alert-info');
+
+                alert.style.visibility = 'visible';
+            }
+            else if(<%= alertCode %> == 2){
+                var alert2 = document.getElementById('tplAlert');
+
+                alert2.style.visibility = 'visible';
+            }
+            else if(<%= alertCode %> == 3){
+                var alert = document.getElementById('alert-info');
+                alert.style.visibility = 'visible';
+                var alert2 = document.getElementById('tplAlert');
+                alert2.style.visibility = 'visible';
+
+            }
+        }
+        
+        fixLoader()</script>
     </body>
