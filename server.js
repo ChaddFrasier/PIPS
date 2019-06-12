@@ -3,8 +3,8 @@
  * 
  * Author: Chadd Frasier
  * Date Started: 05/31/19
- * Version: 2.2.1
- * Last Modified: 06/10/19
+ * Version: 2.3
+ * Last Modified: 06/11/19
  * Description: 
  *      This is the driver for the Caption Writer server 
  * 
@@ -18,7 +18,7 @@ const path = require('path');
 const jimp = require('jimp');
 const exec = require('child_process').exec;
 const fs = require('fs');
-const alert = require('alert-node');
+const cookieparser = require('cookie-parser');
 
 // include custom utils 
 const util = require('./util');
@@ -28,6 +28,7 @@ var app = express();
 
 // use express upload
 app.use(fileUpload());
+app.use(cookieparser());
 
 
 // give app access to routes
@@ -41,8 +42,9 @@ app.set('view engine', 'ejs');
 // index page
 app.get('/', function(request, response){
     console.log(request.path);
+    // queryt for alert code
     let code = request.query.alertCode;
-    console.log(code);
+    
     // clean print.prt files from isis3
     exec('rm print.prt');
 
@@ -53,6 +55,17 @@ app.get('/', function(request, response){
         response.render("index.ejs", {alertCode: code});
     }
     
+});
+ 
+// get for tpl
+app.get('/tpl',function(request, response){
+    
+    fs.readFile('./tpl/description.tpl', function read(err, data) {
+        if (err) {
+            throw err;
+        }
+        response.render('tpl.ejs', {tplData:data});
+    });
 });
 
 // post action to caption writing page
@@ -145,6 +158,8 @@ app.post('/upload', function(request, response){
     // TODO: DICTIONARY DATA
     // TODO: CSVSTRING Data
    
+      
+
     response.render('writer.ejs',
         { templateText: templateText, 
         dictionaryString: 'dict strring',
@@ -154,10 +169,15 @@ app.post('/upload', function(request, response){
 
 // image editing page
 app.post('/showImage', function(request, response){
+    //TODO: image page
     console.log(request.path);
+    let cookie = request.cookies['cubefile'];
+    let image = util.getimagename(cookie);
+
+    let imagepath = path.join('/images/', image);
 
     // render image
-    response.render("imagePage.ejs");
+    response.render("imagePage.ejs", {image:imagepath});
 });
 
 // listen on 8080 or open port

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <title>Template File</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="../css/index.css">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+        <script type="text/javascript"
+                src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+    </head>
+
+    <body>
+        
+        <div class="jumbotron jumbotron-fluid text-center">
+
+            <h1 class="display-4">A tpl file is a special Orion text file that us used to parse and exchange tags with data values</h1>
+            <p class="lead">simply write a text file like normal and save it to a .tpl extrension.</p>
+
+
+            <p class="lead">
+                <a class="btn btn-primary btn-lg" href="/"
+                    role="button">Back</a>
+
+            </p>
+
+        </div>
+
+        <div class="container">
+            <div class="row">       
+            <label for="exampleFormControlTextarea1" style="align-content: center;">A Template File Looks Like This</label>
+            </div>
+            <div class="row">
+                <textarea class="form-control rounded-0" style="align-content: center;" readonly='readonly' id="exampleFormControlTextarea1" rows="10">
+
+                        <%= tplData %>
+                    </textarea>
+            </div>
+             
+        </div>
+        
+    </body>
+    </html>

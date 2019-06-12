@@ -138,7 +138,7 @@
     
     <form method="POST" action="/getImage" class="lg-form text-center">
         <div class=" form-group">
-            <input type="hidden" value="{{IMG}}" name="passedIMG">
+            <input type="hidden" value="<%= image>" name="passedIMG">
             <input type="submit" value="Download Full Image" class="btn btn-secondary btn-lg" />
         </div>
     </form>
@@ -151,7 +151,7 @@
             $('.image-editor').cropit({
                 maxZoom: 10,
                 imageState: {
-                    src: '{{IMG}}',
+                    src: '<%= image %>',
                 },
             });
             $('.export').click(function() {
@@ -268,11 +268,11 @@
         var scale = 0;
         // Legend Icons
         var northImg = new Image();
-        northImg.src = "/static/images/north.jpg";
+        northImg.src = "/images/north.jpg";
         var sunImg = new Image();
-        sunImg.src = "/static/images/sun_symbol.png";
+        sunImg.src = "/images/sun_symbol.png";
         var obsImg = new Image();
-        obsImg.src = "/static/images/eye_symbol.png";
+        obsImg.src = "/images/eye_symbol.png";
         
         // Canvas Stuff
         var northCanvas = document.getElementById("north-canvas");
