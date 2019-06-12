@@ -104,13 +104,17 @@ app.post('/upload', function(request, response){
             console.log('running ISIS commands on upload');
 
             response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
-            console.log('cookie created for cube file');
+            //console.log('cookie created for cube file');
             // make command and check error status
             if(util.makeSystemCalls(cubeFile.name,
                  path.join('uploads',cubeFile.name),
                     path.join('pvl','return.pvl'),
                     'images') !== 0){
                         console.log('makeSystemCalls ended with a non-zero status');
+                    }
+                    else{
+                        //console.log('ended normally');
+                        util.readPvltoStruct('return.pvl');
                     }
         }
         else{
@@ -150,9 +154,9 @@ app.post('/upload', function(request, response){
         }
     }catch(err){
         // tpl is null
-        console.log('Default Template Being Used');
+        //console.log('Default Template Being Used');
         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-        console.log('default.tpl says: '+ templateText);
+        //console.log('default.tpl says: '+ templateText);
 
     }
 

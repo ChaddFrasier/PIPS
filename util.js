@@ -11,6 +11,8 @@
 
 // require dependencies
 const exec = require('child_process').exec;
+const lineReader = require('line-reader');
+const path = require('path');
 
 
 // local functions
@@ -89,9 +91,26 @@ module.exports = {
         let namearr = cubeName.toString().split('.');
         // set the last element of the array to the format specified
         namearr[namearr.length - 1] = format;
-        console.log(namearr);
+        //console.log(namearr);
         // return the combined new array
         return namearr.join('.');
+    },
+
+
+    /**
+     * 
+     * @param {string} pvlFile 
+     * @returns //TODO:
+     * @description This function extracts data from the pvl file
+     */
+
+    //TODO: parse entire pvl file
+    readPvltoStruct: function(pvlFile){
+        // ready pvl file data into a Data structure of some kind
+        lineReader.eachLine(path.join('pvl', 'return.pvl'), function(line){
+            console.log(line);
+        });
+        return 'donezo';
     }
 
 
