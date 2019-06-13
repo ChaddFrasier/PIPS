@@ -17,12 +17,10 @@
 
     <body>
         
-        <div class="jumbotron jumbotron-fluid text-center">
+        <div class="jumbotron jumbotron-fluid text-center" style="padding: 1%;">
 
-            <h1 class="display-4">A tpl file is a special Orion text file that us used to parse and exchange tags with data values</h1>
-            <p class="lead">simply write a text file like normal and save it to a .tpl extrension.</p>
-
-
+            <h1 class="display-6"> A tpl file is a special Orion text file that is used to parse and exchange tags with data values</h1>
+            <p class="lead"> (simply write a text file like normal and save it to a .tpl extrension)</p>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="/"
                     role="button">Back</a>
@@ -31,15 +29,14 @@
 
         </div>
 
-        <div class="container">
+        <div class="container" style="background-color: lightgray;">
             <div class="row">       
-            <label for="exampleFormControlTextarea1" style="align-content: center;">A Template File Looks Like This</label>
+            <label for="exampleFormControlTextarea1" style="align-content: center; color: black; ">Template File (.tpl)</label>
             </div>
             <div class="row">
-                <textarea class="form-control rounded-0" style="align-content: center;" readonly='readonly' id="exampleFormControlTextarea1" rows="10">
-
-                        <%= tplData %>
-                    </textarea>
+                <textarea class="form-control rounded-0" style="align-content: center; background-color: lightsteelblue; color: black;" readonly='readonly' id="exampleFormControlTextarea1" rows="10">
+        <%= tplData %>
+                </textarea>
             </div>
              
         </div>

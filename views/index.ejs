@@ -3,7 +3,11 @@
     <head>
 
         <title>Orion Project</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta property="og:url" content="https://orion-usgs/"/>
+        <meta property="og:title" content="Planetary Image Caption Writer"/>
+        <meta property="og:type" content="application"/>
+        <meta property="og:description" content="A publication tool for The USGS's and other agencies researchers"/>
 
         <link rel="stylesheet" type="text/css" href="css/index.css">
 
@@ -12,31 +16,27 @@
         
         <script type="text/javascript"
                 src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-
     </head>
 
     <body>
+        <img src="../images/usgsLogo.png" width="20%" height="20%">
+        <div class="jumbotron jumbotron-fluid text-center" style="display:inline; border-bottom: 0rem;">
+            
+            <h1 class="display-2"> Orion</h1><p>Powered by ISIS3</p>
+            <hr class="my-9">
+            <div class="title">
+                    
+                    <p class="lead" style="align-content: center;">You can upload .cub file and .tpl file </p>
+                        <a class="btn btn-secondary btn-lg" style= "border-color: black;" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
+                            role="button">Learn About The Orion Project</a>
         
-
-        <div class="jumbotron jumbotron-fluid text-center">
-
-            <h1 class="display-4">Planetary Image Caption Writer - Orion</h1>
-            <p class="lead">You can upload .cub file and .tpl file in this page</p>
-
-            <hr class="my-4">
-            <p>Powered by ISIS3</p>
-
-            <p class="lead">
-                <a class="btn btn-primary btn-lg" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
-                    role="button">Learn About The Orion Project</a>
-
-                <a class="btn btn-primary btn-lg" href= '/tpl'
-                    role="button">What is a TPL file?</a>
-            </p>
-
+                        <a class="btn btn-secondary btn-lg" href= '/tpl'
+                            role="button">What is a TPL file?</a>
+                    </p>
+                </div>
         </div>
-
-
+        
+    <br>
         <div class="container">
             <div id="loading" style="display:none;">
                         <img src="../images/loading.gif" height="70" weight="70"/> Loading
@@ -49,7 +49,6 @@
                 </div>
 
                 <br>
-
                 <hr class="style5">
                 <div class="btn btn-primary btn-lg form-group">
                     <label for="tplUpload">Choose a Template File</label>

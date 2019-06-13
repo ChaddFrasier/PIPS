@@ -15,8 +15,6 @@ const lineReader = require('line-reader');
 const path = require('path');
 
 // local functions
-
-
 /**
  * 
  * @param {string} testValue 
@@ -33,8 +31,6 @@ var testHeader = function(testValue){
     return false;
 }
 
-
-
 /**
  * 
  * @param {string} name 
@@ -42,8 +38,8 @@ var testHeader = function(testValue){
  * @description returns the name combined in the proper object order
  */
 var combineName = function(name, str=undefined){
-    if(name == undefined){
-        return str.toString().trim();
+    if(str == undefined){
+        return name.toString().trim();
     }else{
         return (name.toString().trim() + '.' + str.trim());
     }
@@ -153,8 +149,14 @@ module.exports = {
         // ready pvl file data into a Data structure of some kind
         lineReader.eachLine(path.join('pvl', 'return.pvl'), function(line){
             if(line.indexOf('=') > -1 && testHeader(line.split('=')[0].trim())){
-                keyName = combineName(keyName,line.split('=')[1].trim());
-                console.log('added: ' + keyName);
+                if(keyName == ''){
+                    keyName = combineName(line.split('=')[1].trim());
+                    console.log('name reset to: ' + keyName);
+                }else{
+                    keyName = combineName(keyName,line.split('=')[1].trim());
+                    console.log('added: ' + keyName);
+                }
+                
                // console.log(line);
             }else{
 
@@ -165,13 +167,7 @@ module.exports = {
                 // do nothing
             }
         });// end line loop
-
-        /* console.log('\n========================\ntesting name here: ' 
-        + combineName('IsisCube.Table','Camera') + '\n========================\n');
-
-        console.log('\n========================\ntesting name here: ' 
-        + shortenName('IsisCube.Table.Camera') + '\n========================\n');
- */
+        
         return 'donezo';
     }
 
