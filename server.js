@@ -113,10 +113,9 @@ app.post('/upload', function(request, response){
                     'images') !== 0){
                         console.log('makeSystemCalls ended with a non-zero status');
                     }
-                    else{
-                        //console.log('ended normally');
-                        util.readPvltoStruct('return.pvl');
-                    }
+            console.log('pvl extraction running now');
+            console.log(util.readPvltoStruct('return.pvl'));
+                
         }
         else{
             // wrong file type uploaded

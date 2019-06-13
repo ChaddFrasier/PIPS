@@ -21,6 +21,7 @@ const path = require('path');
  * @description tests if the value is a header for the isis data
  */
 var testHeader = function(testValue){
+    console.log('printted from testHeader function');
     let variablearray = ['Object','Group'];
     console.log(testValue);
     for(var i = 0; i< variablearray.length; i++){
@@ -146,11 +147,16 @@ module.exports = {
     readPvltoStruct: function(pvlFile){
         var keyName = '';
         var value = '';
+        console.log('from function readPVL');
         // ready pvl file data into a Data structure of some kind
-        lineReader.eachLine(path.join('pvl', 'return.pvl'), function(line){
-            if(line.indexOf('=') > -1 && testHeader(line.split('=')[0].trim())){
+        lineReader.eachLine(path.join('pvl', pvlFile), function(line){
+            console.log(line.split('=')[0]);
+            console.log('in loop');
+
+            if(testHeader(line.split('=')[0].trim())){
+                console.log('in if statement');
                 if(keyName == ''){
-                    keyName = combineName(line.split('=')[1].trim());
+                    keyName = line.split('=')[1].trim();
                     console.log('name reset to: ' + keyName);
                 }else{
                     keyName = combineName(keyName,line.split('=')[1].trim());
