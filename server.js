@@ -43,6 +43,7 @@ app.set('view engine', 'ejs');
 app.get('/', function(request, response){
     console.log(request.path);
     // queryt for alert code
+    
     let code = request.query.alertCode;
     
     // clean print.prt files from isis3

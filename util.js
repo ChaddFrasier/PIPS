@@ -14,9 +14,51 @@ const exec = require('child_process').exec;
 const lineReader = require('line-reader');
 const path = require('path');
 
-
 // local functions
 
+
+/**
+ * 
+ * @param {string} testValue 
+ * @description tests if the value is a header for the isis data
+ */
+var testHeader = function(testValue){
+    let variablearray = ['Object','Group'];
+    console.log(testValue);
+    for(var i = 0; i< variablearray.length; i++){
+        if(variablearray[i] == testValue){
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+/**
+ * 
+ * @param {string} name 
+ * @param {string} str 
+ * @description returns the name combined in the proper object order
+ */
+var combineName = function(name, str=undefined){
+    if(name == undefined){
+        return str.toString().trim();
+    }else{
+        return (name.toString().trim() + '.' + str.trim());
+    }
+}
+
+/**
+ * 
+ * @param {string} name  
+ * @description returns the name with the last added element replaced
+ */
+var shortenName = function(name){
+    var strarr = name.toString().trim().split('.');
+    strarr.pop();
+    return strarr.join('.');
+}
 
 // exportable functions
 module.exports = {
@@ -41,7 +83,7 @@ module.exports = {
                 if(err){
                     // print error
                     console.log('Failed campt call');
-                    console.log(err);
+                    //console.log(err);
                 }
             });
         
@@ -51,7 +93,7 @@ module.exports = {
                 if(err){
                     // print error
                     console.log('Failed catlab call');
-                    console.log(err);
+                    //console.log(err);
                 }
             });
 
@@ -61,7 +103,7 @@ module.exports = {
                 if(err){
                     // log error to console
                     console.log('Failed catoriglab call');
-                    console.log(err);
+                    //console.log(err);
                 }
             });
 
@@ -71,7 +113,7 @@ module.exports = {
                 if(err){
                     // log error
                     console.log('Failed isis2std call');
-                    console.log(err);
+                    //console.log(err);
                     return 
                 }
             });
@@ -106,10 +148,30 @@ module.exports = {
 
     //TODO: parse entire pvl file
     readPvltoStruct: function(pvlFile){
+        var keyName = '';
+        var value = '';
         // ready pvl file data into a Data structure of some kind
         lineReader.eachLine(path.join('pvl', 'return.pvl'), function(line){
-            console.log(line);
-        });
+            if(line.indexOf('=') > -1 && testHeader(line.split('=')[0].trim())){
+                keyName = combineName(keyName,line.split('=')[1].trim());
+                console.log('added: ' + keyName);
+               // console.log(line);
+            }else{
+
+                if(line.split('=')[0].trim() == 'End_Object' || line.split('=')[0].trim() == 'End_Group'){
+                    keyName = shortenName(keyName);
+                    
+                }
+                // do nothing
+            }
+        });// end line loop
+
+        /* console.log('\n========================\ntesting name here: ' 
+        + combineName('IsisCube.Table','Camera') + '\n========================\n');
+
+        console.log('\n========================\ntesting name here: ' 
+        + shortenName('IsisCube.Table.Camera') + '\n========================\n');
+ */
         return 'donezo';
     }
 
