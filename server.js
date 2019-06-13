@@ -110,7 +110,7 @@ app.post('/upload', function(request, response){
             if(util.makeSystemCalls(cubeFile.name,
                  path.join('uploads',cubeFile.name),
                     path.join('pvl','return.pvl'),
-                    'images') !== 0){
+                    'images') != 0){
                         console.log('makeSystemCalls ended with a non-zero status');
                     }
                     else{
