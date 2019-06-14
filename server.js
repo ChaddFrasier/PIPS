@@ -36,6 +36,7 @@ app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
 app.use("/tpl" , express.static("tpl"));
 
+
 // start view engine
 app.set('view engine', 'ejs');
 
@@ -77,6 +78,9 @@ app.post('/upload', function(request, response){
     var templateText = '';
     var cubeFileData= '';
 
+    exec('rm ./pvl/return.pvl');
+
+    console.log('===========================================');
     // cube file section
     try{
         if(request.files == null ){
@@ -113,8 +117,8 @@ app.post('/upload', function(request, response){
                     'images') != 0){
                         console.log('makeSystemCalls ended with a non-zero status');
                     }
-            console.log('pvl extraction running now');
-            console.log(util.readPvltoStruct('return.pvl'));
+            //console.log('pvl extraction running now');
+            
                 
         }
         else{
@@ -163,6 +167,7 @@ app.post('/upload', function(request, response){
     // set output and render
     // TODO: DICTIONARY DATA
     // TODO: CSVSTRING Data
+  
    
       
 

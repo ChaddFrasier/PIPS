@@ -11,8 +11,10 @@
 
 // require dependencies
 const exec = require('child_process').exec;
-const lineReader = require('line-reader');
 const path = require('path');
+const Promises = require('bluebird');
+
+
 
 // local functions
 /**
@@ -69,52 +71,20 @@ module.exports = {
      * @description this function will make the system calls like before piping the output to append to return.pvl
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath){
-        // get image name 
+        var promises = [];
+        var imagename = this.getimagename(cubeName);
+
+        promises.push(this.callIsis1(cubeName,filepath,returnPath));
+        promises.push(this.callIsis2(cubeName,filepath,returnPath));    
+        promises.push(this.callIsis3(cubeName,filepath,returnPath));    
+        promises.push(this.callIsis4(imagename,filepath,imagePath));                       
+
         
-        let imagename = this.getimagename(cubeName, 'png');
-        // remove a pvl if it exists
-        exec('rm ' + returnPath);
-        // execute the campt function
-        exec('campt from= ' + filepath
-            + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                if(err){
-                    // print error
-                    console.log('Failed campt call');
-                    //console.log(err);
-                }
-            });
-        
-        // execute the catlab function
-        exec('catlab from= ' + filepath
-            + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                if(err){
-                    // print error
-                    console.log('Failed catlab call');
-                    //console.log(err);
-                }
+        Promise.all(promises).then(function(){
+            console.log('Isis call is finished');
+            require(__filename).readPvltoStruct();
             });
 
-        // execute the catoriglab function
-        exec('catoriglab from= ' + filepath
-            + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                if(err){
-                    // log error to console
-                    console.log('Failed catoriglab call');
-                    //console.log(err);
-                }
-            });
-
-        // execute the isis2std function
-        exec('isis2std from= ' + filepath
-            + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
-                if(err){
-                    // log error
-                    console.log('Failed isis2std call');
-                    //console.log(err);
-                    return 
-                }
-            });
-        
         return 0;
     },
 
@@ -144,39 +114,117 @@ module.exports = {
      */
 
     //TODO: parse entire pvl file
-    readPvltoStruct: function(pvlFile){
+    readPvltoStruct: function(){
         var keyName = '';
         var value = '';
-        console.log('from function readPVL');
-        // ready pvl file data into a Data structure of some kind
-        lineReader.eachLine(path.join('pvl', pvlFile), function(line){
-            console.log(line.split('=')[0]);
-            console.log('in loop');
-
-            if(testHeader(line.split('=')[0].trim())){
-                console.log('in if statement');
-                if(keyName == ''){
-                    keyName = line.split('=')[1].trim();
-                    console.log('name reset to: ' + keyName);
-                }else{
-                    keyName = combineName(keyName,line.split('=')[1].trim());
-                    console.log('added: ' + keyName);
-                }
-                
-               // console.log(line);
-            }else{
-
-                if(line.split('=')[0].trim() == 'End_Object' || line.split('=')[0].trim() == 'End_Group'){
-                    keyName = shortenName(keyName);
-                    
-                }
-                // do nothing
+          
+        /* fs.readFile('./pvl/return.pvl', function read(err, data) {
+            if (err) {
+                throw err;
             }
-        });// end line loop
+            console.log(data.toString());
+        }); */  
+
+        processFile('./pvl/return.pvl');
         
-        return 'donezo';
-    }
+        
+        // remove a pvl if it exists
+        //      FOR NOW: exec('rm ' + returnPath);
+    
+        // ready pvl file data into a Data structure of some kind
+        // think about const in a functionn here should this be used?
+        
+        // set read environment
+        return 'finsihed';
+        
+    },
 
+    callIsis1: function(cubeName, filepath, returnPath){
+        return new Promise(function(resolve){
+                            
+            // execute the campt function
+            exec('campt from= ' + filepath
+                + " to= " + returnPath + " append= false", function(err, stdout, stderr){
+                    if(err){
+                        // print error
+                        console.log('Failed campt call');
+                        //console.log(err);
+                    }
+                    resolve();
+                });
+                
+            });
+        },
 
+    callIsis2: function(cubeName, filepath, returnPath){
+                return new Promise(function(resolve){           
+                // execute the campt function
+                exec('catlab from= ' + filepath
+                    + " to= " + returnPath + " append= true", function(err, stdout, stderr){
+                        if(err){
+                            // print error
+                            console.log('Failed campt call');
+                            //console.log(err);
+                        }
+                        resolve();
+                    });
+                    
+                });
+            },
+
+        callIsis3: function(cubeName, filepath, returnPath){
+                    return new Promise(function(resolve){
+                                        
+                        // execute the campt function
+                        exec('catoriglab from= ' + filepath
+                            + " to= " + returnPath + " append= true", function(err, stdout, stderr){
+                                if(err){
+                                    // print error
+                                    console.log('Failed campt call');
+                                    //console.log(err);
+                                }
+                                resolve();
+                            });
+                        
+                        });
+                    },
+    
+                    
+
+        callIsis4: function(imagename, filepath, imagePath){
+                    return new Promise(function(resolve){
+                        // execute the isis2std function
+                        exec('isis2std from= ' + filepath
+                        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
+                            if(err){
+                                // log error
+                                console.log('Failed isis2std call');
+                                //console.log(err);
+                            }
+                            resolve();
+                            });
+                            
+                        });
+                    }
+    
     // Another expoertable function
 };
+
+
+function processFile(inputFile) {
+    var fs = require('fs'),
+        readline = require('readline'),
+        instream = fs.createReadStream(inputFile),
+        outstream = new (require('stream'))(),
+        rl = readline.createInterface(instream, outstream);
+
+    rl.on('line', function (line) {
+        console.log(line);
+    });
+    
+    rl.on('close', function (line) {
+        console.log(line);
+        console.log('done reading file.');
+    });
+    
+}
