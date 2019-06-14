@@ -72,7 +72,7 @@ module.exports = {
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath){
         var promises = [];
-        var imagename = this.getimagename(cubeName);
+        var imagename = this.getimagename(cubeName,'png');
 
         promises.push(this.callIsis1(cubeName,filepath,returnPath));
         promises.push(this.callIsis2(cubeName,filepath,returnPath));    
@@ -125,8 +125,12 @@ module.exports = {
             console.log(data.toString());
         }); */  
 
-        processFile('./pvl/return.pvl');
-        
+        try{
+            processFile('./pvl/return.pvl');
+        }
+        catch(err){
+            console.log(err);
+        }
         
         // remove a pvl if it exists
         //      FOR NOW: exec('rm ' + returnPath);
@@ -144,7 +148,7 @@ module.exports = {
                             
             // execute the campt function
             exec('campt from= ' + filepath
-                + " to= " + returnPath + " append= false", function(err, stdout, stderr){
+                + " to= " + returnPath + " append= true", function(err, stdout, stderr){
                     if(err){
                         // print error
                         console.log('Failed campt call');

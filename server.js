@@ -78,7 +78,7 @@ app.post('/upload', function(request, response){
     var templateText = '';
     var cubeFileData= '';
 
-    exec('rm ./pvl/return.pvl');
+    exec('rm pvl/return.pvl');
 
     console.log('===========================================');
     // cube file section
