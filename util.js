@@ -3,8 +3,8 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/11/19
- * Version: 1.2.2
+ * Date Last Modified: 06/13/19
+ * Version: 2.1
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
  */
@@ -13,8 +13,6 @@
 const exec = require('child_process').exec;
 const path = require('path');
 const Promises = require('bluebird');
-
-
 
 // local functions
 /**

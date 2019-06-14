@@ -18,12 +18,14 @@
   "homepage": "https://github.com/ChaddFrasier/Orion_Writer#readme",
   "dependencies": {
     "alert-node": "^1.2.5",
+    "bluebird": "^3.5.5",
     "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.4",
     "i": "^0.3.6",
     "jimp": "^0.6.4",
-    "line-reader": "^0.4.0"
+    "line-reader": "^0.4.0",
+    "fs":"0.0.1-security"
   }
 }
