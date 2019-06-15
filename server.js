@@ -36,21 +36,23 @@ app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
 app.use("/tpl" , express.static("tpl"));
 
-
 // start view engine
 app.set('view engine', 'ejs');
 
-// index page
+
+// Functions
+/**
+ * function to handle '/' requests
+ */
 app.get('/', function(request, response){
     console.log(request.path);
     // queryt for alert code
-    
     let code = request.query.alertCode;
     
     // clean print.prt files from isis3
     exec('rm print.prt');
 
-    // render the index page
+    // render the index page w/ proper code
     if(code == undefined){
         response.render("index.ejs", {alertCode: 0});
     }else{
@@ -59,18 +61,23 @@ app.get('/', function(request, response){
     
 });
  
-// get for tpl
+/**
+ * function to handle '/tpl' requests
+ */ 
 app.get('/tpl',function(request, response){
-    
+    // read and send the data in the form of ejs file
     fs.readFile('./tpl/description.tpl', function read(err, data) {
         if (err) {
             throw err;
         }
+        // render the data
         response.render('tpl.ejs', {tplData:data});
     });
 });
 
-// post action to caption writing page
+/**
+ * function to handle '/upload' requests
+ */
 app.post('/upload', function(request, response){
     console.log(request.path);
 
@@ -79,7 +86,6 @@ app.post('/upload', function(request, response){
     var cubeFileData= '';
 
     exec('rm pvl/return.pvl');
-
     console.log('===========================================');
     // cube file section
     try{
@@ -116,10 +122,7 @@ app.post('/upload', function(request, response){
                     path.join('pvl','return.pvl'),
                     'images') != 0){
                         console.log('makeSystemCalls ended with a non-zero status');
-                    }
-            //console.log('pvl extraction running now');
-            
-                
+                    }     
         }
         else{
             // wrong file type uploaded
@@ -168,9 +171,6 @@ app.post('/upload', function(request, response){
     // TODO: DICTIONARY DATA
     // TODO: CSVSTRING Data
   
-   
-      
-
     response.render('writer.ejs',
         { templateText: templateText, 
         dictionaryString: 'dict strring',
@@ -178,7 +178,9 @@ app.post('/upload', function(request, response){
     
 });
 
-// image editing page
+/**
+ * function to handle '/showImage' requests
+ */
 app.post('/showImage', function(request, response){
     //TODO: image page
     console.log(request.path);

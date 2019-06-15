@@ -3,16 +3,45 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/13/19
- * Version: 2.1
+ * Date Last Modified: 06/15/19
+ * Version: 2.2
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
  */
 
 // require dependencies
-const exec = require('child_process').exec;
-const path = require('path');
-const Promises = require('bluebird');
+var exec = require('child_process').exec;
+var path = require('path');
+var Promises = require('bluebird');
+
+// exportable functions
+
+module.exports = {
+    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
+        // call the isis commands
+        callIsis(cubeName, filepath, returnPath, imagePath);
+    },
+
+    readPvltoStruct: function() {
+        var keyName = '';
+        var value = '';
+        /* fs.readFile('./pvl/return.pvl', function read(err, data) {
+            if (err) {
+                throw err;
+            }
+            console.log(data.toString());
+        }); */
+        try {
+            // extract data
+            processFile('./pvl/return.pvl');
+        }
+        catch (err) {
+            console.log(err);
+        }
+        // set read environment
+        return 'finsihed';
+    }
+};
 
 // local functions
 /**
@@ -21,9 +50,9 @@ const Promises = require('bluebird');
  * @description tests if the value is a header for the isis data
  */
 var testHeader = function(testValue){
-    console.log('printted from testHeader function');
+    // set the array of important tags
     let variablearray = ['Object','Group'];
-    console.log(testValue);
+    // test each value
     for(var i = 0; i< variablearray.length; i++){
         if(variablearray[i] == testValue){
             return true;
@@ -39,6 +68,7 @@ var testHeader = function(testValue){
  * @description returns the name combined in the proper object order
  */
 var combineName = function(name, str=undefined){
+    // if str is not defined just return the name trimmed
     if(str == undefined){
         return name.toString().trim();
     }else{
@@ -52,181 +82,131 @@ var combineName = function(name, str=undefined){
  * @description returns the name with the last added element replaced
  */
 var shortenName = function(name){
+    // splits the name strig into an array a parts 
     var strarr = name.toString().trim().split('.');
+    // removes the last part of the string
     strarr.pop();
+    // rejoin the remaining parts
     return strarr.join('.');
 }
 
-// exportable functions
-module.exports = {
-    /**
-     * 
-     * @param {string} cubeName 
-     * @param {string} filepath 
-     * @param {string} returnPath 
-     * @param {string} imagePath 
-     * @returns {int} code
-     * @description this function will make the system calls like before piping the output to append to return.pvl
-     */
-    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath){
-        var promises = [];
-        var imagename = this.getimagename(cubeName,'png');
+/**
+ * 
+ * @param {string} cubeName 
+ * @param {string} format 
+ * @returns {string} image name
+ * @description This function takes the file extension off of he cube file and makes it a png.
+ */
+var getimagename = function(cubeName, format){
+    // get an array of peieces of the filename
+    let namearr = cubeName.toString().split('.');
+    // set the last element of the array to the format specified
+    namearr[namearr.length - 1] = format;
+    //console.log(namearr);
+    // return the combined new array
+    return namearr.join('.');
+}
 
-        promises.push(this.callIsis1(cubeName,filepath,returnPath));
-        promises.push(this.callIsis2(cubeName,filepath,returnPath));    
-        promises.push(this.callIsis3(cubeName,filepath,returnPath));    
-        promises.push(this.callIsis4(imagename,filepath,imagePath));                       
+/**
+ * 
+ * @param {string} cubeName 
+ * @param {string} filepath 
+ * @param {string} returnPath 
+ * @param {string} imagePath 
+ * @return {int} error codes
+ * @description this function runs all isis commands and populates an array of 
+ * promises to ensure the PVL file is full created before processing continues
+ */
+var callIsis = function(cubeName, filepath, returnPath, imagePath){
+    // variables for proper isis calls
+    var isisCalls = ['campt','catlab','catoriglab'];
+    var promises = [];
+    var imagename = getimagename(cubeName,'png');
 
-        
-        Promise.all(promises).then(function(){
-            console.log('Isis call is finished');
-            require(__filename).readPvltoStruct();
-            });
+    // run the isis commands
+    for(var i=0;i<isisCalls.length;i++){
+        // push command calls
+        promises.push(makeIsisCall(cubeName, filepath, returnPath, isisCalls[i]));
+    }
+    // call and push image command
+    promises.push(imageExtraction(imagename,filepath,imagePath));                       
 
-        return 0;
-    },
+    // this block will pass and run when all isis commands are finished
+    Promise.all(promises).then(function(){
+        console.log('Isis call is finished');
+        require(__filename).readPvltoStruct();
+        });
 
-    /**
-     * 
-     * @param {string} cubeName 
-     * @param {string} format 
-     * @returns {string} image name
-     * @description This function takes the file extension off of he cube file and makes it a png.
-     */
-    getimagename: function(cubeName, format){
-        // get an array of peieces of the filename
-        let namearr = cubeName.toString().split('.');
-        // set the last element of the array to the format specified
-        namearr[namearr.length - 1] = format;
-        //console.log(namearr);
-        // return the combined new array
-        return namearr.join('.');
-    },
+    return 0;
+ }
 
-
-    /**
-     * 
-     * @param {string} pvlFile 
-     * @returns //TODO:
-     * @description This function extracts data from the pvl file
-     */
-
-    //TODO: parse entire pvl file
-    readPvltoStruct: function(){
-        var keyName = '';
-        var value = '';
-          
-        /* fs.readFile('./pvl/return.pvl', function read(err, data) {
-            if (err) {
-                throw err;
+/**
+ * 
+ * @param {string} imagename 
+ * @param {string} filepath 
+ * @param {string} imagePath 
+ */
+var imageExtraction = function(imagename, filepath, imagePath){
+    return new Promise(function(resolve){
+        // execute the isis2std function
+        exec('isis2std from= ' + filepath
+        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
+            if(err){
+                // log error
+                console.log('Failed isis2std call');
+                //console.log(err);
             }
-            console.log(data.toString());
-        }); */  
-
-        try{
-            processFile('./pvl/return.pvl');
-        }
-        catch(err){
-            console.log(err);
-        }
-        
-        // remove a pvl if it exists
-        //      FOR NOW: exec('rm ' + returnPath);
-    
-        // ready pvl file data into a Data structure of some kind
-        // think about const in a functionn here should this be used?
-        
-        // set read environment
-        return 'finsihed';
-        
-    },
-
-    callIsis1: function(cubeName, filepath, returnPath){
-        return new Promise(function(resolve){
-                            
-            // execute the campt function
-            exec('campt from= ' + filepath
-                + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                    if(err){
-                        // print error
-                        console.log('Failed campt call');
-                        //console.log(err);
-                    }
-                    resolve();
-                });
-                
+            resolve();
             });
-        },
-
-    callIsis2: function(cubeName, filepath, returnPath){
-                return new Promise(function(resolve){           
-                // execute the campt function
-                exec('catlab from= ' + filepath
-                    + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                        if(err){
-                            // print error
-                            console.log('Failed campt call');
-                            //console.log(err);
-                        }
-                        resolve();
-                    });
-                    
-                });
-            },
-
-        callIsis3: function(cubeName, filepath, returnPath){
-                    return new Promise(function(resolve){
-                                        
-                        // execute the campt function
-                        exec('catoriglab from= ' + filepath
-                            + " to= " + returnPath + " append= true", function(err, stdout, stderr){
-                                if(err){
-                                    // print error
-                                    console.log('Failed campt call');
-                                    //console.log(err);
-                                }
-                                resolve();
-                            });
-                        
-                        });
-                    },
-    
-                    
-
-        callIsis4: function(imagename, filepath, imagePath){
-                    return new Promise(function(resolve){
-                        // execute the isis2std function
-                        exec('isis2std from= ' + filepath
-                        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
-                            if(err){
-                                // log error
-                                console.log('Failed isis2std call');
-                                //console.log(err);
-                            }
-                            resolve();
-                            });
-                            
-                        });
-                    }
-    
-    // Another expoertable function
-};
+        });
+    }
 
 
-function processFile(inputFile) {
+/**
+ * 
+ * @param {string} cubeName 
+ * @param {string} filepath 
+ * @param {string} returnPath 
+ * @param {string} isisCall 
+ * @description makes the exec call to run isis commands
+ */
+var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
+    return new Promise(function(resolve){
+        // execute the isis2std function
+        exec( 
+            isisCall + ' from= ' + filepath
+        + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
+            if(err){
+                // log error
+                console.log('Failed isis2std call');
+                //console.log(err);
+            }
+            resolve();
+            });
+        });
+    }
+
+/**
+ * 
+ * @param {string} inputFile 
+ * @description this function reads a file line by line, it will chnage into the data parser in later commits
+ */
+var processFile = function(inputFile){
+    // open the fs with necessary imports for streaming file data
     var fs = require('fs'),
         readline = require('readline'),
         instream = fs.createReadStream(inputFile),
         outstream = new (require('stream'))(),
         rl = readline.createInterface(instream, outstream);
 
+    // read line by line
     rl.on('line', function (line) {
         console.log(line);
     });
     
+    // this runs on last line of the file
     rl.on('close', function (line) {
-        console.log(line);
+        console.log('last line call: ' + line);
         console.log('done reading file.');
-    });
-    
+    });  
 }
