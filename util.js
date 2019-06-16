@@ -54,7 +54,7 @@ var testHeader = function(testValue){
     let variablearray = ['Object','Group'];
     // test each value
     for(var i = 0; i< variablearray.length; i++){
-        if(variablearray[i] == testValue){
+        if(variablearray[i] == testValue.trim()){
             return true;
         }
     }
@@ -188,6 +188,25 @@ var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
 
 /**
  * 
+ * @param {string} nameString 
+ * @description determins true false if the 
+ * line is in the end object group
+ */
+var endTag = function(nameString){
+    let arr = ['End_Object','End_Group'];
+
+    for(let i = 0; i<arr.length;i++){
+        if(nameString == arr[i]){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+/**
+ * 
  * @param {string} inputFile 
  * @description this function reads a file line by line, it will chnage into the data parser in later commits
  */
@@ -199,9 +218,41 @@ var processFile = function(inputFile){
         outstream = new (require('stream'))(),
         rl = readline.createInterface(instream, outstream);
 
+
+    var tagName= '';
     // read line by line
     rl.on('line', function (line) {
-        console.log(line);
+
+        // name header line
+        if(testHeader(line.toString().trim().split('=')[0])){
+            if(tagName == ''){
+                tagName = combineName(line.toString().trim().split('=')[1]);
+                console.log('new tag is: ' + tagName);
+            }
+            else if(endTag(line.toString().trim().split('=')[0])){
+                tagName = shortenName(tagName);
+                console.log('new tag is: ' + tagName);
+            }
+            else{
+                tagName = combineName(tagName, line.toString().trim().split('=')[1].trim());
+                console.log('new tag is: ' + tagName);     
+            }
+
+        }
+        else{
+            if(endTag(line.trim())){
+                tagName = shortenName(tagName);
+                console.log('new tag is: ' + tagName);
+            }else{
+            // `variable = data object` line
+            console.log(line.toString().trim().split('=')[0]);
+            }
+
+            // TODO: do stuff with data
+        }
+
+
+
     });
     
     // this runs on last line of the file
