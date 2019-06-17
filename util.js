@@ -3,7 +3,7 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/15/19
+ * Date Last Modified: 06/16/19
  * Version: 2.2
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
@@ -229,25 +229,31 @@ var processFile = function(inputFile){
                 tagName = combineName(line.toString().trim().split('=')[1]);
                 console.log('new tag is: ' + tagName);
             }
-            else if(endTag(line.toString().trim().split('=')[0])){
-                tagName = shortenName(tagName);
-                console.log('new tag is: ' + tagName);
-            }
+            // some other type of data line
             else{
                 tagName = combineName(tagName, line.toString().trim().split('=')[1].trim());
                 console.log('new tag is: ' + tagName);     
             }
 
         }
+         // if not header line 
         else{
+            // check for end tag
             if(endTag(line.trim())){
+                // shorten if true
                 tagName = shortenName(tagName);
                 console.log('new tag is: ' + tagName);
-            }else{
-            // `variable = data object` line
-            console.log(line.toString().trim().split('=')[0]);
             }
-
+            else{
+                // `variable = data object` line
+                if(line.toString().trim().split('=')[1] != undefined){
+                    console.log(tagName.concat('.' + line.toString().trim().split('=')[0]) + ' = ' + line.toString().trim().split('=')[1]);
+                }
+                else{
+                    // empty line
+                    console.log(line.trim());
+                }
+            }
             // TODO: do stuff with data
         }
 
