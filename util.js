@@ -251,7 +251,8 @@ var processFile = function(inputFile){
                 }
                 else{
                     // empty line
-                    console.log(line.trim());
+                
+                    console.log('unknown line: ' + line.trim());
                 }
             }
             // TODO: do stuff with data
