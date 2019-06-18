@@ -130,16 +130,13 @@ app.post('/upload', function(request, response){
 
                 // this block will pass and run when all isis commands are finished
                 Promise.all(promises).then(function(cubeData){
-                console.log('server got data: \n');
-                cubeFileData = JSON.parse(cubeData);
-                
-                // loop through data structure
-                for(key in cubeFileData){
-                    console.log(key + ' : ' + cubeFileData[key]);
-                }
+                    console.log('server got data: \n');
+                    cubeFileData = JSON.parse(cubeData);
 
-
-
+                    // loop through data structure
+                    for(key in cubeFileData){
+                        console.log(key + ' : ' + cubeFileData[key]);
+                    }
                 });
             });
             
