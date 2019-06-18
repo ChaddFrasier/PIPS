@@ -21,7 +21,7 @@ const fs = require('fs');
 const cookieparser = require('cookie-parser');
 
 // include custom utils 
-const util = require('./util.js');
+const util = require('./src/util.js');
 
 // start app env
 var app = express();
@@ -114,15 +114,28 @@ app.post('/upload', function(request, response){
             // log run real command
             console.log('running ISIS commands on upload');
 
+            let promises = []
             response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
             //console.log('cookie created for cube file');
             // make command and check error status
-            if(util.makeSystemCalls(cubeFile.name,
-                 path.join('uploads',cubeFile.name),
-                    path.join('pvl','return.pvl'),
-                    'images') != 0){
-                        console.log('makeSystemCalls ended with a non-zero status');
-                    }     
+
+            promises.push(util.makeSystemCalls(cubeFile.name,
+                path.join('uploads',cubeFile.name),
+                   path.join('pvl','return.pvl'),
+                   'images'));
+              
+            // this block will pass and run when all isis commands are finished
+             Promise.all(promises).then(function(){
+                console.log('server heard back from ISIS');
+            });
+
+            promises = [];
+            promises.push(util.readPvltoStruct(cubeFile.name));
+            // this block will pass and run when all isis commands are finished
+            Promise.all(promises).then(function(cubeData){
+                console.log('server got data: \n');
+                console.log(cubeData);
+            });
         }
         else{
             // wrong file type uploaded
