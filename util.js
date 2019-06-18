@@ -37,8 +37,7 @@ module.exports = {
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
                 console.log('extract finished');
-                //console.log(cubeData);
-
+               
                 resolve(cubeData);
             });
         });
@@ -151,8 +150,8 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 var imageExtraction = function(imagename, filepath, imagePath){
     return new Promise(function(resolve){
         // execute the isis2std function
-        exec('isis2std from= ../' + filepath
-        + " to= ../" + imagePath + '/' + imagename, function(err, stdout, stderr){
+        exec('isis2std from= ' + filepath
+        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
             if(err){
                 // log error
                 console.log('Failed isis2std call');
@@ -176,8 +175,8 @@ var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
     return new Promise(function(resolve){
         // execute the isis2std function
         exec( 
-            isisCall + ' from= ../' + filepath
-        + " to= ../" + returnPath + ' append= true', function(err, stdout, stderr){
+            isisCall + ' from= ' + filepath
+        + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
             if(err){
                 // log error
                 console.log('Failed isis2std call');
@@ -224,7 +223,7 @@ var processFile = function(inputFile, cubeName){
 
 
         
-        var cubeData = {"cubeName": String(cubeName)};
+        var cubeData = {};
         var tagName = "";
         var lastTag = "";
 
@@ -283,7 +282,7 @@ var processFile = function(inputFile, cubeName){
 
         // this runs on last line of the file
         rl.on('close', function (line) {  
-            resolve(cubeData);
+            resolve(JSON.stringify(cubeData));
         }); 
         
     });
