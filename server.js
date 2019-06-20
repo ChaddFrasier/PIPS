@@ -147,53 +147,60 @@ app.post('/upload', function(request, response){
                     cubeFileData = JSON.parse(cubeData);
                     // console.log(cubeFileData);
                     for(key in cubeFileData){
-                        dicString = String(dicString + '"'+ key +'"'+':"'+ cubeFileData[key] +'"\n');
+                        dicString = String(dicString + key + ':'+ cubeFileData[key] +'\n');
                     }
 
                     //console.log(dicString);
 
-                // template file section
-                try{
-                    // reexp for verifing tpl file
-                    if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
-                        // get file object
-                        let tplFile = request.files.templateFile;
+                    // template file section
+                    try{
+                        // reexp for verifing tpl file
+                        if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
+                            // get file object
+                            let tplFile = request.files.templateFile;
 
-                        // save to server
-                        tplFile.mv('./tpl/'+tplFile.name, function(err){
-                            if(err){
-                                return response.status(500).send(err);
-                            }
-                        });
-                        // set output for template
-                        templateText = tplFile.data.toString();
+                            // save to server
+                            tplFile.mv('./tpl/'+tplFile.name, function(err){
+                                if(err){
+                                    return response.status(500).send(err);
+                                }
+                            });
+                            // set output for template
+                            templateText = tplFile.data.toString();
+                        }
+                        else{
+                            console.log('Wrong file type for template');
+                            response.redirect('/?alertCode=2');
+                            response.end();
+                        }
+                    }catch(err){
+                        // tpl is null
+                        //console.log('Default Template Being Used');
+                        templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+                        //console.log('default.tpl says: '+ templateText);
+
                     }
-                    else{
-                        console.log('Wrong file type for template');
-                        response.redirect('/?alertCode=2');
-                        response.end();
-                    }
-                }catch(err){
-                    // tpl is null
-                    //console.log('Default Template Being Used');
-                    templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-                    //console.log('default.tpl says: '+ templateText);
 
-                }
+                    //console.log('dictionary string: ' + dicString);
+                    // set output and render
+                    // TODO: CSVSTRING Data
 
-               console.log('dictionary string: ' + dicString);
-            // set output and render
-            // TODO: DICTIONARY DATA
-            // TODO: CSVSTRING Data
-        
-            response.render('writer.ejs',
-                { templateText: templateText, 
-                dictionaryString: dicString,
-                csvString: 'hello,world\n' }); 
-    
+                    // get the csvString for webpage
+                    promises = []
+
+                    promises.push(util.getCsv(dicString));
+
+                    Promise.all(promises).then(function(csvData){
+                        console.log('csv: ' + csvData); 
+                         
+                        // send response
+                        response.render('writer.ejs',
+                        { templateText: templateText, 
+                        dictionaryString: dicString,
+                        csvString: csvData }); 
+                    });
                 });
             });
-            
         }
         else{
             // wrong file type uploaded

@@ -42,7 +42,34 @@ module.exports = {
                 resolve(cubeData);
             });
         });
-    } 
+    },
+    
+    // TODO: clean data better
+    getCsv: function(cubeData){
+        return new Promise(function(resolve){
+            var dataArr = cubeData.split('\n');
+            var csvString = '';
+            for(var i = 0; i < dataArr.length; i++){
+                // this loop goes overe each key val pair with the line as a string
+                // if the right side has : build it peice by peice otherwise use fast method
+                if(dataArr[i].split(':').length === 2){
+                    csvString += dataArr[i].trim().split(':').join(',') + '\n';
+                }else{
+                    let tmpArr = dataArr[i].split(':');
+                    csvString += tmpArr[0] + ',';
+                    // remove 0 index
+                    tmpArr.shift();
+                    // rejoin on same symbol
+                    csvString += tmpArr.join(':') + '\n';
+                        
+                     
+                }
+                
+            }
+
+            resolve(csvString);
+        });
+    }
 };
 
 // local functions
@@ -75,10 +102,10 @@ var combineName = function(name, str=undefined){
         return name.toString().trim();
     }
     else if(name == ''){
-        return str;
+        return str.replace(':','-');
     }
     else{
-        return (name.toString().trim() + '.' + str.trim());
+        return (name.toString().trim() + '.' + str.replace(':','-').trim());
     }
 }
 
@@ -220,8 +247,10 @@ var endTag = function(nameString){
 
 /**
  * 
- * @param {string} inputFile 
- * @description this function reads a file line by line, it will chnage into the data parser in later commits
+ * @param {string} inputFile string value representing a link to cube file to open.
+ * @param {string} cubeName just the name of the cube for getting the image output name more easily.
+ * @requires fs, instream, outstream, and readline.
+ * @description this function reads a file line by line, it will chnage into the data parser in later commits.
  */
 var processFile = function(inputFile, cubeName){
     return new Promise(function(resolve){
@@ -232,9 +261,8 @@ var processFile = function(inputFile, cubeName){
             instream = fs.createReadStream(inputFile),
             outstream = new (require('stream'))(),
             rl = readline.createInterface(instream, outstream);
-
-
         
+        // declare needed variables
         var cubeData = {};
         var tagName = "";
         var lastTag = "";
@@ -271,10 +299,15 @@ var processFile = function(inputFile, cubeName){
                 else{
                     // `variable = data object` line
                     if(line.toString().trim().split('=')[1] != undefined || line.toString().trim().split('=')[1] == '.'){
+                        val = line.toString().split('=')[1];
+                        let tmpTag = line.toString().split('=')[0];
+
+                        // get rid of extra " " at front and back of strings
+                        tmpTag = tmpTag.slice(1,tmpTag.length-1);
+
                         // combine the tag name
-                        tagName = combineName(tagName, line.toString().split('=')[0].trim());
-                        // get right side of equal
-                        val = line.toString().trim().split('=')[1];
+                        tagName = combineName(tagName, tmpTag);
+                        
                         // set data
                         cubeData[tagName] = val;
                         // set last seen var
