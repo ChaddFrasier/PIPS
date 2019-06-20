@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" type="text/css" href="css/index.css">
 
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
@@ -92,7 +93,7 @@
         <form method="POST" action="/showImage" class="lg-form text-center">
             <div class=" form-group">
                 <input type="hidden" value="{{IMG}}" name="image_present">
-                <input type="hidden" value= "<%= dictionaryString %>" name="image_string">
+                <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
                 <input type="submit" value="Display Image" class="btn btn-primary btn-lg" />
             </div>
         </form>

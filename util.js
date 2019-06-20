@@ -9,6 +9,7 @@
  *      This is the utility file for The Planetary Image Caption Writer  
  */
 
+ //TODO: fix name issue with . at the start in the tag name
 // require dependencies
 var exec = require('child_process').exec;
 var path = require('path');
@@ -72,7 +73,11 @@ var combineName = function(name, str=undefined){
     // if str is not defined just return the name trimmed
     if(str == undefined){
         return name.toString().trim();
-    }else{
+    }
+    else if(name == ''){
+        return str;
+    }
+    else{
         return (name.toString().trim() + '.' + str.trim());
     }
 }
@@ -85,10 +90,17 @@ var combineName = function(name, str=undefined){
 var shortenName = function(name){
     // splits the name strig into an array a parts 
     var strarr = name.toString().trim().split('.');
-    // removes the last part of the string
-    strarr.pop();
-    // rejoin the remaining parts
-    return strarr.join('.');
+
+    // if the string has only 1 compenent set it to ''
+    if( strarr.length > 1 ){
+        // removes the last part of the string
+        strarr.pop();
+        // rejoin the remaining parts
+        return strarr.join('.');
+    }
+    else{
+        return '';
+    }
 }
 
 /**
@@ -258,7 +270,7 @@ var processFile = function(inputFile, cubeName){
                 }
                 else{
                     // `variable = data object` line
-                    if(line.toString().trim().split('=')[1] != undefined){
+                    if(line.toString().trim().split('=')[1] != undefined || line.toString().trim().split('=')[1] == '.'){
                         // combine the tag name
                         tagName = combineName(tagName, line.toString().split('=')[0].trim());
                         // get right side of equal
@@ -273,7 +285,11 @@ var processFile = function(inputFile, cubeName){
                     else{
                         // if not EOF
                         if(line.trim() != "End"){
-                            cubeData[lastTag] = String(cubeData[lastTag]).concat(line.trim());
+                            cubeData[lastTag] = String(cubeData[lastTag]).concat( ' ' + line.trim());
+                        }
+                        else{
+                            // End was seen but could be in middle of file
+                            tagName = ''
                         }
                     }
                 }

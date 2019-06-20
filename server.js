@@ -9,6 +9,8 @@
  *      This is the driver for the Caption Writer server 
  * 
  * TODO: unit test all componets
+ * TODO: send data to webpage
+ * TODO: get image functions working agian
  */
 
 // require dependencies
@@ -30,11 +32,14 @@ var app = express();
 app.use(fileUpload());
 app.use(cookieparser());
 
+// set OS flag
+var isWindows = process.platform === 'win32';
 
 // give app access to routes
 app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
 app.use("/tpl" , express.static("tpl"));
+app.use("/pvl " , express.static("pvl"));
 
 // start view engine
 app.set('view engine', 'ejs');
@@ -50,7 +55,12 @@ app.get('/', function(request, response){
     let code = request.query.alertCode;
     
     // clean print.prt files from isis3
-    exec('rm print.prt');
+    if( !isWindows ){
+        exec('rm print.prt');
+    }else{
+        exec('del "print.prt"');
+    }
+    
 
     // render the index page w/ proper code
     if(code == undefined){
@@ -58,7 +68,6 @@ app.get('/', function(request, response){
     }else{
         response.render("index.ejs", {alertCode: code});
     }
-    
 });
  
 /**
@@ -83,9 +92,13 @@ app.post('/upload', function(request, response){
 
     // prepare the variables for response to user
     var templateText = '';
-    var cubeFileData= '';
+    var cubeFileData;
+    var dicString = '';
 
+    // clean up the return file
     exec('rm pvl/return.pvl');
+    
+
     console.log('===========================================');
     // cube file section
     try{
@@ -132,11 +145,52 @@ app.post('/upload', function(request, response){
                 Promise.all(promises).then(function(cubeData){
                     console.log('server got data: \n');
                     cubeFileData = JSON.parse(cubeData);
-
-                    // loop through data structure
+                    // console.log(cubeFileData);
                     for(key in cubeFileData){
-                        console.log(key + ' : ' + cubeFileData[key]);
+                        dicString = String(dicString + '"'+ key +'"'+':"'+ cubeFileData[key] +'"\n');
                     }
+
+                    //console.log(dicString);
+
+                // template file section
+                try{
+                    // reexp for verifing tpl file
+                    if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
+                        // get file object
+                        let tplFile = request.files.templateFile;
+
+                        // save to server
+                        tplFile.mv('./tpl/'+tplFile.name, function(err){
+                            if(err){
+                                return response.status(500).send(err);
+                            }
+                        });
+                        // set output for template
+                        templateText = tplFile.data.toString();
+                    }
+                    else{
+                        console.log('Wrong file type for template');
+                        response.redirect('/?alertCode=2');
+                        response.end();
+                    }
+                }catch(err){
+                    // tpl is null
+                    //console.log('Default Template Being Used');
+                    templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+                    //console.log('default.tpl says: '+ templateText);
+
+                }
+
+               console.log('dictionary string: ' + dicString);
+            // set output and render
+            // TODO: DICTIONARY DATA
+            // TODO: CSVSTRING Data
+        
+            response.render('writer.ejs',
+                { templateText: templateText, 
+                dictionaryString: dicString,
+                csvString: 'hello,world\n' }); 
+    
                 });
             });
             
@@ -154,46 +208,11 @@ app.post('/upload', function(request, response){
         response.redirect('/?alertCode=1');
         response.end();
     }
-
-    // template file section
-    try{
-        // reexp for verifing tpl file
-        if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
-            // get file object
-            let tplFile = request.files.templateFile;
-
-            // save to server
-            tplFile.mv('./tpl/'+tplFile.name, function(err){
-                if(err){
-                    return response.status(500).send(err);
-                }
-            });
-            // set output for template
-            templateText = tplFile.data.toString();
-        }
-        else{
-            console.log('Wrong file type for template');
-            response.redirect('/?alertCode=2');
-            response.end();
-        }
-    }catch(err){
-        // tpl is null
-        //console.log('Default Template Being Used');
-        templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-        //console.log('default.tpl says: '+ templateText);
-
-    }
-
-    // set output and render
-    // TODO: DICTIONARY DATA
-    // TODO: CSVSTRING Data
-  
-    response.render('writer.ejs',
-        { templateText: templateText, 
-        dictionaryString: 'dict strring',
-        csvString: 'hello,world\n'} ); 
-    
 });
+
+    
+
+    
 
 /**
  * function to handle '/showImage' requests
