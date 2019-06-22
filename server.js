@@ -4,13 +4,12 @@
  * Author: Chadd Frasier
  * Date Started: 05/31/19
  * Version: 2.3.2
- * Last Modified: 06/13/19
+ * Last Modified: 06/20/19
  * Description: 
  *      This is the driver for the Caption Writer server 
  * 
  * TODO: unit test all componets
- * TODO: send data to webpage
- * TODO: get image functions working agian
+ * TODO: send data to webpages
  */
 
 // require dependencies

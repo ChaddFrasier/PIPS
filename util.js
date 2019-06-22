@@ -3,8 +3,8 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/16/19
- * Version: 2.2
+ * Date Last Modified: 06/20/19
+ * Version: 2.2.1
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
  */
@@ -60,13 +60,9 @@ module.exports = {
                     // remove 0 index
                     tmpArr.shift();
                     // rejoin on same symbol
-                    csvString += tmpArr.join(':') + '\n';
-                        
-                     
-                }
-                
+                    csvString += tmpArr.join(':') + '\n';    
+                }  
             }
-
             resolve(csvString);
         });
     }
