@@ -9,7 +9,10 @@
  *      This is the utility file for The Planetary Image Caption Writer  
  */
 
- //TODO: fix name issue with . at the start in the tag name
+ // TODO: parse new data strings into the table tag format in the writer.ejs file
+ // TODO: image manipulation using jimp or other module
+
+
 // require dependencies
 var exec = require('child_process').exec;
 var path = require('path');
@@ -63,6 +66,8 @@ module.exports = {
                     csvString += tmpArr.join(':') + '\n';    
                 }  
             }
+            csvString = csvString.slice(0, csvString.length -3 );
+
             resolve(csvString);
         });
     }

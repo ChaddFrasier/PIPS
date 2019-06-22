@@ -1,16 +1,34 @@
 /**
- * Caption Writer Application
+ * @file server.js 
+ * @alias server
  * 
- * Author: Chadd Frasier
- * Date Started: 05/31/19
- * Version: 2.3.2
+ * @author Chadd Frasier
+ * @version 2.3.2
+ * @description This is the driver for the Caption Writer server.
+ * 
+ * Date Created: 05/31/19
  * Last Modified: 06/20/19
- * Description: 
- *      This is the driver for the Caption Writer server 
+ *
+ * @todo unit test all componets
  * 
- * TODO: unit test all componets
- * TODO: send data to webpages
+ * @todo use jimp to super impose icons on the images using pixel tracking technique
+ *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
+ * @todo parse data from webpage into tag format
+ * @todo get images working again
+ * 
+ * @requires ./util.js
+ * 
+ * Note: This server is only capable of running on a linux or mac os base operating systems
  */
+
+ /**
+  * @fileoverview As of 06/21/19 the application has working responses with proper ejs templates.
+  *     The file upload works properly and the isis commands succeed when isis3 is running and Promises were used
+  *     to keep the functions processing in the proper order everytime without exception. Cookies are used to keep
+  *     track of user file uploads. The user will recieve live notifications when files fail to upload and it will
+  *     inform user of the issue that the server is facing. Added another button to index.ejs that allows users to
+  *     read about how to create TPL files. 
+  */
 
 // require dependencies
 const express = require('express');
@@ -53,13 +71,13 @@ app.get('/', function(request, response){
     // queryt for alert code
     let code = request.query.alertCode;
     
+    // TODO: i dont think windows can use the exec call
     // clean print.prt files from isis3
     if( !isWindows ){
         exec('rm print.prt');
     }else{
         exec('del "print.prt"');
     }
-    
 
     // render the index page w/ proper code
     if(code == undefined){
@@ -96,17 +114,14 @@ app.post('/upload', function(request, response){
 
     // clean up the return file
     exec('rm pvl/return.pvl');
-    
 
-    console.log('===========================================');
+    console.log('=================== New Run ========================');
     // cube file section
     try{
         if(request.files == null ){
             // if no cube file uploaded
             console.log('User Error Upload a Cube File to begin');
-            // redirect the user
-            //alert('Upload a cube file (.cub)');
-
+            // redirect the user & alert they need a .cub
             response.redirect('/?alertCode=3');
             response.end();
         }
@@ -149,8 +164,6 @@ app.post('/upload', function(request, response){
                         dicString = String(dicString + key + ':'+ cubeFileData[key] +'\n');
                     }
 
-                    //console.log(dicString);
-
                     // template file section
                     try{
                         // reexp for verifing tpl file
@@ -177,18 +190,12 @@ app.post('/upload', function(request, response){
                         //console.log('Default Template Being Used');
                         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
                         //console.log('default.tpl says: '+ templateText);
-
                     }
 
-                    //console.log('dictionary string: ' + dicString);
-                    // set output and render
-                    // TODO: CSVSTRING Data
 
                     // get the csvString for webpage
                     promises = []
-
                     promises.push(util.getCsv(dicString));
-
                     Promise.all(promises).then(function(csvData){
                         console.log('csv: ' + csvData); 
                          
@@ -211,7 +218,7 @@ app.post('/upload', function(request, response){
     }catch(err){
         console.log('Fatal Error Occured');
         console.log(err);
-        response.redirect('/?alertCode=1');
+        response.redirect('/?alertCode=4');
         response.end();
     }
 });
@@ -231,7 +238,7 @@ app.post('/showImage', function(request, response){
 
     if(cookieval != undefined){
         let image = util.getimagename(cookieval, 'png');
-        imagepath = '../images/' + image;
+        imagepath = './images/' + image;
     }else{
         imagepath = 'none';
     }
