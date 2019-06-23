@@ -76,6 +76,7 @@ module.exports = {
      */
     getCsv: function(cubeData){
         return new Promise(function(resolve){
+            console.log('cubedata:  ' + cubeData);
             // get each line
             var dataArr = cubeData.split('\n');
             // init csvString
@@ -102,6 +103,44 @@ module.exports = {
             // return csvString
             resolve(csvString);
         });
+    }, 
+
+    /**
+     * 
+     * @param {string} cfgString the whole config file string
+     */
+    configServer: function(cfgString){
+        let tags = cfgString.split('\n');
+        var importantTags =[];
+        for(var i = 0; i < tags.length; i++){
+            if(tags[i].indexOf('<tag>') > -1){
+                importantTags.push(tags[i].replace('<tag>','').replace('</tag>','').trim());
+            }
+        }
+        return importantTags;
+        
+    },
+
+    /**
+     * 
+     * @param {json} cubeFileData 
+     * @param {array} importantTagArr 
+     */
+    importantData: function(cubeFileData,importantTagArr){
+        var impJSON = {}; 
+        for(tag in importantTagArr){
+            for(key in cubeFileData){
+                if(key.indexOf(importantTagArr[tag]) > -1){
+                    impJSON[importantTagArr[tag]] = cubeFileData[key];
+                    console.log('important tag found');
+                    break;
+                }
+                else{
+                    impJSON[importantTagArr[tag]] = 'None';
+                }
+            }
+        }
+        return JSON.stringify(impJSON);
     }
 };
 

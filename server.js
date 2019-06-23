@@ -15,7 +15,7 @@
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
  * @todo parse data from webpage into tag format
  * @todo get images working again
- * @todo TODO: must implement the configuration file
+ * @todo TODO: must implement the configuration file for Important Tags
  * @todo writer.ejs needs to exchange the data values properly
  * 
  * @requires ./util.js
@@ -24,13 +24,15 @@
  *  operating systems
  */
 
- /**
-  * @fileoverview As of 06/21/19 the application has working responses with proper ejs templates.
-  *     The file upload works properly and the isis commands succeed when isis3 is running and Promises were used
-  *     to keep the functions processing in the proper order everytime without exception. Cookies are used to keep
-  *     track of user file uploads. The user will recieve live notifications when files fail to upload and it will
-  *     inform user of the issue that the server is facing. Added another button to index.ejs that allows users to
-  *     read about how to create TPL files. 
+ /** READ ME BEFORE EDITING
+  * @fileoverview 
+  *         As of 06/23/19 the application has working responses with proper ejs templates for every page.
+  *     The file upload works properly and the isis commands succeed when isis3 is running. Promises were used
+  *     to keep the functions processing in the proper order everytime without exception and allows for exec calls to be remerged.
+  *     Cookies are used to keep track of user file uploads and subsequent data responses. The user will recieve
+  *     live notifications when files fail to upload and it will inform user of the issue that the server 
+  *     is facing. Added another button to index.ejs that allows users to read about how to create TPL files.
+  *     AllTags function works on the front end but the important tags are not implimented yet.
   */
 
 // require dependencies
@@ -121,7 +123,6 @@ app.post('/upload', function(request, response){
     // prepare the variables for response to user
     var templateText = '';
     var cubeFileData;
-    var dicString = '';
 
     // clean up the return file
     exec('rm pvl/return.pvl');
@@ -171,9 +172,13 @@ app.post('/upload', function(request, response){
                     cubeFileData = JSON.parse(cubeData);
                     // console.log(cubeFileData);
                     
-                        dicString = JSON.stringify(cubeFileData);
-                    
+                    fullString = JSON.stringify(cubeFileData);
 
+                    let importantTagArr = util.configServer(fs.readFileSync(path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
+                    //console.log(importantTagArr);
+
+                    var impDataString = util.importantData(cubeFileData,importantTagArr);
+                    console.log(impDataString);
                     // template file section
                     try{
                         // reexp for verifing tpl file
@@ -202,18 +207,11 @@ app.post('/upload', function(request, response){
                         //console.log('default.tpl says: '+ templateText);
                     }
 
-                    // get the csvString for webpage
-                    promises = []
-                    promises.push(util.getCsv(dicString));
-                    Promise.all(promises).then(function(csvData){
-                        console.log('csv: ' + csvData); 
-                         
-                        // send response
-                        response.render('writer.ejs',
-                        { templateText: templateText, 
-                        dictionaryString: dicString,
-                        csvString: csvData }); 
-                    });
+                    // send response
+                    response.render('writer.ejs',
+                    { templateText: templateText, 
+                    dictionaryString: impDataString,
+                    csvString: fullString }); 
                 });
             });
         }
