@@ -11,6 +11,7 @@
 
  // TODO: parse new data strings into the table tag format in the writer.ejs file
  // TODO: image manipulation using jimp or other module
+ // TODO: refactor and clean unused variables in functions
 
 
 // require dependencies
@@ -19,65 +20,97 @@ var path = require('path');
 var Promises = require('bluebird');
 
 // exportable functions
-
 module.exports = {
+    /**
+     * 
+     * @param {string} cubeName 
+     * @param {string} filepath 
+     * @param {string} returnPath 
+     * @param {string} imagePath 
+     * 
+     * @function calls the isis commands using promises to ensure the processes are finished
+     */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
         return new Promise(function(resolve){
+            // array of promises to resolve
             let promises = [];
             // call the isis commands
             promises.push(callIsis(cubeName, filepath, returnPath, imagePath));
             
+            // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
                 resolve();
             });
         });
     },
 
+
+    /**
+     * 
+     * @param {string} cubeName
+     * 
+     * @function takes the cube used and runs the pvl data extraction algorithm 
+     */
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
             var promises = [];
+            // create a promise of the processFile function
             promises.push(processFile('./pvl/return.pvl', cubeName));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
                 console.log('extract finished');
-               
+                // return the data
                 resolve(cubeData);
             });
         });
     },
     
+
     // TODO: clean data better
+    /**
+     * 
+     * @param {string} cubeData 
+     * 
+     * @function converts a cube file data from string format to csv
+     */
     getCsv: function(cubeData){
         return new Promise(function(resolve){
+            // get each line
             var dataArr = cubeData.split('\n');
+            // init csvString
             var csvString = '';
+
             for(var i = 0; i < dataArr.length; i++){
-                // this loop goes overe each key val pair with the line as a string
+                // this loop goes over each key val pair with the line as a string
                 // if the right side has : build it peice by peice otherwise use fast method
                 if(dataArr[i].split(':').length === 2){
                     csvString += dataArr[i].trim().split(':').join(',') + '\n';
                 }else{
+                    // get the tempArray by splitting on ':'
                     let tmpArr = dataArr[i].split(':');
+                    // save the first part as the name
                     csvString += tmpArr[0] + ',';
-                    // remove 0 index
+                    // remove the name from the array
                     tmpArr.shift();
-                    // rejoin on same symbol
+                    // rejoin the array on the same symbol to keep the data
                     csvString += tmpArr.join(':') + '\n';    
                 }  
             }
-            csvString = csvString.slice(0, csvString.length -3 );
-
+            // slice the EOF comma and \n
+            csvString = csvString.slice(0, csvString.length - 3 );
+            // return csvString
             resolve(csvString);
         });
     }
 };
 
+
 // local functions
 /**
  * 
  * @param {string} testValue 
- * @description tests if the value is a header for the isis data
+ * @function tests if the value is a header for the isis data
  */
 var testHeader = function(testValue){
     // set the array of important tags
@@ -91,11 +124,12 @@ var testHeader = function(testValue){
     return false;
 }
 
+
 /**
  * 
  * @param {string} name 
  * @param {string} str 
- * @description returns the name combined in the proper object order
+ * @function returns the name combined in the proper object order
  */
 var combineName = function(name, str=undefined){
     // if str is not defined just return the name trimmed
@@ -110,10 +144,11 @@ var combineName = function(name, str=undefined){
     }
 }
 
+
 /**
  * 
  * @param {string} name  
- * @description returns the name with the last added element replaced
+ * @function returns the name with the last added element replaced
  */
 var shortenName = function(name){
     // splits the name strig into an array a parts 
@@ -131,22 +166,23 @@ var shortenName = function(name){
     }
 }
 
+
 /**
  * 
  * @param {string} cubeName 
  * @param {string} format 
  * @returns {string} image name
- * @description This function takes the file extension off of he cube file and makes it a png.
+ * @function This function takes the file extension off of he cube file and makes it a png.
  */
 var getimagename = function(cubeName, format){
     // get an array of peieces of the filename
     let namearr = cubeName.toString().split('.');
     // set the last element of the array to the format specified
     namearr[namearr.length - 1] = format;
-    //console.log(namearr);
     // return the combined new array
     return namearr.join('.');
 }
+
 
 /**
  * 
@@ -155,7 +191,7 @@ var getimagename = function(cubeName, format){
  * @param {string} returnPath 
  * @param {string} imagePath 
  * @return {int} error codes
- * @description this function runs all isis commands and populates an array of 
+ * @function this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
 var callIsis = function(cubeName, filepath, returnPath, imagePath){
@@ -180,6 +216,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         });
     });
  }
+
 
 /**
  * 
@@ -209,7 +246,7 @@ var imageExtraction = function(imagename, filepath, imagePath){
  * @param {string} filepath 
  * @param {string} returnPath 
  * @param {string} isisCall 
- * @description makes the exec call to run isis commands
+ * @function makes the exec call to run isis commands
  */
 var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
     return new Promise(function(resolve){
@@ -227,10 +264,11 @@ var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
         });
     }
 
+ 
 /**
  * 
  * @param {string} nameString 
- * @description determins true false if the 
+ * @function determins true false if the 
  * line is in the end object group
  */
 var endTag = function(nameString){
@@ -241,7 +279,6 @@ var endTag = function(nameString){
             return true;
         }
     }
-
     return false;
 }
 
@@ -251,7 +288,7 @@ var endTag = function(nameString){
  * @param {string} inputFile string value representing a link to cube file to open.
  * @param {string} cubeName just the name of the cube for getting the image output name more easily.
  * @requires fs, instream, outstream, and readline.
- * @description this function reads a file line by line, it will chnage into the data parser in later commits.
+ * @function this function reads a file line by line, it will chnage into the data parser in later commits.
  */
 var processFile = function(inputFile, cubeName){
     return new Promise(function(resolve){
@@ -283,7 +320,6 @@ var processFile = function(inputFile, cubeName){
                 else{
                     tagName = combineName(tagName, line.toString().trim().split('=')[1].trim());     
                 }
-
             }
             // if not header line 
             else{
@@ -329,11 +365,9 @@ var processFile = function(inputFile, cubeName){
                 }
             }
         });
-
         // this runs on last line of the file
         rl.on('close', function (line) {  
             resolve(JSON.stringify(cubeData));
-        }); 
-        
+        });    
     });
 }

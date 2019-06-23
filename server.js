@@ -7,7 +7,7 @@
  * @description This is the driver for the Caption Writer server.
  * 
  * Date Created: 05/31/19
- * Last Modified: 06/20/19
+ * Last Modified: 06/23/19
  *
  * @todo unit test all componets
  * 
@@ -15,10 +15,13 @@
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
  * @todo parse data from webpage into tag format
  * @todo get images working again
+ * @todo TODO: must implement the configuration file
+ * @todo writer.ejs needs to exchange the data values properly
  * 
  * @requires ./util.js
  * 
- * Note: This server is only capable of running on a linux or mac os base operating systems
+ * Note: This server is only capable of running on a linux or mac.
+ *  operating systems
  */
 
  /**
@@ -62,13 +65,15 @@ app.use("/pvl " , express.static("pvl"));
 app.set('view engine', 'ejs');
 
 
-// Functions
+// HTTP Handling Functions
 /**
- * function to handle '/' requests
+ * GET '/' 
+ * 
+ * remove the print.prt if it exists and render the page with the proper code
  */
 app.get('/', function(request, response){
     console.log(request.path);
-    // queryt for alert code
+    // query for alert code
     let code = request.query.alertCode;
     
     // TODO: i dont think windows can use the exec call
@@ -87,8 +92,11 @@ app.get('/', function(request, response){
     }
 });
  
+
 /**
- * function to handle '/tpl' requests
+ * GET '/tpl'
+ * 
+ * Renders the basic page with the description file
  */ 
 app.get('/tpl',function(request, response){
     // read and send the data in the form of ejs file
@@ -101,8 +109,11 @@ app.get('/tpl',function(request, response){
     });
 });
 
+
 /**
- * function to handle '/upload' requests
+ * POST '/upload'
+ * 
+ * allows file upload and data extraction to take place when upload button is activated
  */
 app.post('/upload', function(request, response){
     console.log(request.path);
@@ -114,7 +125,6 @@ app.post('/upload', function(request, response){
 
     // clean up the return file
     exec('rm pvl/return.pvl');
-
     console.log('=================== New Run ========================');
     // cube file section
     try{
@@ -160,9 +170,9 @@ app.post('/upload', function(request, response){
                     console.log('server got data: \n');
                     cubeFileData = JSON.parse(cubeData);
                     // console.log(cubeFileData);
-                    for(key in cubeFileData){
-                        dicString = String(dicString + key + ':'+ cubeFileData[key] +'\n');
-                    }
+                    
+                        dicString = JSON.stringify(cubeFileData);
+                    
 
                     // template file section
                     try{
@@ -191,7 +201,6 @@ app.post('/upload', function(request, response){
                         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
                         //console.log('default.tpl says: '+ templateText);
                     }
-
 
                     // get the csvString for webpage
                     promises = []
@@ -223,12 +232,11 @@ app.post('/upload', function(request, response){
     }
 });
 
-    
-
-    
 
 /**
- * function to handle '/showImage' requests
+ * POST '/showImage'
+ * 
+ * renders the image page withg needed data
  */
 app.post('/showImage', function(request, response){
     //TODO: image page
@@ -247,6 +255,8 @@ app.post('/showImage', function(request, response){
     response.render("imagePage.ejs", {image:imagepath});
 });
 
+
+/* activate the server */
 // listen on 8080 or open port
 const PORT = 8080 || process.env.PORT;
 app.listen(PORT);

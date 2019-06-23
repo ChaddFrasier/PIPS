@@ -122,84 +122,44 @@
         // templateText = template.value;
         // text = templateText;
         text = template.value;
+        // set the template information 
         function setOutput() {
-            var getTemplate = document.getElementById("template-text").value;
+            let getTemplate = document.getElementById("template-text").value;
             document.getElementById("template-text-output").innerHTML = getTemplate;
         }
+        
         // Gets important keys and values
         function getMetadata() {
             var metaDataString = document.getElementById("metadata-text").value;
             var metaDataArea = document.getElementById("metadataTagArea");
-            metaDataString = metaDataString.split("{")[1].split("}")[0];
-            var dataPairString = metaDataString.split(",");
+            
+            var jsonData = JSON.parse(metaDataString);
+            
             //'StartTime': '1997-10-20T10:58:37.46'
-            for (var i = 0; i < dataPairString.length; i++) {
-                var dataToText = dataPairString[i].toString();
-                
-                var allSplitResult = dataToText.split(":");
-                //console.log("allSplitResult = "+allSplitResult);
-                var key = allSplitResult[0].toString();
-                var val = allSplitResult[1].toString();
-                if (allSplitResult.length > 2)
-                {
-                    for (var index = 2; index < allSplitResult.length; index++) {
-                        val = val + ":" + allSplitResult[index].toString();                       
-                    }
+            for (key in jsonData) {
+                //console.log('key: ' + key + ':val:' + jsonData[key]);
+                if(key != undefined){  
+                    let tmp = "[[" + key + "]]";
+                    let val = jsonData[key];
+                    let str = tmp + ": " + val + "\n";
+                    metaDataArea.value += str;
                 }
-                //console.log("key = "+key);
-                
-                key = key.replace(/['"]+/g, '');
-                val = val.replace(/['"]+/g, '');
-                //console.log("val ="+val[i]);
-                imptKeys.push(key);
-                imptVals.push(val);
             }
-            for (var j = 0; j < imptKeys.length; j++) {
-                imptKeys[j] = imptKeys[j].trim();
-                imptVals[j] = imptVals[j].trim();
-                //console.log("val2 ="+imptVals[j]);
-            }
-                
-            for (var k = 0; k < imptKeys.length; k++) {
-                var key = "[[" + imptKeys[k] + "]]";
-                var val = imptVals[k];
-                var str = key + ": " + val + "\n";
-                metaDataArea.value += str;
-            }
+
         }
         // Gets All Tags
         function getAllTags() {
-            var tags = document.getElementById("all-tag-text").value;
+            var metaData = document.getElementById("metadata-text").value;
             var metaDataArea = document.getElementById("allTagArea");
-            var dataPairString = tags.split("@@@");
-            for (var i = 0; i < dataPairString.length; i++) {
-                var dataToText = dataPairString[i].toString();
-                
-                var allSplitResult = dataToText.split(":");
-                var key = allSplitResult[0].toString();
-                var val = allSplitResult[1].toString();
-                if (allSplitResult.length > 2)
-                {
-                    for (var index = 2; index < allSplitResult.length; index++) {
-                        val = val + ":" + allSplitResult[index].toString();                       
-                    }
-                }
-                key = key.replace(/['"]+/g, '');
-                val = val.replace(/['"]+/g, '');
-                val = val.replace(/ +/g, ' ');
-                keys.push(key);
-                vals.push(val);
-            }
-            for (var j = 0; j < keys.length; j++) {
-                keys[j] = keys[j].trim();
-            }
-            for (var k = 0; k < keys.length; k++) {
-                var key = "[[" + keys[k] + "]]";
-                var val = vals[k];
-                var str = key + ": " + val + "\n";
+            metaData = JSON.parse(metaData);
+            for (key in metaData) {
+                let tmpkey = "[[" + key + "]]";
+                let val = metaData[key].trim();
+                let str = tmpkey + ": " + val + "\n";
                 metaDataArea.value += str;
             }
         }
+
         // Converts Key to Tag
         function keyToTag(key) {
             var tag = "[[" + key + "]]";
