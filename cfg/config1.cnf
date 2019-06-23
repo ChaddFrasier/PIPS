@@ -1,0 +1,21 @@
+<?xml version= "1.0" encoding="utf-8" ?>
+<configTags>
+    <tag>TargetName</tag>
+    <tag>SpacecraftName</tag>
+    <tag>InstrumentId</tag>
+    <tag>PlanetocentricLatitude</tag>
+    <tag>ProjectionName</tag>
+    <tag>SlantDistance</tag>
+    <tag>MinimumLatitude</tag>
+    <tag>MaximumLatitude</tag>
+    <tag>MinimumLongitude</tag>
+    <tag>MaximumLongitude</tag>
+    <tag>SubSolarAzimuth</tag>
+    <tag>Phase</tag>
+    <tag>Emission</tag>
+    <tag>Incidence</tag>
+    <tag>SampleResolution</tag>
+    <tag>NorthAzimuth</tag>
+    <tag>StartTime</tag>
+    <tag>SubSpacecraftGroundAzimuth</tag>
+</configTags>
