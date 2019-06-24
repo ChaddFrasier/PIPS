@@ -13,10 +13,7 @@
  * 
  * @todo use jimp to super impose icons on the images using pixel tracking technique
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
- * @todo parse data from webpage into tag format
  * @todo get images working again
- * @todo TODO: must implement the configuration file for Important Tags
- * @todo writer.ejs needs to exchange the data values properly
  * 
  * @requires ./util.js
  * 
@@ -248,7 +245,6 @@ app.post('/showImage', function(request, response){
     }else{
         imagepath = 'none';
     }
-
     // render image
     response.render("imagePage.ejs", {image:imagepath});
 });
