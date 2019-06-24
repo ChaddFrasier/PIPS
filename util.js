@@ -3,7 +3,7 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/20/19
+ * Date Last Modified: 06/23/19
  * Version: 2.2.1
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
@@ -108,38 +108,69 @@ module.exports = {
     /**
      * 
      * @param {string} cfgString the whole config file string
+     * 
+     * @function this method creates and returns an array of tags from the cfg file
      */
     configServer: function(cfgString){
+        // break the file data by newline
         let tags = cfgString.split('\n');
-        var importantTags =[];
+        // init important tag array
+        var importantTags = [];
+        // parse each line of the file and check for <tag>
         for(var i = 0; i < tags.length; i++){
             if(tags[i].indexOf('<tag>') > -1){
+                // save the name into the array by erasing the <tag> and trimming blank space
                 importantTags.push(tags[i].replace('<tag>','').replace('</tag>','').trim());
             }
         }
         return importantTags;
-        
     },
 
     /**
      * 
      * @param {json} cubeFileData 
-     * @param {array} importantTagArr 
+     * @param {array} importantTagArr
+     * 
+     * @function takes important tag array and extracts data if it exists returns none otherwise 
      */
     importantData: function(cubeFileData,importantTagArr){
-        var impJSON = {}; 
+        // prepare json object
+        var impJSON = {};
+        // for each tag in the important tag array
         for(tag in importantTagArr){
+            // test each data key
             for(key in cubeFileData){
+                /* if tag is in key save it into the data object 
+                 and break the loop to save time */
                 if(key.indexOf(importantTagArr[tag]) > -1){
                     impJSON[importantTagArr[tag]] = cubeFileData[key];
                     break;
                 }
+                // set none if key not found
                 else{
                     impJSON[importantTagArr[tag]] = 'None';
                 }
             }
         }
+        // stringify the object
         return JSON.stringify(impJSON);
+    },
+
+    /**
+ * 
+ * @param {string} cubeName 
+ * @param {string} format 
+ * @returns {string} image name
+ * 
+ * @function This function takes the file extension off of he cube file and makes it a png.
+ */
+    getimagename: function(cubeName, format){
+        // get an array of peieces of the filename
+        let namearr = cubeName.toString().split('.');
+        // set the last element of the array to the format specified
+        namearr[namearr.length - 1] = format;
+        // return the combined new array
+        return namearr.join('.');
     }
 };
 
@@ -148,6 +179,7 @@ module.exports = {
 /**
  * 
  * @param {string} testValue 
+ * 
  * @function tests if the value is a header for the isis data
  */
 var testHeader = function(testValue){
@@ -167,6 +199,7 @@ var testHeader = function(testValue){
  * 
  * @param {string} name 
  * @param {string} str 
+ * 
  * @function returns the name combined in the proper object order
  */
 var combineName = function(name, str=undefined){
@@ -186,6 +219,7 @@ var combineName = function(name, str=undefined){
 /**
  * 
  * @param {string} name  
+ * 
  * @function returns the name with the last added element replaced
  */
 var shortenName = function(name){
@@ -208,27 +242,11 @@ var shortenName = function(name){
 /**
  * 
  * @param {string} cubeName 
- * @param {string} format 
- * @returns {string} image name
- * @function This function takes the file extension off of he cube file and makes it a png.
- */
-var getimagename = function(cubeName, format){
-    // get an array of peieces of the filename
-    let namearr = cubeName.toString().split('.');
-    // set the last element of the array to the format specified
-    namearr[namearr.length - 1] = format;
-    // return the combined new array
-    return namearr.join('.');
-}
-
-
-/**
- * 
- * @param {string} cubeName 
  * @param {string} filepath 
  * @param {string} returnPath 
  * @param {string} imagePath 
  * @return {int} error codes
+ * 
  * @function this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
@@ -237,12 +255,12 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
-        var imagename = getimagename(cubeName,'png');
+        var imagename = require(__filename).getimagename(cubeName,'png');
 
         // run the isis commands
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
-            promises.push(makeIsisCall(cubeName, filepath, returnPath, isisCalls[i]));
+            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i]));
         }
         // call and push image command
         promises.push(imageExtraction(imagename,filepath,imagePath));                       
@@ -261,6 +279,8 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @param {string} imagename 
  * @param {string} filepath 
  * @param {string} imagePath 
+ * 
+ * @function calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath){
     return new Promise(function(resolve){
@@ -284,9 +304,10 @@ var imageExtraction = function(imagename, filepath, imagePath){
  * @param {string} filepath 
  * @param {string} returnPath 
  * @param {string} isisCall 
+ * 
  * @function makes the exec call to run isis commands
  */
-var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
+var makeIsisCall = function(filepath, returnPath, isisCall){
     return new Promise(function(resolve){
         // execute the isis2std function
         exec( 
@@ -306,6 +327,7 @@ var makeIsisCall = function(cubeName, filepath, returnPath, isisCall){
 /**
  * 
  * @param {string} nameString 
+ * 
  * @function determins true false if the 
  * line is in the end object group
  */
@@ -326,6 +348,7 @@ var endTag = function(nameString){
  * @param {string} inputFile string value representing a link to cube file to open.
  * @param {string} cubeName just the name of the cube for getting the image output name more easily.
  * @requires fs, instream, outstream, and readline.
+ * 
  * @function this function reads a file line by line, it will chnage into the data parser in later commits.
  */
 var processFile = function(inputFile, cubeName){
@@ -352,7 +375,6 @@ var processFile = function(inputFile, cubeName){
             if(testHeader(line.toString().trim().split('=')[0])){
                 if(tagName == ""){
                     tagName = combineName(line.toString().trim().split('=')[1]);
-                    //console.log('new tag is: ' + tagName);
                 }
                 // some other type of data line
                 else{
@@ -397,7 +419,7 @@ var processFile = function(inputFile, cubeName){
                         }
                         else{
                             // End was seen but could be in middle of file
-                            tagName = ''
+                            tagName = '';
                         }
                     }
                 }

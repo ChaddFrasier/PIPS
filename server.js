@@ -3,17 +3,21 @@
  * @alias server
  * 
  * @author Chadd Frasier
- * @version 2.3.2
- * @description This is the driver for the Caption Writer server.
+ * @version 2.3.3
+ * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
  * Last Modified: 06/23/19
  *
- * @todo unit test all componets
+ * @todo 1 unit test all componets
  * 
- * @todo use jimp to super impose icons on the images using pixel tracking technique
+ * @todo 2 use jimp to super impose icons on the images using pixel tracking technique
+ * @todo 3 maybe use jimp to render and zoom on the image 
+ *      @see https://capstone-planet.slack.com/files/UCW41FR9A/FK7TUTY15/image.png for resize and superimposition
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
- * @todo get images working again
+ * 
+ * @todo 4 get image page working again
+ * @todo 5 get image download working again
  * 
  * @requires ./util.js
  * 
@@ -41,7 +45,7 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const cookieparser = require('cookie-parser');
 
-// include custom utils 
+// include custom utility functions
 const util = require('./util.js');
 
 // start app env
@@ -148,16 +152,16 @@ app.post('/upload', function(request, response){
             });
            
             let promises = []
+            // create the cookie instance for the user
             response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
-            //console.log('cookie created for cube file');
+            
             // make command and check error status
-
             promises.push(util.makeSystemCalls(cubeFile.name,
                 path.join('uploads',cubeFile.name),
                    path.join('pvl','return.pvl'),
                    'images'));
               
-            // this block will pass and run when all isis commands are finished
+            // when isis is done read the pvl file
              Promise.all(promises).then(function(){
                 console.log('server heard back from ISIS');
                 promises = [];
@@ -169,13 +173,15 @@ app.post('/upload', function(request, response){
                     cubeFileData = JSON.parse(cubeData);
                     // console.log(cubeFileData);
                     
+                    // get the full data string
                     fullString = JSON.stringify(cubeFileData);
 
+                    // read the config file to get only important tags
                     let importantTagArr = util.configServer(fs.readFileSync(path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
-                    //console.log(importantTagArr);
 
+                    // obtain the data for the tags
                     var impDataString = util.importantData(cubeFileData,importantTagArr);
-                    console.log(impDataString);
+                    
                     // template file section
                     try{
                         // reexp for verifing tpl file
@@ -198,10 +204,8 @@ app.post('/upload', function(request, response){
                             response.end();
                         }
                     }catch(err){
-                        // tpl is null
-                        //console.log('Default Template Being Used');
+                        // tpl is null set default
                         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-                        //console.log('default.tpl says: '+ templateText);
                     }
 
                     // send response
@@ -241,7 +245,7 @@ app.post('/showImage', function(request, response){
 
     if(cookieval != undefined){
         let image = util.getimagename(cookieval, 'png');
-        imagepath = './images/' + image;
+        imagepath = 'images/' + image;
     }else{
         imagepath = 'none';
     }
