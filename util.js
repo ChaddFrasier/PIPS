@@ -132,7 +132,6 @@ module.exports = {
             for(key in cubeFileData){
                 if(key.indexOf(importantTagArr[tag]) > -1){
                     impJSON[importantTagArr[tag]] = cubeFileData[key];
-                    console.log('important tag found');
                     break;
                 }
                 else{

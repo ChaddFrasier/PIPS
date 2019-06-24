@@ -114,14 +114,6 @@
     <br>
     <br>
     <script>
-        var keys = [];
-        var vals = [];
-        var imptKeys = [];
-        var imptVals = [];
-        template = document.getElementById("template-text");
-        // templateText = template.value;
-        // text = templateText;
-        text = template.value;
         // set the template information 
         function setOutput() {
             let getTemplate = document.getElementById("template-text").value;
@@ -139,9 +131,7 @@
             for (key in jsonData) {
                 //console.log('key: ' + key + ':val:' + jsonData[key]);
                 if(key != undefined){  
-                    let tmp = "[[" + key + "]]";
-                    let val = jsonData[key];
-                    let str = tmp + ": " + val + "\n";
+                    let str = keyToTag(key) + ": " + jsonData[key] + "\n";
                     metaDataArea.value += str;
                 }
             }
@@ -153,9 +143,7 @@
             var metaDataArea = document.getElementById("allTagArea");
             metaData = JSON.parse(metaData);
             for (key in metaData) {
-                let tmpkey = "[[" + key + "]]";
-                let val = metaData[key].trim();
-                let str = tmpkey + ": " + val + "\n";
+                let str = keyToTag(key) + ": " + metaData[key].trim() + "\n";
                 metaDataArea.value += str;
             }
         }
@@ -165,45 +153,40 @@
             var tag = "[[" + key + "]]";
             return tag;
         }
+
         // Return Metadata Val from Key
         function getMetadataVal(key) {
             //variable text will read all content in first textarea(user entered)
-            text = document.getElementById("template-text").value;
-            if (text.includes(keyToTag(key))) {
-                if (keys.includes(key)) {
-                    var index = keys.indexOf(key);
-                    var val = vals[index];
-                    var results = text.replace(/key/gi, val);
-                }
-                else if (imptKeys.includes(key)) {
-                    var index = imptKeys.indexOf(key);
-                    var val = imptVals[index];
-                    var results = text.replace(/key/gi, val);
-                }
-                else {
-                    val = "NONE";
+            var metaData = JSON.parse(document.getElementById("all-tag-text").value);
+            
+            for(datakey in metaData){
+                if(datakey.indexOf(key) > -1){
+                    //console.log(metaData[datakey]);
+                    return metaData[datakey].trim();
                 }
             }
-            return val;
+            return 'None'
         }
+
         String.prototype.replaceAll = function (find, replace) {
             var str = this;
             return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
-        };
+        }
+
         function output() {
-            text = document.getElementById("template-text").value;
-            var tempText = text;
+            var tempText = document.getElementById("template-text").value;
+
             //Find values of keys one by one, replace "[[...]]" with their value
-            for (var i1 = 0; i1 <= keys.length; i1++) {
-                if (tempText.includes(keyToTag(keys[i1]))) {
-                    tempText = tempText.replaceAll(keyToTag(keys[i1]), getMetadataVal(keys[i1]));
+            var tempArr = tempText.split(' ');
+            for(var i=0; i<tempArr.length; i++){
+                if(tempArr[i].indexOf('[[') > -1 && tempArr[i] != '[[tag]]'){
+                    // get the val of the tag
+                    tempArr[i] = getMetadataVal(tempArr[i].slice(2,tempArr[i].length - 2));
                 }
             }
-            for (var i2 = 0; i2 <= imptKeys.length; i2++) {
-                if (tempText.includes(keyToTag(imptKeys[i2]))) {
-                    tempText = tempText.replaceAll(keyToTag(imptKeys[i2]), getMetadataVal(imptKeys[i2]));
-                }
-            }
+            
+            tempText = tempArr.join(' ');
+            
             //set the innerHTML for the last(output) textarea
             var output = document.getElementById("template-text-output").innerHTML = tempText;
             
