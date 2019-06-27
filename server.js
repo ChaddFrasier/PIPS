@@ -18,6 +18,7 @@
  * 
  * @todo 4 get image page working again
  * @todo 5 get image download working again
+ * @todo 6 get csv download working properly
  * 
  * @requires ./util.js
  * 
@@ -151,7 +152,7 @@ app.post('/upload', function(request, response){
                 }
             });
            
-            let promises = []
+            let promises = [];
             // create the cookie instance for the user
             response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
             
