@@ -62,7 +62,7 @@
             </form>
         </div>
             <div id="info-alert" style= "visibility:hidden" class = "alert alert-info">
-                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this.id)">
+                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                    &times;
                 </button>
                 Upload a .cub file
@@ -70,7 +70,7 @@
 
 
         <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning" role="alert">
-                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this.id)">
+                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
                 </button>
                      
@@ -103,15 +103,10 @@
 
             }
         }
-        
-        function setNotVisible(id){
-            if(id === 'tplBtn'){
-                var hideElement = document.getElementById(tplBox);
-                hideElement.style.visibility = 'hidden';
-            }else{
-                var hideElement = document.getElementById(InfoBox);
-                hideElement.style.visibility = 'hidden';
-            }
+       
+        function setNotVisible(element){
+            var hideElement = document.getElementById($(element).parent().attr('id'));
+            hideElement.style.visibility = 'hidden';    
         }
 
 
