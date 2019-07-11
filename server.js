@@ -2,20 +2,22 @@
  * @file server.js 
  * @alias server
  * 
+ * 
  * @author Chadd Frasier
  * @version 2.3.3
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 06/23/19
+ * Last Modified: 07/6/19
  *
  * @todo 1 unit test all componets
  * 
  * @todo 2 use jimp to super impose icons on the images using pixel tracking technique
- * @todo 3 maybe use jimp to render and zoom on the image 
- *      @see https://capstone-planet.slack.com/files/UCW41FR9A/FK7TUTY15/image.png for resize and superimposition
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
  * 
+ * @todo 3 maybe use jimp to render and zoom on the image 
+ *      @see https://capstone-planet.slack.com/files/UCW41FR9A/FK7TUTY15/image.png for resize and superimposition
+ *     
  * @todo 4 get image page working again
  * @todo 5 get image download working again
  * @todo 6 get csv download working properly
@@ -178,7 +180,8 @@ app.post('/upload', function(request, response){
                     fullString = JSON.stringify(cubeFileData);
 
                     // read the config file to get only important tags
-                    let importantTagArr = util.configServer(fs.readFileSync(path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
+                    let importantTagArr = util.configServer(fs.readFileSync(
+                        path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
                     // obtain the data for the tags
                     var impDataString = util.importantData(cubeFileData,importantTagArr);
@@ -257,6 +260,8 @@ app.post('/showImage', function(request, response){
 
 /* activate the server */
 // listen on 8080 or open port
+
+// FOR TESTING ONLY!!! should be 'const PORT = process.env.PORT || 8080;'
 const PORT = 8080 || process.env.PORT;
 app.listen(PORT);
 

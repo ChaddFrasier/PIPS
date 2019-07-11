@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<html>
     <head>
 
         <title>Orion Project</title>
@@ -60,46 +60,63 @@
                     onclick="$('#loading').show();" />
 
             </form>
-
-            <div id="alert-info" style= 'visibility:hidden;' class = "alert alert-info alert-dismissable">
-                <button type = "button" class = "close" data-dismiss = "alert" aria-hidden = "true">
+        </div>
+            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info">
+                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this.id)">
                    &times;
                 </button>
                 Upload a .cub file
             </div>
 
 
-        <div id="tplAlert" style="visibility: hidden;" class = "alert alert-warning alert-dismissable">
-                <button type = "button" class = "close" data-dismiss = "alert" aria-hidden = "true">
-                    &times;
+        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning" role="alert">
+                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this.id)">
+                &times;
                 </button>
                      
                 Template must be (.tpl) or left blank.
             </div>
 
-        </div>
 
+            
 
         <script>
+        var InfoBox = 'info-alert';
+        var tplBox = 'tplAlert';
+
         function fixLoader(){
             if(<%= alertCode %> == 1){
-                var alert = document.getElementById('alert-info');
+                var alert = document.getElementById(InfoBox);
 
                 alert.style.visibility = 'visible';
             }
             else if(<%= alertCode %> == 2){
-                var alert2 = document.getElementById('tplAlert');
+                var alert2 = document.getElementById(tplBox);
 
                 alert2.style.visibility = 'visible';
             }
-            else if(<%= alertCode %> == 3){
-                var alert = document.getElementById('alert-info');
+            else if(<%= alertCode %> != 0){
+                var alert = document.getElementById(InfoBox);
                 alert.style.visibility = 'visible';
-                var alert2 = document.getElementById('tplAlert');
+                var alert2 = document.getElementById(tplBox);
                 alert2.style.visibility = 'visible';
 
             }
         }
         
-        fixLoader()</script>
+        function setNotVisible(id){
+            if(id === 'tplBtn'){
+                var hideElement = document.getElementById(tplBox);
+                hideElement.style.visibility = 'hidden';
+            }else{
+                var hideElement = document.getElementById(InfoBox);
+                hideElement.style.visibility = 'hidden';
+            }
+        }
+
+
+
+        fixLoader();
+        </script>
     </body>
+    </html>
