@@ -20,8 +20,16 @@
 
     <style>
         .image-editer{
-            border: 1px solid #000000;
+            position: relative;
+            align-content: center;
         }
+
+        .image-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        }
+
         .image-controls{
             margin-left: 25%;        
         }
@@ -64,9 +72,9 @@
 <body>
     <div class="container">
         <div class="jumbotron text-center">
-          <h1>Display Image</h1>      
-          <p class="lead">In this page, you can see the image extracted from cub file, and then download it in png format.</p>
-          <a class="btn btn-primary btn-lg" href="/" role="button">Upload Another Cube File</a>
+          <h1>Edit the Cube Image</h1>      
+          <p class="lead">Use your mouse to cropout specific features of an image and export the finshed figure</p>
+          <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube</a>
         </div>
     
     </div>
@@ -85,15 +93,8 @@
         <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
     </div>
                                                                                         
-    <div class="image-editor">
-        <div class="image-controls" id="img-controls">
-            <div class="image-size-label">
-                Resize image
-            </div>
-            <input id="img-range" type="range" class="cropit-image-zoom-input">
-            <button class="export">Export</button>
-        </div>
-        <div class="cropit-preview"></div>
+    <div class="image-editer">
+        <img class="image-image" src="images/Galileo.lev1.png">
     </div>
 
     <br/>
@@ -135,7 +136,7 @@
     </div>
         <button style="margin-left:45%;" onclick="exportLegend()">Export Legend</button>
     <br/>
-    
+
     <form method="POST" action="/getImage" class="lg-form text-center">
         <div class=" form-group">
             <input type="hidden" value='<%= image %>' name="passedIMG">
@@ -146,20 +147,6 @@
     <div id="legend-export-div" style="margin-left:35%;">
     </div>
                                                                    
-    <script>
-        $(function() {
-            $('.image-editor').cropit({
-                maxZoom: 10,
-                imageState: {
-                    src: url('<%= image %>'),
-                },
-            });
-            $('.export').click(function() {
-                var imageData = $('.image-editor').cropit('export');
-                window.open(imageData);
-            });
-        });
-    </script>
 <script>
     function exportLegend(){
         var div = document.getElementById("legend-export-div");
@@ -231,30 +218,8 @@
     var vals = [];
     // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
     function getMetadata() {
-        var metaDataString = document.getElementById("metadata-text").value;
-        var metaDataArea = document.getElementById("metadataTagArea");
-        metaDataString = metaDataString.split("{")[1];
-        metaDataString = metaDataString.split("}")[0];
-        var dataPairString = metaDataString.split(",");
-        for (var i = 0; i < dataPairString.length; i++) {
-            var dataToText = dataPairString[i].toString();
-            var key = dataToText.split(":")[0];
-            key = key.replace(/['"]+/g, '');
-            var val = dataToText.split(":")[1];
-            val = val.replace(/['"]+/g, '');
-            keys.push(key);
-            vals.push(val);
-        }
-        for(var j = 0; j < keys.length; j++) {
-            keys[j] = keys[j].trim();
-        }
-        for (var k = 0; k < keys.length; k++) {
-            var key = "[[" + keys[k] + "]]";
-            var val = vals[k];
-            var str = key + ": " + val + "\n";
-            metaDataArea.value += str;
-        }
-        //console.log(keys);
+        
+        console.log("metadata");
         //console.log(vals);
     }
     getMetadata();
@@ -268,11 +233,11 @@
         var scale = 0;
         // Legend Icons
         var northImg = new Image();
-        northImg.src = "/images/north.jpg";
+        northImg.src = "images/north.png";
         var sunImg = new Image();
-        sunImg.src = "/images/sun_symbol.png";
+        sunImg.src = "images/sun_symbol.png";
         var obsImg = new Image();
-        obsImg.src = "/images/eye_symbol.png";
+        obsImg.src = " images/eye_symbol.png";
         
         // Canvas Stuff
         var northCanvas = document.getElementById("north-canvas");

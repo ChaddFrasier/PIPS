@@ -8,8 +8,13 @@
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 07/6/19
+ * Last Modified: 07/13/19
  *
+ * 
+ * @todo ASAP create a Cube Object file for private cube variables 
+ *          - use the name of the cube as the id and extract and save the data into the private object. 
+ *          - we can then use the cookie on the users PC to tell the server which cube object is needed.
+ * 
  * @todo 1 unit test all componets
  * 
  * @todo 2 use jimp to super impose icons on the images using pixel tracking technique
@@ -37,6 +42,11 @@
   *     live notifications when files fail to upload and it will inform user of the issue that the server 
   *     is facing. Added another button to index.ejs that allows users to read about how to create TPL files.
   *     AllTags function works on the front end but the important tags are not implimented yet.
+  * 
+  * 
+  *     7/13/19
+  *         Images can be served very easily and it auto fits to the center of the page. private cube objects still need to be created so 
+  *     the server never crosses data between users 
   */
 
 // require dependencies
@@ -239,7 +249,7 @@ app.post('/upload', function(request, response){
 /**
  * POST '/showImage'
  * 
- * renders the image page withg needed data
+ * renders the image page with needed data
  */
 app.post('/showImage', function(request, response){
     //TODO: image page

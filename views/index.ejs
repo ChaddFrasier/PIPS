@@ -34,8 +34,7 @@
                             role="button">What is a TPL file?</a>
                     </p>
                 </div>
-        </div>
-        
+        </div> 
     <br>
         <div class="container">
             <div id="loading" style="display:none;">
@@ -77,22 +76,18 @@
                 Template must be (.tpl) or left blank.
             </div>
 
-
-            
-
         <script>
         var InfoBox = 'info-alert';
         var tplBox = 'tplAlert';
 
+        // parse the url and flag the appropriate error messages
         function fixLoader(){
             if(<%= alertCode %> == 1){
                 var alert = document.getElementById(InfoBox);
-
                 alert.style.visibility = 'visible';
             }
             else if(<%= alertCode %> == 2){
                 var alert2 = document.getElementById(tplBox);
-
                 alert2.style.visibility = 'visible';
             }
             else if(<%= alertCode %> != 0){
@@ -104,14 +99,13 @@
             }
         }
        
+       // get the id of the parent element of the button that was clicked and hide the div box
         function setNotVisible(element){
             var hideElement = document.getElementById($(element).parent().attr('id'));
             hideElement.style.visibility = 'hidden';    
         }
 
-
-
         fixLoader();
         </script>
     </body>
-    </html>
+</html>
