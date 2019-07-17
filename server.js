@@ -65,6 +65,8 @@ const Cube = require('./js/cubeObj.js');
 // start app env
 var app = express();
 
+var cubeArray = [];
+
 // use express upload and cookie parser
 app.use(fileUpload());
 app.use(cookieparser());
@@ -194,6 +196,10 @@ app.post('/upload', function(request, response){
                     // create object for cube cookie
                     var cubeObj = new Cube(cubeFile.name);
 
+                    // add the cube instance to the cube array if it does not already exist
+                    cubeArray = util.addCubeToArray(cubeObj,cubeArray);
+                   
+
                     // set the data in the object
                     cubeObj.data = JSON.parse(cubeData);
 
@@ -314,15 +320,24 @@ app.post('/showImage', function(request, response){
     console.log(request.path);
     var cookieval = request.cookies['cubeFile'];
     var imagepath;
+    var data;
 
     if(cookieval != undefined){
         let image = util.getimagename(cookieval, 'png');
         imagepath = 'images/' + image;
+
+        data = util.getObjectFromArray(cookieval, cubeArray);
+        if(data < 1){
+            console.log('Object Serch Failed');
+            data = 'NONE';
+        }else{
+            data = data.data;
+        }
     }else{
         imagepath = 'none';
     }
     // render image
-    response.render("imagePage.ejs", {image:imagepath, tagField: 'testing'});
+    response.render("imagePage.ejs", {image:imagepath, tagField: data});
 });
 
 

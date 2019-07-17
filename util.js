@@ -71,6 +71,56 @@ module.exports = {
     },
     
 
+    addCubeToArray: function(cubeObj,cubeArray){
+        // if the array is empty add object
+        if(cubeArray.length === 0){
+            cubeArray.push(cubeObj);
+            return cubeArray;
+        }
+        
+        else{
+            // otherwise check to see if the current cubeObj.name is already in the array
+            for(var index = 0; index < cubeArray.length; index++){
+                // if yes then just return the same array
+                if(cubeObj.name === cubeArray[index].name){
+                    return cubeArray;
+                }
+            }
+            // cube name not found to add it to the array
+            cubeArray.push(cubeObj);
+            return cubeArray;
+        }
+    },
+
+
+    /**
+     * 
+     * @param {string} findObj 
+     * @param {Cube array} cubeArray 
+     * 
+     * @returns 0 if array is empty
+     * @returns -1 if item not found
+     * @returns Cube Object that matches findObj
+     */
+    getObjectFromArray: function(findObj,cubeArray){
+        // if the array is empty return 0
+        if(cubeArray.length === 0){
+            return 0;
+        }
+        else{
+            // otherwise check to see if the findObj is already in the array
+            for(var index = 0; index < cubeArray.length; index++){
+                // if yes then just return the same array
+                if(findObj === cubeArray[index].name){
+                    return cubeArray[index];
+                }
+            }
+            // cube name not found
+            return -1;
+        }
+    },
+
+
 
     getCSV: function(cubeData){
         // parse the object for easy looping
