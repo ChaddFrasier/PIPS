@@ -22,13 +22,12 @@
  *     
  * @todo 4 get image page working again
  * @todo 5 get image download working again
- * @todo 6 get csv download working properly
  * 
  * @todo 7 image cropping with jimp
  * 
  * TODO: simplify the object code
- * @requires ./util.js
- * @requires ./cubeObj.js
+ * @requires ./util.js {this needs rto be in root of application because ISIS}
+ * @requires ./js/cubeObj.js
  * 
  * Note: This server is only capable of running on a linux or mac.
  *  operating systems
@@ -60,7 +59,7 @@ const fs = require('fs');
 const cookieparser = require('cookie-parser');
 
 // include custom utility functions
-const util = require('./js/util.js');
+const util = require('./util.js');
 const Cube = require('./js/cubeObj.js');
 
 // start app env
@@ -175,9 +174,9 @@ app.post('/upload', function(request, response){
 
             // make command and check error status
             promises.push(util.makeSystemCalls(cubeFile.name,
-                path.join('..','uploads',cubeFile.name),
-                   path.join('..','pvl',cubeFile.name.replace('.cub','.pvl')),
-                   path.join('..','images')));
+                path.join('.','uploads',cubeFile.name),
+                   path.join('.','pvl',cubeFile.name.replace('.cub','.pvl')),
+                   'images'));
               
             // when isis is done read the pvl file
              Promise.all(promises).then(function(){
@@ -189,10 +188,11 @@ app.post('/upload', function(request, response){
                 Promise.all(promises).then(function(cubeData){
                     console.log('server got data: \n');
                    
-                    console.log(request.cookies['cubeFile']);
+                    //TODO: this cookie is reading the wrong values
+                    console.log( 'the cookie is reading: ' + request.cookies['cubeFile']);
                     
                     // create object for cube cookie
-                    var cubeObj = new Cube(request.cookies['cubeFile']);
+                    var cubeObj = new Cube(cubeFile.name);
 
                     // set the data in the object
                     cubeObj.data = JSON.parse(cubeData);
@@ -215,7 +215,7 @@ app.post('/upload', function(request, response){
                             let tplFile = request.files.templateFile;
 
                             // save to server
-                            tplFile.mv('../tpl/'+tplFile.name, function(err){
+                            tplFile.mv('./tpl/'+tplFile.name, function(err){
                                 if(err){
                                     return response.status(500).send(err);
                                 }
@@ -233,7 +233,12 @@ app.post('/upload', function(request, response){
                         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
                     }
 
+                    // get the csv string
                     let csv = util.getCSV(cubeObj.data);
+                    // get name of csv and write it to the csv folder
+                    let csvFilename = cubeObj.name.replace('.cub','.csv');
+                    fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+
                     //console.log('csv: ' + csv);
 
                     // send response
@@ -242,6 +247,7 @@ app.post('/upload', function(request, response){
                         dictionaryString: impDataString,
                         wholeData: cubeObj.data,
                         csvString: csv }); 
+
                 }).catch(function(err){
                     console.log('Promise Error Occured: \n' + err);
                     response.write('<html>HORRIBLE ERROR</html>');
@@ -263,6 +269,38 @@ app.post('/upload', function(request, response){
         response.redirect('/?alertCode=4');
         response.end();
     }
+});
+
+
+
+/**
+ * '/csv' this post function is only for matching the csv file with the users cookie and send it for download  
+ */
+app.post('/csv', function(request,response){
+    // send download file
+    response.download(path.join('csv',request.cookies['cubeFile'].replace('.cub','.csv')),function(err){
+        if(err){
+            console.log('file was not sent successfully');
+        }else{
+            // file sent
+            response.end();
+        }
+    });
+});
+
+/**
+ * '/imageDownload' this post function is only for sending the basic image to the user as a download  
+ */
+app.post('/imageDownload', function(request,response){
+    // send download file
+    response.download(path.join('images',request.cookies['cubeFile'].replace('.cub','.png')),function(err){
+        if(err){
+            console.log('file was not sent successfully');
+        }else{
+            // file sent
+            response.end();
+        }
+    });
 });
 
 

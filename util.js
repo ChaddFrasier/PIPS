@@ -32,6 +32,9 @@ module.exports = {
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
         return new Promise(function(resolve){
+            console.log('filepath: ' + filepath);
+            console.log('returnpath: ' + returnPath);
+
             // array of promises to resolve
             let promises = [];
             // call the isis commands
@@ -56,7 +59,7 @@ module.exports = {
             var promises = [];
 
             // create a promise of the processFile function
-            promises.push(processFile(path.join('.','pvl', cubeName.replace('.cub','.pvl'))));
+            promises.push(processFile(path.join('pvl', cubeName.replace('.cub','.pvl'))));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
@@ -70,33 +73,15 @@ module.exports = {
 
 
     getCSV: function(cubeData){
+        // parse the object for easy looping
+        cubeData = JSON.parse(cubeData);
+        let csvString = "";
 
-        // get each line
-        var dataArr = cubeData.split('\n');
-        // init csvString
-        var csvString = '';
-
-        for(var i = 0; i < dataArr.length; i++){
-
-
-            // this loop goes over each key val pair with the line as a string
-            // if the right side has : build it peice by peice otherwise use fast method
-            if(dataArr[i].split(':').length === 2){
-                csvString += dataArr[i].trim().split(':').join(',') + '\n';
-            }else{
-                // get the tempArray by splitting on ':'
-                let tmpArr = dataArr[i].split(':');
-                // save the first part as the name
-                csvString += tmpArr[0] + ',';
-                // remove the name from the array
-                tmpArr.shift();
-                // rejoin the array on the same symbol to keep the data
-                csvString += tmpArr.join(',') + '\n';    
-            }  
+        for(key in cubeData){
+            // append the next key value pair to the csv
+            csvString += key + ',' + '"' + cubeData[key] + '"' + '\n';
         }
-        // slice the EOF comma and \n
-        csvString = csvString.slice(1, csvString.length - 3 );
-
+        // return the string
         return csvString;
     },
 
