@@ -11,7 +11,6 @@
  * Last Modified: 07/13/19
  *
  * 
- * 
  * @todo 1 unit test all componets
  * 
  * @todo 2 use jimp to super impose icons on the images using pixel tracking technique
@@ -61,8 +60,8 @@ const fs = require('fs');
 const cookieparser = require('cookie-parser');
 
 // include custom utility functions
-const util = require('./util.js');
-const Cube = require('./cubeObj.js');
+const util = require('./js/util.js');
+const Cube = require('./js/cubeObj.js');
 
 // start app env
 var app = express();
@@ -77,6 +76,8 @@ var isWindows = process.platform === 'win32';
 // give app access to routes
 app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
+app.use("/csv" , express.static("csv"));
+app.use("/js" , express.static("js"));
 app.use("/tpl" , express.static("tpl"));
 app.use("/pvl " , express.static("pvl"));
 
@@ -145,7 +146,7 @@ app.post('/upload', function(request, response){
     // cube file section
     try{
         if(request.files == null ){
-            // if no cube file uploaded
+            // if no files uploaded
             console.log('User Error Upload a Cube File to begin');
             // redirect the user & alert they need a .cub
             response.redirect('/?alertCode=3');
@@ -174,9 +175,9 @@ app.post('/upload', function(request, response){
 
             // make command and check error status
             promises.push(util.makeSystemCalls(cubeFile.name,
-                path.join('uploads',cubeFile.name),
-                   path.join('pvl',cubeFile.name.replace('.cub','.pvl')),
-                   'images'));
+                path.join('..','uploads',cubeFile.name),
+                   path.join('..','pvl',cubeFile.name.replace('.cub','.pvl')),
+                   path.join('..','images')));
               
             // when isis is done read the pvl file
              Promise.all(promises).then(function(){
@@ -199,7 +200,7 @@ app.post('/upload', function(request, response){
                     
                     // read the config file to get only important tags
                     let importantTagArr = util.configServer(fs.readFileSync(
-                        path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
+                        path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
                     // obtain the data for the tags
                     var impDataString = util.importantData(cubeObj.data, importantTagArr);
@@ -214,7 +215,7 @@ app.post('/upload', function(request, response){
                             let tplFile = request.files.templateFile;
 
                             // save to server
-                            tplFile.mv('./tpl/'+tplFile.name, function(err){
+                            tplFile.mv('../tpl/'+tplFile.name, function(err){
                                 if(err){
                                     return response.status(500).send(err);
                                 }
@@ -233,7 +234,7 @@ app.post('/upload', function(request, response){
                     }
 
                     let csv = util.getCSV(cubeObj.data);
-                    console.log(csv);
+                    //console.log('csv: ' + csv);
 
                     // send response
                     response.render('writer.ejs',
@@ -243,6 +244,7 @@ app.post('/upload', function(request, response){
                         csvString: csv }); 
                 }).catch(function(err){
                     console.log('Promise Error Occured: \n' + err);
+                    response.write('<html>HORRIBLE ERROR</html>');
                 });
             }).catch(function(err){
                 console.log('promise error 2');
@@ -263,11 +265,6 @@ app.post('/upload', function(request, response){
     }
 });
 
-
-
-app.post('/getCSV', function(request,response){
-    console.log(request.body);
-});
 
 /**
  * POST '/showImage'
