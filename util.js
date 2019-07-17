@@ -54,8 +54,9 @@ module.exports = {
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
             var promises = [];
+
             // create a promise of the processFile function
-            promises.push(processFile('./pvl/return.pvl', cubeName));
+            promises.push(processFile(path.join('.','pvl', cubeName.replace('.cub','.pvl'))));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
@@ -67,43 +68,37 @@ module.exports = {
     },
     
 
-    // TODO: clean data better
-    /**
-     * 
-     * @param {string} cubeData 
-     * 
-     * @function converts a cube file data from string format to csv
-     */
-    getCsv: function(cubeData){
-        return new Promise(function(resolve){
-            console.log('cubedata:  ' + cubeData);
-            // get each line
-            var dataArr = cubeData.split('\n');
-            // init csvString
-            var csvString = '';
 
-            for(var i = 0; i < dataArr.length; i++){
-                // this loop goes over each key val pair with the line as a string
-                // if the right side has : build it peice by peice otherwise use fast method
-                if(dataArr[i].split(':').length === 2){
-                    csvString += dataArr[i].trim().split(':').join(',') + '\n';
-                }else{
-                    // get the tempArray by splitting on ':'
-                    let tmpArr = dataArr[i].split(':');
-                    // save the first part as the name
-                    csvString += tmpArr[0] + ',';
-                    // remove the name from the array
-                    tmpArr.shift();
-                    // rejoin the array on the same symbol to keep the data
-                    csvString += tmpArr.join(':') + '\n';    
-                }  
-            }
-            // slice the EOF comma and \n
-            csvString = csvString.slice(0, csvString.length - 3 );
-            // return csvString
-            resolve(csvString);
-        });
-    }, 
+    getCSV: function(cubeData){
+
+        // get each line
+        var dataArr = cubeData.split('\n');
+        // init csvString
+        var csvString = '';
+
+        for(var i = 0; i < dataArr.length; i++){
+
+
+            // this loop goes over each key val pair with the line as a string
+            // if the right side has : build it peice by peice otherwise use fast method
+            if(dataArr[i].split(':').length === 2){
+                csvString += dataArr[i].trim().split(':').join(',') + '\n';
+            }else{
+                // get the tempArray by splitting on ':'
+                let tmpArr = dataArr[i].split(':');
+                // save the first part as the name
+                csvString += tmpArr[0] + ',';
+                // remove the name from the array
+                tmpArr.shift();
+                // rejoin the array on the same symbol to keep the data
+                csvString += tmpArr.join(',') + '\n';    
+            }  
+        }
+        // slice the EOF comma and \n
+        csvString = csvString.slice(1, csvString.length - 3 );
+
+        return csvString;
+    },
 
     /**
      * 
@@ -133,8 +128,9 @@ module.exports = {
      * 
      * @function takes important tag array and extracts data if it exists returns none otherwise 
      */
-    importantData: function(cubeFileData,importantTagArr){
+    importantData: function(cubeFileData, importantTagArr){
         // prepare json object
+        cubeFileData = JSON.parse(cubeFileData);
         var impJSON = {};
         // for each tag in the important tag array
         for(tag in importantTagArr){
@@ -143,6 +139,7 @@ module.exports = {
                 /* if tag is in key save it into the data object 
                  and break the loop to save time */
                 if(key.indexOf(importantTagArr[tag]) > -1){
+                    // add the important tags to the JSON element
                     impJSON[importantTagArr[tag]] = cubeFileData[key];
                     break;
                 }
@@ -371,7 +368,7 @@ var processFile = function(inputFile, cubeName){
             // variables
             let val = "";
 
-            // name header line
+            // found name header line
             if(testHeader(line.toString().trim().split('=')[0])){
                 if(tagName == ""){
                     tagName = combineName(line.toString().trim().split('=')[1]);
@@ -396,16 +393,16 @@ var processFile = function(inputFile, cubeName){
                 else{
                     // `variable = data object` line
                     if(line.toString().trim().split('=')[1] != undefined || line.toString().trim().split('=')[1] == '.'){
-                        val = line.toString().split('=')[1];
-                        let tmpTag = line.toString().split('=')[0];
+                        val = line.toString().split('=')[1].trim();
+                        let tmpTag = line.toString().split('=')[0].trim();
 
-                        // get rid of extra " " at front and back of strings
-                        tmpTag = tmpTag.slice(1,tmpTag.length-1);
-
+                        
                         // combine the tag name
                         tagName = combineName(tagName, tmpTag);
                         
                         // set data
+                        //console.log(tagName +  '=' + val)
+
                         cubeData[tagName] = val;
                         // set last seen var
                         lastTag = tagName;
@@ -415,7 +412,7 @@ var processFile = function(inputFile, cubeName){
                     else{
                         // if not EOF
                         if(line.trim() != "End"){
-                            cubeData[lastTag] = String(cubeData[lastTag]).concat( ' ' + line.trim());
+                            cubeData[lastTag] = String(cubeData[lastTag]).trim().concat( ' ' + line.trim()); 
                         }
                         else{
                             // End was seen but could be in middle of file
@@ -426,7 +423,12 @@ var processFile = function(inputFile, cubeName){
             }
         });
         // this runs on last line of the file
-        rl.on('close', function (line) {  
+        rl.on('close', function (line) { 
+            // replace all instances of " and '\n'
+            for(key in cubeData){
+                cubeData[key] = cubeData[key].replace(/\"/g,"").replace(/\n/g,"");
+            }
+            //console.log(JSON.stringify(cubeData));
             resolve(JSON.stringify(cubeData));
         });    
     });

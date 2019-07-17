@@ -11,9 +11,6 @@
  * Last Modified: 07/13/19
  *
  * 
- * @todo ASAP create a Cube Object file for private cube variables 
- *          - use the name of the cube as the id and extract and save the data into the private object. 
- *          - we can then use the cookie on the users PC to tell the server which cube object is needed.
  * 
  * @todo 1 unit test all componets
  * 
@@ -22,12 +19,17 @@
  * 
  * @todo 3 maybe use jimp to render and zoom on the image 
  *      @see https://capstone-planet.slack.com/files/UCW41FR9A/FK7TUTY15/image.png for resize and superimposition
+ *      @see https://www.geeksforgeeks.org/node-jimp-crop/ for cropping
  *     
  * @todo 4 get image page working again
  * @todo 5 get image download working again
  * @todo 6 get csv download working properly
  * 
+ * @todo 7 image cropping with jimp
+ * 
+ * TODO: simplify the object code
  * @requires ./util.js
+ * @requires ./cubeObj.js
  * 
  * Note: This server is only capable of running on a linux or mac.
  *  operating systems
@@ -60,6 +62,7 @@ const cookieparser = require('cookie-parser');
 
 // include custom utility functions
 const util = require('./util.js');
+const Cube = require('./cubeObj.js');
 
 // start app env
 var app = express();
@@ -92,7 +95,7 @@ app.get('/', function(request, response){
     // query for alert code
     let code = request.query.alertCode;
     
-    // TODO: i dont think windows can use the exec call
+    // TODO: windows can't use the exec call
     // clean print.prt files from isis3
     if( !isWindows ){
         exec('rm print.prt');
@@ -137,9 +140,7 @@ app.post('/upload', function(request, response){
     // prepare the variables for response to user
     var templateText = '';
     var cubeFileData;
-
-    // clean up the return file
-    exec('rm pvl/return.pvl');
+    
     console.log('=================== New Run ========================');
     // cube file section
     try{
@@ -153,7 +154,7 @@ app.post('/upload', function(request, response){
         // cube (.cub) file regexp
         else if(/^.*\.(cub|CUB)$/gm.test(request.files.uploadFile.name)){
             // get the file from request
-            let cubeFile = request.files.uploadFile;
+            var cubeFile = request.files.uploadFile;
 
             // save the cube upload to upload folder
             cubeFile.mv('./uploads/' + cubeFile.name, function(err){
@@ -162,16 +163,19 @@ app.post('/upload', function(request, response){
                     console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
                 }
+            
             });
            
+           // console.log(cubeFile.name);
             let promises = [];
             // create the cookie instance for the user
-            response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
+            promises.push(response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true}));
             
+
             // make command and check error status
             promises.push(util.makeSystemCalls(cubeFile.name,
                 path.join('uploads',cubeFile.name),
-                   path.join('pvl','return.pvl'),
+                   path.join('pvl',cubeFile.name.replace('.cub','.pvl')),
                    'images'));
               
             // when isis is done read the pvl file
@@ -183,18 +187,24 @@ app.post('/upload', function(request, response){
                 // this block will pass and run when all isis commands are finished
                 Promise.all(promises).then(function(cubeData){
                     console.log('server got data: \n');
-                    cubeFileData = JSON.parse(cubeData);
-                    // console.log(cubeFileData);
+                   
+                    console.log(request.cookies['cubeFile']);
                     
-                    // get the full data string
-                    fullString = JSON.stringify(cubeFileData);
+                    // create object for cube cookie
+                    var cubeObj = new Cube(request.cookies['cubeFile']);
 
+                    // set the data in the object
+                    cubeObj.data = JSON.parse(cubeData);
+
+                    
                     // read the config file to get only important tags
                     let importantTagArr = util.configServer(fs.readFileSync(
                         path.join(__dirname,'cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
                     // obtain the data for the tags
-                    var impDataString = util.importantData(cubeFileData,importantTagArr);
+                    var impDataString = util.importantData(cubeObj.data, importantTagArr);
+
+                    //console.log( 'CUBE DATA FROM OBJECT : ' + cubeObj.data);
                     
                     // template file section
                     try{
@@ -222,12 +232,20 @@ app.post('/upload', function(request, response){
                         templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
                     }
 
+                    let csv = util.getCSV(cubeObj.data);
+                    console.log(csv);
+
                     // send response
                     response.render('writer.ejs',
-                    { templateText: templateText, 
-                    dictionaryString: impDataString,
-                    csvString: fullString }); 
+                        { templateText: templateText, 
+                        dictionaryString: impDataString,
+                        wholeData: cubeObj.data,
+                        csvString: csv }); 
+                }).catch(function(err){
+                    console.log('Promise Error Occured: \n' + err);
                 });
+            }).catch(function(err){
+                console.log('promise error 2');
             });
         }
         else{
@@ -245,6 +263,11 @@ app.post('/upload', function(request, response){
     }
 });
 
+
+
+app.post('/getCSV', function(request,response){
+    console.log(request.body);
+});
 
 /**
  * POST '/showImage'
@@ -264,7 +287,7 @@ app.post('/showImage', function(request, response){
         imagepath = 'none';
     }
     // render image
-    response.render("imagePage.ejs", {image:imagepath});
+    response.render("imagePage.ejs", {image:imagepath, tagField: 'testing'});
 });
 
 
