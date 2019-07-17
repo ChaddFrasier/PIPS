@@ -72,7 +72,7 @@
 <body>
     <div class="container">
         <div class="jumbotron text-center">
-          <h1>Edit the Cube Image</h1>      
+          <h2>Edit the Cube Image</h2>      
           <p class="lead">Use your mouse to cropout specific features of an image and export the finshed figure</p>
           <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube</a>
         </div>
@@ -83,7 +83,7 @@
         <label for="metadata-text">
             <h2>Metadata Output</h2>
         </label>
-        <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;">{{DICTSTRING}}</textarea>
+        <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
     </div>
 
     <div id="metadata-tags" style="display:none;" class="text-center green-border-focus">
@@ -94,7 +94,7 @@
     </div>
                                                                                         
     <div class="image-editer">
-        <img class="image-image" src="images/Galileo.lev1.png">
+        <img class="image-image" src="<%= image %>">
     </div>
 
     <br/>

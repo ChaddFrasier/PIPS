@@ -19,10 +19,19 @@
     </head>
 
     <body>
-        <img src="../images/usgsLogo.png" width="20%" height="20%">
-        <div class="jumbotron jumbotron-fluid text-center" style="display:inline; border-bottom: 0rem;">
             
-            <h1 class="display-2"> Orion</h1><p>Powered by ISIS3</p>
+            <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="20%" style="margin-right: 0%;"><br>
+            <div id="loading" class="float-right" style="display:none;">
+                    <img src="../images/loading.gif" height="85" weight="85"/> <br>Loading
+            </div>
+            <br>
+            <br>
+        <div class="float-none text-center">
+            <h1 class=" float-none display-2"><br>Orion</h1> 
+            <p>Powered by ISIS3</p>
+        </div>
+            
+
             <hr class="my-9">
             <div class="title">
                     
@@ -37,9 +46,7 @@
         </div> 
     <br>
         <div class="container">
-            <div id="loading" style="display:none;">
-                        <img src="../images/loading.gif" height="70" weight="70"/> Loading
-        	</div>
+            
 
             <form class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
                 <div class="btn btn-primary btn-lg form-group">

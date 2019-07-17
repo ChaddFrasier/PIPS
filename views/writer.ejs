@@ -43,7 +43,7 @@
                     <h2>All Tag Info CSVSTRING</h2>
                 </label>
                 <textarea readonly id="all-tag-text" class="form-control bg-white text-dark"
-                    style="resize: vertical; font-size: 22px;"><%= csvString %></textarea>
+                    style="resize: vertical; font-size: 22px;"><%= wholeData %></textarea>
             </div>
 
             <div id="metadata-tags"  style = "display: none;" class="text-center green-border-focus">
@@ -83,16 +83,15 @@
         </div>
         <br>
         <br>
-        <form method="POST" action="/getCSV" class="lg-form text-center">
-            <div class="form-group">
-                <input type="hidden" value="<%= csvString %>" name="passedTXT">
-                <input type="submit" value="Download Metadata" class="btn btn-primary btn-lg" />
-            </div>
-        </form>
+        <div class="lg-form text-center">
+                <input type="hidden" value="<%= wholeData %>" id="passedTXT">
+                <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
+                <input type="submit" value="Download Metadata" onclick="getCSV()" class="btn btn-primary btn-lg" />
+        </div>
+        
         <br>
         <form method="POST" action="/showImage" class="lg-form text-center">
             <div class=" form-group">
-                <input type="hidden" value="{{IMG}}" name="image_present">
                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
                 <input type="submit" value="Display Image" class="btn btn-primary btn-lg" />
             </div>
@@ -114,6 +113,13 @@
     <br>
     <br>
     <script>
+        // download csv
+        function getCSV(){
+            var csvString = document.getElementById("csvStringPassed").value;
+
+            console.log(csvString);
+        }
+            
         // set the template information 
         function setOutput() {
             let getTemplate = document.getElementById("template-text").value;
@@ -139,11 +145,11 @@
         }
         // Gets All Tags
         function getAllTags() {
-            var metaData = document.getElementById("all-tag-text").value;
+            var metaData = document.getElementById("passedTXT").value;
             var metaDataArea = document.getElementById("allTagArea");
             metaData = JSON.parse(metaData);
             for (key in metaData) {
-                let str = keyToTag(key) + ": " + metaData[key].trim() + "\n";
+                let str = keyToTag(key) + ": " + metaData[key].toString().trim() + "\n";
                 metaDataArea.value += str;
             }
         }
@@ -157,7 +163,7 @@
         // Return Metadata Val from Key
         function getMetadataVal(key) {
             //variable text will read all content in first textarea(user entered)
-            var metaData = JSON.parse(document.getElementById("all-tag-text").value);
+            var metaData = JSON.parse(document.getElementById("metadata-text").value);
             
             for(datakey in metaData){
                 if(datakey.indexOf(key) > -1){
