@@ -16,7 +16,7 @@
  *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
  * 
  * @todo 3 maybe use jimp to render and zoom on the image 
- *      @see https://capstone-planet.slack.com/files/UCW41FR9A/FK7TUTY15/image.png (this link is for team members) for resize and superimposition
+ *      @see {link redacted for DOI system security} (this link is for team members) for resize and superimposition
  *      @see https://www.geeksforgeeks.org/node-jimp-crop/ for cropping
  *     
  * @todo 4 get image page working again
