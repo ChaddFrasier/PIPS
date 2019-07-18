@@ -202,7 +202,7 @@ app.post('/upload', function(request, response){
 
                     // set the data in the object
                     cubeObj.data = JSON.parse(cubeData);
-
+                    
                     
                     // read the config file to get only important tags
                     let importantTagArr = util.configServer(fs.readFileSync(
@@ -210,6 +210,10 @@ app.post('/upload', function(request, response){
 
                     // obtain the data for the tags
                     var impDataString = util.importantData(cubeObj.data, importantTagArr);
+
+                    
+                    // save the important data values
+                    cubeObj.impData = JSON.parse(impDataString);
 
                     //console.log( 'CUBE DATA FROM OBJECT : ' + cubeObj.data);
                     
@@ -331,7 +335,7 @@ app.post('/showImage', function(request, response){
             console.log('Object Serch Failed');
             data = 'NONE';
         }else{
-            data = data.data;
+            data = data.impData;
         }
     }else{
         imagepath = 'none';
