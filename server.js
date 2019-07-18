@@ -115,6 +115,25 @@ app.get('/', function(request, response){
 });
  
 
+
+/**
+ * if no cookie can be found then fail
+ */
+app.get('/upload',function(request,response){
+    console.log(request.path);
+
+    var cookieval = request.cookies['cubeName'];
+
+    if(cookieval === undefined){
+        // send response w/ all variables
+        response.redirect('/?alertCode=4');
+
+    }else{
+        console.log('cookie found: its value is: ' + cookieval);
+    }
+});
+
+
 /**
  * GET '/tpl'
  * 
@@ -321,6 +340,62 @@ app.post('/imageDownload', function(request,response){
         }
     });
 });
+
+
+
+/**
+ * if no cookie can be found then fail
+ */
+app.get('/csv', function(request, response){
+    console.log(request.path);
+
+    var cookieval = request.cookies['cubeName'];
+
+    if(cookieval === undefined){
+        // send response w/ all variables
+        response.redirect('/?alertCode=4');
+
+    }else{
+        console.log('cookie found: its value is: ' + cookieval);
+    }
+});
+
+
+/**
+ * if no cookie can be found then fail
+ */
+app.get('/imageDownload', function(request, response){
+    console.log(request.path);
+
+    var cookieval = request.cookies['cubeName'];
+
+    if(cookieval === undefined){
+        // send response w/ all variables
+        response.redirect('/?alertCode=4');
+
+    }else{
+        console.log('cookie found: its value is: ' + cookieval);
+    }
+});
+
+
+/**
+ * if no cookie can be found then fail
+ */
+app.get('/showImage', function(request, response){
+    console.log(request.path);
+
+    var cookieval = request.cookies['cubeName'];
+
+    if(cookieval === undefined){
+        // send response w/ all variables
+        response.redirect('/?alertCode=4');
+
+    }else{
+        console.log('cookie found: its value is: ' + cookieval);
+    }
+});
+
 
 
 /**

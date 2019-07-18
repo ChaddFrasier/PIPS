@@ -4,7 +4,7 @@
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
 
     <link rel="stylesheet", href="css/index.css" type="text/css">
 
@@ -31,10 +31,12 @@
         }
 
         .image-controls{
-            margin-left: 25%;        
+            margin-left: 25%;
+                    
         }
         .image-symbols{
-            margin-left: 35%;
+            margin-left: auto;
+            margin-right:auto;
             background-color: #d9d9d9;
             border: 5px solid #000000;
             width: 400px;
@@ -71,12 +73,22 @@
 
 <body>
     <div class="container">
-        <div class="jumbotron text-center">
-          <h2>Edit the Cube Image</h2>      
-          <p class="lead">Use your mouse to cropout specific features of an image and export the finshed figure</p>
-          <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube</a>
+        <div class="jumbotron text-center" >
+            <h2>Edit the Cube Image</h2>      
+            <p class="lead">Use your mouse to cropout specific features of an image and export the finshed figure</p>
+
+            <div style="display:inline;">
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
+
+                <br>
+                <form method="POST" action="/imageDownload" class="lg-form text-center">
+                    <div class="float-right form-group">
+                        <input type="hidden" value='<%= image %>' name="passedIMG">
+                        <input type="submit" value="Save Raw Image" class="btn btn-secondary btn-lg" />
+                    </div>
+                </form>
+            </div>
         </div>
-    
     </div>
 
     <div id="metadata" style="display:none;"  class="text-center green-border-focus">
@@ -94,55 +106,51 @@
     </div>
                                                                                         
     <div class="image-editer">
-        <img class="image-image" src="<%= image %>">
+            <img class="image-image" src="<%= image %>">
     </div>
 
     <br/>
 
-    <div class="image-symbols" id="img-symbols">
-        <h2>Legend</h2>
-        <table id="legend-table">
-            <tr id="north">
-                <th>North:</th>
-                <th id="northDeg"></th>
-                <th><canvas id="north-canvas" class="canvas-legend"></canvas></th>
-            </tr>
-            <tr id="sun-az">
-                <th>Sun Azimuthal Direction:</th>
-                <th id="sunDeg"></th>
-                <th><canvas id="sun-canvas" class="canvas-legend"></canvas></th>
-            </tr>
-            <tr id="obs-az">
-                <th>Observer Azimuthal Direction:</th>
-                <th id="obsDeg"></th>
-                <th><canvas id="obs-canvas" class="canvas-legend"></canvas></th>
-            </tr>
-            <tr id="image-scalebar" style="overflow:hidden;">
-                <th>Scalebar:</th>
-                <th id="range-1"></th>
-                <th><canvas id="scalebar-canvas" class="canvas-legend"></canvas></th>
-                <th id="range-2"></th>
-            </tr>
-        </table>
-    </div>
-    <div id="hide-legend" style="display:hidden; margin-left:35%;">
-        <table>
-            <tr><h4>Hide Legend Elements</h4></tr>
-            <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
-            <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
-            <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
-            <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
-        </table>
-    </div>
-        <button style="margin-left:45%;" onclick="exportLegend()">Export Legend</button>
-    <br/>
-
-    <form method="POST" action="/imageDownload" class="lg-form text-center">
-        <div class=" form-group">
-            <input type="hidden" value='<%= image %>' name="passedIMG">
-            <input type="submit" value="Download Full Image" class="btn btn-secondary btn-lg" />
+    <div class="float-center text-center" style="margin-left: auto; margin-right: auto;" >
+        <div class="image-symbols" id="img-symbols">
+            <h2>Legend</h2>
+            <table class="float-center" id="legend-table">
+                <tr id="north">
+                    <th>North:</th>
+                    <th id="northDeg"></th>
+                    <th><canvas id="north-canvas" class="canvas-legend"></canvas></th>
+                </tr>
+                <tr id="sun-az">
+                    <th>Sun Azimuthal Direction:</th>
+                    <th id="sunDeg"></th>
+                    <th><canvas id="sun-canvas" class="canvas-legend"></canvas></th>
+                </tr>
+                <tr id="obs-az">
+                    <th>Observer Azimuthal Direction:</th>
+                    <th id="obsDeg"></th>
+                    <th><canvas id="obs-canvas" class="canvas-legend"></canvas></th>
+                </tr>
+                <tr id="image-scalebar" style="overflow:hidden;">
+                    <th>Scalebar:</th>
+                    <th id="range-1"></th>
+                    <th><canvas id="scalebar-canvas" class="canvas-legend"></canvas></th>
+                    <th id="range-2"></th>
+                </tr>
+            </table>
         </div>
-    </form>
+        <div id="hide-legend" style="margin-left:auto; margin-right: auto;">
+            <table>
+                <tr><h4>Hide Legend Elements</h4></tr>
+                <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
+                <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
+                <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
+                <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
+            </table>
+            <button onclick="exportLegend()">Export Legend</button>
+        </div>
+    </div>
+
+    
 
     <div id="legend-export-div" style="margin-left:35%;">
     </div>

@@ -20,30 +20,34 @@
 
     <body>
             
-            <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="20%" style="margin-right: 0%;"><br>
-            <div id="loading" class="float-right" style="display:none;">
-                    <img src="../images/loading.gif" height="85" weight="85"/> <br>Loading
+            <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="20%" style="margin: 0%; padding: 0%"><br>
+            <div id="loading" class="float-md-right" style="visibility:hidden">
+                    <img src="../images/loading.gif" class='float-md-left;' height="125px" weight="135px"/><br>Loading
             </div>
             <br>
-            <br>
-        <div class="float-none text-center">
-            <h1 class=" float-none display-2"><br>Orion</h1> 
-            <p>Powered by ISIS3</p>
+        <div class="lead text-center" style="align-content: center;">
+            <div class="float-center" style=" margin-left:5%; margin-right:20%; margin-bottom: 0%;"><br>
+                <div class="text-center">
+                    <h1 class="display-1" >Orion</h1> 
+                    <h4 class="display-4" style="margin-left: 15%">Powered by ISIS3</h4>
+                </div>
+            </div>
         </div>
             
-
+        <br>
+        <br>info
             <hr class="my-9">
-            <div class="title">
+            <div class="title text-center">
                     
-                    <p class="lead" style="align-content: center;">You can upload .cub file and .tpl file </p>
+                    <p class="lead" style="margin-left: auto; margin-right: auto;">You can upload .cub file and .tpl file </p>
                         <a class="btn btn-secondary btn-lg" style= "border-color: black;" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
                             role="button">Learn About The Orion Project</a>
         
                         <a class="btn btn-secondary btn-lg" href= '/tpl'
                             role="button">What is a TPL file?</a>
-                    </p>
+                   
                 </div>
-        </div> 
+        
     <br>
         <div class="container">
             
@@ -63,7 +67,7 @@
                 
                 <br>
                 <input type="submit" class="btn btn-secondary btn-lg" name="SubmitCube" value="Upload"  class="btn btn btn-outline-dark btn-lg"
-                    onclick="$('#loading').show();" />
+                    onclick="loaderActivate('loading')" />
 
             </form>
         </div>
@@ -74,6 +78,13 @@
                 Upload a .cub file
             </div>
 
+
+            <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary">
+                    <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                       &times;
+                    </button>
+                    Must start with upload
+                </div>
 
         <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning" role="alert">
                 <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
@@ -86,8 +97,9 @@
         <script>
         var InfoBox = 'info-alert';
         var tplBox = 'tplAlert';
+        var failureBox = 'fail-alert';
 
-        // parse the url and flag the appropriate error messages
+         // parse the url and flag the appropriate error messages
         function fixLoader(){
             if(<%= alertCode %> == 1){
                 var alert = document.getElementById(InfoBox);
@@ -96,6 +108,10 @@
             else if(<%= alertCode %> == 2){
                 var alert2 = document.getElementById(tplBox);
                 alert2.style.visibility = 'visible';
+            }
+            else if(<%= alertCode %> == 4){
+                var alert3 = document.getElementById(failureBox);
+                alert3.style.visibility = 'visible';
             }
             else if(<%= alertCode %> != 0){
                 var alert = document.getElementById(InfoBox);
@@ -112,6 +128,29 @@
             hideElement.style.visibility = 'hidden';    
         }
 
+
+        function loadInvisible(){
+            var loader = document.getElementById('loading');
+            loader.style.visibility = 'hidden';    
+        }
+
+        function loaderActivate(divId){
+
+            var loader = document.getElementById(divId);
+            loader.style.visibility = 'visible';
+        }
+
+
+        // this bind call is used to make the loader gif minvisible on the page load
+        $(window).bind("pageshow", function(event) {
+            if (event.originalEvent.persisted) {
+                // functions to run when page loads
+
+                loadInvisible();
+                fixLoader();
+                
+            }
+        });
         fixLoader();
         </script>
     </body>
