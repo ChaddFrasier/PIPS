@@ -3,15 +3,14 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 06/23/19
- * Version: 2.2.1
+ * Date Last Modified: 07/17/19
+ * Version: 2.3.1
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
+ * 
+ * @todo image manipulation using jimp or other module
+ * @todo refactor and clean unused variables in functions
  */
-
- // TODO: parse new data strings into the table tag format in the writer.ejs file
- // TODO: image manipulation using jimp or other module
- // TODO: refactor and clean unused variables in functions
 
 
 // require dependencies
@@ -23,18 +22,15 @@ var Promises = require('bluebird');
 module.exports = {
     /**
      * 
-     * @param {string} cubeName 
-     * @param {string} filepath 
-     * @param {string} returnPath 
-     * @param {string} imagePath 
+     * @param {string} cubeName name of the file for analysis
+     * @param {string} filepath the path to said file
+     * @param {string} returnPath path to return the values from ISIS3
+     * @param {string} imagePath path where the image should be saved
      * 
      * @function calls the isis commands using promises to ensure the processes are finished
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
         return new Promise(function(resolve){
-            console.log('filepath: ' + filepath);
-            console.log('returnpath: ' + returnPath);
-
             // array of promises to resolve
             let promises = [];
             // call the isis commands
@@ -50,7 +46,7 @@ module.exports = {
 
     /**
      * 
-     * @param {string} cubeName
+     * @param {string} cubeName name of the cube to be analyzed
      * 
      * @function takes the cube used and runs the pvl data extraction algorithm 
      */
@@ -71,13 +67,19 @@ module.exports = {
     },
     
 
-    addCubeToArray: function(cubeObj,cubeArray){
-        // if the array is empty add object
+    /**
+     * 
+     * @param {Cube Object} cubeObj cube object to be added
+     * @param {array} cubeArray array of cube objects.
+     * 
+     * @function  scans through the array and adds the element if it is not already there
+     */
+    addCubeToArray: function(cubeObj, cubeArray){
+        // if the array is empty add object to array
         if(cubeArray.length === 0){
             cubeArray.push(cubeObj);
             return cubeArray;
         }
-        
         else{
             // otherwise check to see if the current cubeObj.name is already in the array
             for(var index = 0; index < cubeArray.length; index++){
@@ -95,12 +97,14 @@ module.exports = {
 
     /**
      * 
-     * @param {string} findObj 
-     * @param {Cube array} cubeArray 
+     * @param {string} findObj name of cube to be found in array
+     * @param {Cube array} cubeArray array to be searched
      * 
-     * @returns 0 if array is empty
-     * @returns -1 if item not found
-     * @returns Cube Object that matches findObj
+     * @function retrieves object that is being searched if it can; return 0 if array is empty , -1 if not found
+     * 
+     * @returns {number} 0 if array is empty
+     * @returns {number} -1 if item not found
+     * @returns {Cube Object}Cube Object that matches findObj
      */
     getObjectFromArray: function(findObj,cubeArray){
         // if the array is empty return 0
@@ -122,6 +126,12 @@ module.exports = {
 
 
 
+    /**
+     * 
+     * @param {JSON string} cubeData the stringify'ed version of the data to be converted
+     * 
+     * @function converts data from JSON string to csv string
+     */
     getCSV: function(cubeData){
         // parse the object for easy looping
         cubeData = JSON.parse(cubeData);
@@ -139,7 +149,7 @@ module.exports = {
      * 
      * @param {string} cfgString the whole config file string
      * 
-     * @function this method creates and returns an array of tags from the cfg file
+     * @function creates and returns an array of tags from the cfg file
      */
     configServer: function(cfgString){
         // break the file data by newline
@@ -158,8 +168,8 @@ module.exports = {
 
     /**
      * 
-     * @param {json} cubeFileData 
-     * @param {array} importantTagArr
+     * @param {JSON string} cubeFileData stringify'ed version of cube data
+     * @param {array} importantTagArr important tags array that need to be filled
      * 
      * @function takes important tag array and extracts data if it exists returns none otherwise 
      */
@@ -189,13 +199,14 @@ module.exports = {
     },
 
     /**
- * 
- * @param {string} cubeName 
- * @param {string} format 
- * @returns {string} image name
- * 
- * @function This function takes the file extension off of he cube file and makes it a png.
- */
+     * 
+     * @param {string} cubeName name of the cube file
+     * @param {string} format format that the image should be generated to
+     *
+     * @returns {string} the name of the image to be saved based on cube
+     * 
+     * @function  takes the file extension off of he cube file and makes it a png.
+     */
     getimagename: function(cubeName, format){
         // get an array of peieces of the filename
         let namearr = cubeName.toString().split('.');
@@ -210,7 +221,7 @@ module.exports = {
 // local functions
 /**
  * 
- * @param {string} testValue 
+ * @param {string} testValue  value to check if it a cube hearder keyword
  * 
  * @function tests if the value is a header for the isis data
  */
@@ -229,10 +240,10 @@ var testHeader = function(testValue){
 
 /**
  * 
- * @param {string} name 
- * @param {string} str 
+ * @param {string} name  name of the current tag
+ * @param {string} str string to add to the tag
  * 
- * @function returns the name combined in the proper object order
+ * @function combines tags to make keys for JSON object
  */
 var combineName = function(name, str=undefined){
     // if str is not defined just return the name trimmed
@@ -250,9 +261,9 @@ var combineName = function(name, str=undefined){
 
 /**
  * 
- * @param {string} name  
+ * @param {string} name current name to be shortened by 1 string
  * 
- * @function returns the name with the last added element replaced
+ * @function removes last added element
  */
 var shortenName = function(name){
     // splits the name strig into an array a parts 
@@ -273,11 +284,12 @@ var shortenName = function(name){
 
 /**
  * 
- * @param {string} cubeName 
- * @param {string} filepath 
- * @param {string} returnPath 
- * @param {string} imagePath 
- * @return {int} error codes
+ * @param {string} cubeName name of the cube file 
+ * @param {string} filepath path to the cube file on server
+ * @param {string} returnPath path to return file on server
+ * @param {string} imagePath path to image on server
+ *
+ *  @return {int} error codes
  * 
  * @function this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
@@ -287,6 +299,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+        // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
         // run the isis commands
@@ -308,9 +321,9 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 
 /**
  * 
- * @param {string} imagename 
- * @param {string} filepath 
- * @param {string} imagePath 
+ * @param {string} imagename name of the image
+ * @param {string} filepath path to the cube file on the server
+ * @param {string} imagePath path where image should be saved
  * 
  * @function calls the isis image conversion on the given cube
  */
@@ -332,10 +345,10 @@ var imageExtraction = function(imagename, filepath, imagePath){
 
 /**
  * 
- * @param {string} cubeName 
- * @param {string} filepath 
- * @param {string} returnPath 
- * @param {string} isisCall 
+ * @param {string} cubeName name of cube file to run on
+ * @param {string} filepath path to the cube file
+ * @param {string} returnPath path to the return pvl
+ * @param {string} isisCall isis command that is going to be run
  * 
  * @function makes the exec call to run isis commands
  */
@@ -358,10 +371,9 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
  
 /**
  * 
- * @param {string} nameString 
+ * @param {string} nameString tag to be checked for End keywords
  * 
- * @function determins true false if the 
- * line is in the end object group
+ * @function determines if the line is one of the End keywords
  */
 var endTag = function(nameString){
     let arr = ['End_Object','End_Group'];

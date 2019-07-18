@@ -1,13 +1,20 @@
-
+/**
+ * @author Chadd Frasier
+ * 
+ * @class lass if for ISIS3 Cubes 
+ * 
+ * @constructor cubeName
+ * 
+ * @description this will make the Orion Writer much easier to manage with the help of client side cookies
+ */
 module.exports = class Cube{
     /**
      * 
-     * @param {sting} cubeName 
+     * @param {sting} cubeName name of the cube to be contructed into an object.
      */
     constructor(cubeName){
         this._cubeName = cubeName;
-        
-        // create JSON elements
+        // init JSON elements
         this._data = {};
         this._impData = {};
     }
@@ -15,7 +22,7 @@ module.exports = class Cube{
     /**
      * @param void
      * 
-     * get cubeName
+     * @function return cubeName.
      */
     get name(){
         return this._cubeName;
@@ -24,6 +31,7 @@ module.exports = class Cube{
     /**
      * 
      * @param void 
+     * @function get data as stringify'ed JSON.
      */
     get data(){
         return JSON.stringify(this._data);    
@@ -32,24 +40,26 @@ module.exports = class Cube{
     /**
      * 
      * @param void 
+     * 
+     * @function get important data as stringify'ed JSON.
      */
     get impData(){
         return JSON.stringify(this._impData);    
     }
 
     /**
-     * @param {JSON} data     
+     * @param {JSON} data data to be set. 
      *  
-     * append json object in this cube object
+     * @function set json object in this cube object.
      */
     set data(data){
         this._data = data;
     }
 
      /**
-     * @param {JSON} data     
+     * @param {JSON} data data to be set.
      *  
-     * append json object in this cube object
+     * @function add important json object in this cube object.
      */
     set impData(data){
         this._impData = data;
