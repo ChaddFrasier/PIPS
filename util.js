@@ -16,6 +16,7 @@
 // require dependencies
 var exec = require('child_process').exec;
 var path = require('path');
+var jimp = require('jimp');
 var Promises = require('bluebird');
 
 // exportable functions
@@ -66,6 +67,42 @@ module.exports = {
         });
     },
     
+
+    findImageLocation: function(cookieval){
+        return path.join('images', cookieval.replace('.cub','.png'));
+    },
+
+
+    calculateCrop: function(cropArray){
+        console.log(cropArray.toString());
+
+        let start_x = Number(cropArray[0]);
+        let start_y = Number(cropArray[1]);
+
+        let width = Number(cropArray[2]) - start_x;
+        let heigth = Number(cropArray[3]) - start_y;
+
+        cropArray[2] = width;
+        cropArray[3] = heigth;
+
+        return cropArray;
+
+    },
+
+
+    cropImage: async function(imageLink,cropArray){
+        const cubeImage = await jimp.read(imageLink);
+        var returnImage;
+        await cubeImage.crop(parseInt(cropArray[0]),parseInt(cropArray[1]),parseInt(cropArray[2]),parseInt(cropArray[3]),function(err){
+            if(err) throw err;
+            returnImage = newImageName(imageLink);
+
+        })
+        .write(returnImage);
+        return returnImage;
+    },
+
+
 
     /**
      * 
@@ -479,4 +516,14 @@ var processFile = function(inputFile, cubeName){
             resolve(JSON.stringify(cubeData));
         });    
     });
+}
+
+var newImageName = function(imageLink){
+    let imagename = imageLink.split('/');
+
+    imagename = imagename[imagename.length-1];
+
+    let newImageName = imagename.replace('.png','_crop') + '.png';
+
+    return path.join('jimp',newImageName);
 }

@@ -91,7 +91,7 @@
 
         <form class="lg-form text-center float-right">
             <div class="form-group">
-                <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="template.txt">Download
+                <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
                     Caption</a>
             </div>
         </form>
@@ -191,13 +191,15 @@
             //set the innerHTML for the last(output) textarea
             var output = document.getElementById("template-text-output").innerHTML = tempText;
             
+
             //Download all contents in this textarea
             var finalResult = output;
             var tpl = document.getElementById("link");
             tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
             tpl.target = '_blank';
-            tpl.download = 'exportTPL.txt';
+            tpl.download = '<%=outputName%>';
         }
+
         function showMoreTags() {
             var val = document.getElementById("button-more-tags").innerHTML;
             var textArea = document.getElementById("test");

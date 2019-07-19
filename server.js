@@ -54,6 +54,7 @@ const path = require('path');
 const jimp = require('jimp');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 
 // include custom utility functions
@@ -78,6 +79,7 @@ app.use("/images" , express.static("images"));
 app.use("/csv" , express.static("csv"));
 app.use("/js" , express.static("js"));
 app.use("/tpl" , express.static("tpl"));
+app.use("/jimp", express.static("jimp"));
 app.use("/pvl " , express.static("pvl"));
 
 // start view engine
@@ -270,6 +272,10 @@ app.post('/upload', function(request, response){
 
                     // get name of csv and write it to the csv folder
                     let csvFilename = cubeObj.name.replace('.cub','.csv');
+
+                    // get name of possible output
+                    let txtFilename = cubeObj.name.replace('.cub','_Orion_caption.txt');
+
                     fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
 
                     // send response w/ all variables
@@ -277,7 +283,8 @@ app.post('/upload', function(request, response){
                         { templateText: templateText, 
                         dictionaryString: impDataString,
                         wholeData: cubeObj.data,
-                        csvString: csv }); 
+                        csvString: csv,
+                        outputName: txtFilename}); 
 
                 }).catch(function(err){
                     // catch any promise error
@@ -434,6 +441,43 @@ app.post('/showImage', function(request, response){
     }
     // render image page with needed data
     response.render("imagePage.ejs", {image:imagepath, tagField: data});
+});
+
+
+app.post('/crop', async function(request,response){
+    console.log(request.url);
+
+    let arrayString = request.query.cropArray;
+    let pxArray = arrayString.split(',');
+
+    
+    var cookieval = request.cookies['cubeFile'];
+    
+    var imageLocation = util.findImageLocation(cookieval);
+
+    pxArray = util.calculateCrop(pxArray);
+
+    var newImage = await util.cropImage(imageLocation, pxArray);
+
+  
+    // search for data in array given by user cookie
+    data = util.getObjectFromArray(cookieval, cubeArray);
+
+    
+    // if the data val is an error code then fail
+    if(data < 1){
+        console.log('Object Serch Failed');
+        data = 'NONE';
+    }else{
+        // otherwise load the important data from the active object array into data variable
+        data = data.impData;
+    }
+    // perform the crop actions
+    //TODO
+    console.log(data);
+    console.log(newImage);
+
+    response.render('imagePage.ejs',{image:newImage, tagField: data});
 });
 
 

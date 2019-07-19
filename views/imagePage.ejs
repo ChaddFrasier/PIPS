@@ -1,4 +1,3 @@
-<!doctype html>
 <html>
 
 <head>
@@ -28,6 +27,10 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
+        }
+
+        .image-image:hover {
+        cursor: crosshair;
         }
 
         .image-controls{
@@ -104,11 +107,49 @@
         </label>
         <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
     </div>
-                                                                                        
-    <div class="image-editer">
-            <img class="image-image" src="<%= image %>">
-    </div>
+              
 
+    <div class="image-editor">
+        <img id="trackMouse" alt="" class="image-image" src="<%= image %>" width="auto" height="auto">
+    </div>
+    
+    <script>
+
+        // mouse click captures pixel coordinates on image
+        $(document).ready(function() {
+            $("img").on("click", function(event) {
+                var x = event.pageX - this.offsetLeft;
+                var y = event.pageY - this.offsetTop;
+                
+                captureClick(x,y);
+                
+                if(clickArray.length === 2){
+
+                    let arrayStr = clickArray.toString();
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://localhost:8080/crop?cropArray=' + arrayStr,
+                        success: function(response) { 
+                            $("html").html(response);
+                        },
+                        error: function(xhr, status, err) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }    
+            });
+        });
+
+        var clickArray = [];
+
+        function captureClick(x,y){
+            clickArray.push([x,y]);
+
+            for(let i=0;i<clickArray.length;i++){
+                console.log(clickArray[i]);
+            }
+        }
+    </script>
     <br/>
 
     <div class="float-center text-center" style="margin-left: auto; margin-right: auto;" >
@@ -226,8 +267,9 @@
     var vals = [];
     // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
     function getMetadata() {
-        
-        console.log("metadata");
+        //TODO parse the metadata
+
+
         //console.log(vals);
     }
     getMetadata();
@@ -373,5 +415,8 @@
             }
         }
     }
+
 </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </body>
