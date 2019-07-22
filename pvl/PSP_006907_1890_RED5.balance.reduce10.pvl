@@ -67930,3 +67930,4998 @@ Group = POWER_PARAMETERS
   MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
 End_Group
 End
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 128
+
+    Group = Dimensions
+      Samples = 205
+      Lines   = 8000
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = SignedWord
+      ByteOrder  = Lsb
+      Base       = 0.74982829408263
+      Multiplier = 2.28941223156642e-05
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName              = "MARS RECONNAISSANCE ORBITER"
+    InstrumentId                = HIRISE
+    TargetName                  = Mars
+    StartTime                   = 2008-01-16T15:52:50.571
+    StopTime                    = 2008-01-16T15:52:57.596
+    ObservationStartCount       = 884965990:11081
+    SpacecraftClockStartCount   = 884965990:20076
+    SpacecraftClockStopCount    = 884965997:21715
+    ReadoutStartCount           = 884966356:07730
+    CalibrationStartTime        = 2008-01-16T15:52:50.556
+    CalibrationStartCount       = 884965990:19110
+    AnalogPowerStartTime        = 2008-01-16T15:49:31.089
+    AnalogPowerStartCount       = 884965790:54069
+    MissionPhaseName            = "PRIMARY SCIENCE PHASE"
+    LineExposureDuration        = 87.8125 <MICROSECONDS>
+    ScanExposureDuration        = 87.8125 <MICROSECONDS>
+    DeltaLineTimerCount         = 221
+    Summing                     = 1
+    Tdi                         = 128
+    FocusPositionCount          = 2023
+    PoweredCpmmFlag             = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    CpmmNumber                  = 8
+    CcdId                       = RED5
+    ChannelNumber               = 2
+    LookupTableType             = Stored
+    LookupTableNumber           = 17
+    LookupTableMinimum          = -9998
+    LookupTableMaximum          = -9998
+    LookupTableMedian           = -9998
+    LookupTableKValue           = -9998
+    StimulationLampFlag         = (Off, Off, Off)
+    HeaterControlFlag           = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    OptBnchFlexureTemperature   = 19.5881 <C>
+    OptBnchMirrorTemperature    = 20.1949 <C>
+    OptBnchFoldFlatTemperature  = 19.9348 <C>
+    OptBnchFpaTemperature       = 19.9348 <C>
+    OptBnchFpeTemperature       = 19.8482 <C>
+    OptBnchLivingRmTemperature  = 19.5881 <C>
+    OptBnchBoxBeamTemperature   = 19.9348 <C>
+    OptBnchCoverTemperature     = 19.9348 <C>
+    FieldStopTemperature        = 18.2017 <C>
+    FpaPositiveYTemperature     = 21.8425 <C>
+    FpaNegativeYTemperature     = 21.5823 <C>
+    FpeTemperature              = 19.1548 <C>
+    PrimaryMirrorMntTemperature = 19.5015 <C>
+    PrimaryMirrorTemperature    = 19.6748 <C>
+    PrimaryMirrorBafTemperature = 1.61905 <C>
+    MsTrussLeg0ATemperature     = 19.5015 <C>
+    MsTrussLeg0BTemperature     = 19.7615 <C>
+    MsTrussLeg120ATemperature   = 19.1548 <C>
+    MsTrussLeg120BTemperature   = 19.8482 <C>
+    MsTrussLeg240ATemperature   = 20.0215 <C>
+    MsTrussLeg240BTemperature   = 20.3683 <C>
+    BarrelBaffleTemperature     = -15.9678 <C>
+    SunShadeTemperature         = -31.8154 <C>
+    SpiderLeg30Temperature      = 9.63837 <C>
+    SpiderLeg120Temperature     = -9999
+    SpiderLeg240Temperature     = -9999
+    SecMirrorMtrRngTemperature  = 19.5881 <C>
+    SecMirrorTemperature        = 19.9348 <C>
+    SecMirrorBaffleTemperature  = -13.0597 <C>
+    IeaTemperature              = 27.1384 <C>
+    FocusMotorTemperature       = 21.1487 <C>
+    IePwsBoardTemperature       = 25.9367 <C>
+    CpmmPwsBoardTemperature     = 33.7954 <C>
+    MechTlmBoardTemperature     = 36.3395 <C>
+    InstContBoardTemperature    = 36.0642 <C>
+    DllLockedFlag               = (YES, YES)
+    DllResetCount               = 0
+    DllLockedOnceFlag           = (YES, YES)
+    DllFrequenceCorrectCount    = 4
+    ADCTimingSetting            = -9999
+    Unlutted                    = TRUE
+    StitchedChannels            = (0, 1)
+    StitchedProductIds          = (PSP_006907_1890_RED5_1,
+                                   PSP_006907_1890_RED5_0)
+    Special_Processing_Flag     = CUBENORM
+  End_Group
+
+  Group = Archive
+    DataSetId              = MRO-M-HIRISE-2-EDR-V1.0
+    ProducerId             = UA
+    ObservationId          = PSP_006907_1890
+    ProductId              = PSP_006907_1890_RED5_1
+    ProductVersionId       = 1.0
+    EdrProductCreationTime = 2008-01-17T23:48:31
+    RationaleDescription   = Null
+    OrbitNumber            = 6907
+    SoftwareName           = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                              01:05:33)"
+    ObservationStartTime   = 2008-01-16T15:52:50.433
+    ReadoutStartTime       = 2008-01-16T15:58:56.382
+    TrimLines              = 1214
+    FelicsCompressionFlag  = YES
+    IdFlightSoftwareName   = IE_FSW_V4
+  End_Group
+
+  Group = BandBin
+    Name   = Red
+    Center = 700 <NANOMETERS>
+    Width  = 300 <NANOMETERS>
+  End_Group
+
+  Group = Kernels
+    NaifIkCode          = -74699
+    LeapSecond          = $base/kernels/lsk/naif0008.tls
+    TargetAttitudeShape = $base/kernels/pck/pck00008.tpc
+    TargetPosition      = Table
+    InstrumentPointing  = Table
+    Instrument          = Null
+    SpacecraftClock     = $mro/kernels/sclk/MRO_SCLKSCET.00022.65536.tsc
+    InstrumentPosition  = Table
+    InstrumentAddendum  = $mro/kernels/iak/hiriseAddendum003.ti
+    ShapeModel          = /HiRISE/Data/NAIF/molaDTM/molaMarsPlanetaryRadius_H-
+                          iRISE.cub
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 2048
+    AlphaLines          = 80000
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 205.5
+    AlphaEndingLine     = 8000.5
+    BetaSamples         = 205
+    BetaLines           = 8000
+  End_Group
+
+  Group = RadiometricCalibration
+    Name                 = hiclean2
+    Version              = 1.4.1
+    Compatability        = "Alan D. clean.pro,  version 2/29 sep 2006"
+    Revision             = "$Revision: 1.2 $"
+    MaskStartingRow      = 21
+    MaskEndingRow        = 38
+    BadMaskPixels        = 0
+    MaskInducedNulls     = 0
+    DarkOption           = DERIVED
+    DarkStartingColumn   = 4
+    DarkEndingColumn     = 11
+    DarkMedian           = 14.643939393939
+    BadDarkPixels        = 0
+    DarkInducedNulls     = 0
+    LastGoodLine         = 80000
+
+    /* Hical application parameters                                  */
+    /* odn = ((idn/ScanExposureDuration - B) * A) * G / IFCorrection */
+    ProgramName          = hical
+    HicalVersion         = 1.0
+    HicalRevision        = "$Revision: 1.4 $"
+    HicalConfiguration   = $mro/calibration/hical.0001.conf
+    Profile              = HiMatrices+[RED]
+    A                    = $mro/calibration/matrices/A_TDI128_BIN1_0002.cub+12
+    B                    = $mro/calibration/matrices/B_TDI128_BIN1_0002.cub+12
+    G                    = $mro/calibration/matrices/G_TDI128_BIN1_0000.cub+12
+    FilterGainCorrection = 175613029.0
+    IFTdiBinFactor       = 1.0
+    ScanExposureDuration = 87.8125
+    SunDistance          = 1.6010852343774 <AU>
+    SolarConstant        = 0.87771518783589
+    IFCorrection         = 154.13822273517
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Ancillary"
+  StartByte = 4194305
+  Bytes     = 20160
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Image"
+  StartByte = 4214465
+  Bytes     = 688128
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = Calibration
+    Type = Integer
+    Size = 1024
+  End_Group
+End_Object
+
+Object = Table
+  Name        = "HiRISE Ancillary"
+  StartByte   = 4902593
+  Bytes       = 9600000
+  Records     = 80000
+  ByteOrder   = Lsb
+  Association = Lines
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPointing
+  StartByte   = 14502593
+  Bytes       = 3200040
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = ($mro/kernels/fk/mro_v08.tf,
+                 $mro/kernels/ck/mro_sc_psp_080115_080121.bc)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPosition
+  StartByte   = 17702633
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $mro/kernels/spk/spk_psp_rec06968_06867_06968_r-v1.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name           = BodyRotation
+  StartByte      = 20262665
+  Bytes          = 3200040
+  Records        = 80001
+  ByteOrder      = Lsb
+  Description    = "Created by spiceinit"
+  Kernels        = ($base/kernels/spk/de405.bsp,
+                    $base/kernels/pck/pck00008.tpc)
+  SolarLongitude = 18.436689424944
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = SunPosition
+  StartByte   = 23462705
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 26052947
+  Bytes     = 8606
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 26022737
+  Bytes     = 30210
+End_Object
+End
+PDS_VERSION_ID                 = PDS3
+
+/* File structure:                                                       */
+/* This file contains an unstructured byte stream.                       */
+/* The UNDEFINED RECORD_TYPE is used to meet PDS standards requirements. */
+/* A label "record" is actually a single byte.                           */
+RECORD_TYPE                    = UNDEFINED
+
+/* Locations of Data Objects in the file.                */
+/* >>> CAUTION <<< The first byte is location 1 (not 0)! */
+LABEL_RECORDS                  = 32768 <BYTES>
+^SCIENCE_CHANNEL_TABLE         = 32769 <BYTES>
+^LOOKUP_TABLE                  = 33569 <BYTES>
+^CPMM_ENGINEERING_TABLE        = 49953 <BYTES>
+^CALIBRATION_LINE_PREFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_LINE_SUFFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_IMAGE             = 50013 <BYTES>
+^LINE_PREFIX_TABLE             = 227757 <BYTES>
+^LINE_SUFFIX_TABLE             = 227757 <BYTES>
+^IMAGE                         = 227757 <BYTES>
+^GAP_TABLE                     = 84867757 <BYTES>
+
+/* Identification information. */
+DATA_SET_ID                    = MRO-M-HIRISE-2-EDR-V1.0
+DATA_SET_NAME                  = "MRO MARS HIGH RESOLUTION IMAGING SCIENCE
+                                  EXPERIMENT EDR V1.0"
+PRODUCER_INSTITUTION_NAME      = "UNIVERSITY OF ARIZONA"
+PRODUCER_ID                    = UA
+PRODUCER_FULL_NAME             = "ALFRED MCEWEN"
+OBSERVATION_ID                 = PSP_006907_1890
+MRO:COMMANDED_ID               = PSP_006907_1890
+PRODUCT_ID                     = PSP_006907_1890_RED5_1
+PRODUCT_VERSION_ID             = 1.0
+SOURCE_FILE_NAME               = 4A_01_486BED7A00_08_1_01.DAT
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"
+INSTRUMENT_HOST_ID             = MRO
+INSTRUMENT_NAME                = "HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+INSTRUMENT_ID                  = HIRISE
+TARGET_NAME                    = MARS
+MISSION_PHASE_NAME             = "PRIMARY SCIENCE PHASE"
+ORBIT_NUMBER                   = 6907
+RATIONALE_DESC                 = "Impact crater along the margin of Athabasca
+                                  Vallis"
+SOFTWARE_NAME                  = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                                  01:05:33)"
+FLIGHT_SOFTWARE_VERSION_ID     = IE_FSW_V4
+
+/* Science Channel Header Observation Data Component description. */
+Object = SCIENCE_CHANNEL_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 184
+  ROW_BYTES          = 800
+  DESCRIPTION        = "The Science Channel Table contains engineering fields
+                        describing the operating state and commanding of the
+                        HiRISE observation. For detailed information about the
+                        contents and organization of this observation data
+                        component, refer to the SCIENCE_CHANNEL_TABLE.FMT
+                        file."
+  ^STRUCTURE         = SCIENCE_CHANNEL_TABLE.FMT
+End_Object
+
+/* Lookup Table Observation Data Component description. */
+Object = LOOKUP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 16384
+  COLUMNS            = 1
+  ROW_BYTES          = 1
+  DESCRIPTION        = "The Lookup Table (LUT) defines the translation of
+                        14-bit input pixels to 8-bit output pixels. The table
+                        has one column and 16384 rows, one for each input DN
+                        value. The first entry of the table refers to the 8-bit
+                        output value for the input pixel value 0."
+
+  Object = COLUMN
+    NAME        = "Output Data Value"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 1
+    DESCRIPTION = "The rows represent the 8-bit output pixel value for each
+                   14-bit input pixel. The first row contains the 8-bit pixel
+                   value corresponding to the input DN value of 0. Each
+                   subsequent row corresponds to the 8-bit output pixel of the
+                   next input DN value."
+  End_Object
+End_Object
+
+/* CPMM Engineering Header Observation Data Component description. */
+Object = CPMM_ENGINEERING_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 8
+  ROW_BYTES          = 60
+  DESCRIPTION        = "The CPMM Engineering Table contains engineering fields
+                        used by the CCD Processing and Memory Module (CPMM) in
+                        commanding the CCD during the observation. For detailed
+                        information about the contents and organization of this
+                        observation data component, refer to the
+                        CPMM_ENGINEERING_TABLE.FMT file."
+  ^STRUCTURE         = CPMM_ENGINEERING_TABLE.FMT
+End_Object
+
+/* Calibration Image Data Line Prefix description. */
+Object = CALIBRATION_LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 0."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Calibration Image Data Line Suffix description. */
+Object = CALIBRATION_LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Calibration Image Data Description. */
+Object = CALIBRATION_IMAGE
+  LINES             = 168
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "The calibration image results from passing unexposed
+                       pixels through the instrument electronics. This records
+                       the instrument fixed noise signature that can be used to
+                       correct the observational data."
+End_Object
+
+/* Image data line prefix description. */
+Object = LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 168."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Image data line suffix description. */
+Object = LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Image data description. */
+Object = IMAGE
+  LINES             = 80000
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "Observation image data."
+End_Object
+
+/* Gap Table description. */
+Object = GAP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 0
+  COLUMNS            = 2
+  ROW_BYTES          = 8
+  DESCRIPTION        = "The Gap Table identifies the location of gap byte
+                        value (0xFF) segments in the file as a set of [start,
+                        end) range pairs."
+
+  Object = COLUMN
+    NAME        = "Range Start"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the start byte (inclusive) of the gap segment."
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Range End"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 5
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the end byte (exclusive) of the range."
+  End_Object
+End_Object
+
+/* Observation timing events.                                           */
+/* All xxx_COUNT values are for the MRO spacecraft clock (SCLK)         */
+/* in seconds:subseconds form. A subsecond tick = 15.2588 microseconds. */
+/* All xxx_TIME values are referenced to UTC.                           */
+/* To obtain the most accurate results from time values                 */
+/* use the xxx_COUNT values with the latest SPICE kernels               */
+/* obtained from ftp://naif.jpl.nasa.gov/pub/naif/MRO/kernels.          */
+Group = TIME_PARAMETERS
+  /* Time when power to the CPMM units was applied. */
+  MRO:ANALOG_POWER_START_TIME  = 2008-01-16T15:49:31.089
+  MRO:ANALOG_POWER_START_COUNT = 884965790:54069
+
+  /* Time when the observation first started. */
+  MRO:OBSERVATION_START_TIME   = 2008-01-16T15:52:50.433
+  MRO:OBSERVATION_START_COUNT  = 884965990:11081
+
+  /* Time at the beginning of the first calibration image line. */
+  MRO:CALIBRATION_START_TIME   = 2008-01-16T15:52:50.556
+  MRO:CALIBRATION_START_COUNT  = 884965990:19110
+
+  /* Time at the beginning of the first target image line. */
+  START_TIME                   = 2008-01-16T15:52:50.571
+  SPACECRAFT_CLOCK_START_COUNT = 884965990:20076
+
+  /* Time at the end of the last target image line. */
+  STOP_TIME                    = 2008-01-16T15:52:57.596
+  SPACECRAFT_CLOCK_STOP_COUNT  = 884965997:21715
+
+  /* Time when the CPMM readout started. */
+  MRO:READOUT_START_TIME       = 2008-01-16T15:58:56.382
+  MRO:READOUT_START_COUNT      = 884966356:07730
+
+  /* Time when this EDR product was created. */
+  PRODUCT_CREATION_TIME        = 2008-01-17T23:48:31
+End_Group
+
+/* Instrument settings. */
+Group = INSTRUMENT_SETTING_PARAMETERS
+  MRO:CPMM_NUMBER                 = 8
+  MRO:CHANNEL_NUMBER              = 1
+  FILTER_NAME                     = RED
+  CENTER_FILTER_WAVELENGTH        = 700 <NANOMETERS>
+  BANDWIDTH                       = 300 <NANOMETERS>
+  MRO:SCAN_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:LINE_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:IMAGE_EXPOSURE_DURATION     = 7039752.5000 <MICROSECONDS>
+  MRO:DELTA_LINE_TIMER_COUNT      = 221
+  MRO:POWERED_CPMM_FLAG           = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:BINNING                     = 1
+  MRO:TDI                         = 128
+  MRO:TRIM_LINES                  = 1214
+  MRO:FOCUS_POSITION_COUNT        = 2023
+  MRO:FELICS_COMPRESSION_FLAG     = YES
+  MRO:STIMULATION_LAMP_FLAG       = (OFF, OFF, OFF)
+  MRO:HEATER_CONTROL_MODE         = "CLOSED LOOP"
+  MRO:HEATER_CONTROL_FLAG         = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:LOOKUP_TABLE_TYPE           = STORED
+  MRO:LOOKUP_TABLE_MINIMUM        = -9998
+  MRO:LOOKUP_TABLE_MAXIMUM        = -9998
+  MRO:LOOKUP_TABLE_MEDIAN         = -9998
+  MRO:LOOKUP_TABLE_K_VALUE        = -9998
+  MRO:LOOKUP_TABLE_NUMBER         = 17
+
+  /* This table provides a reverse mapping                      */
+  /* from 8-bit EDR image data back to 14-bit observation data. */
+  /* Each node of the map is the (lower, upper) inclusive range */
+  /* of the original 14-bit observation value                   */
+  /* that was translated to the 8-bit image value               */
+  /* corresponding to the node number (first node = 0).         */
+  /* Unused image values have the special range (-9998, -9998). */
+  /* A special ((0, 0)) map indicates that no LUT was applied.  */
+  MRO:LOOKUP_CONVERSION_TABLE     = ((0, 1107), (1108, 1122), (1123, 1137),
+                                     (1138, 1153), (1154, 1168), (1169, 1183),
+                                     (1184, 1198), (1199, 1213), (1214, 1228),
+                                     (1229, 1243), (1244, 1259), (1260, 1274),
+                                     (1275, 1289), (1290, 1304), (1305, 1319),
+                                     (1320, 1334), (1335, 1349), (1350, 1365),
+                                     (1366, 1380), (1381, 1395), (1396, 1410),
+                                     (1411, 1425), (1426, 1440), (1441, 1456),
+                                     (1457, 1471), (1472, 1486), (1487, 1501),
+                                     (1502, 1516), (1517, 1531), (1532, 1546),
+                                     (1547, 1562), (1563, 1577), (1578, 1592),
+                                     (1593, 1612), (1613, 1638), (1639, 1664),
+                                     (1665, 1690), (1691, 1715), (1716, 1741),
+                                     (1742, 1767), (1768, 1793), (1794, 1818),
+                                     (1819, 1844), (1845, 1870), (1871, 1896),
+                                     (1897, 1921), (1922, 1947), (1948, 1973),
+                                     (1974, 1999), (2000, 2024), (2025, 2050),
+                                     (2051, 2076), (2077, 2102), (2103, 2127),
+                                     (2128, 2153), (2154, 2179), (2180, 2205),
+                                     (2206, 2230), (2231, 2256), (2257, 2282),
+                                     (2283, 2308), (2309, 2333), (2334, 2359),
+                                     (2360, 2385), (2386, 2411), (2412, 2436),
+                                     (2437, 2462), (2463, 2488), (2489, 2514),
+                                     (2515, 2539), (2540, 2565), (2566, 2591),
+                                     (2592, 2617), (2618, 2642), (2643, 2668),
+                                     (2669, 2694), (2695, 2720), (2721, 2745),
+                                     (2746, 2771), (2772, 2797), (2798, 2823),
+                                     (2824, 2848), (2849, 2874), (2875, 2900),
+                                     (2901, 2926), (2927, 2951), (2952, 2977),
+                                     (2978, 3003), (3004, 3029), (3030, 3055),
+                                     (3056, 3082), (3083, 3109), (3110, 3136),
+                                     (3137, 3163), (3164, 3190), (3191, 3217),
+                                     (3218, 3244), (3245, 3271), (3272, 3297),
+                                     (3298, 3324), (3325, 3351), (3352, 3378),
+                                     (3379, 3405), (3406, 3432), (3433, 3459),
+                                     (3460, 3486), (3487, 3513), (3514, 3540),
+                                     (3541, 3567), (3568, 3594), (3595, 3621),
+                                     (3622, 3648), (3649, 3675), (3676, 3702),
+                                     (3703, 3729), (3730, 3756), (3757, 3782),
+                                     (3783, 3809), (3810, 3836), (3837, 3863),
+                                     (3864, 3890), (3891, 3917), (3918, 3944),
+                                     (3945, 3971), (3972, 3998), (3999, 4025),
+                                     (4026, 4052), (4053, 4079), (4080, 4106),
+                                     (4107, 4133), (4134, 4160), (4161, 4187),
+                                     (4188, 4214), (4215, 4241), (4242, 4268),
+                                     (4269, 4294), (4295, 4321), (4322, 4348),
+                                     (4349, 4375), (4376, 4402), (4403, 4429),
+                                     (4430, 4456), (4457, 4483), (4484, 4510),
+                                     (4511, 4538), (4539, 4566), (4567, 4595),
+                                     (4596, 4623), (4624, 4652), (4653, 4680),
+                                     (4681, 4709), (4710, 4737), (4738, 4766),
+                                     (4767, 4794), (4795, 4823), (4824, 4851),
+                                     (4852, 4880), (4881, 4908), (4909, 4937),
+                                     (4938, 4965), (4966, 4994), (4995, 5022),
+                                     (5023, 5051), (5052, 5079), (5080, 5108),
+                                     (5109, 5136), (5137, 5165), (5166, 5193),
+                                     (5194, 5222), (5223, 5250), (5251, 5284),
+                                     (5285, 5323), (5324, 5362), (5363, 5401),
+                                     (5402, 5440), (5441, 5479), (5480, 5518),
+                                     (5519, 5557), (5558, 5596), (5597, 5635),
+                                     (5636, 5675), (5676, 5714), (5715, 5753),
+                                     (5754, 5792), (5793, 5831), (5832, 5870),
+                                     (5871, 5909), (5910, 5948), (5949, 5987),
+                                     (5988, 6040), (6041, 6108), (6109, 6175),
+                                     (6176, 6242), (6243, 6310), (6311, 6377),
+                                     (6378, 6444), (6445, 6512), (6513, 6579),
+                                     (6580, 6646), (6647, 6714), (6715, 6781),
+                                     (6782, 6849), (6850, 6916), (6917, 6983),
+                                     (6984, 7051), (7052, 7118), (7119, 7185),
+                                     (7186, 7253), (7254, 7320), (7321, 7387),
+                                     (7388, 7455), (7456, 7535), (7536, 7627),
+                                     (7628, 7720), (7721, 7813), (7814, 7905),
+                                     (7906, 7998), (7999, 8091), (8092, 8183),
+                                     (8184, 8276), (8277, 8368), (8369, 8461),
+                                     (8462, 8554), (8555, 8646), (8647, 8739),
+                                     (8740, 8832), (8833, 8924), (8925, 9045),
+                                     (9046, 9193), (9194, 9341), (9342, 9489),
+                                     (9490, 9637), (9638, 9786), (9787, 9934),
+                                     (9935, 10082), (10083, 10230), (10231,
+                                     10378), (10379, 10558), (10559, 10770),
+                                     (10771, 10982), (10983, 11193), (11194,
+                                     11405), (11406, 11617), (11618, 11829),
+                                     (11830, 12120), (12121, 12491), (12492,
+                                     12861), (12862, 13232), (13233, 13664),
+                                     (13665, 14158), (14159, 14652), (14653,
+                                     15270), (15271, 16011), (16012, 16382),
+                                     (16383, 16383), (-9998, -9998))
+
+  /* Waveform sampling timing settings: (image, reset). */
+  MRO:ADC_TIMING_SETTINGS         = (5, 4)
+
+  /* Clocks timing locks: (first clock, second clock). */
+  MRO:DLL_LOCKED_FLAG             = (YES, YES)
+  MRO:DLL_LOCKED_ONCE_FLAG        = (YES, YES)
+  MRO:DLL_RESET_COUNT             = 0
+  MRO:DLL_FREQUENCY_CORRECT_COUNT = 4
+End_Group
+
+/* Temperature sensor readings at observation start. */
+Group = TEMPERATURE_PARAMETERS
+  MRO:OPT_BNCH_FLEXURE_TEMPERATURE   = 19.5881 <C>
+  MRO:OPT_BNCH_MIRROR_TEMPERATURE    = 20.1949 <C>
+  MRO:OPT_BNCH_FOLD_FLAT_TEMPERATURE = 19.9348 <C>
+  MRO:OPT_BNCH_FPA_TEMPERATURE       = 19.9348 <C>
+  MRO:OPT_BNCH_FPE_TEMPERATURE       = 19.8482 <C>
+  MRO:OPT_BNCH_LIVING_RM_TEMPERATURE = 19.5881 <C>
+  MRO:OPT_BNCH_BOX_BEAM_TEMPERATURE  = 19.9348 <C>
+  MRO:OPT_BNCH_COVER_TEMPERATURE     = 19.9348 <C>
+  MRO:FIELD_STOP_TEMPERATURE         = 18.2017 <C>
+  MRO:FPA_POSITIVE_Y_TEMPERATURE     = 21.8425 <C>
+  MRO:FPA_NEGATIVE_Y_TEMPERATURE     = 21.5823 <C>
+  MRO:FPE_TEMPERATURE                = 19.1548 <C>
+  MRO:PRIMARY_MIRROR_MNT_TEMPERATURE = 19.5015 <C>
+  MRO:PRIMARY_MIRROR_TEMPERATURE     = 19.6748 <C>
+  MRO:PRIMARY_MIRROR_BAF_TEMPERATURE = 1.61905 <C>
+  MRO:MS_TRUSS_LEG_0_A_TEMPERATURE   = 19.5015 <C>
+  MRO:MS_TRUSS_LEG_0_B_TEMPERATURE   = 19.7615 <C>
+  MRO:MS_TRUSS_LEG_120_A_TEMPERATURE = 19.1548 <C>
+  MRO:MS_TRUSS_LEG_120_B_TEMPERATURE = 19.8482 <C>
+  MRO:MS_TRUSS_LEG_240_A_TEMPERATURE = 20.0215 <C>
+  MRO:MS_TRUSS_LEG_240_B_TEMPERATURE = 20.3683 <C>
+  MRO:BARREL_BAFFLE_TEMPERATURE      = -15.9678 <C>
+  MRO:SUN_SHADE_TEMPERATURE          = -31.8154 <C>
+  MRO:SPIDER_LEG_30_TEMPERATURE      = 9.63837 <C>
+  MRO:SPIDER_LEG_150_TEMPERATURE     = 8.77489 <C>
+  MRO:SPIDER_LEG_270_TEMPERATURE     = 8.42958 <C>
+  MRO:SEC_MIRROR_MTR_RNG_TEMPERATURE = 19.5881 <C>
+  MRO:SEC_MIRROR_TEMPERATURE         = 19.9348 <C>
+  MRO:SEC_MIRROR_BAFFLE_TEMPERATURE  = -13.0597 <C>
+  MRO:IEA_TEMPERATURE                = 27.1384 <C>
+  MRO:FOCUS_MOTOR_TEMPERATURE        = 21.1487 <C>
+  MRO:IE_PWS_BOARD_TEMPERATURE       = 25.9367 <C>
+  MRO:CPMM_PWS_BOARD_TEMPERATURE     = 33.7954 <C>
+  MRO:MECH_TLM_BOARD_TEMPERATURE     = 36.3395 <C>
+  MRO:INST_CONT_BOARD_TEMPERATURE    = 36.0642 <C>
+End_Group
+
+/* Instrument electrical power sensor readings. */
+Group = POWER_PARAMETERS
+  MRO:CPMM_POSITIVE_29_VOLTAGE       = 29.1259 <V>
+  MRO:CPMM_POSITIVE_29_CURRENT       = 0.216379 <A>
+  MRO:CPMM_POSITIVE_10_VOLTAGE       = 9.02174 <V>
+  MRO:CPMM_POSITIVE_10_CURRENT       = 2.34761 <A>
+  MRO:CPMM_POSITIVE_5_VOLTAGE        = 5.02654 <V>
+  MRO:CPMM_POSITIVE_5_CURRENT        = 7.71226 <A>
+  MRO:CPMM_POSITIVE_3_3_VOLTAGE      = 3.31305 <V>
+  MRO:CPMM_POSITIVE_3_3_CURRENT      = 1.57623 <A>
+  MRO:CPMM_POSITIVE_2_5_VOLTAGE      = 2.50663 <V>
+  MRO:CPMM_POSITIVE_2_5_CURRENT      = 0.321714 <A>
+  MRO:CPMM_POSITIVE_1_8_VOLTAGE      = 1.81145 <V>
+  MRO:CPMM_POSITIVE_1_8_CURRENT      = 4.24284 <A>
+  MRO:CPMM_NEGATIVE_5_VOLTAGE        = -5.05424 <V>
+  MRO:CPMM_NEGATIVE_5_CURRENT        = -0.704756 <A>
+  MRO:HEATER_CURRENT                 = 0.68071 <A>
+  MRO:INST_CONT_FPGA_POS_2_5_VOLTAGE = 2.54639 <V>
+  MRO:MECH_TLM_FPGA_POS_2_5_VOLTAGE  = 2.5708 <V>
+  MRO:IEA_POSITIVE_28_VOLTAGE        = 30.7126 <V>
+  MRO:IEA_NEGATIVE_15_VOLTAGE        = -15.2894 <V>
+  MRO:IEA_POSITIVE_15_VOLTAGE        = 15.1817 <V>
+  MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
+End_Group
+End
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 128
+
+    Group = Dimensions
+      Samples = 205
+      Lines   = 8000
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = SignedWord
+      ByteOrder  = Lsb
+      Base       = 0.74982829408263
+      Multiplier = 2.28941223156642e-05
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName              = "MARS RECONNAISSANCE ORBITER"
+    InstrumentId                = HIRISE
+    TargetName                  = Mars
+    StartTime                   = 2008-01-16T15:52:50.571
+    StopTime                    = 2008-01-16T15:52:57.596
+    ObservationStartCount       = 884965990:11081
+    SpacecraftClockStartCount   = 884965990:20076
+    SpacecraftClockStopCount    = 884965997:21715
+    ReadoutStartCount           = 884966356:07730
+    CalibrationStartTime        = 2008-01-16T15:52:50.556
+    CalibrationStartCount       = 884965990:19110
+    AnalogPowerStartTime        = 2008-01-16T15:49:31.089
+    AnalogPowerStartCount       = 884965790:54069
+    MissionPhaseName            = "PRIMARY SCIENCE PHASE"
+    LineExposureDuration        = 87.8125 <MICROSECONDS>
+    ScanExposureDuration        = 87.8125 <MICROSECONDS>
+    DeltaLineTimerCount         = 221
+    Summing                     = 1
+    Tdi                         = 128
+    FocusPositionCount          = 2023
+    PoweredCpmmFlag             = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    CpmmNumber                  = 8
+    CcdId                       = RED5
+    ChannelNumber               = 2
+    LookupTableType             = Stored
+    LookupTableNumber           = 17
+    LookupTableMinimum          = -9998
+    LookupTableMaximum          = -9998
+    LookupTableMedian           = -9998
+    LookupTableKValue           = -9998
+    StimulationLampFlag         = (Off, Off, Off)
+    HeaterControlFlag           = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    OptBnchFlexureTemperature   = 19.5881 <C>
+    OptBnchMirrorTemperature    = 20.1949 <C>
+    OptBnchFoldFlatTemperature  = 19.9348 <C>
+    OptBnchFpaTemperature       = 19.9348 <C>
+    OptBnchFpeTemperature       = 19.8482 <C>
+    OptBnchLivingRmTemperature  = 19.5881 <C>
+    OptBnchBoxBeamTemperature   = 19.9348 <C>
+    OptBnchCoverTemperature     = 19.9348 <C>
+    FieldStopTemperature        = 18.2017 <C>
+    FpaPositiveYTemperature     = 21.8425 <C>
+    FpaNegativeYTemperature     = 21.5823 <C>
+    FpeTemperature              = 19.1548 <C>
+    PrimaryMirrorMntTemperature = 19.5015 <C>
+    PrimaryMirrorTemperature    = 19.6748 <C>
+    PrimaryMirrorBafTemperature = 1.61905 <C>
+    MsTrussLeg0ATemperature     = 19.5015 <C>
+    MsTrussLeg0BTemperature     = 19.7615 <C>
+    MsTrussLeg120ATemperature   = 19.1548 <C>
+    MsTrussLeg120BTemperature   = 19.8482 <C>
+    MsTrussLeg240ATemperature   = 20.0215 <C>
+    MsTrussLeg240BTemperature   = 20.3683 <C>
+    BarrelBaffleTemperature     = -15.9678 <C>
+    SunShadeTemperature         = -31.8154 <C>
+    SpiderLeg30Temperature      = 9.63837 <C>
+    SpiderLeg120Temperature     = -9999
+    SpiderLeg240Temperature     = -9999
+    SecMirrorMtrRngTemperature  = 19.5881 <C>
+    SecMirrorTemperature        = 19.9348 <C>
+    SecMirrorBaffleTemperature  = -13.0597 <C>
+    IeaTemperature              = 27.1384 <C>
+    FocusMotorTemperature       = 21.1487 <C>
+    IePwsBoardTemperature       = 25.9367 <C>
+    CpmmPwsBoardTemperature     = 33.7954 <C>
+    MechTlmBoardTemperature     = 36.3395 <C>
+    InstContBoardTemperature    = 36.0642 <C>
+    DllLockedFlag               = (YES, YES)
+    DllResetCount               = 0
+    DllLockedOnceFlag           = (YES, YES)
+    DllFrequenceCorrectCount    = 4
+    ADCTimingSetting            = -9999
+    Unlutted                    = TRUE
+    StitchedChannels            = (0, 1)
+    StitchedProductIds          = (PSP_006907_1890_RED5_1,
+                                   PSP_006907_1890_RED5_0)
+    Special_Processing_Flag     = CUBENORM
+  End_Group
+
+  Group = Archive
+    DataSetId              = MRO-M-HIRISE-2-EDR-V1.0
+    ProducerId             = UA
+    ObservationId          = PSP_006907_1890
+    ProductId              = PSP_006907_1890_RED5_1
+    ProductVersionId       = 1.0
+    EdrProductCreationTime = 2008-01-17T23:48:31
+    RationaleDescription   = Null
+    OrbitNumber            = 6907
+    SoftwareName           = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                              01:05:33)"
+    ObservationStartTime   = 2008-01-16T15:52:50.433
+    ReadoutStartTime       = 2008-01-16T15:58:56.382
+    TrimLines              = 1214
+    FelicsCompressionFlag  = YES
+    IdFlightSoftwareName   = IE_FSW_V4
+  End_Group
+
+  Group = BandBin
+    Name   = Red
+    Center = 700 <NANOMETERS>
+    Width  = 300 <NANOMETERS>
+  End_Group
+
+  Group = Kernels
+    NaifIkCode          = -74699
+    LeapSecond          = $base/kernels/lsk/naif0008.tls
+    TargetAttitudeShape = $base/kernels/pck/pck00008.tpc
+    TargetPosition      = Table
+    InstrumentPointing  = Table
+    Instrument          = Null
+    SpacecraftClock     = $mro/kernels/sclk/MRO_SCLKSCET.00022.65536.tsc
+    InstrumentPosition  = Table
+    InstrumentAddendum  = $mro/kernels/iak/hiriseAddendum003.ti
+    ShapeModel          = /HiRISE/Data/NAIF/molaDTM/molaMarsPlanetaryRadius_H-
+                          iRISE.cub
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 2048
+    AlphaLines          = 80000
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 205.5
+    AlphaEndingLine     = 8000.5
+    BetaSamples         = 205
+    BetaLines           = 8000
+  End_Group
+
+  Group = RadiometricCalibration
+    Name                 = hiclean2
+    Version              = 1.4.1
+    Compatability        = "Alan D. clean.pro,  version 2/29 sep 2006"
+    Revision             = "$Revision: 1.2 $"
+    MaskStartingRow      = 21
+    MaskEndingRow        = 38
+    BadMaskPixels        = 0
+    MaskInducedNulls     = 0
+    DarkOption           = DERIVED
+    DarkStartingColumn   = 4
+    DarkEndingColumn     = 11
+    DarkMedian           = 14.643939393939
+    BadDarkPixels        = 0
+    DarkInducedNulls     = 0
+    LastGoodLine         = 80000
+
+    /* Hical application parameters                                  */
+    /* odn = ((idn/ScanExposureDuration - B) * A) * G / IFCorrection */
+    ProgramName          = hical
+    HicalVersion         = 1.0
+    HicalRevision        = "$Revision: 1.4 $"
+    HicalConfiguration   = $mro/calibration/hical.0001.conf
+    Profile              = HiMatrices+[RED]
+    A                    = $mro/calibration/matrices/A_TDI128_BIN1_0002.cub+12
+    B                    = $mro/calibration/matrices/B_TDI128_BIN1_0002.cub+12
+    G                    = $mro/calibration/matrices/G_TDI128_BIN1_0000.cub+12
+    FilterGainCorrection = 175613029.0
+    IFTdiBinFactor       = 1.0
+    ScanExposureDuration = 87.8125
+    SunDistance          = 1.6010852343774 <AU>
+    SolarConstant        = 0.87771518783589
+    IFCorrection         = 154.13822273517
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Ancillary"
+  StartByte = 4194305
+  Bytes     = 20160
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Image"
+  StartByte = 4214465
+  Bytes     = 688128
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = Calibration
+    Type = Integer
+    Size = 1024
+  End_Group
+End_Object
+
+Object = Table
+  Name        = "HiRISE Ancillary"
+  StartByte   = 4902593
+  Bytes       = 9600000
+  Records     = 80000
+  ByteOrder   = Lsb
+  Association = Lines
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPointing
+  StartByte   = 14502593
+  Bytes       = 3200040
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = ($mro/kernels/fk/mro_v08.tf,
+                 $mro/kernels/ck/mro_sc_psp_080115_080121.bc)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPosition
+  StartByte   = 17702633
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $mro/kernels/spk/spk_psp_rec06968_06867_06968_r-v1.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name           = BodyRotation
+  StartByte      = 20262665
+  Bytes          = 3200040
+  Records        = 80001
+  ByteOrder      = Lsb
+  Description    = "Created by spiceinit"
+  Kernels        = ($base/kernels/spk/de405.bsp,
+                    $base/kernels/pck/pck00008.tpc)
+  SolarLongitude = 18.436689424944
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = SunPosition
+  StartByte   = 23462705
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 26052947
+  Bytes     = 8606
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 26022737
+  Bytes     = 30210
+End_Object
+End
+PDS_VERSION_ID                 = PDS3
+
+/* File structure:                                                       */
+/* This file contains an unstructured byte stream.                       */
+/* The UNDEFINED RECORD_TYPE is used to meet PDS standards requirements. */
+/* A label "record" is actually a single byte.                           */
+RECORD_TYPE                    = UNDEFINED
+
+/* Locations of Data Objects in the file.                */
+/* >>> CAUTION <<< The first byte is location 1 (not 0)! */
+LABEL_RECORDS                  = 32768 <BYTES>
+^SCIENCE_CHANNEL_TABLE         = 32769 <BYTES>
+^LOOKUP_TABLE                  = 33569 <BYTES>
+^CPMM_ENGINEERING_TABLE        = 49953 <BYTES>
+^CALIBRATION_LINE_PREFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_LINE_SUFFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_IMAGE             = 50013 <BYTES>
+^LINE_PREFIX_TABLE             = 227757 <BYTES>
+^LINE_SUFFIX_TABLE             = 227757 <BYTES>
+^IMAGE                         = 227757 <BYTES>
+^GAP_TABLE                     = 84867757 <BYTES>
+
+/* Identification information. */
+DATA_SET_ID                    = MRO-M-HIRISE-2-EDR-V1.0
+DATA_SET_NAME                  = "MRO MARS HIGH RESOLUTION IMAGING SCIENCE
+                                  EXPERIMENT EDR V1.0"
+PRODUCER_INSTITUTION_NAME      = "UNIVERSITY OF ARIZONA"
+PRODUCER_ID                    = UA
+PRODUCER_FULL_NAME             = "ALFRED MCEWEN"
+OBSERVATION_ID                 = PSP_006907_1890
+MRO:COMMANDED_ID               = PSP_006907_1890
+PRODUCT_ID                     = PSP_006907_1890_RED5_1
+PRODUCT_VERSION_ID             = 1.0
+SOURCE_FILE_NAME               = 4A_01_486BED7A00_08_1_01.DAT
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"
+INSTRUMENT_HOST_ID             = MRO
+INSTRUMENT_NAME                = "HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+INSTRUMENT_ID                  = HIRISE
+TARGET_NAME                    = MARS
+MISSION_PHASE_NAME             = "PRIMARY SCIENCE PHASE"
+ORBIT_NUMBER                   = 6907
+RATIONALE_DESC                 = "Impact crater along the margin of Athabasca
+                                  Vallis"
+SOFTWARE_NAME                  = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                                  01:05:33)"
+FLIGHT_SOFTWARE_VERSION_ID     = IE_FSW_V4
+
+/* Science Channel Header Observation Data Component description. */
+Object = SCIENCE_CHANNEL_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 184
+  ROW_BYTES          = 800
+  DESCRIPTION        = "The Science Channel Table contains engineering fields
+                        describing the operating state and commanding of the
+                        HiRISE observation. For detailed information about the
+                        contents and organization of this observation data
+                        component, refer to the SCIENCE_CHANNEL_TABLE.FMT
+                        file."
+  ^STRUCTURE         = SCIENCE_CHANNEL_TABLE.FMT
+End_Object
+
+/* Lookup Table Observation Data Component description. */
+Object = LOOKUP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 16384
+  COLUMNS            = 1
+  ROW_BYTES          = 1
+  DESCRIPTION        = "The Lookup Table (LUT) defines the translation of
+                        14-bit input pixels to 8-bit output pixels. The table
+                        has one column and 16384 rows, one for each input DN
+                        value. The first entry of the table refers to the 8-bit
+                        output value for the input pixel value 0."
+
+  Object = COLUMN
+    NAME        = "Output Data Value"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 1
+    DESCRIPTION = "The rows represent the 8-bit output pixel value for each
+                   14-bit input pixel. The first row contains the 8-bit pixel
+                   value corresponding to the input DN value of 0. Each
+                   subsequent row corresponds to the 8-bit output pixel of the
+                   next input DN value."
+  End_Object
+End_Object
+
+/* CPMM Engineering Header Observation Data Component description. */
+Object = CPMM_ENGINEERING_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 8
+  ROW_BYTES          = 60
+  DESCRIPTION        = "The CPMM Engineering Table contains engineering fields
+                        used by the CCD Processing and Memory Module (CPMM) in
+                        commanding the CCD during the observation. For detailed
+                        information about the contents and organization of this
+                        observation data component, refer to the
+                        CPMM_ENGINEERING_TABLE.FMT file."
+  ^STRUCTURE         = CPMM_ENGINEERING_TABLE.FMT
+End_Object
+
+/* Calibration Image Data Line Prefix description. */
+Object = CALIBRATION_LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 0."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Calibration Image Data Line Suffix description. */
+Object = CALIBRATION_LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Calibration Image Data Description. */
+Object = CALIBRATION_IMAGE
+  LINES             = 168
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "The calibration image results from passing unexposed
+                       pixels through the instrument electronics. This records
+                       the instrument fixed noise signature that can be used to
+                       correct the observational data."
+End_Object
+
+/* Image data line prefix description. */
+Object = LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 168."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Image data line suffix description. */
+Object = LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Image data description. */
+Object = IMAGE
+  LINES             = 80000
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "Observation image data."
+End_Object
+
+/* Gap Table description. */
+Object = GAP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 0
+  COLUMNS            = 2
+  ROW_BYTES          = 8
+  DESCRIPTION        = "The Gap Table identifies the location of gap byte
+                        value (0xFF) segments in the file as a set of [start,
+                        end) range pairs."
+
+  Object = COLUMN
+    NAME        = "Range Start"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the start byte (inclusive) of the gap segment."
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Range End"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 5
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the end byte (exclusive) of the range."
+  End_Object
+End_Object
+
+/* Observation timing events.                                           */
+/* All xxx_COUNT values are for the MRO spacecraft clock (SCLK)         */
+/* in seconds:subseconds form. A subsecond tick = 15.2588 microseconds. */
+/* All xxx_TIME values are referenced to UTC.                           */
+/* To obtain the most accurate results from time values                 */
+/* use the xxx_COUNT values with the latest SPICE kernels               */
+/* obtained from ftp://naif.jpl.nasa.gov/pub/naif/MRO/kernels.          */
+Group = TIME_PARAMETERS
+  /* Time when power to the CPMM units was applied. */
+  MRO:ANALOG_POWER_START_TIME  = 2008-01-16T15:49:31.089
+  MRO:ANALOG_POWER_START_COUNT = 884965790:54069
+
+  /* Time when the observation first started. */
+  MRO:OBSERVATION_START_TIME   = 2008-01-16T15:52:50.433
+  MRO:OBSERVATION_START_COUNT  = 884965990:11081
+
+  /* Time at the beginning of the first calibration image line. */
+  MRO:CALIBRATION_START_TIME   = 2008-01-16T15:52:50.556
+  MRO:CALIBRATION_START_COUNT  = 884965990:19110
+
+  /* Time at the beginning of the first target image line. */
+  START_TIME                   = 2008-01-16T15:52:50.571
+  SPACECRAFT_CLOCK_START_COUNT = 884965990:20076
+
+  /* Time at the end of the last target image line. */
+  STOP_TIME                    = 2008-01-16T15:52:57.596
+  SPACECRAFT_CLOCK_STOP_COUNT  = 884965997:21715
+
+  /* Time when the CPMM readout started. */
+  MRO:READOUT_START_TIME       = 2008-01-16T15:58:56.382
+  MRO:READOUT_START_COUNT      = 884966356:07730
+
+  /* Time when this EDR product was created. */
+  PRODUCT_CREATION_TIME        = 2008-01-17T23:48:31
+End_Group
+
+/* Instrument settings. */
+Group = INSTRUMENT_SETTING_PARAMETERS
+  MRO:CPMM_NUMBER                 = 8
+  MRO:CHANNEL_NUMBER              = 1
+  FILTER_NAME                     = RED
+  CENTER_FILTER_WAVELENGTH        = 700 <NANOMETERS>
+  BANDWIDTH                       = 300 <NANOMETERS>
+  MRO:SCAN_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:LINE_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:IMAGE_EXPOSURE_DURATION     = 7039752.5000 <MICROSECONDS>
+  MRO:DELTA_LINE_TIMER_COUNT      = 221
+  MRO:POWERED_CPMM_FLAG           = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:BINNING                     = 1
+  MRO:TDI                         = 128
+  MRO:TRIM_LINES                  = 1214
+  MRO:FOCUS_POSITION_COUNT        = 2023
+  MRO:FELICS_COMPRESSION_FLAG     = YES
+  MRO:STIMULATION_LAMP_FLAG       = (OFF, OFF, OFF)
+  MRO:HEATER_CONTROL_MODE         = "CLOSED LOOP"
+  MRO:HEATER_CONTROL_FLAG         = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:LOOKUP_TABLE_TYPE           = STORED
+  MRO:LOOKUP_TABLE_MINIMUM        = -9998
+  MRO:LOOKUP_TABLE_MAXIMUM        = -9998
+  MRO:LOOKUP_TABLE_MEDIAN         = -9998
+  MRO:LOOKUP_TABLE_K_VALUE        = -9998
+  MRO:LOOKUP_TABLE_NUMBER         = 17
+
+  /* This table provides a reverse mapping                      */
+  /* from 8-bit EDR image data back to 14-bit observation data. */
+  /* Each node of the map is the (lower, upper) inclusive range */
+  /* of the original 14-bit observation value                   */
+  /* that was translated to the 8-bit image value               */
+  /* corresponding to the node number (first node = 0).         */
+  /* Unused image values have the special range (-9998, -9998). */
+  /* A special ((0, 0)) map indicates that no LUT was applied.  */
+  MRO:LOOKUP_CONVERSION_TABLE     = ((0, 1107), (1108, 1122), (1123, 1137),
+                                     (1138, 1153), (1154, 1168), (1169, 1183),
+                                     (1184, 1198), (1199, 1213), (1214, 1228),
+                                     (1229, 1243), (1244, 1259), (1260, 1274),
+                                     (1275, 1289), (1290, 1304), (1305, 1319),
+                                     (1320, 1334), (1335, 1349), (1350, 1365),
+                                     (1366, 1380), (1381, 1395), (1396, 1410),
+                                     (1411, 1425), (1426, 1440), (1441, 1456),
+                                     (1457, 1471), (1472, 1486), (1487, 1501),
+                                     (1502, 1516), (1517, 1531), (1532, 1546),
+                                     (1547, 1562), (1563, 1577), (1578, 1592),
+                                     (1593, 1612), (1613, 1638), (1639, 1664),
+                                     (1665, 1690), (1691, 1715), (1716, 1741),
+                                     (1742, 1767), (1768, 1793), (1794, 1818),
+                                     (1819, 1844), (1845, 1870), (1871, 1896),
+                                     (1897, 1921), (1922, 1947), (1948, 1973),
+                                     (1974, 1999), (2000, 2024), (2025, 2050),
+                                     (2051, 2076), (2077, 2102), (2103, 2127),
+                                     (2128, 2153), (2154, 2179), (2180, 2205),
+                                     (2206, 2230), (2231, 2256), (2257, 2282),
+                                     (2283, 2308), (2309, 2333), (2334, 2359),
+                                     (2360, 2385), (2386, 2411), (2412, 2436),
+                                     (2437, 2462), (2463, 2488), (2489, 2514),
+                                     (2515, 2539), (2540, 2565), (2566, 2591),
+                                     (2592, 2617), (2618, 2642), (2643, 2668),
+                                     (2669, 2694), (2695, 2720), (2721, 2745),
+                                     (2746, 2771), (2772, 2797), (2798, 2823),
+                                     (2824, 2848), (2849, 2874), (2875, 2900),
+                                     (2901, 2926), (2927, 2951), (2952, 2977),
+                                     (2978, 3003), (3004, 3029), (3030, 3055),
+                                     (3056, 3082), (3083, 3109), (3110, 3136),
+                                     (3137, 3163), (3164, 3190), (3191, 3217),
+                                     (3218, 3244), (3245, 3271), (3272, 3297),
+                                     (3298, 3324), (3325, 3351), (3352, 3378),
+                                     (3379, 3405), (3406, 3432), (3433, 3459),
+                                     (3460, 3486), (3487, 3513), (3514, 3540),
+                                     (3541, 3567), (3568, 3594), (3595, 3621),
+                                     (3622, 3648), (3649, 3675), (3676, 3702),
+                                     (3703, 3729), (3730, 3756), (3757, 3782),
+                                     (3783, 3809), (3810, 3836), (3837, 3863),
+                                     (3864, 3890), (3891, 3917), (3918, 3944),
+                                     (3945, 3971), (3972, 3998), (3999, 4025),
+                                     (4026, 4052), (4053, 4079), (4080, 4106),
+                                     (4107, 4133), (4134, 4160), (4161, 4187),
+                                     (4188, 4214), (4215, 4241), (4242, 4268),
+                                     (4269, 4294), (4295, 4321), (4322, 4348),
+                                     (4349, 4375), (4376, 4402), (4403, 4429),
+                                     (4430, 4456), (4457, 4483), (4484, 4510),
+                                     (4511, 4538), (4539, 4566), (4567, 4595),
+                                     (4596, 4623), (4624, 4652), (4653, 4680),
+                                     (4681, 4709), (4710, 4737), (4738, 4766),
+                                     (4767, 4794), (4795, 4823), (4824, 4851),
+                                     (4852, 4880), (4881, 4908), (4909, 4937),
+                                     (4938, 4965), (4966, 4994), (4995, 5022),
+                                     (5023, 5051), (5052, 5079), (5080, 5108),
+                                     (5109, 5136), (5137, 5165), (5166, 5193),
+                                     (5194, 5222), (5223, 5250), (5251, 5284),
+                                     (5285, 5323), (5324, 5362), (5363, 5401),
+                                     (5402, 5440), (5441, 5479), (5480, 5518),
+                                     (5519, 5557), (5558, 5596), (5597, 5635),
+                                     (5636, 5675), (5676, 5714), (5715, 5753),
+                                     (5754, 5792), (5793, 5831), (5832, 5870),
+                                     (5871, 5909), (5910, 5948), (5949, 5987),
+                                     (5988, 6040), (6041, 6108), (6109, 6175),
+                                     (6176, 6242), (6243, 6310), (6311, 6377),
+                                     (6378, 6444), (6445, 6512), (6513, 6579),
+                                     (6580, 6646), (6647, 6714), (6715, 6781),
+                                     (6782, 6849), (6850, 6916), (6917, 6983),
+                                     (6984, 7051), (7052, 7118), (7119, 7185),
+                                     (7186, 7253), (7254, 7320), (7321, 7387),
+                                     (7388, 7455), (7456, 7535), (7536, 7627),
+                                     (7628, 7720), (7721, 7813), (7814, 7905),
+                                     (7906, 7998), (7999, 8091), (8092, 8183),
+                                     (8184, 8276), (8277, 8368), (8369, 8461),
+                                     (8462, 8554), (8555, 8646), (8647, 8739),
+                                     (8740, 8832), (8833, 8924), (8925, 9045),
+                                     (9046, 9193), (9194, 9341), (9342, 9489),
+                                     (9490, 9637), (9638, 9786), (9787, 9934),
+                                     (9935, 10082), (10083, 10230), (10231,
+                                     10378), (10379, 10558), (10559, 10770),
+                                     (10771, 10982), (10983, 11193), (11194,
+                                     11405), (11406, 11617), (11618, 11829),
+                                     (11830, 12120), (12121, 12491), (12492,
+                                     12861), (12862, 13232), (13233, 13664),
+                                     (13665, 14158), (14159, 14652), (14653,
+                                     15270), (15271, 16011), (16012, 16382),
+                                     (16383, 16383), (-9998, -9998))
+
+  /* Waveform sampling timing settings: (image, reset). */
+  MRO:ADC_TIMING_SETTINGS         = (5, 4)
+
+  /* Clocks timing locks: (first clock, second clock). */
+  MRO:DLL_LOCKED_FLAG             = (YES, YES)
+  MRO:DLL_LOCKED_ONCE_FLAG        = (YES, YES)
+  MRO:DLL_RESET_COUNT             = 0
+  MRO:DLL_FREQUENCY_CORRECT_COUNT = 4
+End_Group
+
+/* Temperature sensor readings at observation start. */
+Group = TEMPERATURE_PARAMETERS
+  MRO:OPT_BNCH_FLEXURE_TEMPERATURE   = 19.5881 <C>
+  MRO:OPT_BNCH_MIRROR_TEMPERATURE    = 20.1949 <C>
+  MRO:OPT_BNCH_FOLD_FLAT_TEMPERATURE = 19.9348 <C>
+  MRO:OPT_BNCH_FPA_TEMPERATURE       = 19.9348 <C>
+  MRO:OPT_BNCH_FPE_TEMPERATURE       = 19.8482 <C>
+  MRO:OPT_BNCH_LIVING_RM_TEMPERATURE = 19.5881 <C>
+  MRO:OPT_BNCH_BOX_BEAM_TEMPERATURE  = 19.9348 <C>
+  MRO:OPT_BNCH_COVER_TEMPERATURE     = 19.9348 <C>
+  MRO:FIELD_STOP_TEMPERATURE         = 18.2017 <C>
+  MRO:FPA_POSITIVE_Y_TEMPERATURE     = 21.8425 <C>
+  MRO:FPA_NEGATIVE_Y_TEMPERATURE     = 21.5823 <C>
+  MRO:FPE_TEMPERATURE                = 19.1548 <C>
+  MRO:PRIMARY_MIRROR_MNT_TEMPERATURE = 19.5015 <C>
+  MRO:PRIMARY_MIRROR_TEMPERATURE     = 19.6748 <C>
+  MRO:PRIMARY_MIRROR_BAF_TEMPERATURE = 1.61905 <C>
+  MRO:MS_TRUSS_LEG_0_A_TEMPERATURE   = 19.5015 <C>
+  MRO:MS_TRUSS_LEG_0_B_TEMPERATURE   = 19.7615 <C>
+  MRO:MS_TRUSS_LEG_120_A_TEMPERATURE = 19.1548 <C>
+  MRO:MS_TRUSS_LEG_120_B_TEMPERATURE = 19.8482 <C>
+  MRO:MS_TRUSS_LEG_240_A_TEMPERATURE = 20.0215 <C>
+  MRO:MS_TRUSS_LEG_240_B_TEMPERATURE = 20.3683 <C>
+  MRO:BARREL_BAFFLE_TEMPERATURE      = -15.9678 <C>
+  MRO:SUN_SHADE_TEMPERATURE          = -31.8154 <C>
+  MRO:SPIDER_LEG_30_TEMPERATURE      = 9.63837 <C>
+  MRO:SPIDER_LEG_150_TEMPERATURE     = 8.77489 <C>
+  MRO:SPIDER_LEG_270_TEMPERATURE     = 8.42958 <C>
+  MRO:SEC_MIRROR_MTR_RNG_TEMPERATURE = 19.5881 <C>
+  MRO:SEC_MIRROR_TEMPERATURE         = 19.9348 <C>
+  MRO:SEC_MIRROR_BAFFLE_TEMPERATURE  = -13.0597 <C>
+  MRO:IEA_TEMPERATURE                = 27.1384 <C>
+  MRO:FOCUS_MOTOR_TEMPERATURE        = 21.1487 <C>
+  MRO:IE_PWS_BOARD_TEMPERATURE       = 25.9367 <C>
+  MRO:CPMM_PWS_BOARD_TEMPERATURE     = 33.7954 <C>
+  MRO:MECH_TLM_BOARD_TEMPERATURE     = 36.3395 <C>
+  MRO:INST_CONT_BOARD_TEMPERATURE    = 36.0642 <C>
+End_Group
+
+/* Instrument electrical power sensor readings. */
+Group = POWER_PARAMETERS
+  MRO:CPMM_POSITIVE_29_VOLTAGE       = 29.1259 <V>
+  MRO:CPMM_POSITIVE_29_CURRENT       = 0.216379 <A>
+  MRO:CPMM_POSITIVE_10_VOLTAGE       = 9.02174 <V>
+  MRO:CPMM_POSITIVE_10_CURRENT       = 2.34761 <A>
+  MRO:CPMM_POSITIVE_5_VOLTAGE        = 5.02654 <V>
+  MRO:CPMM_POSITIVE_5_CURRENT        = 7.71226 <A>
+  MRO:CPMM_POSITIVE_3_3_VOLTAGE      = 3.31305 <V>
+  MRO:CPMM_POSITIVE_3_3_CURRENT      = 1.57623 <A>
+  MRO:CPMM_POSITIVE_2_5_VOLTAGE      = 2.50663 <V>
+  MRO:CPMM_POSITIVE_2_5_CURRENT      = 0.321714 <A>
+  MRO:CPMM_POSITIVE_1_8_VOLTAGE      = 1.81145 <V>
+  MRO:CPMM_POSITIVE_1_8_CURRENT      = 4.24284 <A>
+  MRO:CPMM_NEGATIVE_5_VOLTAGE        = -5.05424 <V>
+  MRO:CPMM_NEGATIVE_5_CURRENT        = -0.704756 <A>
+  MRO:HEATER_CURRENT                 = 0.68071 <A>
+  MRO:INST_CONT_FPGA_POS_2_5_VOLTAGE = 2.54639 <V>
+  MRO:MECH_TLM_FPGA_POS_2_5_VOLTAGE  = 2.5708 <V>
+  MRO:IEA_POSITIVE_28_VOLTAGE        = 30.7126 <V>
+  MRO:IEA_NEGATIVE_15_VOLTAGE        = -15.2894 <V>
+  MRO:IEA_POSITIVE_15_VOLTAGE        = 15.1817 <V>
+  MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
+End_Group
+End
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 128
+
+    Group = Dimensions
+      Samples = 205
+      Lines   = 8000
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = SignedWord
+      ByteOrder  = Lsb
+      Base       = 0.74982829408263
+      Multiplier = 2.28941223156642e-05
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName              = "MARS RECONNAISSANCE ORBITER"
+    InstrumentId                = HIRISE
+    TargetName                  = Mars
+    StartTime                   = 2008-01-16T15:52:50.571
+    StopTime                    = 2008-01-16T15:52:57.596
+    ObservationStartCount       = 884965990:11081
+    SpacecraftClockStartCount   = 884965990:20076
+    SpacecraftClockStopCount    = 884965997:21715
+    ReadoutStartCount           = 884966356:07730
+    CalibrationStartTime        = 2008-01-16T15:52:50.556
+    CalibrationStartCount       = 884965990:19110
+    AnalogPowerStartTime        = 2008-01-16T15:49:31.089
+    AnalogPowerStartCount       = 884965790:54069
+    MissionPhaseName            = "PRIMARY SCIENCE PHASE"
+    LineExposureDuration        = 87.8125 <MICROSECONDS>
+    ScanExposureDuration        = 87.8125 <MICROSECONDS>
+    DeltaLineTimerCount         = 221
+    Summing                     = 1
+    Tdi                         = 128
+    FocusPositionCount          = 2023
+    PoweredCpmmFlag             = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    CpmmNumber                  = 8
+    CcdId                       = RED5
+    ChannelNumber               = 2
+    LookupTableType             = Stored
+    LookupTableNumber           = 17
+    LookupTableMinimum          = -9998
+    LookupTableMaximum          = -9998
+    LookupTableMedian           = -9998
+    LookupTableKValue           = -9998
+    StimulationLampFlag         = (Off, Off, Off)
+    HeaterControlFlag           = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    OptBnchFlexureTemperature   = 19.5881 <C>
+    OptBnchMirrorTemperature    = 20.1949 <C>
+    OptBnchFoldFlatTemperature  = 19.9348 <C>
+    OptBnchFpaTemperature       = 19.9348 <C>
+    OptBnchFpeTemperature       = 19.8482 <C>
+    OptBnchLivingRmTemperature  = 19.5881 <C>
+    OptBnchBoxBeamTemperature   = 19.9348 <C>
+    OptBnchCoverTemperature     = 19.9348 <C>
+    FieldStopTemperature        = 18.2017 <C>
+    FpaPositiveYTemperature     = 21.8425 <C>
+    FpaNegativeYTemperature     = 21.5823 <C>
+    FpeTemperature              = 19.1548 <C>
+    PrimaryMirrorMntTemperature = 19.5015 <C>
+    PrimaryMirrorTemperature    = 19.6748 <C>
+    PrimaryMirrorBafTemperature = 1.61905 <C>
+    MsTrussLeg0ATemperature     = 19.5015 <C>
+    MsTrussLeg0BTemperature     = 19.7615 <C>
+    MsTrussLeg120ATemperature   = 19.1548 <C>
+    MsTrussLeg120BTemperature   = 19.8482 <C>
+    MsTrussLeg240ATemperature   = 20.0215 <C>
+    MsTrussLeg240BTemperature   = 20.3683 <C>
+    BarrelBaffleTemperature     = -15.9678 <C>
+    SunShadeTemperature         = -31.8154 <C>
+    SpiderLeg30Temperature      = 9.63837 <C>
+    SpiderLeg120Temperature     = -9999
+    SpiderLeg240Temperature     = -9999
+    SecMirrorMtrRngTemperature  = 19.5881 <C>
+    SecMirrorTemperature        = 19.9348 <C>
+    SecMirrorBaffleTemperature  = -13.0597 <C>
+    IeaTemperature              = 27.1384 <C>
+    FocusMotorTemperature       = 21.1487 <C>
+    IePwsBoardTemperature       = 25.9367 <C>
+    CpmmPwsBoardTemperature     = 33.7954 <C>
+    MechTlmBoardTemperature     = 36.3395 <C>
+    InstContBoardTemperature    = 36.0642 <C>
+    DllLockedFlag               = (YES, YES)
+    DllResetCount               = 0
+    DllLockedOnceFlag           = (YES, YES)
+    DllFrequenceCorrectCount    = 4
+    ADCTimingSetting            = -9999
+    Unlutted                    = TRUE
+    StitchedChannels            = (0, 1)
+    StitchedProductIds          = (PSP_006907_1890_RED5_1,
+                                   PSP_006907_1890_RED5_0)
+    Special_Processing_Flag     = CUBENORM
+  End_Group
+
+  Group = Archive
+    DataSetId              = MRO-M-HIRISE-2-EDR-V1.0
+    ProducerId             = UA
+    ObservationId          = PSP_006907_1890
+    ProductId              = PSP_006907_1890_RED5_1
+    ProductVersionId       = 1.0
+    EdrProductCreationTime = 2008-01-17T23:48:31
+    RationaleDescription   = Null
+    OrbitNumber            = 6907
+    SoftwareName           = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                              01:05:33)"
+    ObservationStartTime   = 2008-01-16T15:52:50.433
+    ReadoutStartTime       = 2008-01-16T15:58:56.382
+    TrimLines              = 1214
+    FelicsCompressionFlag  = YES
+    IdFlightSoftwareName   = IE_FSW_V4
+  End_Group
+
+  Group = BandBin
+    Name   = Red
+    Center = 700 <NANOMETERS>
+    Width  = 300 <NANOMETERS>
+  End_Group
+
+  Group = Kernels
+    NaifIkCode          = -74699
+    LeapSecond          = $base/kernels/lsk/naif0008.tls
+    TargetAttitudeShape = $base/kernels/pck/pck00008.tpc
+    TargetPosition      = Table
+    InstrumentPointing  = Table
+    Instrument          = Null
+    SpacecraftClock     = $mro/kernels/sclk/MRO_SCLKSCET.00022.65536.tsc
+    InstrumentPosition  = Table
+    InstrumentAddendum  = $mro/kernels/iak/hiriseAddendum003.ti
+    ShapeModel          = /HiRISE/Data/NAIF/molaDTM/molaMarsPlanetaryRadius_H-
+                          iRISE.cub
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 2048
+    AlphaLines          = 80000
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 205.5
+    AlphaEndingLine     = 8000.5
+    BetaSamples         = 205
+    BetaLines           = 8000
+  End_Group
+
+  Group = RadiometricCalibration
+    Name                 = hiclean2
+    Version              = 1.4.1
+    Compatability        = "Alan D. clean.pro,  version 2/29 sep 2006"
+    Revision             = "$Revision: 1.2 $"
+    MaskStartingRow      = 21
+    MaskEndingRow        = 38
+    BadMaskPixels        = 0
+    MaskInducedNulls     = 0
+    DarkOption           = DERIVED
+    DarkStartingColumn   = 4
+    DarkEndingColumn     = 11
+    DarkMedian           = 14.643939393939
+    BadDarkPixels        = 0
+    DarkInducedNulls     = 0
+    LastGoodLine         = 80000
+
+    /* Hical application parameters                                  */
+    /* odn = ((idn/ScanExposureDuration - B) * A) * G / IFCorrection */
+    ProgramName          = hical
+    HicalVersion         = 1.0
+    HicalRevision        = "$Revision: 1.4 $"
+    HicalConfiguration   = $mro/calibration/hical.0001.conf
+    Profile              = HiMatrices+[RED]
+    A                    = $mro/calibration/matrices/A_TDI128_BIN1_0002.cub+12
+    B                    = $mro/calibration/matrices/B_TDI128_BIN1_0002.cub+12
+    G                    = $mro/calibration/matrices/G_TDI128_BIN1_0000.cub+12
+    FilterGainCorrection = 175613029.0
+    IFTdiBinFactor       = 1.0
+    ScanExposureDuration = 87.8125
+    SunDistance          = 1.6010852343774 <AU>
+    SolarConstant        = 0.87771518783589
+    IFCorrection         = 154.13822273517
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Ancillary"
+  StartByte = 4194305
+  Bytes     = 20160
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Image"
+  StartByte = 4214465
+  Bytes     = 688128
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = Calibration
+    Type = Integer
+    Size = 1024
+  End_Group
+End_Object
+
+Object = Table
+  Name        = "HiRISE Ancillary"
+  StartByte   = 4902593
+  Bytes       = 9600000
+  Records     = 80000
+  ByteOrder   = Lsb
+  Association = Lines
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPointing
+  StartByte   = 14502593
+  Bytes       = 3200040
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = ($mro/kernels/fk/mro_v08.tf,
+                 $mro/kernels/ck/mro_sc_psp_080115_080121.bc)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPosition
+  StartByte   = 17702633
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $mro/kernels/spk/spk_psp_rec06968_06867_06968_r-v1.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name           = BodyRotation
+  StartByte      = 20262665
+  Bytes          = 3200040
+  Records        = 80001
+  ByteOrder      = Lsb
+  Description    = "Created by spiceinit"
+  Kernels        = ($base/kernels/spk/de405.bsp,
+                    $base/kernels/pck/pck00008.tpc)
+  SolarLongitude = 18.436689424944
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = SunPosition
+  StartByte   = 23462705
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 26052947
+  Bytes     = 8606
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 26022737
+  Bytes     = 30210
+End_Object
+End
+PDS_VERSION_ID                 = PDS3
+
+/* File structure:                                                       */
+/* This file contains an unstructured byte stream.                       */
+/* The UNDEFINED RECORD_TYPE is used to meet PDS standards requirements. */
+/* A label "record" is actually a single byte.                           */
+RECORD_TYPE                    = UNDEFINED
+
+/* Locations of Data Objects in the file.                */
+/* >>> CAUTION <<< The first byte is location 1 (not 0)! */
+LABEL_RECORDS                  = 32768 <BYTES>
+^SCIENCE_CHANNEL_TABLE         = 32769 <BYTES>
+^LOOKUP_TABLE                  = 33569 <BYTES>
+^CPMM_ENGINEERING_TABLE        = 49953 <BYTES>
+^CALIBRATION_LINE_PREFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_LINE_SUFFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_IMAGE             = 50013 <BYTES>
+^LINE_PREFIX_TABLE             = 227757 <BYTES>
+^LINE_SUFFIX_TABLE             = 227757 <BYTES>
+^IMAGE                         = 227757 <BYTES>
+^GAP_TABLE                     = 84867757 <BYTES>
+
+/* Identification information. */
+DATA_SET_ID                    = MRO-M-HIRISE-2-EDR-V1.0
+DATA_SET_NAME                  = "MRO MARS HIGH RESOLUTION IMAGING SCIENCE
+                                  EXPERIMENT EDR V1.0"
+PRODUCER_INSTITUTION_NAME      = "UNIVERSITY OF ARIZONA"
+PRODUCER_ID                    = UA
+PRODUCER_FULL_NAME             = "ALFRED MCEWEN"
+OBSERVATION_ID                 = PSP_006907_1890
+MRO:COMMANDED_ID               = PSP_006907_1890
+PRODUCT_ID                     = PSP_006907_1890_RED5_1
+PRODUCT_VERSION_ID             = 1.0
+SOURCE_FILE_NAME               = 4A_01_486BED7A00_08_1_01.DAT
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"
+INSTRUMENT_HOST_ID             = MRO
+INSTRUMENT_NAME                = "HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+INSTRUMENT_ID                  = HIRISE
+TARGET_NAME                    = MARS
+MISSION_PHASE_NAME             = "PRIMARY SCIENCE PHASE"
+ORBIT_NUMBER                   = 6907
+RATIONALE_DESC                 = "Impact crater along the margin of Athabasca
+                                  Vallis"
+SOFTWARE_NAME                  = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                                  01:05:33)"
+FLIGHT_SOFTWARE_VERSION_ID     = IE_FSW_V4
+
+/* Science Channel Header Observation Data Component description. */
+Object = SCIENCE_CHANNEL_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 184
+  ROW_BYTES          = 800
+  DESCRIPTION        = "The Science Channel Table contains engineering fields
+                        describing the operating state and commanding of the
+                        HiRISE observation. For detailed information about the
+                        contents and organization of this observation data
+                        component, refer to the SCIENCE_CHANNEL_TABLE.FMT
+                        file."
+  ^STRUCTURE         = SCIENCE_CHANNEL_TABLE.FMT
+End_Object
+
+/* Lookup Table Observation Data Component description. */
+Object = LOOKUP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 16384
+  COLUMNS            = 1
+  ROW_BYTES          = 1
+  DESCRIPTION        = "The Lookup Table (LUT) defines the translation of
+                        14-bit input pixels to 8-bit output pixels. The table
+                        has one column and 16384 rows, one for each input DN
+                        value. The first entry of the table refers to the 8-bit
+                        output value for the input pixel value 0."
+
+  Object = COLUMN
+    NAME        = "Output Data Value"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 1
+    DESCRIPTION = "The rows represent the 8-bit output pixel value for each
+                   14-bit input pixel. The first row contains the 8-bit pixel
+                   value corresponding to the input DN value of 0. Each
+                   subsequent row corresponds to the 8-bit output pixel of the
+                   next input DN value."
+  End_Object
+End_Object
+
+/* CPMM Engineering Header Observation Data Component description. */
+Object = CPMM_ENGINEERING_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 8
+  ROW_BYTES          = 60
+  DESCRIPTION        = "The CPMM Engineering Table contains engineering fields
+                        used by the CCD Processing and Memory Module (CPMM) in
+                        commanding the CCD during the observation. For detailed
+                        information about the contents and organization of this
+                        observation data component, refer to the
+                        CPMM_ENGINEERING_TABLE.FMT file."
+  ^STRUCTURE         = CPMM_ENGINEERING_TABLE.FMT
+End_Object
+
+/* Calibration Image Data Line Prefix description. */
+Object = CALIBRATION_LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 0."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Calibration Image Data Line Suffix description. */
+Object = CALIBRATION_LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Calibration Image Data Description. */
+Object = CALIBRATION_IMAGE
+  LINES             = 168
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "The calibration image results from passing unexposed
+                       pixels through the instrument electronics. This records
+                       the instrument fixed noise signature that can be used to
+                       correct the observational data."
+End_Object
+
+/* Image data line prefix description. */
+Object = LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 168."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Image data line suffix description. */
+Object = LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Image data description. */
+Object = IMAGE
+  LINES             = 80000
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "Observation image data."
+End_Object
+
+/* Gap Table description. */
+Object = GAP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 0
+  COLUMNS            = 2
+  ROW_BYTES          = 8
+  DESCRIPTION        = "The Gap Table identifies the location of gap byte
+                        value (0xFF) segments in the file as a set of [start,
+                        end) range pairs."
+
+  Object = COLUMN
+    NAME        = "Range Start"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the start byte (inclusive) of the gap segment."
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Range End"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 5
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the end byte (exclusive) of the range."
+  End_Object
+End_Object
+
+/* Observation timing events.                                           */
+/* All xxx_COUNT values are for the MRO spacecraft clock (SCLK)         */
+/* in seconds:subseconds form. A subsecond tick = 15.2588 microseconds. */
+/* All xxx_TIME values are referenced to UTC.                           */
+/* To obtain the most accurate results from time values                 */
+/* use the xxx_COUNT values with the latest SPICE kernels               */
+/* obtained from ftp://naif.jpl.nasa.gov/pub/naif/MRO/kernels.          */
+Group = TIME_PARAMETERS
+  /* Time when power to the CPMM units was applied. */
+  MRO:ANALOG_POWER_START_TIME  = 2008-01-16T15:49:31.089
+  MRO:ANALOG_POWER_START_COUNT = 884965790:54069
+
+  /* Time when the observation first started. */
+  MRO:OBSERVATION_START_TIME   = 2008-01-16T15:52:50.433
+  MRO:OBSERVATION_START_COUNT  = 884965990:11081
+
+  /* Time at the beginning of the first calibration image line. */
+  MRO:CALIBRATION_START_TIME   = 2008-01-16T15:52:50.556
+  MRO:CALIBRATION_START_COUNT  = 884965990:19110
+
+  /* Time at the beginning of the first target image line. */
+  START_TIME                   = 2008-01-16T15:52:50.571
+  SPACECRAFT_CLOCK_START_COUNT = 884965990:20076
+
+  /* Time at the end of the last target image line. */
+  STOP_TIME                    = 2008-01-16T15:52:57.596
+  SPACECRAFT_CLOCK_STOP_COUNT  = 884965997:21715
+
+  /* Time when the CPMM readout started. */
+  MRO:READOUT_START_TIME       = 2008-01-16T15:58:56.382
+  MRO:READOUT_START_COUNT      = 884966356:07730
+
+  /* Time when this EDR product was created. */
+  PRODUCT_CREATION_TIME        = 2008-01-17T23:48:31
+End_Group
+
+/* Instrument settings. */
+Group = INSTRUMENT_SETTING_PARAMETERS
+  MRO:CPMM_NUMBER                 = 8
+  MRO:CHANNEL_NUMBER              = 1
+  FILTER_NAME                     = RED
+  CENTER_FILTER_WAVELENGTH        = 700 <NANOMETERS>
+  BANDWIDTH                       = 300 <NANOMETERS>
+  MRO:SCAN_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:LINE_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:IMAGE_EXPOSURE_DURATION     = 7039752.5000 <MICROSECONDS>
+  MRO:DELTA_LINE_TIMER_COUNT      = 221
+  MRO:POWERED_CPMM_FLAG           = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:BINNING                     = 1
+  MRO:TDI                         = 128
+  MRO:TRIM_LINES                  = 1214
+  MRO:FOCUS_POSITION_COUNT        = 2023
+  MRO:FELICS_COMPRESSION_FLAG     = YES
+  MRO:STIMULATION_LAMP_FLAG       = (OFF, OFF, OFF)
+  MRO:HEATER_CONTROL_MODE         = "CLOSED LOOP"
+  MRO:HEATER_CONTROL_FLAG         = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:LOOKUP_TABLE_TYPE           = STORED
+  MRO:LOOKUP_TABLE_MINIMUM        = -9998
+  MRO:LOOKUP_TABLE_MAXIMUM        = -9998
+  MRO:LOOKUP_TABLE_MEDIAN         = -9998
+  MRO:LOOKUP_TABLE_K_VALUE        = -9998
+  MRO:LOOKUP_TABLE_NUMBER         = 17
+
+  /* This table provides a reverse mapping                      */
+  /* from 8-bit EDR image data back to 14-bit observation data. */
+  /* Each node of the map is the (lower, upper) inclusive range */
+  /* of the original 14-bit observation value                   */
+  /* that was translated to the 8-bit image value               */
+  /* corresponding to the node number (first node = 0).         */
+  /* Unused image values have the special range (-9998, -9998). */
+  /* A special ((0, 0)) map indicates that no LUT was applied.  */
+  MRO:LOOKUP_CONVERSION_TABLE     = ((0, 1107), (1108, 1122), (1123, 1137),
+                                     (1138, 1153), (1154, 1168), (1169, 1183),
+                                     (1184, 1198), (1199, 1213), (1214, 1228),
+                                     (1229, 1243), (1244, 1259), (1260, 1274),
+                                     (1275, 1289), (1290, 1304), (1305, 1319),
+                                     (1320, 1334), (1335, 1349), (1350, 1365),
+                                     (1366, 1380), (1381, 1395), (1396, 1410),
+                                     (1411, 1425), (1426, 1440), (1441, 1456),
+                                     (1457, 1471), (1472, 1486), (1487, 1501),
+                                     (1502, 1516), (1517, 1531), (1532, 1546),
+                                     (1547, 1562), (1563, 1577), (1578, 1592),
+                                     (1593, 1612), (1613, 1638), (1639, 1664),
+                                     (1665, 1690), (1691, 1715), (1716, 1741),
+                                     (1742, 1767), (1768, 1793), (1794, 1818),
+                                     (1819, 1844), (1845, 1870), (1871, 1896),
+                                     (1897, 1921), (1922, 1947), (1948, 1973),
+                                     (1974, 1999), (2000, 2024), (2025, 2050),
+                                     (2051, 2076), (2077, 2102), (2103, 2127),
+                                     (2128, 2153), (2154, 2179), (2180, 2205),
+                                     (2206, 2230), (2231, 2256), (2257, 2282),
+                                     (2283, 2308), (2309, 2333), (2334, 2359),
+                                     (2360, 2385), (2386, 2411), (2412, 2436),
+                                     (2437, 2462), (2463, 2488), (2489, 2514),
+                                     (2515, 2539), (2540, 2565), (2566, 2591),
+                                     (2592, 2617), (2618, 2642), (2643, 2668),
+                                     (2669, 2694), (2695, 2720), (2721, 2745),
+                                     (2746, 2771), (2772, 2797), (2798, 2823),
+                                     (2824, 2848), (2849, 2874), (2875, 2900),
+                                     (2901, 2926), (2927, 2951), (2952, 2977),
+                                     (2978, 3003), (3004, 3029), (3030, 3055),
+                                     (3056, 3082), (3083, 3109), (3110, 3136),
+                                     (3137, 3163), (3164, 3190), (3191, 3217),
+                                     (3218, 3244), (3245, 3271), (3272, 3297),
+                                     (3298, 3324), (3325, 3351), (3352, 3378),
+                                     (3379, 3405), (3406, 3432), (3433, 3459),
+                                     (3460, 3486), (3487, 3513), (3514, 3540),
+                                     (3541, 3567), (3568, 3594), (3595, 3621),
+                                     (3622, 3648), (3649, 3675), (3676, 3702),
+                                     (3703, 3729), (3730, 3756), (3757, 3782),
+                                     (3783, 3809), (3810, 3836), (3837, 3863),
+                                     (3864, 3890), (3891, 3917), (3918, 3944),
+                                     (3945, 3971), (3972, 3998), (3999, 4025),
+                                     (4026, 4052), (4053, 4079), (4080, 4106),
+                                     (4107, 4133), (4134, 4160), (4161, 4187),
+                                     (4188, 4214), (4215, 4241), (4242, 4268),
+                                     (4269, 4294), (4295, 4321), (4322, 4348),
+                                     (4349, 4375), (4376, 4402), (4403, 4429),
+                                     (4430, 4456), (4457, 4483), (4484, 4510),
+                                     (4511, 4538), (4539, 4566), (4567, 4595),
+                                     (4596, 4623), (4624, 4652), (4653, 4680),
+                                     (4681, 4709), (4710, 4737), (4738, 4766),
+                                     (4767, 4794), (4795, 4823), (4824, 4851),
+                                     (4852, 4880), (4881, 4908), (4909, 4937),
+                                     (4938, 4965), (4966, 4994), (4995, 5022),
+                                     (5023, 5051), (5052, 5079), (5080, 5108),
+                                     (5109, 5136), (5137, 5165), (5166, 5193),
+                                     (5194, 5222), (5223, 5250), (5251, 5284),
+                                     (5285, 5323), (5324, 5362), (5363, 5401),
+                                     (5402, 5440), (5441, 5479), (5480, 5518),
+                                     (5519, 5557), (5558, 5596), (5597, 5635),
+                                     (5636, 5675), (5676, 5714), (5715, 5753),
+                                     (5754, 5792), (5793, 5831), (5832, 5870),
+                                     (5871, 5909), (5910, 5948), (5949, 5987),
+                                     (5988, 6040), (6041, 6108), (6109, 6175),
+                                     (6176, 6242), (6243, 6310), (6311, 6377),
+                                     (6378, 6444), (6445, 6512), (6513, 6579),
+                                     (6580, 6646), (6647, 6714), (6715, 6781),
+                                     (6782, 6849), (6850, 6916), (6917, 6983),
+                                     (6984, 7051), (7052, 7118), (7119, 7185),
+                                     (7186, 7253), (7254, 7320), (7321, 7387),
+                                     (7388, 7455), (7456, 7535), (7536, 7627),
+                                     (7628, 7720), (7721, 7813), (7814, 7905),
+                                     (7906, 7998), (7999, 8091), (8092, 8183),
+                                     (8184, 8276), (8277, 8368), (8369, 8461),
+                                     (8462, 8554), (8555, 8646), (8647, 8739),
+                                     (8740, 8832), (8833, 8924), (8925, 9045),
+                                     (9046, 9193), (9194, 9341), (9342, 9489),
+                                     (9490, 9637), (9638, 9786), (9787, 9934),
+                                     (9935, 10082), (10083, 10230), (10231,
+                                     10378), (10379, 10558), (10559, 10770),
+                                     (10771, 10982), (10983, 11193), (11194,
+                                     11405), (11406, 11617), (11618, 11829),
+                                     (11830, 12120), (12121, 12491), (12492,
+                                     12861), (12862, 13232), (13233, 13664),
+                                     (13665, 14158), (14159, 14652), (14653,
+                                     15270), (15271, 16011), (16012, 16382),
+                                     (16383, 16383), (-9998, -9998))
+
+  /* Waveform sampling timing settings: (image, reset). */
+  MRO:ADC_TIMING_SETTINGS         = (5, 4)
+
+  /* Clocks timing locks: (first clock, second clock). */
+  MRO:DLL_LOCKED_FLAG             = (YES, YES)
+  MRO:DLL_LOCKED_ONCE_FLAG        = (YES, YES)
+  MRO:DLL_RESET_COUNT             = 0
+  MRO:DLL_FREQUENCY_CORRECT_COUNT = 4
+End_Group
+
+/* Temperature sensor readings at observation start. */
+Group = TEMPERATURE_PARAMETERS
+  MRO:OPT_BNCH_FLEXURE_TEMPERATURE   = 19.5881 <C>
+  MRO:OPT_BNCH_MIRROR_TEMPERATURE    = 20.1949 <C>
+  MRO:OPT_BNCH_FOLD_FLAT_TEMPERATURE = 19.9348 <C>
+  MRO:OPT_BNCH_FPA_TEMPERATURE       = 19.9348 <C>
+  MRO:OPT_BNCH_FPE_TEMPERATURE       = 19.8482 <C>
+  MRO:OPT_BNCH_LIVING_RM_TEMPERATURE = 19.5881 <C>
+  MRO:OPT_BNCH_BOX_BEAM_TEMPERATURE  = 19.9348 <C>
+  MRO:OPT_BNCH_COVER_TEMPERATURE     = 19.9348 <C>
+  MRO:FIELD_STOP_TEMPERATURE         = 18.2017 <C>
+  MRO:FPA_POSITIVE_Y_TEMPERATURE     = 21.8425 <C>
+  MRO:FPA_NEGATIVE_Y_TEMPERATURE     = 21.5823 <C>
+  MRO:FPE_TEMPERATURE                = 19.1548 <C>
+  MRO:PRIMARY_MIRROR_MNT_TEMPERATURE = 19.5015 <C>
+  MRO:PRIMARY_MIRROR_TEMPERATURE     = 19.6748 <C>
+  MRO:PRIMARY_MIRROR_BAF_TEMPERATURE = 1.61905 <C>
+  MRO:MS_TRUSS_LEG_0_A_TEMPERATURE   = 19.5015 <C>
+  MRO:MS_TRUSS_LEG_0_B_TEMPERATURE   = 19.7615 <C>
+  MRO:MS_TRUSS_LEG_120_A_TEMPERATURE = 19.1548 <C>
+  MRO:MS_TRUSS_LEG_120_B_TEMPERATURE = 19.8482 <C>
+  MRO:MS_TRUSS_LEG_240_A_TEMPERATURE = 20.0215 <C>
+  MRO:MS_TRUSS_LEG_240_B_TEMPERATURE = 20.3683 <C>
+  MRO:BARREL_BAFFLE_TEMPERATURE      = -15.9678 <C>
+  MRO:SUN_SHADE_TEMPERATURE          = -31.8154 <C>
+  MRO:SPIDER_LEG_30_TEMPERATURE      = 9.63837 <C>
+  MRO:SPIDER_LEG_150_TEMPERATURE     = 8.77489 <C>
+  MRO:SPIDER_LEG_270_TEMPERATURE     = 8.42958 <C>
+  MRO:SEC_MIRROR_MTR_RNG_TEMPERATURE = 19.5881 <C>
+  MRO:SEC_MIRROR_TEMPERATURE         = 19.9348 <C>
+  MRO:SEC_MIRROR_BAFFLE_TEMPERATURE  = -13.0597 <C>
+  MRO:IEA_TEMPERATURE                = 27.1384 <C>
+  MRO:FOCUS_MOTOR_TEMPERATURE        = 21.1487 <C>
+  MRO:IE_PWS_BOARD_TEMPERATURE       = 25.9367 <C>
+  MRO:CPMM_PWS_BOARD_TEMPERATURE     = 33.7954 <C>
+  MRO:MECH_TLM_BOARD_TEMPERATURE     = 36.3395 <C>
+  MRO:INST_CONT_BOARD_TEMPERATURE    = 36.0642 <C>
+End_Group
+
+/* Instrument electrical power sensor readings. */
+Group = POWER_PARAMETERS
+  MRO:CPMM_POSITIVE_29_VOLTAGE       = 29.1259 <V>
+  MRO:CPMM_POSITIVE_29_CURRENT       = 0.216379 <A>
+  MRO:CPMM_POSITIVE_10_VOLTAGE       = 9.02174 <V>
+  MRO:CPMM_POSITIVE_10_CURRENT       = 2.34761 <A>
+  MRO:CPMM_POSITIVE_5_VOLTAGE        = 5.02654 <V>
+  MRO:CPMM_POSITIVE_5_CURRENT        = 7.71226 <A>
+  MRO:CPMM_POSITIVE_3_3_VOLTAGE      = 3.31305 <V>
+  MRO:CPMM_POSITIVE_3_3_CURRENT      = 1.57623 <A>
+  MRO:CPMM_POSITIVE_2_5_VOLTAGE      = 2.50663 <V>
+  MRO:CPMM_POSITIVE_2_5_CURRENT      = 0.321714 <A>
+  MRO:CPMM_POSITIVE_1_8_VOLTAGE      = 1.81145 <V>
+  MRO:CPMM_POSITIVE_1_8_CURRENT      = 4.24284 <A>
+  MRO:CPMM_NEGATIVE_5_VOLTAGE        = -5.05424 <V>
+  MRO:CPMM_NEGATIVE_5_CURRENT        = -0.704756 <A>
+  MRO:HEATER_CURRENT                 = 0.68071 <A>
+  MRO:INST_CONT_FPGA_POS_2_5_VOLTAGE = 2.54639 <V>
+  MRO:MECH_TLM_FPGA_POS_2_5_VOLTAGE  = 2.5708 <V>
+  MRO:IEA_POSITIVE_28_VOLTAGE        = 30.7126 <V>
+  MRO:IEA_NEGATIVE_15_VOLTAGE        = -15.2894 <V>
+  MRO:IEA_POSITIVE_15_VOLTAGE        = 15.1817 <V>
+  MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
+End_Group
+End
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 128
+
+    Group = Dimensions
+      Samples = 205
+      Lines   = 8000
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = SignedWord
+      ByteOrder  = Lsb
+      Base       = 0.74982829408263
+      Multiplier = 2.28941223156642e-05
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName              = "MARS RECONNAISSANCE ORBITER"
+    InstrumentId                = HIRISE
+    TargetName                  = Mars
+    StartTime                   = 2008-01-16T15:52:50.571
+    StopTime                    = 2008-01-16T15:52:57.596
+    ObservationStartCount       = 884965990:11081
+    SpacecraftClockStartCount   = 884965990:20076
+    SpacecraftClockStopCount    = 884965997:21715
+    ReadoutStartCount           = 884966356:07730
+    CalibrationStartTime        = 2008-01-16T15:52:50.556
+    CalibrationStartCount       = 884965990:19110
+    AnalogPowerStartTime        = 2008-01-16T15:49:31.089
+    AnalogPowerStartCount       = 884965790:54069
+    MissionPhaseName            = "PRIMARY SCIENCE PHASE"
+    LineExposureDuration        = 87.8125 <MICROSECONDS>
+    ScanExposureDuration        = 87.8125 <MICROSECONDS>
+    DeltaLineTimerCount         = 221
+    Summing                     = 1
+    Tdi                         = 128
+    FocusPositionCount          = 2023
+    PoweredCpmmFlag             = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    CpmmNumber                  = 8
+    CcdId                       = RED5
+    ChannelNumber               = 2
+    LookupTableType             = Stored
+    LookupTableNumber           = 17
+    LookupTableMinimum          = -9998
+    LookupTableMaximum          = -9998
+    LookupTableMedian           = -9998
+    LookupTableKValue           = -9998
+    StimulationLampFlag         = (Off, Off, Off)
+    HeaterControlFlag           = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    OptBnchFlexureTemperature   = 19.5881 <C>
+    OptBnchMirrorTemperature    = 20.1949 <C>
+    OptBnchFoldFlatTemperature  = 19.9348 <C>
+    OptBnchFpaTemperature       = 19.9348 <C>
+    OptBnchFpeTemperature       = 19.8482 <C>
+    OptBnchLivingRmTemperature  = 19.5881 <C>
+    OptBnchBoxBeamTemperature   = 19.9348 <C>
+    OptBnchCoverTemperature     = 19.9348 <C>
+    FieldStopTemperature        = 18.2017 <C>
+    FpaPositiveYTemperature     = 21.8425 <C>
+    FpaNegativeYTemperature     = 21.5823 <C>
+    FpeTemperature              = 19.1548 <C>
+    PrimaryMirrorMntTemperature = 19.5015 <C>
+    PrimaryMirrorTemperature    = 19.6748 <C>
+    PrimaryMirrorBafTemperature = 1.61905 <C>
+    MsTrussLeg0ATemperature     = 19.5015 <C>
+    MsTrussLeg0BTemperature     = 19.7615 <C>
+    MsTrussLeg120ATemperature   = 19.1548 <C>
+    MsTrussLeg120BTemperature   = 19.8482 <C>
+    MsTrussLeg240ATemperature   = 20.0215 <C>
+    MsTrussLeg240BTemperature   = 20.3683 <C>
+    BarrelBaffleTemperature     = -15.9678 <C>
+    SunShadeTemperature         = -31.8154 <C>
+    SpiderLeg30Temperature      = 9.63837 <C>
+    SpiderLeg120Temperature     = -9999
+    SpiderLeg240Temperature     = -9999
+    SecMirrorMtrRngTemperature  = 19.5881 <C>
+    SecMirrorTemperature        = 19.9348 <C>
+    SecMirrorBaffleTemperature  = -13.0597 <C>
+    IeaTemperature              = 27.1384 <C>
+    FocusMotorTemperature       = 21.1487 <C>
+    IePwsBoardTemperature       = 25.9367 <C>
+    CpmmPwsBoardTemperature     = 33.7954 <C>
+    MechTlmBoardTemperature     = 36.3395 <C>
+    InstContBoardTemperature    = 36.0642 <C>
+    DllLockedFlag               = (YES, YES)
+    DllResetCount               = 0
+    DllLockedOnceFlag           = (YES, YES)
+    DllFrequenceCorrectCount    = 4
+    ADCTimingSetting            = -9999
+    Unlutted                    = TRUE
+    StitchedChannels            = (0, 1)
+    StitchedProductIds          = (PSP_006907_1890_RED5_1,
+                                   PSP_006907_1890_RED5_0)
+    Special_Processing_Flag     = CUBENORM
+  End_Group
+
+  Group = Archive
+    DataSetId              = MRO-M-HIRISE-2-EDR-V1.0
+    ProducerId             = UA
+    ObservationId          = PSP_006907_1890
+    ProductId              = PSP_006907_1890_RED5_1
+    ProductVersionId       = 1.0
+    EdrProductCreationTime = 2008-01-17T23:48:31
+    RationaleDescription   = Null
+    OrbitNumber            = 6907
+    SoftwareName           = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                              01:05:33)"
+    ObservationStartTime   = 2008-01-16T15:52:50.433
+    ReadoutStartTime       = 2008-01-16T15:58:56.382
+    TrimLines              = 1214
+    FelicsCompressionFlag  = YES
+    IdFlightSoftwareName   = IE_FSW_V4
+  End_Group
+
+  Group = BandBin
+    Name   = Red
+    Center = 700 <NANOMETERS>
+    Width  = 300 <NANOMETERS>
+  End_Group
+
+  Group = Kernels
+    NaifIkCode          = -74699
+    LeapSecond          = $base/kernels/lsk/naif0008.tls
+    TargetAttitudeShape = $base/kernels/pck/pck00008.tpc
+    TargetPosition      = Table
+    InstrumentPointing  = Table
+    Instrument          = Null
+    SpacecraftClock     = $mro/kernels/sclk/MRO_SCLKSCET.00022.65536.tsc
+    InstrumentPosition  = Table
+    InstrumentAddendum  = $mro/kernels/iak/hiriseAddendum003.ti
+    ShapeModel          = /HiRISE/Data/NAIF/molaDTM/molaMarsPlanetaryRadius_H-
+                          iRISE.cub
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 2048
+    AlphaLines          = 80000
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 205.5
+    AlphaEndingLine     = 8000.5
+    BetaSamples         = 205
+    BetaLines           = 8000
+  End_Group
+
+  Group = RadiometricCalibration
+    Name                 = hiclean2
+    Version              = 1.4.1
+    Compatability        = "Alan D. clean.pro,  version 2/29 sep 2006"
+    Revision             = "$Revision: 1.2 $"
+    MaskStartingRow      = 21
+    MaskEndingRow        = 38
+    BadMaskPixels        = 0
+    MaskInducedNulls     = 0
+    DarkOption           = DERIVED
+    DarkStartingColumn   = 4
+    DarkEndingColumn     = 11
+    DarkMedian           = 14.643939393939
+    BadDarkPixels        = 0
+    DarkInducedNulls     = 0
+    LastGoodLine         = 80000
+
+    /* Hical application parameters                                  */
+    /* odn = ((idn/ScanExposureDuration - B) * A) * G / IFCorrection */
+    ProgramName          = hical
+    HicalVersion         = 1.0
+    HicalRevision        = "$Revision: 1.4 $"
+    HicalConfiguration   = $mro/calibration/hical.0001.conf
+    Profile              = HiMatrices+[RED]
+    A                    = $mro/calibration/matrices/A_TDI128_BIN1_0002.cub+12
+    B                    = $mro/calibration/matrices/B_TDI128_BIN1_0002.cub+12
+    G                    = $mro/calibration/matrices/G_TDI128_BIN1_0000.cub+12
+    FilterGainCorrection = 175613029.0
+    IFTdiBinFactor       = 1.0
+    ScanExposureDuration = 87.8125
+    SunDistance          = 1.6010852343774 <AU>
+    SolarConstant        = 0.87771518783589
+    IFCorrection         = 154.13822273517
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Ancillary"
+  StartByte = 4194305
+  Bytes     = 20160
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Image"
+  StartByte = 4214465
+  Bytes     = 688128
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = Calibration
+    Type = Integer
+    Size = 1024
+  End_Group
+End_Object
+
+Object = Table
+  Name        = "HiRISE Ancillary"
+  StartByte   = 4902593
+  Bytes       = 9600000
+  Records     = 80000
+  ByteOrder   = Lsb
+  Association = Lines
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPointing
+  StartByte   = 14502593
+  Bytes       = 3200040
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = ($mro/kernels/fk/mro_v08.tf,
+                 $mro/kernels/ck/mro_sc_psp_080115_080121.bc)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPosition
+  StartByte   = 17702633
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $mro/kernels/spk/spk_psp_rec06968_06867_06968_r-v1.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name           = BodyRotation
+  StartByte      = 20262665
+  Bytes          = 3200040
+  Records        = 80001
+  ByteOrder      = Lsb
+  Description    = "Created by spiceinit"
+  Kernels        = ($base/kernels/spk/de405.bsp,
+                    $base/kernels/pck/pck00008.tpc)
+  SolarLongitude = 18.436689424944
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = SunPosition
+  StartByte   = 23462705
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 26052947
+  Bytes     = 8606
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 26022737
+  Bytes     = 30210
+End_Object
+End
+PDS_VERSION_ID                 = PDS3
+
+/* File structure:                                                       */
+/* This file contains an unstructured byte stream.                       */
+/* The UNDEFINED RECORD_TYPE is used to meet PDS standards requirements. */
+/* A label "record" is actually a single byte.                           */
+RECORD_TYPE                    = UNDEFINED
+
+/* Locations of Data Objects in the file.                */
+/* >>> CAUTION <<< The first byte is location 1 (not 0)! */
+LABEL_RECORDS                  = 32768 <BYTES>
+^SCIENCE_CHANNEL_TABLE         = 32769 <BYTES>
+^LOOKUP_TABLE                  = 33569 <BYTES>
+^CPMM_ENGINEERING_TABLE        = 49953 <BYTES>
+^CALIBRATION_LINE_PREFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_LINE_SUFFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_IMAGE             = 50013 <BYTES>
+^LINE_PREFIX_TABLE             = 227757 <BYTES>
+^LINE_SUFFIX_TABLE             = 227757 <BYTES>
+^IMAGE                         = 227757 <BYTES>
+^GAP_TABLE                     = 84867757 <BYTES>
+
+/* Identification information. */
+DATA_SET_ID                    = MRO-M-HIRISE-2-EDR-V1.0
+DATA_SET_NAME                  = "MRO MARS HIGH RESOLUTION IMAGING SCIENCE
+                                  EXPERIMENT EDR V1.0"
+PRODUCER_INSTITUTION_NAME      = "UNIVERSITY OF ARIZONA"
+PRODUCER_ID                    = UA
+PRODUCER_FULL_NAME             = "ALFRED MCEWEN"
+OBSERVATION_ID                 = PSP_006907_1890
+MRO:COMMANDED_ID               = PSP_006907_1890
+PRODUCT_ID                     = PSP_006907_1890_RED5_1
+PRODUCT_VERSION_ID             = 1.0
+SOURCE_FILE_NAME               = 4A_01_486BED7A00_08_1_01.DAT
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"
+INSTRUMENT_HOST_ID             = MRO
+INSTRUMENT_NAME                = "HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+INSTRUMENT_ID                  = HIRISE
+TARGET_NAME                    = MARS
+MISSION_PHASE_NAME             = "PRIMARY SCIENCE PHASE"
+ORBIT_NUMBER                   = 6907
+RATIONALE_DESC                 = "Impact crater along the margin of Athabasca
+                                  Vallis"
+SOFTWARE_NAME                  = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                                  01:05:33)"
+FLIGHT_SOFTWARE_VERSION_ID     = IE_FSW_V4
+
+/* Science Channel Header Observation Data Component description. */
+Object = SCIENCE_CHANNEL_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 184
+  ROW_BYTES          = 800
+  DESCRIPTION        = "The Science Channel Table contains engineering fields
+                        describing the operating state and commanding of the
+                        HiRISE observation. For detailed information about the
+                        contents and organization of this observation data
+                        component, refer to the SCIENCE_CHANNEL_TABLE.FMT
+                        file."
+  ^STRUCTURE         = SCIENCE_CHANNEL_TABLE.FMT
+End_Object
+
+/* Lookup Table Observation Data Component description. */
+Object = LOOKUP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 16384
+  COLUMNS            = 1
+  ROW_BYTES          = 1
+  DESCRIPTION        = "The Lookup Table (LUT) defines the translation of
+                        14-bit input pixels to 8-bit output pixels. The table
+                        has one column and 16384 rows, one for each input DN
+                        value. The first entry of the table refers to the 8-bit
+                        output value for the input pixel value 0."
+
+  Object = COLUMN
+    NAME        = "Output Data Value"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 1
+    DESCRIPTION = "The rows represent the 8-bit output pixel value for each
+                   14-bit input pixel. The first row contains the 8-bit pixel
+                   value corresponding to the input DN value of 0. Each
+                   subsequent row corresponds to the 8-bit output pixel of the
+                   next input DN value."
+  End_Object
+End_Object
+
+/* CPMM Engineering Header Observation Data Component description. */
+Object = CPMM_ENGINEERING_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 8
+  ROW_BYTES          = 60
+  DESCRIPTION        = "The CPMM Engineering Table contains engineering fields
+                        used by the CCD Processing and Memory Module (CPMM) in
+                        commanding the CCD during the observation. For detailed
+                        information about the contents and organization of this
+                        observation data component, refer to the
+                        CPMM_ENGINEERING_TABLE.FMT file."
+  ^STRUCTURE         = CPMM_ENGINEERING_TABLE.FMT
+End_Object
+
+/* Calibration Image Data Line Prefix description. */
+Object = CALIBRATION_LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 0."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Calibration Image Data Line Suffix description. */
+Object = CALIBRATION_LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Calibration Image Data Description. */
+Object = CALIBRATION_IMAGE
+  LINES             = 168
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "The calibration image results from passing unexposed
+                       pixels through the instrument electronics. This records
+                       the instrument fixed noise signature that can be used to
+                       correct the observational data."
+End_Object
+
+/* Image data line prefix description. */
+Object = LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 168."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Image data line suffix description. */
+Object = LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Image data description. */
+Object = IMAGE
+  LINES             = 80000
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "Observation image data."
+End_Object
+
+/* Gap Table description. */
+Object = GAP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 0
+  COLUMNS            = 2
+  ROW_BYTES          = 8
+  DESCRIPTION        = "The Gap Table identifies the location of gap byte
+                        value (0xFF) segments in the file as a set of [start,
+                        end) range pairs."
+
+  Object = COLUMN
+    NAME        = "Range Start"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the start byte (inclusive) of the gap segment."
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Range End"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 5
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the end byte (exclusive) of the range."
+  End_Object
+End_Object
+
+/* Observation timing events.                                           */
+/* All xxx_COUNT values are for the MRO spacecraft clock (SCLK)         */
+/* in seconds:subseconds form. A subsecond tick = 15.2588 microseconds. */
+/* All xxx_TIME values are referenced to UTC.                           */
+/* To obtain the most accurate results from time values                 */
+/* use the xxx_COUNT values with the latest SPICE kernels               */
+/* obtained from ftp://naif.jpl.nasa.gov/pub/naif/MRO/kernels.          */
+Group = TIME_PARAMETERS
+  /* Time when power to the CPMM units was applied. */
+  MRO:ANALOG_POWER_START_TIME  = 2008-01-16T15:49:31.089
+  MRO:ANALOG_POWER_START_COUNT = 884965790:54069
+
+  /* Time when the observation first started. */
+  MRO:OBSERVATION_START_TIME   = 2008-01-16T15:52:50.433
+  MRO:OBSERVATION_START_COUNT  = 884965990:11081
+
+  /* Time at the beginning of the first calibration image line. */
+  MRO:CALIBRATION_START_TIME   = 2008-01-16T15:52:50.556
+  MRO:CALIBRATION_START_COUNT  = 884965990:19110
+
+  /* Time at the beginning of the first target image line. */
+  START_TIME                   = 2008-01-16T15:52:50.571
+  SPACECRAFT_CLOCK_START_COUNT = 884965990:20076
+
+  /* Time at the end of the last target image line. */
+  STOP_TIME                    = 2008-01-16T15:52:57.596
+  SPACECRAFT_CLOCK_STOP_COUNT  = 884965997:21715
+
+  /* Time when the CPMM readout started. */
+  MRO:READOUT_START_TIME       = 2008-01-16T15:58:56.382
+  MRO:READOUT_START_COUNT      = 884966356:07730
+
+  /* Time when this EDR product was created. */
+  PRODUCT_CREATION_TIME        = 2008-01-17T23:48:31
+End_Group
+
+/* Instrument settings. */
+Group = INSTRUMENT_SETTING_PARAMETERS
+  MRO:CPMM_NUMBER                 = 8
+  MRO:CHANNEL_NUMBER              = 1
+  FILTER_NAME                     = RED
+  CENTER_FILTER_WAVELENGTH        = 700 <NANOMETERS>
+  BANDWIDTH                       = 300 <NANOMETERS>
+  MRO:SCAN_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:LINE_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:IMAGE_EXPOSURE_DURATION     = 7039752.5000 <MICROSECONDS>
+  MRO:DELTA_LINE_TIMER_COUNT      = 221
+  MRO:POWERED_CPMM_FLAG           = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:BINNING                     = 1
+  MRO:TDI                         = 128
+  MRO:TRIM_LINES                  = 1214
+  MRO:FOCUS_POSITION_COUNT        = 2023
+  MRO:FELICS_COMPRESSION_FLAG     = YES
+  MRO:STIMULATION_LAMP_FLAG       = (OFF, OFF, OFF)
+  MRO:HEATER_CONTROL_MODE         = "CLOSED LOOP"
+  MRO:HEATER_CONTROL_FLAG         = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:LOOKUP_TABLE_TYPE           = STORED
+  MRO:LOOKUP_TABLE_MINIMUM        = -9998
+  MRO:LOOKUP_TABLE_MAXIMUM        = -9998
+  MRO:LOOKUP_TABLE_MEDIAN         = -9998
+  MRO:LOOKUP_TABLE_K_VALUE        = -9998
+  MRO:LOOKUP_TABLE_NUMBER         = 17
+
+  /* This table provides a reverse mapping                      */
+  /* from 8-bit EDR image data back to 14-bit observation data. */
+  /* Each node of the map is the (lower, upper) inclusive range */
+  /* of the original 14-bit observation value                   */
+  /* that was translated to the 8-bit image value               */
+  /* corresponding to the node number (first node = 0).         */
+  /* Unused image values have the special range (-9998, -9998). */
+  /* A special ((0, 0)) map indicates that no LUT was applied.  */
+  MRO:LOOKUP_CONVERSION_TABLE     = ((0, 1107), (1108, 1122), (1123, 1137),
+                                     (1138, 1153), (1154, 1168), (1169, 1183),
+                                     (1184, 1198), (1199, 1213), (1214, 1228),
+                                     (1229, 1243), (1244, 1259), (1260, 1274),
+                                     (1275, 1289), (1290, 1304), (1305, 1319),
+                                     (1320, 1334), (1335, 1349), (1350, 1365),
+                                     (1366, 1380), (1381, 1395), (1396, 1410),
+                                     (1411, 1425), (1426, 1440), (1441, 1456),
+                                     (1457, 1471), (1472, 1486), (1487, 1501),
+                                     (1502, 1516), (1517, 1531), (1532, 1546),
+                                     (1547, 1562), (1563, 1577), (1578, 1592),
+                                     (1593, 1612), (1613, 1638), (1639, 1664),
+                                     (1665, 1690), (1691, 1715), (1716, 1741),
+                                     (1742, 1767), (1768, 1793), (1794, 1818),
+                                     (1819, 1844), (1845, 1870), (1871, 1896),
+                                     (1897, 1921), (1922, 1947), (1948, 1973),
+                                     (1974, 1999), (2000, 2024), (2025, 2050),
+                                     (2051, 2076), (2077, 2102), (2103, 2127),
+                                     (2128, 2153), (2154, 2179), (2180, 2205),
+                                     (2206, 2230), (2231, 2256), (2257, 2282),
+                                     (2283, 2308), (2309, 2333), (2334, 2359),
+                                     (2360, 2385), (2386, 2411), (2412, 2436),
+                                     (2437, 2462), (2463, 2488), (2489, 2514),
+                                     (2515, 2539), (2540, 2565), (2566, 2591),
+                                     (2592, 2617), (2618, 2642), (2643, 2668),
+                                     (2669, 2694), (2695, 2720), (2721, 2745),
+                                     (2746, 2771), (2772, 2797), (2798, 2823),
+                                     (2824, 2848), (2849, 2874), (2875, 2900),
+                                     (2901, 2926), (2927, 2951), (2952, 2977),
+                                     (2978, 3003), (3004, 3029), (3030, 3055),
+                                     (3056, 3082), (3083, 3109), (3110, 3136),
+                                     (3137, 3163), (3164, 3190), (3191, 3217),
+                                     (3218, 3244), (3245, 3271), (3272, 3297),
+                                     (3298, 3324), (3325, 3351), (3352, 3378),
+                                     (3379, 3405), (3406, 3432), (3433, 3459),
+                                     (3460, 3486), (3487, 3513), (3514, 3540),
+                                     (3541, 3567), (3568, 3594), (3595, 3621),
+                                     (3622, 3648), (3649, 3675), (3676, 3702),
+                                     (3703, 3729), (3730, 3756), (3757, 3782),
+                                     (3783, 3809), (3810, 3836), (3837, 3863),
+                                     (3864, 3890), (3891, 3917), (3918, 3944),
+                                     (3945, 3971), (3972, 3998), (3999, 4025),
+                                     (4026, 4052), (4053, 4079), (4080, 4106),
+                                     (4107, 4133), (4134, 4160), (4161, 4187),
+                                     (4188, 4214), (4215, 4241), (4242, 4268),
+                                     (4269, 4294), (4295, 4321), (4322, 4348),
+                                     (4349, 4375), (4376, 4402), (4403, 4429),
+                                     (4430, 4456), (4457, 4483), (4484, 4510),
+                                     (4511, 4538), (4539, 4566), (4567, 4595),
+                                     (4596, 4623), (4624, 4652), (4653, 4680),
+                                     (4681, 4709), (4710, 4737), (4738, 4766),
+                                     (4767, 4794), (4795, 4823), (4824, 4851),
+                                     (4852, 4880), (4881, 4908), (4909, 4937),
+                                     (4938, 4965), (4966, 4994), (4995, 5022),
+                                     (5023, 5051), (5052, 5079), (5080, 5108),
+                                     (5109, 5136), (5137, 5165), (5166, 5193),
+                                     (5194, 5222), (5223, 5250), (5251, 5284),
+                                     (5285, 5323), (5324, 5362), (5363, 5401),
+                                     (5402, 5440), (5441, 5479), (5480, 5518),
+                                     (5519, 5557), (5558, 5596), (5597, 5635),
+                                     (5636, 5675), (5676, 5714), (5715, 5753),
+                                     (5754, 5792), (5793, 5831), (5832, 5870),
+                                     (5871, 5909), (5910, 5948), (5949, 5987),
+                                     (5988, 6040), (6041, 6108), (6109, 6175),
+                                     (6176, 6242), (6243, 6310), (6311, 6377),
+                                     (6378, 6444), (6445, 6512), (6513, 6579),
+                                     (6580, 6646), (6647, 6714), (6715, 6781),
+                                     (6782, 6849), (6850, 6916), (6917, 6983),
+                                     (6984, 7051), (7052, 7118), (7119, 7185),
+                                     (7186, 7253), (7254, 7320), (7321, 7387),
+                                     (7388, 7455), (7456, 7535), (7536, 7627),
+                                     (7628, 7720), (7721, 7813), (7814, 7905),
+                                     (7906, 7998), (7999, 8091), (8092, 8183),
+                                     (8184, 8276), (8277, 8368), (8369, 8461),
+                                     (8462, 8554), (8555, 8646), (8647, 8739),
+                                     (8740, 8832), (8833, 8924), (8925, 9045),
+                                     (9046, 9193), (9194, 9341), (9342, 9489),
+                                     (9490, 9637), (9638, 9786), (9787, 9934),
+                                     (9935, 10082), (10083, 10230), (10231,
+                                     10378), (10379, 10558), (10559, 10770),
+                                     (10771, 10982), (10983, 11193), (11194,
+                                     11405), (11406, 11617), (11618, 11829),
+                                     (11830, 12120), (12121, 12491), (12492,
+                                     12861), (12862, 13232), (13233, 13664),
+                                     (13665, 14158), (14159, 14652), (14653,
+                                     15270), (15271, 16011), (16012, 16382),
+                                     (16383, 16383), (-9998, -9998))
+
+  /* Waveform sampling timing settings: (image, reset). */
+  MRO:ADC_TIMING_SETTINGS         = (5, 4)
+
+  /* Clocks timing locks: (first clock, second clock). */
+  MRO:DLL_LOCKED_FLAG             = (YES, YES)
+  MRO:DLL_LOCKED_ONCE_FLAG        = (YES, YES)
+  MRO:DLL_RESET_COUNT             = 0
+  MRO:DLL_FREQUENCY_CORRECT_COUNT = 4
+End_Group
+
+/* Temperature sensor readings at observation start. */
+Group = TEMPERATURE_PARAMETERS
+  MRO:OPT_BNCH_FLEXURE_TEMPERATURE   = 19.5881 <C>
+  MRO:OPT_BNCH_MIRROR_TEMPERATURE    = 20.1949 <C>
+  MRO:OPT_BNCH_FOLD_FLAT_TEMPERATURE = 19.9348 <C>
+  MRO:OPT_BNCH_FPA_TEMPERATURE       = 19.9348 <C>
+  MRO:OPT_BNCH_FPE_TEMPERATURE       = 19.8482 <C>
+  MRO:OPT_BNCH_LIVING_RM_TEMPERATURE = 19.5881 <C>
+  MRO:OPT_BNCH_BOX_BEAM_TEMPERATURE  = 19.9348 <C>
+  MRO:OPT_BNCH_COVER_TEMPERATURE     = 19.9348 <C>
+  MRO:FIELD_STOP_TEMPERATURE         = 18.2017 <C>
+  MRO:FPA_POSITIVE_Y_TEMPERATURE     = 21.8425 <C>
+  MRO:FPA_NEGATIVE_Y_TEMPERATURE     = 21.5823 <C>
+  MRO:FPE_TEMPERATURE                = 19.1548 <C>
+  MRO:PRIMARY_MIRROR_MNT_TEMPERATURE = 19.5015 <C>
+  MRO:PRIMARY_MIRROR_TEMPERATURE     = 19.6748 <C>
+  MRO:PRIMARY_MIRROR_BAF_TEMPERATURE = 1.61905 <C>
+  MRO:MS_TRUSS_LEG_0_A_TEMPERATURE   = 19.5015 <C>
+  MRO:MS_TRUSS_LEG_0_B_TEMPERATURE   = 19.7615 <C>
+  MRO:MS_TRUSS_LEG_120_A_TEMPERATURE = 19.1548 <C>
+  MRO:MS_TRUSS_LEG_120_B_TEMPERATURE = 19.8482 <C>
+  MRO:MS_TRUSS_LEG_240_A_TEMPERATURE = 20.0215 <C>
+  MRO:MS_TRUSS_LEG_240_B_TEMPERATURE = 20.3683 <C>
+  MRO:BARREL_BAFFLE_TEMPERATURE      = -15.9678 <C>
+  MRO:SUN_SHADE_TEMPERATURE          = -31.8154 <C>
+  MRO:SPIDER_LEG_30_TEMPERATURE      = 9.63837 <C>
+  MRO:SPIDER_LEG_150_TEMPERATURE     = 8.77489 <C>
+  MRO:SPIDER_LEG_270_TEMPERATURE     = 8.42958 <C>
+  MRO:SEC_MIRROR_MTR_RNG_TEMPERATURE = 19.5881 <C>
+  MRO:SEC_MIRROR_TEMPERATURE         = 19.9348 <C>
+  MRO:SEC_MIRROR_BAFFLE_TEMPERATURE  = -13.0597 <C>
+  MRO:IEA_TEMPERATURE                = 27.1384 <C>
+  MRO:FOCUS_MOTOR_TEMPERATURE        = 21.1487 <C>
+  MRO:IE_PWS_BOARD_TEMPERATURE       = 25.9367 <C>
+  MRO:CPMM_PWS_BOARD_TEMPERATURE     = 33.7954 <C>
+  MRO:MECH_TLM_BOARD_TEMPERATURE     = 36.3395 <C>
+  MRO:INST_CONT_BOARD_TEMPERATURE    = 36.0642 <C>
+End_Group
+
+/* Instrument electrical power sensor readings. */
+Group = POWER_PARAMETERS
+  MRO:CPMM_POSITIVE_29_VOLTAGE       = 29.1259 <V>
+  MRO:CPMM_POSITIVE_29_CURRENT       = 0.216379 <A>
+  MRO:CPMM_POSITIVE_10_VOLTAGE       = 9.02174 <V>
+  MRO:CPMM_POSITIVE_10_CURRENT       = 2.34761 <A>
+  MRO:CPMM_POSITIVE_5_VOLTAGE        = 5.02654 <V>
+  MRO:CPMM_POSITIVE_5_CURRENT        = 7.71226 <A>
+  MRO:CPMM_POSITIVE_3_3_VOLTAGE      = 3.31305 <V>
+  MRO:CPMM_POSITIVE_3_3_CURRENT      = 1.57623 <A>
+  MRO:CPMM_POSITIVE_2_5_VOLTAGE      = 2.50663 <V>
+  MRO:CPMM_POSITIVE_2_5_CURRENT      = 0.321714 <A>
+  MRO:CPMM_POSITIVE_1_8_VOLTAGE      = 1.81145 <V>
+  MRO:CPMM_POSITIVE_1_8_CURRENT      = 4.24284 <A>
+  MRO:CPMM_NEGATIVE_5_VOLTAGE        = -5.05424 <V>
+  MRO:CPMM_NEGATIVE_5_CURRENT        = -0.704756 <A>
+  MRO:HEATER_CURRENT                 = 0.68071 <A>
+  MRO:INST_CONT_FPGA_POS_2_5_VOLTAGE = 2.54639 <V>
+  MRO:MECH_TLM_FPGA_POS_2_5_VOLTAGE  = 2.5708 <V>
+  MRO:IEA_POSITIVE_28_VOLTAGE        = 30.7126 <V>
+  MRO:IEA_NEGATIVE_15_VOLTAGE        = -15.2894 <V>
+  MRO:IEA_POSITIVE_15_VOLTAGE        = 15.1817 <V>
+  MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
+End_Group
+End
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 128
+
+    Group = Dimensions
+      Samples = 205
+      Lines   = 8000
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = SignedWord
+      ByteOrder  = Lsb
+      Base       = 0.74982829408263
+      Multiplier = 2.28941223156642e-05
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName              = "MARS RECONNAISSANCE ORBITER"
+    InstrumentId                = HIRISE
+    TargetName                  = Mars
+    StartTime                   = 2008-01-16T15:52:50.571
+    StopTime                    = 2008-01-16T15:52:57.596
+    ObservationStartCount       = 884965990:11081
+    SpacecraftClockStartCount   = 884965990:20076
+    SpacecraftClockStopCount    = 884965997:21715
+    ReadoutStartCount           = 884966356:07730
+    CalibrationStartTime        = 2008-01-16T15:52:50.556
+    CalibrationStartCount       = 884965990:19110
+    AnalogPowerStartTime        = 2008-01-16T15:49:31.089
+    AnalogPowerStartCount       = 884965790:54069
+    MissionPhaseName            = "PRIMARY SCIENCE PHASE"
+    LineExposureDuration        = 87.8125 <MICROSECONDS>
+    ScanExposureDuration        = 87.8125 <MICROSECONDS>
+    DeltaLineTimerCount         = 221
+    Summing                     = 1
+    Tdi                         = 128
+    FocusPositionCount          = 2023
+    PoweredCpmmFlag             = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    CpmmNumber                  = 8
+    CcdId                       = RED5
+    ChannelNumber               = 2
+    LookupTableType             = Stored
+    LookupTableNumber           = 17
+    LookupTableMinimum          = -9998
+    LookupTableMaximum          = -9998
+    LookupTableMedian           = -9998
+    LookupTableKValue           = -9998
+    StimulationLampFlag         = (Off, Off, Off)
+    HeaterControlFlag           = (On, On, On, On, On, On, On, On, On, On, On,
+                                   On, On, On)
+    OptBnchFlexureTemperature   = 19.5881 <C>
+    OptBnchMirrorTemperature    = 20.1949 <C>
+    OptBnchFoldFlatTemperature  = 19.9348 <C>
+    OptBnchFpaTemperature       = 19.9348 <C>
+    OptBnchFpeTemperature       = 19.8482 <C>
+    OptBnchLivingRmTemperature  = 19.5881 <C>
+    OptBnchBoxBeamTemperature   = 19.9348 <C>
+    OptBnchCoverTemperature     = 19.9348 <C>
+    FieldStopTemperature        = 18.2017 <C>
+    FpaPositiveYTemperature     = 21.8425 <C>
+    FpaNegativeYTemperature     = 21.5823 <C>
+    FpeTemperature              = 19.1548 <C>
+    PrimaryMirrorMntTemperature = 19.5015 <C>
+    PrimaryMirrorTemperature    = 19.6748 <C>
+    PrimaryMirrorBafTemperature = 1.61905 <C>
+    MsTrussLeg0ATemperature     = 19.5015 <C>
+    MsTrussLeg0BTemperature     = 19.7615 <C>
+    MsTrussLeg120ATemperature   = 19.1548 <C>
+    MsTrussLeg120BTemperature   = 19.8482 <C>
+    MsTrussLeg240ATemperature   = 20.0215 <C>
+    MsTrussLeg240BTemperature   = 20.3683 <C>
+    BarrelBaffleTemperature     = -15.9678 <C>
+    SunShadeTemperature         = -31.8154 <C>
+    SpiderLeg30Temperature      = 9.63837 <C>
+    SpiderLeg120Temperature     = -9999
+    SpiderLeg240Temperature     = -9999
+    SecMirrorMtrRngTemperature  = 19.5881 <C>
+    SecMirrorTemperature        = 19.9348 <C>
+    SecMirrorBaffleTemperature  = -13.0597 <C>
+    IeaTemperature              = 27.1384 <C>
+    FocusMotorTemperature       = 21.1487 <C>
+    IePwsBoardTemperature       = 25.9367 <C>
+    CpmmPwsBoardTemperature     = 33.7954 <C>
+    MechTlmBoardTemperature     = 36.3395 <C>
+    InstContBoardTemperature    = 36.0642 <C>
+    DllLockedFlag               = (YES, YES)
+    DllResetCount               = 0
+    DllLockedOnceFlag           = (YES, YES)
+    DllFrequenceCorrectCount    = 4
+    ADCTimingSetting            = -9999
+    Unlutted                    = TRUE
+    StitchedChannels            = (0, 1)
+    StitchedProductIds          = (PSP_006907_1890_RED5_1,
+                                   PSP_006907_1890_RED5_0)
+    Special_Processing_Flag     = CUBENORM
+  End_Group
+
+  Group = Archive
+    DataSetId              = MRO-M-HIRISE-2-EDR-V1.0
+    ProducerId             = UA
+    ObservationId          = PSP_006907_1890
+    ProductId              = PSP_006907_1890_RED5_1
+    ProductVersionId       = 1.0
+    EdrProductCreationTime = 2008-01-17T23:48:31
+    RationaleDescription   = Null
+    OrbitNumber            = 6907
+    SoftwareName           = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                              01:05:33)"
+    ObservationStartTime   = 2008-01-16T15:52:50.433
+    ReadoutStartTime       = 2008-01-16T15:58:56.382
+    TrimLines              = 1214
+    FelicsCompressionFlag  = YES
+    IdFlightSoftwareName   = IE_FSW_V4
+  End_Group
+
+  Group = BandBin
+    Name   = Red
+    Center = 700 <NANOMETERS>
+    Width  = 300 <NANOMETERS>
+  End_Group
+
+  Group = Kernels
+    NaifIkCode          = -74699
+    LeapSecond          = $base/kernels/lsk/naif0008.tls
+    TargetAttitudeShape = $base/kernels/pck/pck00008.tpc
+    TargetPosition      = Table
+    InstrumentPointing  = Table
+    Instrument          = Null
+    SpacecraftClock     = $mro/kernels/sclk/MRO_SCLKSCET.00022.65536.tsc
+    InstrumentPosition  = Table
+    InstrumentAddendum  = $mro/kernels/iak/hiriseAddendum003.ti
+    ShapeModel          = /HiRISE/Data/NAIF/molaDTM/molaMarsPlanetaryRadius_H-
+                          iRISE.cub
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 2048
+    AlphaLines          = 80000
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 205.5
+    AlphaEndingLine     = 8000.5
+    BetaSamples         = 205
+    BetaLines           = 8000
+  End_Group
+
+  Group = RadiometricCalibration
+    Name                 = hiclean2
+    Version              = 1.4.1
+    Compatability        = "Alan D. clean.pro,  version 2/29 sep 2006"
+    Revision             = "$Revision: 1.2 $"
+    MaskStartingRow      = 21
+    MaskEndingRow        = 38
+    BadMaskPixels        = 0
+    MaskInducedNulls     = 0
+    DarkOption           = DERIVED
+    DarkStartingColumn   = 4
+    DarkEndingColumn     = 11
+    DarkMedian           = 14.643939393939
+    BadDarkPixels        = 0
+    DarkInducedNulls     = 0
+    LastGoodLine         = 80000
+
+    /* Hical application parameters                                  */
+    /* odn = ((idn/ScanExposureDuration - B) * A) * G / IFCorrection */
+    ProgramName          = hical
+    HicalVersion         = 1.0
+    HicalRevision        = "$Revision: 1.4 $"
+    HicalConfiguration   = $mro/calibration/hical.0001.conf
+    Profile              = HiMatrices+[RED]
+    A                    = $mro/calibration/matrices/A_TDI128_BIN1_0002.cub+12
+    B                    = $mro/calibration/matrices/B_TDI128_BIN1_0002.cub+12
+    G                    = $mro/calibration/matrices/G_TDI128_BIN1_0000.cub+12
+    FilterGainCorrection = 175613029.0
+    IFTdiBinFactor       = 1.0
+    ScanExposureDuration = 87.8125
+    SunDistance          = 1.6010852343774 <AU>
+    SolarConstant        = 0.87771518783589
+    IFCorrection         = 154.13822273517
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Ancillary"
+  StartByte = 4194305
+  Bytes     = 20160
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name      = "HiRISE Calibration Image"
+  StartByte = 4214465
+  Bytes     = 688128
+  Records   = 168
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = Calibration
+    Type = Integer
+    Size = 1024
+  End_Group
+End_Object
+
+Object = Table
+  Name        = "HiRISE Ancillary"
+  StartByte   = 4902593
+  Bytes       = 9600000
+  Records     = 80000
+  ByteOrder   = Lsb
+  Association = Lines
+
+  Group = Field
+    Name = GapFlag
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = LineNumber
+    Type = Integer
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = BufferPixels
+    Type = Integer
+    Size = 12
+  End_Group
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 16
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPointing
+  StartByte   = 14502593
+  Bytes       = 3200040
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = ($mro/kernels/fk/mro_v08.tf,
+                 $mro/kernels/ck/mro_sc_psp_080115_080121.bc)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = InstrumentPosition
+  StartByte   = 17702633
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $mro/kernels/spk/spk_psp_rec06968_06867_06968_r-v1.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name           = BodyRotation
+  StartByte      = 20262665
+  Bytes          = 3200040
+  Records        = 80001
+  ByteOrder      = Lsb
+  Description    = "Created by spiceinit"
+  Kernels        = ($base/kernels/spk/de405.bsp,
+                    $base/kernels/pck/pck00008.tpc)
+  SolarLongitude = 18.436689424944
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name        = SunPosition
+  StartByte   = 23462705
+  Bytes       = 2560032
+  Records     = 80001
+  ByteOrder   = Lsb
+  Description = "Created by spiceinit"
+  Kernels     = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 26052947
+  Bytes     = 8606
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 26022737
+  Bytes     = 30210
+End_Object
+End
+PDS_VERSION_ID                 = PDS3
+
+/* File structure:                                                       */
+/* This file contains an unstructured byte stream.                       */
+/* The UNDEFINED RECORD_TYPE is used to meet PDS standards requirements. */
+/* A label "record" is actually a single byte.                           */
+RECORD_TYPE                    = UNDEFINED
+
+/* Locations of Data Objects in the file.                */
+/* >>> CAUTION <<< The first byte is location 1 (not 0)! */
+LABEL_RECORDS                  = 32768 <BYTES>
+^SCIENCE_CHANNEL_TABLE         = 32769 <BYTES>
+^LOOKUP_TABLE                  = 33569 <BYTES>
+^CPMM_ENGINEERING_TABLE        = 49953 <BYTES>
+^CALIBRATION_LINE_PREFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_LINE_SUFFIX_TABLE = 50013 <BYTES>
+^CALIBRATION_IMAGE             = 50013 <BYTES>
+^LINE_PREFIX_TABLE             = 227757 <BYTES>
+^LINE_SUFFIX_TABLE             = 227757 <BYTES>
+^IMAGE                         = 227757 <BYTES>
+^GAP_TABLE                     = 84867757 <BYTES>
+
+/* Identification information. */
+DATA_SET_ID                    = MRO-M-HIRISE-2-EDR-V1.0
+DATA_SET_NAME                  = "MRO MARS HIGH RESOLUTION IMAGING SCIENCE
+                                  EXPERIMENT EDR V1.0"
+PRODUCER_INSTITUTION_NAME      = "UNIVERSITY OF ARIZONA"
+PRODUCER_ID                    = UA
+PRODUCER_FULL_NAME             = "ALFRED MCEWEN"
+OBSERVATION_ID                 = PSP_006907_1890
+MRO:COMMANDED_ID               = PSP_006907_1890
+PRODUCT_ID                     = PSP_006907_1890_RED5_1
+PRODUCT_VERSION_ID             = 1.0
+SOURCE_FILE_NAME               = 4A_01_486BED7A00_08_1_01.DAT
+INSTRUMENT_HOST_NAME           = "MARS RECONNAISSANCE ORBITER"
+INSTRUMENT_HOST_ID             = MRO
+INSTRUMENT_NAME                = "HIGH RESOLUTION IMAGING SCIENCE EXPERIMENT"
+INSTRUMENT_ID                  = HIRISE
+TARGET_NAME                    = MARS
+MISSION_PHASE_NAME             = "PRIMARY SCIENCE PHASE"
+ORBIT_NUMBER                   = 6907
+RATIONALE_DESC                 = "Impact crater along the margin of Athabasca
+                                  Vallis"
+SOFTWARE_NAME                  = "HiRISE_Observation v2.10.2 (2.44 2007/06/13
+                                  01:05:33)"
+FLIGHT_SOFTWARE_VERSION_ID     = IE_FSW_V4
+
+/* Science Channel Header Observation Data Component description. */
+Object = SCIENCE_CHANNEL_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 184
+  ROW_BYTES          = 800
+  DESCRIPTION        = "The Science Channel Table contains engineering fields
+                        describing the operating state and commanding of the
+                        HiRISE observation. For detailed information about the
+                        contents and organization of this observation data
+                        component, refer to the SCIENCE_CHANNEL_TABLE.FMT
+                        file."
+  ^STRUCTURE         = SCIENCE_CHANNEL_TABLE.FMT
+End_Object
+
+/* Lookup Table Observation Data Component description. */
+Object = LOOKUP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 16384
+  COLUMNS            = 1
+  ROW_BYTES          = 1
+  DESCRIPTION        = "The Lookup Table (LUT) defines the translation of
+                        14-bit input pixels to 8-bit output pixels. The table
+                        has one column and 16384 rows, one for each input DN
+                        value. The first entry of the table refers to the 8-bit
+                        output value for the input pixel value 0."
+
+  Object = COLUMN
+    NAME        = "Output Data Value"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 1
+    DESCRIPTION = "The rows represent the 8-bit output pixel value for each
+                   14-bit input pixel. The first row contains the 8-bit pixel
+                   value corresponding to the input DN value of 0. Each
+                   subsequent row corresponds to the 8-bit output pixel of the
+                   next input DN value."
+  End_Object
+End_Object
+
+/* CPMM Engineering Header Observation Data Component description. */
+Object = CPMM_ENGINEERING_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 1
+  COLUMNS            = 8
+  ROW_BYTES          = 60
+  DESCRIPTION        = "The CPMM Engineering Table contains engineering fields
+                        used by the CCD Processing and Memory Module (CPMM) in
+                        commanding the CCD during the observation. For detailed
+                        information about the contents and organization of this
+                        observation data component, refer to the
+                        CPMM_ENGINEERING_TABLE.FMT file."
+  ^STRUCTURE         = CPMM_ENGINEERING_TABLE.FMT
+End_Object
+
+/* Calibration Image Data Line Prefix description. */
+Object = CALIBRATION_LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 0."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Calibration Image Data Line Suffix description. */
+Object = CALIBRATION_LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 168
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Calibration Image Data Description. */
+Object = CALIBRATION_IMAGE
+  LINES             = 168
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "The calibration image results from passing unexposed
+                       pixels through the instrument electronics. This records
+                       the instrument fixed noise signature that can be used to
+                       correct the observational data."
+End_Object
+
+/* Image data line prefix description. */
+Object = LINE_PREFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 2
+  ROW_BYTES          = 18
+  ROW_SUFFIX_BYTES   = 1040
+
+  Object = COLUMN
+    NAME        = "Line Identification"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 6
+    DESCRIPTION = "Line ID contains line synchronization pattern, channel
+                   number, and line counter."
+
+    Object = BIT_COLUMN
+      NAME          = "Line Synchronization Pattern"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 1
+      BITS          = 19
+      DESCRIPTION   = "For valid lines this line synchronization pattern is
+                       2#1111111100000000111#, for a corrupted or missing line
+                       the value is 2#1111111111111111111#."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Channel Number"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 20
+      BITS          = 5
+      DESCRIPTION   = "Channel number associated with a line."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Line Counter"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 25
+      BITS          = 23
+      DESCRIPTION   = "Line counter. First line = 168."
+    End_Object
+
+    Object = BIT_COLUMN
+      NAME          = "Bad Line"
+      BIT_DATA_TYPE = MSB_UNSIGNED_INTEGER
+      START_BIT     = 48
+      BITS          = 1
+      DESCRIPTION   = "The bad line flag is set when the line was found to
+                       have a misplaced or corrupted line header. A line header
+                       that is lost in a data gap does not result in a bad
+                       line."
+    End_Object
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Buffer Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 7
+    BYTES       = 12
+    ITEMS       = 12
+    ITEM_BYTES  = 1
+    DESCRIPTION = "The buffer pixels contain the value of empty pixels after
+                   going through the instrument electronics."
+  End_Object
+End_Object
+
+/* Image data line suffix description. */
+Object = LINE_SUFFIX_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 80000
+  COLUMNS            = 1
+  ROW_BYTES          = 16
+  ROW_PREFIX_BYTES   = 1042
+
+  Object = COLUMN
+    NAME        = "Dark Reference Pixels"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 16
+    ITEMS       = 16
+    ITEM_BYTES  = 1
+    DESCRIPTION = "Dark reference pixel values produced by masked detectors."
+  End_Object
+End_Object
+
+/* Image data description. */
+Object = IMAGE
+  LINES             = 80000
+  LINE_SAMPLES      = 1024
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  SAMPLE_TYPE       = MSB_UNSIGNED_INTEGER
+  MISSING_CONSTANT  = 16#FF#
+  LINE_PREFIX_BYTES = 18
+  LINE_SUFFIX_BYTES = 16
+  DESCRIPTION       = "Observation image data."
+End_Object
+
+/* Gap Table description. */
+Object = GAP_TABLE
+  INTERCHANGE_FORMAT = BINARY
+  ROWS               = 0
+  COLUMNS            = 2
+  ROW_BYTES          = 8
+  DESCRIPTION        = "The Gap Table identifies the location of gap byte
+                        value (0xFF) segments in the file as a set of [start,
+                        end) range pairs."
+
+  Object = COLUMN
+    NAME        = "Range Start"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 1
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the start byte (inclusive) of the gap segment."
+  End_Object
+
+  Object = COLUMN
+    NAME        = "Range End"
+    DATA_TYPE   = MSB_UNSIGNED_INTEGER
+    START_BYTE  = 5
+    BYTES       = 4
+    DESCRIPTION = "The byte offset (0-based) from the beginning of the file to
+                   the end byte (exclusive) of the range."
+  End_Object
+End_Object
+
+/* Observation timing events.                                           */
+/* All xxx_COUNT values are for the MRO spacecraft clock (SCLK)         */
+/* in seconds:subseconds form. A subsecond tick = 15.2588 microseconds. */
+/* All xxx_TIME values are referenced to UTC.                           */
+/* To obtain the most accurate results from time values                 */
+/* use the xxx_COUNT values with the latest SPICE kernels               */
+/* obtained from ftp://naif.jpl.nasa.gov/pub/naif/MRO/kernels.          */
+Group = TIME_PARAMETERS
+  /* Time when power to the CPMM units was applied. */
+  MRO:ANALOG_POWER_START_TIME  = 2008-01-16T15:49:31.089
+  MRO:ANALOG_POWER_START_COUNT = 884965790:54069
+
+  /* Time when the observation first started. */
+  MRO:OBSERVATION_START_TIME   = 2008-01-16T15:52:50.433
+  MRO:OBSERVATION_START_COUNT  = 884965990:11081
+
+  /* Time at the beginning of the first calibration image line. */
+  MRO:CALIBRATION_START_TIME   = 2008-01-16T15:52:50.556
+  MRO:CALIBRATION_START_COUNT  = 884965990:19110
+
+  /* Time at the beginning of the first target image line. */
+  START_TIME                   = 2008-01-16T15:52:50.571
+  SPACECRAFT_CLOCK_START_COUNT = 884965990:20076
+
+  /* Time at the end of the last target image line. */
+  STOP_TIME                    = 2008-01-16T15:52:57.596
+  SPACECRAFT_CLOCK_STOP_COUNT  = 884965997:21715
+
+  /* Time when the CPMM readout started. */
+  MRO:READOUT_START_TIME       = 2008-01-16T15:58:56.382
+  MRO:READOUT_START_COUNT      = 884966356:07730
+
+  /* Time when this EDR product was created. */
+  PRODUCT_CREATION_TIME        = 2008-01-17T23:48:31
+End_Group
+
+/* Instrument settings. */
+Group = INSTRUMENT_SETTING_PARAMETERS
+  MRO:CPMM_NUMBER                 = 8
+  MRO:CHANNEL_NUMBER              = 1
+  FILTER_NAME                     = RED
+  CENTER_FILTER_WAVELENGTH        = 700 <NANOMETERS>
+  BANDWIDTH                       = 300 <NANOMETERS>
+  MRO:SCAN_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:LINE_EXPOSURE_DURATION      = 87.8125 <MICROSECONDS>
+  MRO:IMAGE_EXPOSURE_DURATION     = 7039752.5000 <MICROSECONDS>
+  MRO:DELTA_LINE_TIMER_COUNT      = 221
+  MRO:POWERED_CPMM_FLAG           = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:BINNING                     = 1
+  MRO:TDI                         = 128
+  MRO:TRIM_LINES                  = 1214
+  MRO:FOCUS_POSITION_COUNT        = 2023
+  MRO:FELICS_COMPRESSION_FLAG     = YES
+  MRO:STIMULATION_LAMP_FLAG       = (OFF, OFF, OFF)
+  MRO:HEATER_CONTROL_MODE         = "CLOSED LOOP"
+  MRO:HEATER_CONTROL_FLAG         = (ON, ON, ON, ON, ON, ON, ON, ON, ON, ON,
+                                     ON, ON, ON, ON)
+  MRO:LOOKUP_TABLE_TYPE           = STORED
+  MRO:LOOKUP_TABLE_MINIMUM        = -9998
+  MRO:LOOKUP_TABLE_MAXIMUM        = -9998
+  MRO:LOOKUP_TABLE_MEDIAN         = -9998
+  MRO:LOOKUP_TABLE_K_VALUE        = -9998
+  MRO:LOOKUP_TABLE_NUMBER         = 17
+
+  /* This table provides a reverse mapping                      */
+  /* from 8-bit EDR image data back to 14-bit observation data. */
+  /* Each node of the map is the (lower, upper) inclusive range */
+  /* of the original 14-bit observation value                   */
+  /* that was translated to the 8-bit image value               */
+  /* corresponding to the node number (first node = 0).         */
+  /* Unused image values have the special range (-9998, -9998). */
+  /* A special ((0, 0)) map indicates that no LUT was applied.  */
+  MRO:LOOKUP_CONVERSION_TABLE     = ((0, 1107), (1108, 1122), (1123, 1137),
+                                     (1138, 1153), (1154, 1168), (1169, 1183),
+                                     (1184, 1198), (1199, 1213), (1214, 1228),
+                                     (1229, 1243), (1244, 1259), (1260, 1274),
+                                     (1275, 1289), (1290, 1304), (1305, 1319),
+                                     (1320, 1334), (1335, 1349), (1350, 1365),
+                                     (1366, 1380), (1381, 1395), (1396, 1410),
+                                     (1411, 1425), (1426, 1440), (1441, 1456),
+                                     (1457, 1471), (1472, 1486), (1487, 1501),
+                                     (1502, 1516), (1517, 1531), (1532, 1546),
+                                     (1547, 1562), (1563, 1577), (1578, 1592),
+                                     (1593, 1612), (1613, 1638), (1639, 1664),
+                                     (1665, 1690), (1691, 1715), (1716, 1741),
+                                     (1742, 1767), (1768, 1793), (1794, 1818),
+                                     (1819, 1844), (1845, 1870), (1871, 1896),
+                                     (1897, 1921), (1922, 1947), (1948, 1973),
+                                     (1974, 1999), (2000, 2024), (2025, 2050),
+                                     (2051, 2076), (2077, 2102), (2103, 2127),
+                                     (2128, 2153), (2154, 2179), (2180, 2205),
+                                     (2206, 2230), (2231, 2256), (2257, 2282),
+                                     (2283, 2308), (2309, 2333), (2334, 2359),
+                                     (2360, 2385), (2386, 2411), (2412, 2436),
+                                     (2437, 2462), (2463, 2488), (2489, 2514),
+                                     (2515, 2539), (2540, 2565), (2566, 2591),
+                                     (2592, 2617), (2618, 2642), (2643, 2668),
+                                     (2669, 2694), (2695, 2720), (2721, 2745),
+                                     (2746, 2771), (2772, 2797), (2798, 2823),
+                                     (2824, 2848), (2849, 2874), (2875, 2900),
+                                     (2901, 2926), (2927, 2951), (2952, 2977),
+                                     (2978, 3003), (3004, 3029), (3030, 3055),
+                                     (3056, 3082), (3083, 3109), (3110, 3136),
+                                     (3137, 3163), (3164, 3190), (3191, 3217),
+                                     (3218, 3244), (3245, 3271), (3272, 3297),
+                                     (3298, 3324), (3325, 3351), (3352, 3378),
+                                     (3379, 3405), (3406, 3432), (3433, 3459),
+                                     (3460, 3486), (3487, 3513), (3514, 3540),
+                                     (3541, 3567), (3568, 3594), (3595, 3621),
+                                     (3622, 3648), (3649, 3675), (3676, 3702),
+                                     (3703, 3729), (3730, 3756), (3757, 3782),
+                                     (3783, 3809), (3810, 3836), (3837, 3863),
+                                     (3864, 3890), (3891, 3917), (3918, 3944),
+                                     (3945, 3971), (3972, 3998), (3999, 4025),
+                                     (4026, 4052), (4053, 4079), (4080, 4106),
+                                     (4107, 4133), (4134, 4160), (4161, 4187),
+                                     (4188, 4214), (4215, 4241), (4242, 4268),
+                                     (4269, 4294), (4295, 4321), (4322, 4348),
+                                     (4349, 4375), (4376, 4402), (4403, 4429),
+                                     (4430, 4456), (4457, 4483), (4484, 4510),
+                                     (4511, 4538), (4539, 4566), (4567, 4595),
+                                     (4596, 4623), (4624, 4652), (4653, 4680),
+                                     (4681, 4709), (4710, 4737), (4738, 4766),
+                                     (4767, 4794), (4795, 4823), (4824, 4851),
+                                     (4852, 4880), (4881, 4908), (4909, 4937),
+                                     (4938, 4965), (4966, 4994), (4995, 5022),
+                                     (5023, 5051), (5052, 5079), (5080, 5108),
+                                     (5109, 5136), (5137, 5165), (5166, 5193),
+                                     (5194, 5222), (5223, 5250), (5251, 5284),
+                                     (5285, 5323), (5324, 5362), (5363, 5401),
+                                     (5402, 5440), (5441, 5479), (5480, 5518),
+                                     (5519, 5557), (5558, 5596), (5597, 5635),
+                                     (5636, 5675), (5676, 5714), (5715, 5753),
+                                     (5754, 5792), (5793, 5831), (5832, 5870),
+                                     (5871, 5909), (5910, 5948), (5949, 5987),
+                                     (5988, 6040), (6041, 6108), (6109, 6175),
+                                     (6176, 6242), (6243, 6310), (6311, 6377),
+                                     (6378, 6444), (6445, 6512), (6513, 6579),
+                                     (6580, 6646), (6647, 6714), (6715, 6781),
+                                     (6782, 6849), (6850, 6916), (6917, 6983),
+                                     (6984, 7051), (7052, 7118), (7119, 7185),
+                                     (7186, 7253), (7254, 7320), (7321, 7387),
+                                     (7388, 7455), (7456, 7535), (7536, 7627),
+                                     (7628, 7720), (7721, 7813), (7814, 7905),
+                                     (7906, 7998), (7999, 8091), (8092, 8183),
+                                     (8184, 8276), (8277, 8368), (8369, 8461),
+                                     (8462, 8554), (8555, 8646), (8647, 8739),
+                                     (8740, 8832), (8833, 8924), (8925, 9045),
+                                     (9046, 9193), (9194, 9341), (9342, 9489),
+                                     (9490, 9637), (9638, 9786), (9787, 9934),
+                                     (9935, 10082), (10083, 10230), (10231,
+                                     10378), (10379, 10558), (10559, 10770),
+                                     (10771, 10982), (10983, 11193), (11194,
+                                     11405), (11406, 11617), (11618, 11829),
+                                     (11830, 12120), (12121, 12491), (12492,
+                                     12861), (12862, 13232), (13233, 13664),
+                                     (13665, 14158), (14159, 14652), (14653,
+                                     15270), (15271, 16011), (16012, 16382),
+                                     (16383, 16383), (-9998, -9998))
+
+  /* Waveform sampling timing settings: (image, reset). */
+  MRO:ADC_TIMING_SETTINGS         = (5, 4)
+
+  /* Clocks timing locks: (first clock, second clock). */
+  MRO:DLL_LOCKED_FLAG             = (YES, YES)
+  MRO:DLL_LOCKED_ONCE_FLAG        = (YES, YES)
+  MRO:DLL_RESET_COUNT             = 0
+  MRO:DLL_FREQUENCY_CORRECT_COUNT = 4
+End_Group
+
+/* Temperature sensor readings at observation start. */
+Group = TEMPERATURE_PARAMETERS
+  MRO:OPT_BNCH_FLEXURE_TEMPERATURE   = 19.5881 <C>
+  MRO:OPT_BNCH_MIRROR_TEMPERATURE    = 20.1949 <C>
+  MRO:OPT_BNCH_FOLD_FLAT_TEMPERATURE = 19.9348 <C>
+  MRO:OPT_BNCH_FPA_TEMPERATURE       = 19.9348 <C>
+  MRO:OPT_BNCH_FPE_TEMPERATURE       = 19.8482 <C>
+  MRO:OPT_BNCH_LIVING_RM_TEMPERATURE = 19.5881 <C>
+  MRO:OPT_BNCH_BOX_BEAM_TEMPERATURE  = 19.9348 <C>
+  MRO:OPT_BNCH_COVER_TEMPERATURE     = 19.9348 <C>
+  MRO:FIELD_STOP_TEMPERATURE         = 18.2017 <C>
+  MRO:FPA_POSITIVE_Y_TEMPERATURE     = 21.8425 <C>
+  MRO:FPA_NEGATIVE_Y_TEMPERATURE     = 21.5823 <C>
+  MRO:FPE_TEMPERATURE                = 19.1548 <C>
+  MRO:PRIMARY_MIRROR_MNT_TEMPERATURE = 19.5015 <C>
+  MRO:PRIMARY_MIRROR_TEMPERATURE     = 19.6748 <C>
+  MRO:PRIMARY_MIRROR_BAF_TEMPERATURE = 1.61905 <C>
+  MRO:MS_TRUSS_LEG_0_A_TEMPERATURE   = 19.5015 <C>
+  MRO:MS_TRUSS_LEG_0_B_TEMPERATURE   = 19.7615 <C>
+  MRO:MS_TRUSS_LEG_120_A_TEMPERATURE = 19.1548 <C>
+  MRO:MS_TRUSS_LEG_120_B_TEMPERATURE = 19.8482 <C>
+  MRO:MS_TRUSS_LEG_240_A_TEMPERATURE = 20.0215 <C>
+  MRO:MS_TRUSS_LEG_240_B_TEMPERATURE = 20.3683 <C>
+  MRO:BARREL_BAFFLE_TEMPERATURE      = -15.9678 <C>
+  MRO:SUN_SHADE_TEMPERATURE          = -31.8154 <C>
+  MRO:SPIDER_LEG_30_TEMPERATURE      = 9.63837 <C>
+  MRO:SPIDER_LEG_150_TEMPERATURE     = 8.77489 <C>
+  MRO:SPIDER_LEG_270_TEMPERATURE     = 8.42958 <C>
+  MRO:SEC_MIRROR_MTR_RNG_TEMPERATURE = 19.5881 <C>
+  MRO:SEC_MIRROR_TEMPERATURE         = 19.9348 <C>
+  MRO:SEC_MIRROR_BAFFLE_TEMPERATURE  = -13.0597 <C>
+  MRO:IEA_TEMPERATURE                = 27.1384 <C>
+  MRO:FOCUS_MOTOR_TEMPERATURE        = 21.1487 <C>
+  MRO:IE_PWS_BOARD_TEMPERATURE       = 25.9367 <C>
+  MRO:CPMM_PWS_BOARD_TEMPERATURE     = 33.7954 <C>
+  MRO:MECH_TLM_BOARD_TEMPERATURE     = 36.3395 <C>
+  MRO:INST_CONT_BOARD_TEMPERATURE    = 36.0642 <C>
+End_Group
+
+/* Instrument electrical power sensor readings. */
+Group = POWER_PARAMETERS
+  MRO:CPMM_POSITIVE_29_VOLTAGE       = 29.1259 <V>
+  MRO:CPMM_POSITIVE_29_CURRENT       = 0.216379 <A>
+  MRO:CPMM_POSITIVE_10_VOLTAGE       = 9.02174 <V>
+  MRO:CPMM_POSITIVE_10_CURRENT       = 2.34761 <A>
+  MRO:CPMM_POSITIVE_5_VOLTAGE        = 5.02654 <V>
+  MRO:CPMM_POSITIVE_5_CURRENT        = 7.71226 <A>
+  MRO:CPMM_POSITIVE_3_3_VOLTAGE      = 3.31305 <V>
+  MRO:CPMM_POSITIVE_3_3_CURRENT      = 1.57623 <A>
+  MRO:CPMM_POSITIVE_2_5_VOLTAGE      = 2.50663 <V>
+  MRO:CPMM_POSITIVE_2_5_CURRENT      = 0.321714 <A>
+  MRO:CPMM_POSITIVE_1_8_VOLTAGE      = 1.81145 <V>
+  MRO:CPMM_POSITIVE_1_8_CURRENT      = 4.24284 <A>
+  MRO:CPMM_NEGATIVE_5_VOLTAGE        = -5.05424 <V>
+  MRO:CPMM_NEGATIVE_5_CURRENT        = -0.704756 <A>
+  MRO:HEATER_CURRENT                 = 0.68071 <A>
+  MRO:INST_CONT_FPGA_POS_2_5_VOLTAGE = 2.54639 <V>
+  MRO:MECH_TLM_FPGA_POS_2_5_VOLTAGE  = 2.5708 <V>
+  MRO:IEA_POSITIVE_28_VOLTAGE        = 30.7126 <V>
+  MRO:IEA_NEGATIVE_15_VOLTAGE        = -15.2894 <V>
+  MRO:IEA_POSITIVE_15_VOLTAGE        = 15.1817 <V>
+  MRO:IEA_POSITIVE_5_VOLTAGE         = 5.06348 <V>
+End_Group
+End

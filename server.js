@@ -56,6 +56,8 @@ const exec = require('child_process').exec;
 const fs = require('fs');
 const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
+const {performance} = require('perf_hooks');
+
 
 // include custom utility functions
 const util = require('./util.js');
@@ -70,6 +72,15 @@ var cubeArray = [];
 app.use(fileUpload());
 app.use(cookieparser());
 
+app.set('etag', false);
+app.disable('view cache');
+
+app.use(function (req, res, next) {
+    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    res.header('Expires', '-1');
+    res.header('Pragma', 'no-cache');
+    next();
+});
 // set OS flag
 var isWindows = process.platform === 'win32';
 
@@ -444,40 +455,85 @@ app.post('/showImage', function(request, response){
 });
 
 
+
+app.get('/crop',async function(request, response){
+    console.log(request.url);
+
+    var currentImage = request.query.currentImage;
+    var cookieval = request.cookies['cubeFile'];
+    var newImage;
+
+      // search for data in array given by user cookie
+      data = util.getObjectFromArray(cookieval, cubeArray);
+
+      console.log(currentImage.split('_crop'));
+    if(currentImage.split('_crop').length === 2){
+        await fs.unlinkSync(currentImage.split('?')[0]);
+        newImage = util.findImageLocation(cookieval);
+        response.render('imagePage.ejs',{image:newImage, tagField: data});
+    }
+    else if(currentImage.split('_crop').length > 2){
+        await fs.unlinkSync(currentImage.split('?')[0]);
+
+        let strArray = currentImage.split('_crop')
+
+        strArray[strArray.length - 2] = strArray[strArray.length-1];
+        strArray.pop();
+
+        newImage = strArray.join('_crop');
+        response.render('imagePage.ejs',{image:newImage, tagField: data});
+        response.end();
+    }
+    else{
+        response.render('imagePage.ejs',{image:currentImage, tagField: data});
+    }
+});
+
+
 app.post('/crop', async function(request,response){
     console.log(request.url);
 
     let arrayString = request.query.cropArray;
     let pxArray = arrayString.split(',');
-
-    
+    var croppedImage = request.query.currentImage.split('?')[0];
     var cookieval = request.cookies['cubeFile'];
-    
-    var imageLocation = util.findImageLocation(cookieval);
 
-    pxArray = util.calculateCrop(pxArray);
+    console.log(croppedImage + ' = current image');
 
-    var newImage = await util.cropImage(imageLocation, pxArray);
-
-  
     // search for data in array given by user cookie
-    data = util.getObjectFromArray(cookieval, cubeArray);
-
-    
+    var data = util.getObjectFromArray(cookieval, cubeArray);
     // if the data val is an error code then fail
     if(data < 1){
-        console.log('Object Serch Failed');
+        console.log('Object Search Failed');
         data = 'NONE';
     }else{
         // otherwise load the important data from the active object array into data variable
         data = data.impData;
     }
-    // perform the crop actions
-    //TODO
-    console.log(data);
-    console.log(newImage);
 
-    response.render('imagePage.ejs',{image:newImage, tagField: data});
+
+    if(croppedImage === util.findImageLocation(cookieval)){
+
+        var imageLocation = croppedImage;
+
+        console.log('image location is: ' + imageLocation);
+
+        pxArray = util.calculateCrop(pxArray);
+
+        await util.cropImage(imageLocation, pxArray).then(function(newImage){
+            console.log(newImage + ' after crop');
+        response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data});
+        });
+;
+    }
+    else{
+        pxArray = util.calculateCrop(pxArray);
+        await util.cropImage(croppedImage, pxArray).then(function(newImage){
+            console.log(newImage + 'from low');
+            response.render('imagePage.ejs',{ image:newImage + '?t='+ performance.now(), tagField: data});
+            });
+
+    }
 });
 
 

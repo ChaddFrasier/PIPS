@@ -83,12 +83,11 @@
             <div style="display:inline;">
                 <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
 
-                <br>
-                <form method="POST" action="/imageDownload" class="lg-form text-center">
-                    <div class="float-right form-group">
+                <button id="backBtn" class="btn btn-primary btn-lg">Undo Crop</button>
+                
+                <form method="POST" action="/imageDownload" display="inline" class=" float-right text-center">
                         <input type="hidden" value='<%= image %>' name="passedIMG">
                         <input type="submit" value="Save Raw Image" class="btn btn-secondary btn-lg" />
-                    </div>
                 </form>
             </div>
         </div>
@@ -110,27 +109,29 @@
               
 
     <div class="image-editor">
-        <img id="trackMouse" alt="" class="image-image" src="<%= image %>" width="auto" height="auto">
+        <img id="trackMouse" alt="" class="image-image" src="<%= image %>" .filemtime("<%= image %>"). width="auto" height="auto">
     </div>
     
     <script>
 
         // mouse click captures pixel coordinates on image
         $(document).ready(function() {
+          
             $("img").on("click", function(event) {
                 var x = event.pageX - this.offsetLeft;
                 var y = event.pageY - this.offsetTop;
-                
+
                 captureClick(x,y);
                 
-                if(clickArray.length === 2){
-
+                if(clickArray.length % 2 === 0){
                     let arrayStr = clickArray.toString();
                     $.ajax({
                         type: 'POST',
-                        url: 'http://localhost:8080/crop?cropArray=' + arrayStr,
+                        url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
                         success: function(response) { 
+                            console.log(response);
                             $("html").html(response);
+                            
                         },
                         error: function(xhr, status, err) {
                             console.log(xhr.responseText);
@@ -138,10 +139,23 @@
                     });
                 }    
             });
-        });
+            $("#backBtn").click(function(){
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
+                    success: function(response) {
+                        $("html").html(response);
+                    
+                        
+                    },
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+    });
 
         var clickArray = [];
-
         function captureClick(x,y){
             clickArray.push([x,y]);
 
@@ -149,6 +163,8 @@
                 console.log(clickArray[i]);
             }
         }
+
+        
     </script>
     <br/>
 
@@ -418,5 +434,4 @@
 
 </script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </body>
