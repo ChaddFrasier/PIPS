@@ -75,12 +75,12 @@ app.use(cookieparser());
 app.set('etag', false);
 app.disable('view cache');
 
-app.use(function (req, res, next) {
+/* app.use(function (req, res, next) {
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');
     next();
-});
+}); */
 // set OS flag
 var isWindows = process.platform === 'win32';
 
@@ -498,8 +498,6 @@ app.post('/crop', async function(request,response){
     var croppedImage = request.query.currentImage.split('?')[0];
     var cookieval = request.cookies['cubeFile'];
 
-    console.log(croppedImage + ' = current image');
-
     // search for data in array given by user cookie
     var data = util.getObjectFromArray(cookieval, cubeArray);
     // if the data val is an error code then fail
@@ -521,7 +519,7 @@ app.post('/crop', async function(request,response){
         pxArray = util.calculateCrop(pxArray);
 
         await util.cropImage(imageLocation, pxArray).then(function(newImage){
-            console.log(newImage + ' after crop');
+            
         response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data});
         });
 ;
@@ -529,12 +527,44 @@ app.post('/crop', async function(request,response){
     else{
         pxArray = util.calculateCrop(pxArray);
         await util.cropImage(croppedImage, pxArray).then(function(newImage){
-            console.log(newImage + 'from low');
+            
+
             response.render('imagePage.ejs',{ image:newImage + '?t='+ performance.now(), tagField: data});
             });
 
     }
 });
+
+
+app.post('/addIcon', async function(request,response){
+    console.log(request.url);
+
+    var imageUrl = request.query.imageLink;
+    var coordinates = request.query.coordinates;
+    var cookieval = request.cookies['cubeFile'];
+
+    // search for data in array given by user cookie
+    var data = util.getObjectFromArray(cookieval, cubeArray);
+    // if the data val is an error code then fail
+    if(data < 1){
+        console.log('Object Search Failed');
+        data = 'NONE';
+    }else{
+        // otherwise load the important data from the active object array into data variable
+        data = data.impData;
+    }
+
+    // TESTING THE ICON FUNCTION USING A LINK SOLUTION
+    console.log(imageUrl + ' at the coordanates -> ' + coordinates);
+
+    var coorArray = coordinates.split(',');
+    await util.superImposeIcon(imageUrl, 'images/north.png', parseInt(coorArray[0]), parseInt(coorArray[1])).then(function(newImage){
+        console.log('newImage /w icon is: ' + newImage);
+
+        response.render('imagePage.ejs',{ image:newImage + '?t='+ performance.now(), tagField: data});
+    });
+});
+
 
 
 /* activate the server */

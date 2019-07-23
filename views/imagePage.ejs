@@ -107,6 +107,8 @@
         <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
     </div>
               
+    <button class="btn btn-primary btn-lg" id="iconFlag">Add Icon</button>
+    <button class="btn btn-primary btn-lg" id="cropFlag"> Crop Image</button>
 
     <div class="image-editor">
         <img id="trackMouse" alt="" class="image-image" src="<%= image %>"  width="auto" height="auto">
@@ -114,24 +116,44 @@
     
     <script>
 
+        var iconFlag = false;
+        var cropFlag = false; 
+
+
         // mouse click captures pixel coordinates on image
         $(document).ready(function() {
-          
             $("img").on("click", function(event) {
                 var x = event.pageX - this.offsetLeft;
                 var y = event.pageY - this.offsetTop;
 
                 captureClick(x,y);
-                
-                if(clickArray.length % 2 === 0){
+
+                // testing adding an icon to the image
+                if(iconFlag){
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://localhost:8080/addIcon?imageLink=' + '<%=image%>' + '&coordinates=' + [x,y].toString(),
+                        success: function(response) { 
+                            console.log(response);
+                            $("html").html(response);
+                            
+                           
+                        },
+                        error: function(xhr, status, err) {
+                            console.log(xhr.responseText);
+                        }
+                     });
+                }
+                else if( cropFlag && clickArray.length % 2 === 0){
                     let arrayStr = clickArray.toString();
                     $.ajax({
                         type: 'POST',
                         url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
                         success: function(response) { 
-                            console.log(response);
+                        //console.log(response);
                             $("html").html(response);
-                            
+                            clickArray = [];
+                        
                         },
                         error: function(xhr, status, err) {
                             console.log(xhr.responseText);
@@ -139,6 +161,28 @@
                     });
                 }    
             });
+
+            $('#iconFlag').click(function(){
+                iconFlag = !iconFlag;
+                if(iconFlag){
+                    cropFlag = false;
+                    document.getElementById('iconFlag').innerHTML = "Cancel?";
+                }else{
+                    document.getElementById('iconFlag').innerHTML = "Add Icon";
+                }
+            });
+
+            $("#cropFlag").click(function(){
+                cropFlag = !cropFlag;
+                if(cropFlag){
+                    iconFlag = false;
+                    document.getElementById('cropFlag').innerHTML = "Cancel?";
+                    
+                }else{
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                }
+            });
+
             $("#backBtn").click(function(){
                 $.ajax({
                     type: 'GET',

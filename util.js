@@ -88,23 +88,47 @@ module.exports = {
         cropArray[3] = heigth;
 
         return cropArray;
-
     },
 
 
     cropImage: async function(imageLink,cropArray){
         const cubeImage = await jimp.read(imageLink);
         var returnImage;
+
         await cubeImage.crop(parseInt(cropArray[0]),parseInt(cropArray[1]),parseInt(cropArray[2]),parseInt(cropArray[3]),function(err){
             if(err) throw err;
             returnImage = newImageName(imageLink);
 
         })
         .write(returnImage);
+        
         return returnImage;
     },
 
 
+
+    superImposeIcon: async function(starterImage, iconPath, x, y){
+
+        console.log('impose onto: ' + starterImage);
+        console.log('impose this: ' + iconPath);
+
+        starterImage = parseQuery(starterImage);
+        
+
+    
+        var image = await jimp.read(starterImage);
+        var icon = await jimp.read(iconPath);
+
+        await icon.resize(.10 * image.bitmap.width, .10 * image.bitmap.height);
+
+        var outputFile = getIconFilename(starterImage,iconPath);
+
+        await image.composite(icon, x, y)
+        .write(outputFile);
+
+        return outputFile;
+        
+    },
 
     /**
      * 
@@ -202,6 +226,7 @@ module.exports = {
                 importantTags.push(tags[i].replace('<tag>','').replace('</tag>','').trim());
             }
         }
+
         return importantTags;
     },
 
@@ -396,18 +421,30 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
         // execute the isis2std function
         exec( 
             isisCall + ' from= ' + filepath
-        + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
+            + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
             if(err){
                 // log error
                 console.log('Failed isis2std call');
                 //console.log(err);
             }
             resolve();
-            });
         });
-    }
+    });
+}
 
  
+
+var getIconFilename = function(imagePath, iconPath){
+    let imageArr = imagePath.split('/');
+    let iconArr = iconPath.split('/');
+
+    var imageName = imageArr[imageArr.length - 1];
+    var iconName = iconArr[iconArr.length - 1];
+
+    return 'jimp/' + imageName.replace('.png','_') + iconName;
+}
+
+
 /**
  * 
  * @param {string} nameString tag to be checked for End keywords
@@ -528,4 +565,11 @@ var newImageName = function(imageLink){
     let newImageName = imagename.replace('.png','_crop') + '.png';
 
     return path.join('jimp',newImageName);
+}
+
+
+// parses the query string off of the image link
+var parseQuery = function(imageName){
+    try{return imageName.split('?')[0];}
+    catch{return imageName;}
 }
