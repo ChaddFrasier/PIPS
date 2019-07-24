@@ -450,8 +450,18 @@ app.post('/showImage', function(request, response){
         // image path could not be found
         imagepath = 'none';
     }
-    // render image page with needed data
-    response.render("imagePage.ejs", {image:imagepath, tagField: data});
+    var w;
+    var h;
+    jimp.read(imagepath).then(function(img){
+        w = img.bitmap.width;
+        h = img.bitmap.height;
+        // render image page with needed data
+        response.render("imagePage.ejs", {image:imagepath, tagField: data,
+            w: w, h: h});
+    }).catch(function(err){
+        console.log(err);
+    });
+    
 });
 
 
@@ -466,21 +476,37 @@ app.get('/crop',async function(request, response){
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
 
-      console.log(currentImage.split('_crop'));
-    if(currentImage.split('_crop').length === 2){
+      console.log(currentImage.split('_'));
+
+    if(currentImage.split('_').length === 2){
+        // remove current file
         await fs.unlinkSync(currentImage.split('?')[0]);
+
+        // get new Image b/c we know its a default
         newImage = util.findImageLocation(cookieval);
+
+        console.log("undo to : " + newImage);
+        // render with variables
         response.render('imagePage.ejs',{image:newImage, tagField: data});
     }
-    else if(currentImage.split('_crop').length > 2){
+    else if(currentImage.split('_').length > 2){
         await fs.unlinkSync(currentImage.split('?')[0]);
 
-        let strArray = currentImage.split('_crop')
+        let imageLink = currentImage.split('?')[0];
+        // split name on underscore
+        let strArray = imageLink.split('_');
 
-        strArray[strArray.length - 2] = strArray[strArray.length-1];
+        // second to last string
+        strArray[strArray.length - 2] += '.' + strArray[strArray.length-1].split('.')[strArray[strArray.length-1].split('.').length - 1];
         strArray.pop();
 
-        newImage = strArray.join('_crop');
+        newImage = strArray.join('_');
+
+        console.log(newImage + ' image after undo');
+
+
+        //TODO: figure out how to extract width of height of new image
+
         response.render('imagePage.ejs',{image:newImage, tagField: data});
         response.end();
     }
@@ -518,19 +544,21 @@ app.post('/crop', async function(request,response){
 
         pxArray = util.calculateCrop(pxArray);
 
-        await util.cropImage(imageLocation, pxArray).then(function(newImage){
-            
-        response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data});
+        await util.cropImage(imageLocation, pxArray).then( async function(newImage){
+          
+            response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
         });
-;
+
     }
     else{
         pxArray = util.calculateCrop(pxArray);
-        await util.cropImage(croppedImage, pxArray).then(function(newImage){
-            
+        imageLocation = util.parseQuery(croppedImage);
 
-            response.render('imagePage.ejs',{ image:newImage + '?t='+ performance.now(), tagField: data});
-            });
+        
+        await util.cropImage(imageLocation, pxArray).then( async function(newImage){
+        
+            response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
+        });
 
     }
 });

@@ -105,6 +105,17 @@ module.exports = {
         return returnImage;
     },
 
+    getDimensions: async function(newImage){
+        await jimp.read(newImage).then(function(img){
+            console.log('fails after READ');
+            var w = img.bitmap.width;
+            var h = img.bitmap.height;
+
+            console.log("wifdth: " + w + "And height" + h);
+            return [w,h];
+        });
+    },
+
 
 
     superImposeIcon: async function(starterImage, iconPath, x, y){
@@ -112,7 +123,7 @@ module.exports = {
         console.log('impose onto: ' + starterImage);
         console.log('impose this: ' + iconPath);
 
-        starterImage = parseQuery(starterImage);
+        starterImage = require(__filename).parseQuery(starterImage);
         
 
     
@@ -278,7 +289,13 @@ module.exports = {
         namearr[namearr.length - 1] = format;
         // return the combined new array
         return namearr.join('.');
-    }
+    },
+
+    // parses the query string off of the image link
+    parseQuery: function(imageName){
+    try{return imageName.split('?')[0];}
+    catch{return imageName;}
+}
 };
 
 
