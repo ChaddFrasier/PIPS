@@ -198,6 +198,11 @@
             });
 
 
+            setInterval($('#cropOutline').mousemove(function(event){
+
+                outlineBox.setAttribute('x', event.offsetX);
+            }),1000);
+
             $('#iconFlag').click(function(){
                 iconFlag = !iconFlag;
                 if(iconFlag){
