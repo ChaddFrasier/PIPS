@@ -137,6 +137,8 @@
                 }
             }
 
+            console.log(key)
+
         }
         // Gets All Tags
         function getAllTags() {
@@ -158,12 +160,12 @@
         // Return Metadata Val from Key
         function getMetadataVal(key) {
             //variable text will read all content in first textarea(user entered)
-            var metaData = JSON.parse(document.getElementById("metadata-text").value);
+            var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
             
-            for(datakey in metaData){
+            for(datakey in allMetaData){
                 if(datakey.indexOf(key) > -1){
                     //console.log(metaData[datakey]);
-                    return metaData[datakey].trim();
+                    return allMetaData[datakey].trim();
                 }
             }
             return 'None'
