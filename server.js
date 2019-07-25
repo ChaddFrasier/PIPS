@@ -4,24 +4,16 @@
  * @run node server 
  * 
  * @author Chadd Frasier
- * @version 2.4.0
+ * @version 2.4.5
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 07/17/19
+ * Last Modified: 07/25/19
  *
  * @todo 1 unit test all componets
  * 
- * @todo 2 use jimp to super impose icons on the images using pixel tracking technique
- *      @see https://www.chestysoft.com/imagefile/javascript/get-coordinates.asp for details on pixel tracking
- * 
- * @todo 3 maybe use jimp to render and zoom on the image 
- *      @see {link redacted for DOI system security} (this link is for team members) for resize and superimposition
- *      @see https://www.geeksforgeeks.org/node-jimp-crop/ for cropping
  *     
  * @todo 4 get image page working again
- * 
- * @todo 7 image cropping with jimp
  * 
  * TODO: simplify the object code
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}

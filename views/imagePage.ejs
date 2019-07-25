@@ -147,13 +147,13 @@
     var sunImage = document.getElementById("sunIcon");
 
 
+    // TODO: set icons sizes
     northImage.setAttribute('width',getIconWidth(<%= w %>));
     northImage.setAttribute('height',getIconHeight(<%= h %>));
-
-
     sunImage.setAttribute('width',getIconWidth(<%= w %>));
     sunImage.setAttribute('height',getIconHeight(<%= h %>));
 
+    // sets the size of svg box
     svg.setAttribute('width',<%= w %>);
     svg.setAttribute('height',<%= h %>);
     
@@ -182,10 +182,7 @@
         }
     }
 
-
-
-    
-
+    // peek at the size of the image
     console.log("<%= w %>: <%= h %>");
 </script>
 
@@ -196,7 +193,9 @@
         var sunFlag = false;
 
         var sunIconPlaced = false;
-        var northIconPlaced = false
+        var northIconPlaced = false;
+
+        var outlineVisible = false;
 
         // mouse click captures pixel coordinates on svg box
         $(document).ready(function() {
@@ -204,6 +203,7 @@
             northImage.style.visibility = 'hidden';
             sunImage.style.visibility = 'hidden';
 
+            // when the imamge registers a click
             $("image").on("click", function(event) {
               
                 var x = event.offsetX;
@@ -211,8 +211,10 @@
 
                 if(northFlag || cropFlag || sunFlag){
                     captureClick(x,y);
+                    console.log(clickArray);
                     if(cropFlag && clickArray.length === 2){
                         outlineBox.style.visibility = 'visible';
+                        outlineVisible = true;
 
                         outlineBox.setAttribute('x',clickArray[0]);
                         outlineBox.setAttribute('y',clickArray[1]);
@@ -261,10 +263,10 @@
                             cache: false,
                             url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
                             success: function(response) { 
-                                console.log(response);
-                                console.log('fails at load');
+                                
+                                
                                 $("html").html(response);
-                                console.log('fails after page load');
+                                
                                 clickArray = [];
                                 cropFlag = false;
                             
@@ -286,41 +288,16 @@
             var startY;
 
             var minDim = 100;
-
+                
             $('#crop').mousemove(function(event){
                 // change size of box 
                 mouseX = event.offsetX;
                 mouseY = event.offsetY;
+                console.log(clickArray);
+                adjustBox();
             });
-
-            /* $('#cropOutline').mousemove(function(event){
-                // change size of box 
-
-                mouseX2 = event.offsetX;
-                mouseY2 = event.offsetY;
-
-                try{
-                    let w = parseInt(mouseX2) - startX;
-                    let h = parseInt(mouseY2) - startY;
-
-                    if(w < minDim){
-                        w = minDim;
-                    } 
-                    if(h < minDim){
-                        h = minDim;
-                    }
-                
-                    outlineBox.setAttribute('width' , w);
-                    outlineBox.setAttribute('height', h);
-                }
-                catch{
-                    console.log('cropOutline box is not moused over');
-                }
-            }); */
-
+        
             
-
-
             function adjustBox(){
                 startX = clickArray[0];
                 startY = clickArray[1];
@@ -344,7 +321,8 @@
             } 
 
 
-            setInterval(adjustBox, 100);
+            
+            //setInterval(adjustBox, 100);
 
             $('#northIconFlag').click(function(){
                 northFlag = !northFlag;
