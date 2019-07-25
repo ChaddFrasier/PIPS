@@ -131,7 +131,7 @@
                 </clipPath>
             </defs>
             <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
-                <rect id="cropOutline"x="0" y="0" width="5" height="5" style="fill:rgba(255,0,0,.15);stroke-width:2;stroke:rgb(255,0,0);" />
+                <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
                 <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
                 <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
             </svg>
@@ -293,7 +293,7 @@
                 mouseY = event.offsetY;
             });
 
-            $('#cropOutline').mousemove(function(event){
+            /* $('#cropOutline').mousemove(function(event){
                 // change size of box 
 
                 mouseX2 = event.offsetX;
@@ -310,13 +310,13 @@
                         h = minDim;
                     }
                 
-                    outlineBox.setAttribute('width' , w-5);
-                    outlineBox.setAttribute('height', h-5);
+                    outlineBox.setAttribute('width' , w);
+                    outlineBox.setAttribute('height', h);
                 }
                 catch{
                     console.log('cropOutline box is not moused over');
                 }
-            });
+            }); */
 
             
 
@@ -336,15 +336,15 @@
                         h = minDim;
                     }
 
-                    outlineBox.setAttribute('width' , w-5);
-                    outlineBox.setAttribute('height' , h -5);
+                    outlineBox.setAttribute('width' , w);
+                    outlineBox.setAttribute('height' , h);
                 }catch{
                     console.log('image is not moused over');
                 }
             } 
 
 
-            setInterval(adjustBox, 10);
+            setInterval(adjustBox, 100);
 
             $('#northIconFlag').click(function(){
                 northFlag = !northFlag;
