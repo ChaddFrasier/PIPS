@@ -222,8 +222,11 @@
                 var y = event.offsetY;
 
                 if(northFlag || cropFlag || sunFlag || eyeFlag){
-                    captureClick(x,y);
-                    console.log(clickArray);
+                    if(clickArray.length < 1 || clickArray[0]<x || clickArray[1]< y){
+                        captureClick(x,y);
+                        console.log(clickArray);
+                    }
+                    
                     if(cropFlag && clickArray.length === 2){
                         outlineBox.style.visibility = 'visible';
                         outlineVisible = true;
