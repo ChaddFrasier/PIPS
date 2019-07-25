@@ -255,12 +255,16 @@
                     }
                     else if( cropFlag && clickArray.length === 4){
                         let arrayStr = clickArray.toString();
+                        event.preventDefault();
                         $.ajax({
                             type: 'POST',
+                            cache: false,
                             url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
                             success: function(response) { 
                                 console.log(response);
+                                console.log('fails at load');
                                 $("html").html(response);
+                                console.log('fails after page load');
                                 clickArray = [];
                                 cropFlag = false;
                             
@@ -273,7 +277,6 @@
                     }
                 } 
             });
-
 
             var mouseX;
             var mouseY;
@@ -461,9 +464,12 @@
                 
             });
 
-            $("#backBtn").click(function(){
+            $("#backBtn").on('click',function(event){
+                event.preventDefault();
                 $.ajax({
                     type: 'GET',
+                    
+                    cache: false,
                     url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
                     success: function(response) {
                         $("html").html(response);
@@ -472,6 +478,7 @@
                     },
                     error: function(xhr, status, err) {
                         console.log(xhr.responseText);
+                        
                     }
                 });
             });

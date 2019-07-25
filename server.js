@@ -488,6 +488,7 @@ app.post('/showImage', function(request, response){
         w = img.bitmap.width;
         h = img.bitmap.height;
         // render image page with needed data
+        if(isWindows){ imagepath = imagepath.replace("\\","/");}
         response.render("imagePage.ejs", {image:imagepath, tagField: data,
             w: w, h: h});
     }).catch(function(err){
@@ -498,7 +499,7 @@ app.post('/showImage', function(request, response){
 
 
 app.get('/crop',async function(request, response){
-    console.log(request.url);
+    console.log(request.url + 'from GET');
 
     var currentImage = request.query.currentImage;
     var cookieval = request.cookies['cubeFile'];
@@ -507,8 +508,6 @@ app.get('/crop',async function(request, response){
 
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
-
-      console.log(currentImage.split('_'));
 
     if(currentImage.split('_').length === 2){
         // remove current file
@@ -525,6 +524,7 @@ app.get('/crop',async function(request, response){
             w = img.bitmap.width;
             h = img.bitmap.height;
             // render image page with needed data
+            if(isWindows){newImage = newImage.replace("\\","/");}
             response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
@@ -557,6 +557,7 @@ app.get('/crop',async function(request, response){
                 w = img.bitmap.width;
                 h = img.bitmap.height;
                 // render image page with needed data
+                if(isWindows){ newImage = newImage.replace("\\","/");}
                 response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
@@ -569,6 +570,7 @@ app.get('/crop',async function(request, response){
                 w = img.bitmap.width;
                 h = img.bitmap.height;
                 // render image page with needed data
+                if(isWindows){ newImage = newImage.replace("\\","/");}
                 response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
@@ -583,6 +585,7 @@ app.get('/crop',async function(request, response){
             w = img.bitmap.width;
             h = img.bitmap.height;
             // render image page with needed data
+            if(isWindows){newImage = newImage.replace("\\","/");}
             response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
@@ -610,7 +613,8 @@ app.post('/crop', async function(request,response){
         // otherwise load the important data from the active object array into data variable
         data = data.impData;
     }
-
+    // set header to html
+    response.setHeader("Content-Type", "text/html","charset=utf-8");
 
     if(croppedImage === util.findImageLocation(cookieval)){
 
@@ -622,6 +626,7 @@ app.post('/crop', async function(request,response){
 
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
           
+            if(isWindows){newImage = newImage.replace("\\","/");}
             response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
         });
 
@@ -632,7 +637,7 @@ app.post('/crop', async function(request,response){
 
         
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
-        
+            if(isWindows){newImage = newImage.replace("\\","/");}
             response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
         });
 
