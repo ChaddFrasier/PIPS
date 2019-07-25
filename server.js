@@ -557,7 +557,7 @@ app.get('/crop',async function(request, response){
                 w = img.bitmap.width;
                 h = img.bitmap.height;
                 // render image page with needed data
-                if(isWindows){ newImage = newImage.replace("\\","/");}
+                if(isWindows){ baseImg = baseImg.replace("\\","/");}
                 response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
