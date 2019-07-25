@@ -1,0 +1,772 @@
+<html>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+
+    <link rel="stylesheet", href="css/index.css" type="text/css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Image Edit</title>
+
+    <!--<script type="module" src="static/html2canvas.js"></script>-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+    <style>
+        .image-editer{
+            
+            align-content: center;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .image-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        }
+
+        .image-image:hover {
+        cursor: crosshair;
+        }
+
+        .image-controls{
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            align-content: center;
+            padding: auto;
+                    
+        }
+        .image-symbols{
+            margin-left: auto;
+            margin-right:auto;
+            background-color: #d9d9d9;
+            border: 5px solid #000000;
+            width: 400px;
+        }
+        .cropit-preview {
+            background-color: #f8f8f8;
+            background-size: cover;
+            border: 20px solid #000000;
+            border-radius: 3px;
+            margin-top: 7px;
+            margin-left: 25%;
+            width: 600px;
+            height: 600px;
+        }
+        
+        .cropit-preview-image-container {
+            cursor: move;
+        }
+        
+        .image-size-label {
+            margin-top: 10px;
+        }
+        .export {
+            display: block;
+        }
+        .button {
+            margin-top: 10px;
+        }
+        .canvas-legend {
+            height: 50px;
+        }
+
+        svg { position: relative; top: 0; left: 0; width: '<%= w %>px'; height: '<%= h %>px'}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron text-center" >
+            <h2>Edit the Cube Image</h2>      
+            <p class="lead">First crop the image by selecting the crop button and clicking on the image</p>
+            <p class="lead medium">Then add the icons by clicking the button for each icon and selecting the location on the image 1 at a time</p>
+            <p ><em>Icons will be removed if they are placed before a crop action</em></p>
+
+            <div style="display:inline;">
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
+
+                <button id="backBtn" class="btn btn-primary btn-lg">Undo Crop</button>
+                
+                <form method="POST" action="/imageDownload" display="inline" class=" float-right text-center">
+                        <input type="hidden" value='<%= image %>' name="passedIMG">
+                        <input type="submit" value="Save Raw Image" class="btn btn-secondary btn-lg" />
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="metadata" style="display:none;"  class="text-center green-border-focus">
+        <label for="metadata-text">
+            <h2>Metadata Output</h2>
+        </label>
+        <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
+    </div>
+
+    <div id="metadata-tags" style="display:none;" class="text-center green-border-focus">
+        <label for="metadataTagArea">
+            <h2>Metadata Tags</h2>
+        </label>
+        <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
+    </div>
+              
+    <div class="image-controls text-center">
+        <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
+        <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
+        <button class="btn btn-primary btn-lg" id="cropFlag"> Crop Image</button>
+    </div>
+    <br/>
+    <div class="float-center image-editor">
+        <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" style="border:2px black solid;" width="1000px" height="1000px">
+            <defs>
+                <clipPath id="image_box">
+                    <rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,255);"/>
+                </clipPath>
+            </defs>
+            <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
+                <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
+                <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
+                <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
+            </svg>
+    </div>
+
+<script>
+    var outlineBox = document.getElementById('cropOutline');
+    outlineBox.style.visibility = 'hidden';
+    var svg = document.getElementById('svgWrapper');
+
+
+    var northImage = document.getElementById("northIcon");
+    var sunImage = document.getElementById("sunIcon");
+
+
+    northImage.setAttribute('width',getIconWidth(<%= w %>));
+    northImage.setAttribute('height',getIconHeight(<%= h %>));
+
+
+    sunImage.setAttribute('width',getIconWidth(<%= w %>));
+    sunImage.setAttribute('height',getIconHeight(<%= h %>));
+
+    svg.setAttribute('width',<%= w %>);
+    svg.setAttribute('height',<%= h %>);
+    
+
+
+
+    function getIconWidth(imageWidth){
+        let iconSize = imageWidth*.1;
+       
+        if(iconSize < 25){
+            iconSize = '30px';
+            return iconSize;
+        }else{
+            return iconSize.toString()+'px';
+        }
+        
+    }
+    
+    function getIconHeight(imageHeight){
+        let iconSize = imageHeight*.1;
+        if(iconSize < 25){
+            iconSize = '30px';
+            return iconSize;
+        }else{
+            return iconSize.toString()+'px';
+        }
+    }
+
+
+
+    
+
+    console.log("<%= w %>: <%= h %>");
+</script>
+
+<script>
+
+        var northFlag = false;
+        var cropFlag = false; 
+        var sunFlag = false;
+
+        var sunIconPlaced = false;
+        var northIconPlaced = false
+
+        // mouse click captures pixel coordinates on svg box
+        $(document).ready(function() {
+            
+            northImage.style.visibility = 'hidden';
+            sunImage.style.visibility = 'hidden';
+
+            $("image").on("click", function(event) {
+              
+                var x = event.offsetX;
+                var y = event.offsetY;
+
+                if(northFlag || cropFlag || sunFlag){
+                    captureClick(x,y);
+                    if(cropFlag && clickArray.length === 2){
+                        outlineBox.style.visibility = 'visible';
+
+                        outlineBox.setAttribute('x',clickArray[0]);
+                        outlineBox.setAttribute('y',clickArray[1]);
+                    }
+
+                    // testing adding an icon to the image
+                    if(northFlag){
+                        
+                        if(x < svg.getAttribute('width') - parseInt(northImage.getAttribute('width'))
+                            && y < svg.getAttribute('height') - parseInt(northImage.getAttribute('height'))){
+
+                            northImage.setAttribute('x',x);
+                            northImage.setAttribute('y',y);
+                            northImage.style.visibility = 'visible';
+
+                            
+                            northIconPlaced = true;
+                            document.getElementById('northIconFlag').innerHTML = "Remove?";
+                            clickArray = [];
+                            northFlag = false;
+
+                        }
+                        
+                    }
+                    else if(sunFlag){
+                        if(x < svg.getAttribute('width') - parseInt(sunImage.getAttribute('width'))
+                            && y < svg.getAttribute('height') - parseInt(sunImage.getAttribute('height'))){
+
+                            sunImage.setAttribute('x',x);
+                            sunImage.setAttribute('y',y);
+                            sunImage.style.visibility = 'visible';
+
+                            
+                            sunIconPlaced = true;
+                            document.getElementById('sunIconFlag').innerHTML = "Remove?";
+                            clickArray = [];
+                            sunFlag = false;
+
+                        }
+                    }
+                    else if( cropFlag && clickArray.length === 4){
+                        let arrayStr = clickArray.toString();
+                        $.ajax({
+                            type: 'POST',
+                            url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
+                            success: function(response) { 
+                                console.log(response);
+                                $("html").html(response);
+                                clickArray = [];
+                                cropFlag = false;
+                            
+                            },
+                            error: function(xhr, status, err) {
+                                console.log(xhr.responseText);
+                            }
+                        });
+                        
+                    }
+                } 
+            });
+
+
+            var mouseX;
+            var mouseY;
+            var mouseX2;
+            var mouseY2;
+            var startX;
+            var startY;
+
+            var minDim = 100;
+
+            $('#crop').mousemove(function(event){
+                // change size of box 
+                mouseX = event.offsetX;
+                mouseY = event.offsetY;
+            });
+
+            /* $('#cropOutline').mousemove(function(event){
+                // change size of box 
+
+                mouseX2 = event.offsetX;
+                mouseY2 = event.offsetY;
+
+                try{
+                    let w = parseInt(mouseX2) - startX;
+                    let h = parseInt(mouseY2) - startY;
+
+                    if(w < minDim){
+                        w = minDim;
+                    } 
+                    if(h < minDim){
+                        h = minDim;
+                    }
+                
+                    outlineBox.setAttribute('width' , w);
+                    outlineBox.setAttribute('height', h);
+                }
+                catch{
+                    console.log('cropOutline box is not moused over');
+                }
+            }); */
+
+            
+
+
+            function adjustBox(){
+                startX = clickArray[0];
+                startY = clickArray[1];
+
+                try{
+                    let w = parseInt(mouseX) - startX;
+                    let h = parseInt(mouseY) - startY;
+
+                    if(w < minDim){
+                        w = minDim;
+                    } 
+                    if(h < minDim){
+                        h = minDim;
+                    }
+
+                    outlineBox.setAttribute('width' , w);
+                    outlineBox.setAttribute('height' , h);
+                }catch{
+                    console.log('image is not moused over');
+                }
+            } 
+
+
+            setInterval(adjustBox, 100);
+
+            $('#northIconFlag').click(function(){
+                northFlag = !northFlag;
+
+                if(northIconPlaced){
+                    northIconPlaced = !northIconPlaced;
+                    northImage.style.visibility = 'hidden';
+                    northFlag = !northFlag;
+                }
+                
+                if(northFlag){
+                    if(sunFlag && !sunIconPlaced){
+                        sunFlag = false;
+                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    }
+
+                    cropFlag = false;
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
+                    
+                    document.getElementById('northIconFlag').innerHTML = "Cancel?";
+                }
+                else{
+                    clickArray = [];
+                    document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+
+                    if(cropFlag){
+                        cropFlag = !cropFlag;
+                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                        outlineBox.style.visibility = 'hidden';
+                    
+                    }
+                }
+                clickArray = [];
+            });
+
+
+            $('#sunIconFlag').click(function(){
+                sunFlag = !sunFlag;
+
+                if(sunIconPlaced){
+                    sunIconPlaced = !sunIconPlaced;
+                    sunImage.style.visibility = 'hidden';
+                    sunFlag = !sunFlag;
+                        
+                }
+                
+                if(sunFlag){
+                    if(northFlag && !northIconPlaced){
+                        northFlag = false;
+                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                    }
+                    
+                    cropFlag = false;
+                    outlineBox.style.visibility = 'hidden';
+                    
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    document.getElementById('sunIconFlag').innerHTML = "Cancel?";
+                }
+                else{
+                    
+                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    if(cropFlag){
+                        cropFlag = !cropFlag;
+                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                        outlineBox.style.visibility = 'hidden';
+                    
+                    }
+                }
+                clickArray = [];
+            });
+
+
+
+            setInterval(checkBtns(),1000);
+
+            function checkBtns(){
+                if(!cropFlag){
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
+                }
+                if(!northFlag){
+                    document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                }
+                if(northIconPlaced){
+                        document.getElementById('northIconFlag').innerHTML = "Remove?";
+                    }
+                if(!sunFlag){
+                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    
+                }
+                if(sunIconPlaced){
+                        document.getElementById('sunIconFlag').innerHTML = "Remove?";
+                    }
+            }
+
+            $("#cropFlag").click(function(){
+                cropFlag = !cropFlag;
+
+                if(cropFlag){
+                    if(northFlag && !northIconPlaced){
+                        northFlag = false
+                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                    }
+                    if(sunFlag && !sunIconPlaced){
+                        sunFlag = false;
+                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    }
+                    
+                    document.getElementById('cropFlag').innerHTML = "Cancel?";
+                    
+                }else{
+                    clickArray = [];
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
+                }
+                
+            });
+
+            $("#backBtn").click(function(){
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
+                    success: function(response) {
+                        $("html").html(response);
+                    
+                        
+                    },
+                    error: function(xhr, status, err) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+    });
+
+        var clickArray = [];
+
+        function captureClick(x,y){
+            clickArray.push(x);
+            clickArray.push(y);
+        }
+
+        
+    </script>
+    <br/>
+
+    <div class="float-center text-center" style="margin-left:auto; margin-right:auto;">
+        <h1 style="padding-top:5%;">Image Legend</h1>
+        <table class="float-center text-center" style="margin-left:auto; margin-right:auto;">
+            <tr>
+                <td>
+                    <svg id="legend-image" width="500" height="200">
+                        <rect width="100%" height="100%" rx="10" ry="10" style="fill:rgb(233, 236, 239);">
+                        </rect>
+                        <foreignObject x="10" y="10" width="100%" height="100%">
+                            <table class="float-center" id="legend-table">
+                                <tr id="north">
+                                    <th>North:</th>
+                                    <th style="padding-left:20%;"><img src="images/north.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;"id="northDeg">0 degrees</th>
+                                </tr>
+                                <tr id="sun-az">
+                                    <th>Sun Azimuthal Direction:</th>
+                                    <th style="padding-left:20%;"><img src="images/sun_symbol.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;" id="sunDeg">0 degrees</th>
+                                </tr>
+                                <tr id="obs-az">
+                                    <th>Observer Azimuthal Direction:</th>
+                                    <th style="padding-left:20%;"><img src="images/eye_symbol.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;" id="obsDeg">0 degrees</th>
+                                </tr>
+                                <tr id="image-scalebar" style="overflow:hidden;">
+                                    <th>Scalebar:</th>
+                                    <th id="range-1"></th>
+                                    <th style="padding-left:20%;"><img src="images/arrow.png" width="25" height="25"></img></th>
+                                    <th><h2 id="scalebar-canvas" class="canvas-legend"></h2></th>
+                                    <th id="range-2"></th>
+                                </tr>   
+                            </table>
+                        </foreignObject>
+                    </svg>
+                </td>
+                <td valign="top">
+                    <div id="hide-legend" class="float-center" style="text-align:left;">
+                        <table>
+                            <tr><h4>Hide Legend Elements</h4></tr>
+                            <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
+                            <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
+                            <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
+                            <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <button onclick="exportLegend()">Export Legend</button>
+    </div>
+
+    <div id="legend-export-div" style="margin-left:35%;">
+    </div>
+                                                                   
+<script>
+    function exportLegend(){
+        var div = document.getElementById("legend-export-div");
+        html2canvas(document.querySelector("#legend-table")).then(function(canvas) {
+            document.getElementById("legend-export-div").append(canvas);        
+            //document.body.appendChild(canvas);
+        });
+    }
+</script>
+<script>
+    function hideNorth(){
+        document.getElementById("north").style.display = "none";
+        //console.log("Hiding North");
+    }
+    function showNorth(){
+        document.getElementById("north").style.display = "table-row";
+        //console.log("Showing North");
+    }
+    function hideSun(){
+        document.getElementById("sun-az").style.display = "none";
+    }
+    function showSun(){
+        document.getElementById("sun-az").style.display = "table-row";
+    }
+    function hideObs(){
+        document.getElementById("obs-az").style.display = "none";
+    }
+    function showObs(){
+        document.getElementById("obs-az").style.display = "table-row";
+    }
+    function hideScale(){
+        document.getElementById("image-scalebar").style.display = "none";
+        //console.log("Showinfgejnhfkjshdf");
+    }
+    function showScale(){
+        document.getElementById("image-scalebar").style.display = "table-row";
+        //console.log("actually show");
+    }
+    function showHide(){
+        var northRadio = document.getElementById("north-radio").checked;
+        var sunRadio = document.getElementById("sun-radio").checked;
+        var obsRadio = document.getElementById("obs-radio").checked;
+        var scalebarRadio = document.getElementById("scalebar-radio").checked;
+        if(!northRadio){
+            hideNorth();
+        }else{
+            showNorth();
+        }
+        if(!sunRadio){
+            hideSun();
+        }else{
+            showSun();
+        }
+        if(!obsRadio){
+            hideObs();
+        }else{
+            showObs();
+        }
+        if(!scalebarRadio){
+            hideScale();
+        }else{
+            showScale();
+        }
+    }
+    setInterval(showHide, 1000);
+</script>
+<script>
+    var keys = [];
+    var vals = [];
+    // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
+    function getMetadata() {
+        //TODO parse the metadata
+
+
+        //console.log(vals);
+    }
+    getMetadata();
+</script>
+<script>
+    window.onload = function(){
+        /*
+        // Cub Variables
+        var northDegree = 0;
+        var sunDegree = 0;
+        var observerDegree = 0;
+        var scale = 0;
+        // Legend Icons
+        var northImg = new Image();
+        northImg.src = "images/north.png";
+        var sunImg = new Image();
+        sunImg.src = "images/sun_symbol.png";
+        var obsImg = new Image();
+        obsImg.src = " images/eye_symbol.png";
+        
+        // Canvas Stuff
+        var northCanvas = document.getElementById("north-canvas");
+        var northCanvasCtx = northCanvas.getContext("2d");
+        var sunCanvas = document.getElementById("sun-canvas");
+        var sunCanvasCtx = sunCanvas.getContext("2d");
+        var obsCanvas = document.getElementById("obs-canvas");
+        var obsCanvasCtx = obsCanvas.getContext("2d");
+        var scalebarCanvas = document.getElementById("scalebar-canvas");
+        var scalebarCanvasCtx = scalebarCanvas.getContext("2d");
+        
+        // HTML Degree Stuff
+        var norDeg = document.getElementById("northDeg");
+        var sunDeg = document.getElementById("sunDeg");
+        var obsDeg = document.getElementById("obsDeg");
+        var scaleRange = document.getElementById("img-range");
+        var range1 = document.getElementById("range-1");
+        var range2 = document.getElementById("range-2");
+        // Rotates North Arrow Image to inputted degree 
+        function rotateNorth(degree){
+            northCanvasCtx.clearRect(0, 0, northCanvas.width, northCanvas.height);
+            // save the unrotated context of the canvas so we can restore it later
+            // the alternative is to untranslate & unrotate after drawing
+            northCanvasCtx.save();
+            // move to the center of the canvas
+            northCanvasCtx.translate(northCanvas.width/2, northCanvas.height/2);
+            // rotate the canvas to the specified degrees
+            northCanvasCtx.rotate(degree*Math.PI/180);
+            // draw the image
+            // since the context is rotated, the image will be rotated also
+            northCanvasCtx.drawImage(northImg, (-northImg.width/2)+50, (-northImg.width/2)+50, 75, 75);
+            // we’re done with the rotating so restore the unrotated context
+        }
+        // Draw Sun Arrow
+        function sunArrow(degree){
+            var x1 = (sunCanvas.width/2)+50;
+            var y1 = (sunCanvas.height/2)+22;
+            var leng = 75;
+            var theta = (degree*Math.PI/180);
+            sunCanvasCtx.drawImage(sunImg, (sunCanvas.width/2)-20, (sunCanvas.height/2)-20, 75, 75);
+            sunCanvasCtx.moveTo(x1, y1);
+            sunCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
+            sunCanvasCtx.lineWidth = 5;
+            sunCanvasCtx.stroke();
+        }
+        // Draw Observer Arrow
+        function obsArrow(degree){
+            var x1 = (obsCanvas.width/2)+50;
+            var y1 = (obsCanvas.height/2)+22;
+            var leng = 75;
+            var theta = (degree*Math.PI/180);
+            obsCanvasCtx.drawImage(obsImg, (obsCanvas.width/2)-20, (obsCanvas.height/2)-20, 75, 75);
+            obsCanvasCtx.moveTo(x1, y1);
+            obsCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
+            obsCanvasCtx.lineWidth = 5;
+            obsCanvasCtx.stroke();
+        }
+        // Draw Scalebar
+        function scalebarDraw(scale, range){
+            var wid = 600;
+            var hi = 600;
+            var x1 = 0;
+            var y1 = 100;
+            var x2 = 225;
+            var y2 = 100;
+            range1.innerHTML = 0;
+            range2.innerHTML = scale + " m/pix";
+            scalebarCanvasCtx.moveTo(x1, y1);
+            scalebarCanvasCtx.lineTo(x2, y2);
+            scalebarCanvasCtx.lineWidth = 10;
+            scalebarCanvasCtx.stroke();
+        }
+        for(var i=0; i<keys.length; i++){
+            console.log(keys[i]);
+            if(keys[i] === "NorthAzimuth"){
+                northDegree = vals[i];
+                if(vals[i] !== "None"){
+                    norDeg.innerHTML = northDegree + " degs";
+                    northImg.onload = function(){i
+                        console.log("Got North");
+                        rotateNorth(northDegree+90);
+                    }
+                    //console.log("North Degree is:" + northDegree);
+                }else{
+                    norDeg.innerHTML = "N/A";
+                    document.getElementById("north").checked = false;
+                    console.log("North Degree Not Found");
+                }
+            }
+            if(keys[i] === "SubSolarAzimuth"){
+                sunDegree = vals[i];
+                if(vals[i] !== "None"){
+                    sunDeg.innerHTML = sunDegree + " degs";
+                    sunImg.onload = function(){
+                        sunArrow(sunDegree+90);
+                        console.log("Got here");    
+                    }
+                }else{
+                    sunDegree.innerHTML = "N/A"; 
+                    console.log("Sun Degree Not Found");
+                }
+            }
+            if(keys[i] === "SubSpacecraftGroundAzimuth"){
+                observerDegree = vals[i];
+                if(vals[i] !== "None"){
+                    obsDeg.innerHTML = observerDegree + " degs";
+                    obsImg.onload = function(){
+                        obsArrow(observerDegree+90);    
+                    }
+                }else{
+                    obsDeg.innerHTML = "N/A";
+                    console.log("Observer Degree Not Found");
+                }
+            }
+            if(keys[i] === "SampleResolution"){
+                scale = vals[i];
+                var factor = scaleRange.value;
+                
+                if(vals[i] !== "None"){
+                    scalebarDraw(scale, factor);     
+                }else{
+                    scale = "N/A";
+                    console.log("Observer Degree Not Found");
+                }
+            }
+        }
+        */
+    }
+
+</script>
+
+</body>
