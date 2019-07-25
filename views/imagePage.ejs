@@ -13,7 +13,6 @@
 
     <title>Image Edit</title>
 
-    <script type="module" src="static/html2canvas.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
     <style>
@@ -130,11 +129,12 @@
                     <rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,255);"/>
                 </clipPath>
             </defs>
+            
             <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
-                <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
-                <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
-                <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
-            </svg>
+            <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
+            <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
+            <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
+        </svg>
     </div>
 
 <script>
@@ -202,6 +202,7 @@
             
             northImage.style.visibility = 'hidden';
             sunImage.style.visibility = 'hidden';
+            clickArray = [];
 
             // when the imamge registers a click
             $("image").on("click", function(event) {
@@ -293,7 +294,6 @@
                 // change size of box 
                 mouseX = event.offsetX;
                 mouseY = event.offsetY;
-                console.log(clickArray);
                 adjustBox();
             });
         
@@ -303,8 +303,8 @@
                 startY = clickArray[1];
 
                 try{
-                    let w = parseInt(mouseX) - startX;
-                    let h = parseInt(mouseY) - startY;
+                    let w = Number(mouseX) - startX;
+                    let h = Number(mouseY) - startY;
 
                     if(w < minDim){
                         w = minDim;

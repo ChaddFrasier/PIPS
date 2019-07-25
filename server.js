@@ -229,10 +229,10 @@ app.post('/upload', function(request, response){
                 }
             });
 
+
             // create the cookie instance for the user
             response.cookie('cubeFile', cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
-
 
 
             // make promise on the isis function calls
