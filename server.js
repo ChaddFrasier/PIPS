@@ -67,6 +67,7 @@ const Cube = require('./js/cubeObj.js');
 var app = express();
 // global instance array for cube objects
 var cubeArray = [];
+var numUsers = 0;
 
 // use express upload and cookie parser
 app.use(fileUpload());
@@ -95,6 +96,18 @@ app.use("/pvl " , express.static("pvl"));
 
 // start view engine
 app.set('view engine', 'ejs');
+
+
+try{
+    exec('rm ./images/*.pgw');
+    exec('rm ./pvl/*.pvl');
+    exec('rm ./csv/*.csv');
+    exec('rm ./print.prt');    
+}
+catch{
+    console.log('file not found');
+}
+
 
 // HTTP Handling Functions
 
@@ -175,7 +188,6 @@ app.post('/upload', function(request, response){
 
     // prepare the variables for response to user
     var templateText = '';
-    var cubeFileData;
     
     // for testing only
     console.log('=================== New Upload ========================');
@@ -192,31 +204,52 @@ app.post('/upload', function(request, response){
         }
         // cube (.cub) file regexp
         else if(/^.*\.(cub|CUB)$/gm.test(request.files.uploadFile.name)){
+           
             // get the file from request
             var cubeFile = request.files.uploadFile;
             
+            // create promises array for syncronous behavior
+            let promises = [];
+
+
+            // get correct cube object
+            if(request.cookies['userId'] === undefined || cubeArray.length === 0){
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++); 
+                
+            }else{
+                for(i in cubeArray){
+                    console.log(cubeArray[i]);
+                    if(cubeArray[i].userId === parseInt(request.cookies['userId'])){
+                        cubeArray[i].name = 'u-' + cubeArray[i].userId + cubeFile.name;
+                        cubeObj = cubeArray[i];
+                        break;
+                    }
+                }
+            }
+
+
             // save the cube upload to upload folder
-            cubeFile.mv('./uploads/' + cubeFile.name, function(err){
+            cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
                 if(err){
                     console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
                 }
             });
-           
-            // create promises array for syncronous behavior
-            let promises = [];
 
             // create the cookie instance for the user
-            response.cookie('cubeFile', cubeFile.name, {expires: new Date(Date.now() + 900000), httpOnly: true});
-            
+            response.cookie('cubeFile', cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});
+            response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
+
+
 
             // make promise on the isis function calls
-            promises.push(util.makeSystemCalls(cubeFile.name,
-                path.join('.','uploads',cubeFile.name),
-                   path.join('.','pvl',cubeFile.name.replace('.cub','.pvl')),
+            promises.push(util.makeSystemCalls(cubeObj.name,
+                path.join('.','uploads',cubeObj.name),
+                   path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                    'images'));
               
+            
             // when isis is done read the pvl file
              Promise.all(promises).then(function(){
                 //console.log('server heard back from ISIS');
@@ -224,17 +257,16 @@ app.post('/upload', function(request, response){
                 promises = [];
 
                 // make new promise on the data extraction functions
-                promises.push(util.readPvltoStruct(cubeFile.name));
+                promises.push(util.readPvltoStruct(cubeObj.name));
 
                 // when the readPvltoStructf function resolves create data instance
                 Promise.all(promises).then(function(cubeData){
-                    console.log('server got data: \n');
-                   
-                    // create new cube object
-                    var cubeObj = new Cube(cubeFile.name);
-
+                    console.log('server got data: \n' + cubeObj);
+                
                     // add the cube instance to the cube array if it does not already exist
                     cubeArray = util.addCubeToArray(cubeObj,cubeArray);
+
+                    console.log(cubeArray);
                    
                     // save data to object using setter in class
                     cubeObj.data = JSON.parse(cubeData);
@@ -461,7 +493,6 @@ app.post('/showImage', function(request, response){
     }).catch(function(err){
         console.log(err);
     });
-    
 });
 
 
@@ -471,6 +502,7 @@ app.get('/crop',async function(request, response){
 
     var currentImage = request.query.currentImage;
     var cookieval = request.cookies['cubeFile'];
+    var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
     var newImage;
 
       // search for data in array given by user cookie
@@ -487,11 +519,24 @@ app.get('/crop',async function(request, response){
 
         console.log("undo to : " + newImage);
         // render with variables
-        response.render('imagePage.ejs',{image:newImage, tagField: data});
+        var w;
+        var h;
+        jimp.read(newImage).then(function(img){
+            w = img.bitmap.width;
+            h = img.bitmap.height;
+            // render image page with needed data
+            response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
+            response.end();
+        }).catch(function(err){
+            console.log(err);
+        });
     }
     else if(currentImage.split('_').length > 2){
-        await fs.unlinkSync(currentImage.split('?')[0]);
-
+        if(currentImage !== baseImg){
+            console.log('current image is: ' + currentImage);
+            await fs.unlinkSync(currentImage.split('?')[0]);
+        }
+        
         let imageLink = currentImage.split('?')[0];
         // split name on underscore
         let strArray = imageLink.split('_');
@@ -503,15 +548,46 @@ app.get('/crop',async function(request, response){
         newImage = strArray.join('_');
 
         console.log(newImage + ' image after undo');
-
-
-        //TODO: figure out how to extract width of height of new image
-
-        response.render('imagePage.ejs',{image:newImage, tagField: data});
-        response.end();
+        
+    
+        if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
+            var w;
+            var h;
+            jimp.read(baseImg).then(function(img){
+                w = img.bitmap.width;
+                h = img.bitmap.height;
+                // render image page with needed data
+                response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
+                response.end();
+            }).catch(function(err){
+                console.log(err);
+            });
+        }else{
+            var w;
+            var h;
+            jimp.read(newImage).then(function(img){
+                w = img.bitmap.width;
+                h = img.bitmap.height;
+                // render image page with needed data
+                response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
+                response.end();
+            }).catch(function(err){
+                console.log(err);
+            });
+        }
     }
     else{
-        response.render('imagePage.ejs',{image:currentImage, tagField: data});
+        var w;
+        var h;
+        jimp.read(cookieval).then(function(img){
+            w = img.bitmap.width;
+            h = img.bitmap.height;
+            // render image page with needed data
+            response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
+            response.end();
+        }).catch(function(err){
+            console.log(err);
+        });
     }
 });
 
@@ -564,12 +640,17 @@ app.post('/crop', async function(request,response){
 });
 
 
+//TODO this will change alot in the near future
 app.post('/addIcon', async function(request,response){
     console.log(request.url);
 
     var imageUrl = request.query.imageLink;
     var coordinates = request.query.coordinates;
     var cookieval = request.cookies['cubeFile'];
+    var baseImg = cookieval.replace('.cub','.png');
+
+    console.log(baseImg);
+
 
     // search for data in array given by user cookie
     var data = util.getObjectFromArray(cookieval, cubeArray);
@@ -586,10 +667,17 @@ app.post('/addIcon', async function(request,response){
     console.log(imageUrl + ' at the coordanates -> ' + coordinates);
 
     var coorArray = coordinates.split(',');
-    await util.superImposeIcon(imageUrl, 'images/north.png', parseInt(coorArray[0]), parseInt(coorArray[1])).then(function(newImage){
-        console.log('newImage /w icon is: ' + newImage);
+    newImage = await util.superImposeIcon(imageUrl, 'images/north.png', parseInt(coorArray[0]), parseInt(coorArray[1]));
 
-        response.render('imagePage.ejs',{ image:newImage + '?t='+ performance.now(), tagField: data});
+    await jimp.read(newImage).then(function(img){
+        console.log(img);
+        w = img.bitmap.width;
+        h = img.bitmap.height;
+        // render image page with needed data
+        response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
+        response.end();
+    }).catch(function(err){
+        console.log(err);
     });
 });
 

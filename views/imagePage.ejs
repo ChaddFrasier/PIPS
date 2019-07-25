@@ -15,7 +15,6 @@
 
     <script type="module" src="static/html2canvas.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-    <script src="static/dist/jquery.cropit.js"></script>
 
     <style>
         .image-editer{
@@ -37,7 +36,11 @@
         }
 
         .image-controls{
-            margin-left: 25%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            align-content: center;
+            padding: auto;
                     
         }
         .image-symbols{
@@ -75,7 +78,7 @@
             height: 50px;
         }
 
-        svg { position: relative; top: 0; left: 0; width: 75%; height: 100%}
+        svg { position: relative; top: 0; left: 0; width: '<%= w %>px'; height: '<%= h %>px'}
     </style>
 </head>
 
@@ -83,7 +86,9 @@
     <div class="container">
         <div class="jumbotron text-center" >
             <h2>Edit the Cube Image</h2>      
-            <p class="lead">Use your mouse to cropout specific features of an image and export the finshed figure</p>
+            <p class="lead">First crop the image by selecting the crop button and clicking on the image</p>
+            <p class="lead medium">Then add the icons by clicking the button for each icon and selecting the location on the image 1 at a time</p>
+            <p ><em>Icons will be removed if they are placed before a crop action</em></p>
 
             <div style="display:inline;">
                 <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
@@ -112,9 +117,12 @@
         <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
     </div>
               
-    <button class="btn btn-primary btn-lg" id="iconFlag">Add Icon</button>
-    <button class="btn btn-primary btn-lg" id="cropFlag"> Crop Image</button>
-
+    <div class="image-controls text-center">
+        <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
+        <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
+        <button class="btn btn-primary btn-lg" id="cropFlag"> Crop Image</button>
+    </div>
+    <br/>
     <div class="float-center image-editor">
         <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" style="border:2px black solid;" width="1000px" height="1000px">
             <defs>
@@ -122,9 +130,10 @@
                     <rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,255);"/>
                 </clipPath>
             </defs>
-            <image id="crop"width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
-                <rect id="cropOutline"x="0" y="0" width="100" height="100" style="fill:rgba(255,0,0,.25);stroke-width:10;stroke:rgb(255,0,0);" />
-            
+            <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
+                <rect id="cropOutline"x="0" y="0" width="5" height="5" style="fill:rgba(255,0,0,.15);stroke-width:2;stroke:rgb(255,0,0);" />
+                <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
+                <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
             </svg>
     </div>
 
@@ -133,97 +142,323 @@
     outlineBox.style.visibility = 'hidden';
     var svg = document.getElementById('svgWrapper');
 
-     svg.setAttribute('width',<%= w %>);
-    svg.setAttribute('height',<%= h %>); 
+
+    var northImage = document.getElementById("northIcon");
+    var sunImage = document.getElementById("sunIcon");
+
+
+    northImage.setAttribute('width',getIconWidth(<%= w %>));
+    northImage.setAttribute('height',getIconHeight(<%= h %>));
+
+
+    sunImage.setAttribute('width',getIconWidth(<%= w %>));
+    sunImage.setAttribute('height',getIconHeight(<%= h %>));
+
+    svg.setAttribute('width',<%= w %>);
+    svg.setAttribute('height',<%= h %>);
+    
+
+
+
+    function getIconWidth(imageWidth){
+        let iconSize = imageWidth*.1;
+       
+        if(iconSize < 25){
+            iconSize = '30px';
+            return iconSize;
+        }else{
+            return iconSize.toString()+'px';
+        }
+        
+    }
+    
+    function getIconHeight(imageHeight){
+        let iconSize = imageHeight*.1;
+        if(iconSize < 25){
+            iconSize = '30px';
+            return iconSize;
+        }else{
+            return iconSize.toString()+'px';
+        }
+    }
 
 
 
     
 
-    console.log("<%= w %>: <%= h %>")
+    console.log("<%= w %>: <%= h %>");
 </script>
 
 <script>
 
-        var iconFlag = false;
+        var northFlag = false;
         var cropFlag = false; 
+        var sunFlag = false;
 
+        var sunIconPlaced = false;
+        var northIconPlaced = false
 
         // mouse click captures pixel coordinates on svg box
         $(document).ready(function() {
+            
+            northImage.style.visibility = 'hidden';
+            sunImage.style.visibility = 'hidden';
 
-          
             $("image").on("click", function(event) {
               
                 var x = event.offsetX;
                 var y = event.offsetY;
 
-                outlineBox.style.visibility = 'visible';
-
-                if(iconFlag || cropFlag){
+                if(northFlag || cropFlag || sunFlag){
                     captureClick(x,y);
-                }
-                // testing adding an icon to the image
-                /* if(iconFlag){
-                    $.ajax({
-                        type: 'POST',
-                        url: 'http://localhost:8080/addIcon?imageLink=' + '<%=image%>' + '&coordinates=' + [x,y].toString(),
-                        success: function(response) { 
-                            console.log(response);
-                            $("html").html(response);
-                            
-                           
-                        },
-                        error: function(xhr, status, err) {
-                            console.log(xhr.responseText);
-                        }
-                     });
-                }
-                else  */if( cropFlag && clickArray.length % 2 === 0){
-                    let arrayStr = clickArray.toString();
-                    $.ajax({
-                        type: 'POST',
-                        url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
-                        success: function(response) { 
-                            console.log(response);
-                            $("html").html(response);
-                            clickArray = [];
+                    if(cropFlag && clickArray.length === 2){
+                        outlineBox.style.visibility = 'visible';
+
+                        outlineBox.setAttribute('x',clickArray[0]);
+                        outlineBox.setAttribute('y',clickArray[1]);
+                    }
+
+                    // testing adding an icon to the image
+                    if(northFlag){
                         
-                        },
-                        error: function(xhr, status, err) {
-                            console.log(xhr.responseText);
+                        if(x < svg.getAttribute('width') - parseInt(northImage.getAttribute('width'))
+                            && y < svg.getAttribute('height') - parseInt(northImage.getAttribute('height'))){
+
+                            northImage.setAttribute('x',x);
+                            northImage.setAttribute('y',y);
+                            northImage.style.visibility = 'visible';
+
+                            
+                            northIconPlaced = true;
+                            document.getElementById('northIconFlag').innerHTML = "Remove?";
+                            clickArray = [];
+                            northFlag = false;
+
                         }
-                    });
+                        
+                    }
+                    else if(sunFlag){
+                        if(x < svg.getAttribute('width') - parseInt(sunImage.getAttribute('width'))
+                            && y < svg.getAttribute('height') - parseInt(sunImage.getAttribute('height'))){
+
+                            sunImage.setAttribute('x',x);
+                            sunImage.setAttribute('y',y);
+                            sunImage.style.visibility = 'visible';
+
+                            
+                            sunIconPlaced = true;
+                            document.getElementById('sunIconFlag').innerHTML = "Remove?";
+                            clickArray = [];
+                            sunFlag = false;
+
+                        }
+                    }
+                    else if( cropFlag && clickArray.length === 4){
+                        let arrayStr = clickArray.toString();
+                        $.ajax({
+                            type: 'POST',
+                            url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>' ,
+                            success: function(response) { 
+                                console.log(response);
+                                $("html").html(response);
+                                clickArray = [];
+                                cropFlag = false;
+                            
+                            },
+                            error: function(xhr, status, err) {
+                                console.log(xhr.responseText);
+                            }
+                        });
+                        
+                    }
                 } 
             });
 
 
-            setInterval($('#cropOutline').mousemove(function(event){
+            var mouseX;
+            var mouseY;
+            var mouseX2;
+            var mouseY2;
+            var startX;
+            var startY;
 
-                outlineBox.setAttribute('x', event.offsetX);
-            }),1000);
+            var minDim = 100;
 
-            $('#iconFlag').click(function(){
-                iconFlag = !iconFlag;
-                if(iconFlag){
-                    cropFlag = false;
-                    document.getElementById('iconFlag').innerHTML = "Cancel?";
-                }else{
-                    clickArray = [];
-                    document.getElementById('iconFlag').innerHTML = "Add Icon";
+            $('#crop').mousemove(function(event){
+                // change size of box 
+                mouseX = event.offsetX;
+                mouseY = event.offsetY;
+            });
+
+            $('#cropOutline').mousemove(function(event){
+                // change size of box 
+
+                mouseX2 = event.offsetX;
+                mouseY2 = event.offsetY;
+
+                try{
+                    let w = parseInt(mouseX2) - startX;
+                    let h = parseInt(mouseY2) - startY;
+
+                    if(w < minDim){
+                        w = minDim;
+                    } 
+                    if(h < minDim){
+                        h = minDim;
+                    }
+                
+                    outlineBox.setAttribute('width' , w-5);
+                    outlineBox.setAttribute('height', h-5);
+                }
+                catch{
+                    console.log('cropOutline box is not moused over');
                 }
             });
 
+            
+
+
+            function adjustBox(){
+                startX = clickArray[0];
+                startY = clickArray[1];
+
+                try{
+                    let w = parseInt(mouseX) - startX;
+                    let h = parseInt(mouseY) - startY;
+
+                    if(w < minDim){
+                        w = minDim;
+                    } 
+                    if(h < minDim){
+                        h = minDim;
+                    }
+
+                    outlineBox.setAttribute('width' , w-5);
+                    outlineBox.setAttribute('height' , h -5);
+                }catch{
+                    console.log('image is not moused over');
+                }
+            } 
+
+
+            setInterval(adjustBox, 10);
+
+            $('#northIconFlag').click(function(){
+                northFlag = !northFlag;
+
+                if(northIconPlaced){
+                    northIconPlaced = !northIconPlaced;
+                    northImage.style.visibility = 'hidden';
+                    northFlag = !northFlag;
+                }
+                
+                if(northFlag){
+                    if(sunFlag && !sunIconPlaced){
+                        sunFlag = false;
+                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    }
+
+                    cropFlag = false;
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
+                    
+                    document.getElementById('northIconFlag').innerHTML = "Cancel?";
+                }
+                else{
+                    clickArray = [];
+                    document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+
+                    if(cropFlag){
+                        cropFlag = !cropFlag;
+                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                        outlineBox.style.visibility = 'hidden';
+                    
+                    }
+                }
+                clickArray = [];
+            });
+
+
+            $('#sunIconFlag').click(function(){
+                sunFlag = !sunFlag;
+
+                if(sunIconPlaced){
+                    sunIconPlaced = !sunIconPlaced;
+                    sunImage.style.visibility = 'hidden';
+                    sunFlag = !sunFlag;
+                        
+                }
+                
+                if(sunFlag){
+                    if(northFlag && !northIconPlaced){
+                        northFlag = false;
+                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                    }
+                    
+                    cropFlag = false;
+                    outlineBox.style.visibility = 'hidden';
+                    
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    document.getElementById('sunIconFlag').innerHTML = "Cancel?";
+                }
+                else{
+                    
+                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    if(cropFlag){
+                        cropFlag = !cropFlag;
+                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                        outlineBox.style.visibility = 'hidden';
+                    
+                    }
+                }
+                clickArray = [];
+            });
+
+
+
+            setInterval(checkBtns(),1000);
+
+            function checkBtns(){
+                if(!cropFlag){
+                    document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
+                }
+                if(!northFlag){
+                    document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                }
+                if(northIconPlaced){
+                        document.getElementById('northIconFlag').innerHTML = "Remove?";
+                    }
+                if(!sunFlag){
+                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    
+                }
+                if(sunIconPlaced){
+                        document.getElementById('sunIconFlag').innerHTML = "Remove?";
+                    }
+            }
+
             $("#cropFlag").click(function(){
                 cropFlag = !cropFlag;
+
                 if(cropFlag){
-                    iconFlag = false;
+                    if(northFlag && !northIconPlaced){
+                        northFlag = false
+                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                    }
+                    if(sunFlag && !sunIconPlaced){
+                        sunFlag = false;
+                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                    }
+                    
                     document.getElementById('cropFlag').innerHTML = "Cancel?";
                     
                 }else{
                     clickArray = [];
                     document.getElementById('cropFlag').innerHTML = "Crop Image";
+                    outlineBox.style.visibility = 'hidden';
                 }
+                
             });
 
             $("#backBtn").click(function(){
@@ -243,12 +478,10 @@
     });
 
         var clickArray = [];
-        function captureClick(x,y){
-            clickArray.push([x,y]);
 
-            for(let i=0;i<clickArray.length;i++){
-                console.log(clickArray[i]);
-            }
+        function captureClick(x,y){
+            clickArray.push(x);
+            clickArray.push(y);
         }
 
         

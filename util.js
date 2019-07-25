@@ -158,7 +158,7 @@ module.exports = {
             // otherwise check to see if the current cubeObj.name is already in the array
             for(var index = 0; index < cubeArray.length; index++){
                 // if yes then just return the same array
-                if(cubeObj.name === cubeArray[index].name){
+                if(cubeObj.userId === cubeArray[index].userId){
                     return cubeArray;
                 }
             }

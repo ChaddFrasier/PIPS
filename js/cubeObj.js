@@ -12,7 +12,8 @@ module.exports = class Cube{
      * 
      * @param {sting} cubeName name of the cube to be contructed into an object.
      */
-    constructor(cubeName){
+    constructor(cubeName,userId){
+        this._userId = userId;
         this._cubeName = cubeName;
         // init JSON elements
         this._data = {};
@@ -26,6 +27,15 @@ module.exports = class Cube{
      */
     get name(){
         return this._cubeName;
+    }
+
+     /**
+     * @param void
+     * 
+     * @function return userID.
+     */
+    get userId(){
+        return this._userId;
     }
 
     /**
@@ -54,6 +64,10 @@ module.exports = class Cube{
      */
     set data(data){
         this._data = data;
+    }
+
+    set name(name){
+        this._cubeName = name;
     }
 
      /**
