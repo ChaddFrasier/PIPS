@@ -606,12 +606,6 @@
             clickArray.push(y);
         }
 
-        function getCookie(cookiename){
-            console.log('cookie string is; ' + document.cookie);
-            var regexp = new RegExp("(?:^" + cookiename + "|;\s*"+ cookiename + ")=(.*?)(?:;|$)", "g");
-            var result = regexp.exec(document.cookie);
-            return (result === null) ? null : result[1];
-        }
 
     </script>
 
@@ -737,16 +731,44 @@
     setInterval(showHide, 1000);
 </script>
 <script>
-    var keys = [];
-    var vals = [];
-    // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
-    function getMetadata() {
+    // Gets Important Metadata from the "metadata-text" div
+    function getMetadata(){
         //TODO parse the metadata
-
-
-        //console.log(vals);
+        var metadata = document.getElementById("metadata-text").innerHTML;
+        var metadataString = JSON.parse(metadata);
+        
+        // Important Metadata Values
+        var northDegree = metadataString['NorthAzimuth'];
+        var sunDegree = metadataString['SubSolarAzimuth'];
+        var observerDegree = metadataString['SubSpacecraftGroundAzimuth'];
+        var scale = metadataString['SampleResolution'];
+        //// Hard Coding North Arrow For Testing /////
+        northDegree = 90;
+        if(northDegree == "None"){
+            document.getElementById("north-radio").checked = false;
+        }else{
+            setLegendAngles("northImg", "northDeg", northDegree);
+        }
+        if(sunDegree == "None"){
+            document.getElementById("sun-radio").checked = false;
+        }
+        if(observerDegree == "None"){
+            document.getElementById("obs-radio").checked = false;
+        }
+        if(scale == "None"){
+            document.getElementById("scalebar-radio").checked = false;
+        }
     }
     getMetadata();
+    // Set Legend Images
+    function setLegendAngles(img, deg, value){
+        var image = document.getElementById(String(img));
+        var deg = document.getElementById(String(deg));
+        var rotateVal = String("transform: rotate(" + String(value) + "deg);");
+        deg.innerHTML = String(value) + "degrees";
+      
+        image.setAttribute("style", rotateVal);
+    }
 </script>
 <script>
     window.onload = function(){
