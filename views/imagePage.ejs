@@ -493,32 +493,30 @@
         <table class="float-center text-center" style="margin-left:auto; margin-right:auto;">
             <tr>
                 <td>
-                    <svg id="legend-image" width="500" height="200">
+                    <svg id="legend-image" width="450" height="200">
                         <rect width="100%" height="100%" rx="10" ry="10" style="fill:rgb(233, 236, 239);">
                         </rect>
                         <foreignObject x="10" y="10" width="100%" height="100%">
                             <table class="float-center" id="legend-table">
                                 <tr id="north">
                                     <th>North:</th>
-                                    <th style="padding-left:20%;"><img src="images/north.png" width="25" height="25"></img></th>
-                                    <th style="padding-left:40%;"id="northDeg">0 degrees</th>
+                                    <th><img src="images/north.png" width="25" height="25"></img></th>
+                                    <th id="northDeg">0 degrees</th>
                                 </tr>
                                 <tr id="sun-az">
                                     <th>Sun Azimuthal Direction:</th>
-                                    <th style="padding-left:20%;"><img src="images/sun_symbol.png" width="25" height="25"></img></th>
-                                    <th style="padding-left:40%;" id="sunDeg">0 degrees</th>
+                                    <th><img src="images/sun_symbol.png" width="25" height="25"></img></th>
+                                    <th id="sunDeg">0 degrees</th>
                                 </tr>
                                 <tr id="obs-az">
                                     <th>Observer Azimuthal Direction:</th>
-                                    <th style="padding-left:20%;"><img src="images/eye_symbol.png" width="25" height="25"></img></th>
-                                    <th style="padding-left:40%;" id="obsDeg">0 degrees</th>
+                                    <th><img src="images/eye_symbol.png" width="25" height="25"></img></th>
+                                    <th id="obsDeg">0 degrees</th>
                                 </tr>
                                 <tr id="image-scalebar" style="overflow:hidden;">
                                     <th>Scalebar:</th>
-                                    <th id="range-1"></th>
-                                    <th style="padding-left:20%;"><img src="images/arrow.png" width="25" height="25"></img></th>
-                                    <th><h2 id="scalebar-canvas" class="canvas-legend"></h2></th>
-                                    <th id="range-2"></th>
+                                    <th><img src="images/arrow.png" width="25" height="25"></img></th>
+                                    <th id="scaleDeg">0 degrees</th>
                                 </tr>   
                             </table>
                         </foreignObject>
@@ -612,161 +610,40 @@
     setInterval(showHide, 1000);
 </script>
 <script>
-    var keys = [];
-    var vals = [];
-    // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
-    function getMetadata() {
+    // Gets Important Metadata from the "metadata-text" div
+    function getMetadata(){
         //TODO parse the metadata
+        var metadata = document.getElementById("metadata-text").innerHTML;
+        var metadataString = JSON.parse(metadata);
+        
+        // Important Metadata Values
+        var northDegree = metadataString['NorthAzimuth'];
+        var sunDegree = metadataString['SubSolarAzimuth'];
+        var observerDegree = metadataString['SubSpacecraftGroundAzimuth'];
+        var scale = metadataString['SampleResolution'];
 
+        if(northDegree == "None"){
+            document.getElementById("north-radio").checked = false;
+        }else{
+            console.log(northDegree);
+        }
 
-        //console.log(vals);
+        if(sunDegree == "None"){
+            document.getElementById("sun-radio").checked = false;
+        }
+
+        if(observerDegree == "None"){
+            document.getElementById("obs-radio").checked = false;
+        }
+
+        if(scale == "None"){
+            document.getElementById("scalebar-radio").checked = false;
+        }
     }
     getMetadata();
 </script>
 <script>
     window.onload = function(){
-        /*
-        // Cub Variables
-        var northDegree = 0;
-        var sunDegree = 0;
-        var observerDegree = 0;
-        var scale = 0;
-        // Legend Icons
-        var northImg = new Image();
-        northImg.src = "images/north.png";
-        var sunImg = new Image();
-        sunImg.src = "images/sun_symbol.png";
-        var obsImg = new Image();
-        obsImg.src = " images/eye_symbol.png";
-        
-        // Canvas Stuff
-        var northCanvas = document.getElementById("north-canvas");
-        var northCanvasCtx = northCanvas.getContext("2d");
-        var sunCanvas = document.getElementById("sun-canvas");
-        var sunCanvasCtx = sunCanvas.getContext("2d");
-        var obsCanvas = document.getElementById("obs-canvas");
-        var obsCanvasCtx = obsCanvas.getContext("2d");
-        var scalebarCanvas = document.getElementById("scalebar-canvas");
-        var scalebarCanvasCtx = scalebarCanvas.getContext("2d");
-        
-        // HTML Degree Stuff
-        var norDeg = document.getElementById("northDeg");
-        var sunDeg = document.getElementById("sunDeg");
-        var obsDeg = document.getElementById("obsDeg");
-        var scaleRange = document.getElementById("img-range");
-        var range1 = document.getElementById("range-1");
-        var range2 = document.getElementById("range-2");
-        // Rotates North Arrow Image to inputted degree 
-        function rotateNorth(degree){
-            northCanvasCtx.clearRect(0, 0, northCanvas.width, northCanvas.height);
-            // save the unrotated context of the canvas so we can restore it later
-            // the alternative is to untranslate & unrotate after drawing
-            northCanvasCtx.save();
-            // move to the center of the canvas
-            northCanvasCtx.translate(northCanvas.width/2, northCanvas.height/2);
-            // rotate the canvas to the specified degrees
-            northCanvasCtx.rotate(degree*Math.PI/180);
-            // draw the image
-            // since the context is rotated, the image will be rotated also
-            northCanvasCtx.drawImage(northImg, (-northImg.width/2)+50, (-northImg.width/2)+50, 75, 75);
-            // we’re done with the rotating so restore the unrotated context
-        }
-        // Draw Sun Arrow
-        function sunArrow(degree){
-            var x1 = (sunCanvas.width/2)+50;
-            var y1 = (sunCanvas.height/2)+22;
-            var leng = 75;
-            var theta = (degree*Math.PI/180);
-            sunCanvasCtx.drawImage(sunImg, (sunCanvas.width/2)-20, (sunCanvas.height/2)-20, 75, 75);
-            sunCanvasCtx.moveTo(x1, y1);
-            sunCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
-            sunCanvasCtx.lineWidth = 5;
-            sunCanvasCtx.stroke();
-        }
-        // Draw Observer Arrow
-        function obsArrow(degree){
-            var x1 = (obsCanvas.width/2)+50;
-            var y1 = (obsCanvas.height/2)+22;
-            var leng = 75;
-            var theta = (degree*Math.PI/180);
-            obsCanvasCtx.drawImage(obsImg, (obsCanvas.width/2)-20, (obsCanvas.height/2)-20, 75, 75);
-            obsCanvasCtx.moveTo(x1, y1);
-            obsCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
-            obsCanvasCtx.lineWidth = 5;
-            obsCanvasCtx.stroke();
-        }
-        // Draw Scalebar
-        function scalebarDraw(scale, range){
-            var wid = 600;
-            var hi = 600;
-            var x1 = 0;
-            var y1 = 100;
-            var x2 = 225;
-            var y2 = 100;
-            range1.innerHTML = 0;
-            range2.innerHTML = scale + " m/pix";
-            scalebarCanvasCtx.moveTo(x1, y1);
-            scalebarCanvasCtx.lineTo(x2, y2);
-            scalebarCanvasCtx.lineWidth = 10;
-            scalebarCanvasCtx.stroke();
-        }
-        for(var i=0; i<keys.length; i++){
-            console.log(keys[i]);
-            if(keys[i] === "NorthAzimuth"){
-                northDegree = vals[i];
-                if(vals[i] !== "None"){
-                    norDeg.innerHTML = northDegree + " degs";
-                    northImg.onload = function(){i
-                        console.log("Got North");
-                        rotateNorth(northDegree+90);
-                    }
-                    //console.log("North Degree is:" + northDegree);
-                }else{
-                    norDeg.innerHTML = "N/A";
-                    document.getElementById("north").checked = false;
-                    console.log("North Degree Not Found");
-                }
-            }
-            if(keys[i] === "SubSolarAzimuth"){
-                sunDegree = vals[i];
-                if(vals[i] !== "None"){
-                    sunDeg.innerHTML = sunDegree + " degs";
-                    sunImg.onload = function(){
-                        sunArrow(sunDegree+90);
-                        console.log("Got here");    
-                    }
-                }else{
-                    sunDegree.innerHTML = "N/A"; 
-                    console.log("Sun Degree Not Found");
-                }
-            }
-            if(keys[i] === "SubSpacecraftGroundAzimuth"){
-                observerDegree = vals[i];
-                if(vals[i] !== "None"){
-                    obsDeg.innerHTML = observerDegree + " degs";
-                    obsImg.onload = function(){
-                        obsArrow(observerDegree+90);    
-                    }
-                }else{
-                    obsDeg.innerHTML = "N/A";
-                    console.log("Observer Degree Not Found");
-                }
-            }
-            if(keys[i] === "SampleResolution"){
-                scale = vals[i];
-                var factor = scaleRange.value;
-                
-                if(vals[i] !== "None"){
-                    scalebarDraw(scale, factor);     
-                }else{
-                    scale = "N/A";
-                    console.log("Observer Degree Not Found");
-                }
-            }
-        }
-        */
     }
-
 </script>
-
 </body>
