@@ -571,45 +571,56 @@
     </script>
     <br/>
 
-    <div class="float-center text-center" style="margin-left: auto; margin-right: auto;" >
-        <div class="image-symbols" id="img-symbols">
-            <h2>Legend</h2>
-            <table class="float-center" id="legend-table">
-                <tr id="north">
-                    <th>North:</th>
-                    <th id="northDeg"></th>
-                    <th><canvas id="north-canvas" class="canvas-legend"></canvas></th>
-                </tr>
-                <tr id="sun-az">
-                    <th>Sun Azimuthal Direction:</th>
-                    <th id="sunDeg"></th>
-                    <th><canvas id="sun-canvas" class="canvas-legend"></canvas></th>
-                </tr>
-                <tr id="obs-az">
-                    <th>Observer Azimuthal Direction:</th>
-                    <th id="obsDeg"></th>
-                    <th><canvas id="obs-canvas" class="canvas-legend"></canvas></th>
-                </tr>
-                <tr id="image-scalebar" style="overflow:hidden;">
-                    <th>Scalebar:</th>
-                    <th id="range-1"></th>
-                    <th><canvas id="scalebar-canvas" class="canvas-legend"></canvas></th>
-                    <th id="range-2"></th>
-                </tr>
-            </table>
-        </div>
-        <div id="hide-legend" style="margin-left:auto; margin-right: auto;">
-            <table>
-                <tr><h4>Hide Legend Elements</h4></tr>
-                <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
-                <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
-                <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
-                <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
-            </table>
-            <button onclick="exportLegend()">Export Legend</button>
-        </div>
-    </div>
-
+    <div class="float-center text-center" style="margin-left:auto; margin-right:auto;">
+        <h1 style="padding-top:5%;">Image Legend</h1>
+        <table class="float-center text-center" style="margin-left:auto; margin-right:auto;">
+            <tr>
+                <td>
+                    <svg id="legend-image" width="500" height="200">
+                        <rect width="100%" height="100%" rx="10" ry="10" style="fill:rgb(233, 236, 239);">
+                        </rect>
+                        <foreignObject x="10" y="10" width="100%" height="100%">
+                            <table class="float-center" id="legend-table">
+                                <tr id="north">
+                                    <th>North:</th>
+                                    <th style="padding-left:20%;"><img src="images/north.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;"id="northDeg">0 degrees</th>
+                                </tr>
+                                <tr id="sun-az">
+                                    <th>Sun Azimuthal Direction:</th>
+                                    <th style="padding-left:20%;"><img src="images/sun_symbol.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;" id="sunDeg">0 degrees</th>
+                                </tr>
+                                <tr id="obs-az">
+                                    <th>Observer Azimuthal Direction:</th>
+                                    <th style="padding-left:20%;"><img src="images/eye_symbol.png" width="25" height="25"></img></th>
+                                    <th style="padding-left:40%;" id="obsDeg">0 degrees</th>
+                                </tr>
+                                <tr id="image-scalebar" style="overflow:hidden;">
+                                    <th>Scalebar:</th>
+                                    <th id="range-1"></th>
+                                    <th style="padding-left:20%;"><img src="images/arrow.png" width="25" height="25"></img></th>
+                                    <th><h2 id="scalebar-canvas" class="canvas-legend"></h2></th>
+                                    <th id="range-2"></th>
+                                </tr>   
+                            </table>
+                        </foreignObject>
+                    </svg>
+                </td>
+                <td valign="top">
+                    <div id="hide-legend" class="float-center" style="text-align:left;">
+                        <table>
+                            <tr><h4>Hide Legend Elements</h4></tr>
+                            <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
+                            <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
+                            <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
+                            <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        </table>
+</div>
     
 
     <div id="legend-export-div" style="margin-left:35%;">
@@ -695,7 +706,7 @@
 </script>
 <script>
     window.onload = function(){
-        // Cub Variables
+        /* // Cub Variables
         var northDegree = 0;
         var sunDegree = 0;
         var observerDegree = 0;
@@ -832,7 +843,7 @@
                     console.log("Observer Degree Not Found");
                 }
             }
-        }
+        } */
     }
 
 </script>
