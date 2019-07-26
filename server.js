@@ -92,6 +92,7 @@ app.set('view engine', 'ejs');
 
 try{
     exec('rm ./images/*.pgw');
+    exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');    
@@ -237,6 +238,7 @@ app.post('/upload', async function(request, response){
                 }
             });
 
+            
             var wait = true;
             while( wait ){
                 try{
@@ -258,7 +260,7 @@ app.post('/upload', async function(request, response){
             
 
             // create the cookie instance for the user
-            response.cookie('cubeFile', cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});
+            response.cookie('cubeFile', cubeObj.name.replace('.tif', '.cub'), {expires: new Date(Date.now() + 1000000), httpOnly: true});
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
 
             // run the conversion
@@ -553,6 +555,7 @@ app.get('/crop',async function(request, response){
     var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
     var newImage;
 
+    console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
 
