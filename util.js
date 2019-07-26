@@ -41,6 +41,7 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
+                console.log('isis calls finished')
                 resolve();
             });
         });
@@ -56,15 +57,44 @@ module.exports = {
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
             var promises = [];
-
+            
             // create a promise of the processFile function
             promises.push(processFile(path.join('pvl', cubeName.replace('.cub','.pvl'))));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
                 console.log('extract finished');
+                
                 // return the data
                 resolve(cubeData);
+            });
+        });
+    },
+
+
+    /**
+     * 
+     * @param {string} tiffName name of the tiff to be converted to a .cub
+     * 
+     * @function converts tiff to cube for later processing 
+     */
+    tiffToCube: function(tiffName) {
+        return new Promise(function(resolve){
+            // variables for proper isis call
+            var isisCall = 'std2isis';
+            var promises = [];
+            console.log(tiffName);
+            // get the filename from interior export 
+            var cubeName = tiffName.replace('.tif','.cub');
+    
+            // run the isis commands and saves new cube to uploads folder
+            promises.push(exec(isisCall + ' from=./' + tiffName + " to=./" + cubeName));
+            
+            // this block will pass and run when all isis commands are finished
+            Promise.all(promises).then(function(){
+                console.log('Conversion finished');
+
+                resolve(cubeName);
             });
         });
     },
@@ -380,6 +410,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+        console.log(cubeName + 'printtted from CALLISIS function');
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
@@ -393,7 +424,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
-            console.log('Isis call is finished');
+            console.log(' ALL Isis call is finished');
             resolve();
         });
     });
@@ -409,6 +440,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @function calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath){
+    console.log(filepath + 'printed from imageExtracton ');
     return new Promise(function(resolve){
         // execute the isis2std function
         exec('isis2std from= ' + filepath
@@ -441,7 +473,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
             + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
             if(err){
                 // log error
-                console.log('Failed isis2std call');
+                console.log('Failed ' + isisCall + ' call');
                 //console.log(err);
             }
             resolve();
