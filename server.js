@@ -205,7 +205,7 @@ app.post('/upload', async function(request, response){
 
             if(cubeFile.name.indexOf('.tif') > -1){
                 console.log('tiff found')
-                var cubeObj = new Cube(cubeFile.name, numUsers++);
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
                 //ignore this chunk
             }
             // get correct cube object
@@ -225,20 +225,32 @@ app.post('/upload', async function(request, response){
 
 
             // save the cube upload to upload folder
-            cubeFile.mv('./uploads/' + cubeObj.name , function(err){
+
+
+            await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
                 if(err){
                     console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
+                }else{
+                    
                 }
             });
 
-            
-
+            var wait = true;
+            while( wait ){
+                try{
+                    fs.accessSync('uploads/' + cubeObj.name,fs.constants.R_OK);
+                    wait = false;
+                }catch(err){
+                    console.log('waiting')
+                    wait = true;
+                }
+            }
             //convert tiff to cube
             //TODO:
             if(cubeObj.name.split('.tif').length > 1){
-                while(!fs.existsSync('./uploads/' + cubeObj.name)){/*wait for it*/}
+                
                 promises.push(util.tiffToCube('uploads/' + cubeObj.name));
             }else{
                 console.log('cube file');    
