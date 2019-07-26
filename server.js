@@ -92,6 +92,7 @@ app.set('view engine', 'ejs');
 
 try{
     exec('rm ./images/*.pgw');
+    exec('rm ./jimp/*');
     exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
@@ -141,7 +142,7 @@ app.get('/', function(request, response){
 app.get('/upload',function(request,response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -448,7 +449,7 @@ app.post('/imageDownload', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -466,7 +467,7 @@ app.get('/csv', function(request, response){
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -484,7 +485,7 @@ app.get('/imageDownload', function(request, response){
 app.get('/showImage', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -531,6 +532,8 @@ app.post('/showImage', function(request, response){
         // image path could not be found
         imagepath = 'none';
     }
+
+   
     var w;
     var h;
     jimp.read(imagepath).then(function(img){
@@ -559,6 +562,7 @@ app.get('/crop',async function(request, response){
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
 
+      
     if(currentImage.split('_').length === 2){
         // remove current file
         await fs.unlinkSync(currentImage.split('?')[0]);
@@ -596,8 +600,6 @@ app.get('/crop',async function(request, response){
         strArray.pop();
 
         newImage = strArray.join('_');
-
-        console.log(newImage + ' image after undo');
         
     
         if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
@@ -611,7 +613,7 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 1: ' + err);
             });
         }else{
             var w;
@@ -624,7 +626,8 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 2: ' + err);
+            
             });
         }
     }
@@ -639,7 +642,7 @@ app.get('/crop',async function(request, response){
             response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
-            console.log(err);
+            console.log('ERROR 3: ' + err);
         });
     }
 });
