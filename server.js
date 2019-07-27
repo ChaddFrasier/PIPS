@@ -92,6 +92,8 @@ app.set('view engine', 'ejs');
 
 try{
     exec('rm ./images/*.pgw');
+    exec('rm ./jimp/*');
+    exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');    
@@ -140,7 +142,7 @@ app.get('/', function(request, response){
 app.get('/upload',function(request,response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -205,7 +207,7 @@ app.post('/upload', async function(request, response){
 
             if(cubeFile.name.indexOf('.tif') > -1){
                 console.log('tiff found')
-                var cubeObj = new Cube(cubeFile.name, numUsers++);
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
                 //ignore this chunk
             }
             // get correct cube object
@@ -225,20 +227,33 @@ app.post('/upload', async function(request, response){
 
 
             // save the cube upload to upload folder
-            cubeFile.mv('./uploads/' + cubeObj.name , function(err){
+
+
+            await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
                 if(err){
                     console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
+                }else{
+                    
                 }
             });
 
             
-
+            var wait = true;
+            while( wait ){
+                try{
+                    fs.accessSync('uploads/' + cubeObj.name,fs.constants.R_OK);
+                    wait = false;
+                }catch(err){
+                    console.log('waiting')
+                    wait = true;
+                }
+            }
             //convert tiff to cube
             //TODO:
             if(cubeObj.name.split('.tif').length > 1){
-                while(!fs.existsSync('./uploads/' + cubeObj.name)){/*wait for it*/}
+                
                 promises.push(util.tiffToCube('uploads/' + cubeObj.name));
             }else{
                 console.log('cube file');    
@@ -246,7 +261,7 @@ app.post('/upload', async function(request, response){
             
 
             // create the cookie instance for the user
-            response.cookie('cubeFile', cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});
+            response.cookie('cubeFile', cubeObj.name.replace('.tif', '.cub'), {expires: new Date(Date.now() + 1000000), httpOnly: true});
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
 
             // run the conversion
@@ -434,7 +449,7 @@ app.post('/imageDownload', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -452,7 +467,7 @@ app.get('/csv', function(request, response){
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -470,7 +485,7 @@ app.get('/imageDownload', function(request, response){
 app.get('/showImage', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -517,6 +532,8 @@ app.post('/showImage', function(request, response){
         // image path could not be found
         imagepath = 'none';
     }
+
+   
     var w;
     var h;
     jimp.read(imagepath).then(function(img){
@@ -541,9 +558,11 @@ app.get('/crop',async function(request, response){
     var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
     var newImage;
 
+    console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
 
+      
     if(currentImage.split('_').length === 2){
         // remove current file
         await fs.unlinkSync(currentImage.split('?')[0]);
@@ -581,8 +600,6 @@ app.get('/crop',async function(request, response){
         strArray.pop();
 
         newImage = strArray.join('_');
-
-        console.log(newImage + ' image after undo');
         
     
         if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
@@ -596,7 +613,7 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 1: ' + err);
             });
         }else{
             var w;
@@ -609,7 +626,8 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 2: ' + err);
+            
             });
         }
     }
@@ -624,7 +642,7 @@ app.get('/crop',async function(request, response){
             response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
-            console.log(err);
+            console.log('ERROR 3: ' + err);
         });
     }
 });
