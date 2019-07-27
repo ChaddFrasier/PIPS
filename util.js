@@ -14,7 +14,7 @@
 
 
 // require dependencies
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var path = require('path');
 var jimp = require('jimp');
 var Promises = require('bluebird');
@@ -41,6 +41,7 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
+                console.log('isis calls finished')
                 resolve();
             });
         });
@@ -56,15 +57,49 @@ module.exports = {
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
             var promises = [];
-
+            
             // create a promise of the processFile function
             promises.push(processFile(path.join('pvl', cubeName.replace('.cub','.pvl'))));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
                 console.log('extract finished');
+                
                 // return the data
                 resolve(cubeData);
+            });
+        });
+    },
+
+
+    /**
+     * 
+     * @param {string} tiffName name of the tiff to be converted to a .cub
+     * 
+     * @function converts tiff to cube for later processing 
+     */
+    tiffToCube: function(tiffName) {
+        return new Promise(function(resolve){
+            // variables for proper isis call
+            var isisCall = 'std2isis';
+            var promises = [];
+            var cubeName = tiffName.replace(".tif",".cub");
+         
+            var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
+
+
+            std2isis.stdout.on('data', function(data){
+                console.log('stdout: ' + data.toString());
+            });
+
+
+            std2isis.stderr.on('data', function(data){
+                console.log(isisCall + ' Error: ' + data.toString());
+            });
+
+            std2isis.on('exit',function(code){
+                console.log(isisCall + ' Exited with code: ' + code);
+                resolve(cubeName);
             });
         });
     },
@@ -380,6 +415,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+        console.log(cubeName + 'printtted from CALLISIS function');
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
@@ -393,7 +429,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
-            console.log('Isis call is finished');
+            console.log(' ALL Isis call is finished');
             resolve();
         });
     });
@@ -409,17 +445,27 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @function calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath){
+    console.log(filepath + 'printed from imageExtracton ');
     return new Promise(function(resolve){
         // execute the isis2std function
-        exec('isis2std from= ' + filepath
-        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
-            if(err){
-                // log error
-                console.log('Failed isis2std call');
-                //console.log(err);
-            }
+        
+        var isis2std = spawn('isis2std',['from=', filepath, "to=", path.join(imagePath,imagename)]);
+
+
+        isis2std.stdout.on('data', function(data){
+            console.log('stdout: ' + data.toString());
+        });
+
+
+        isis2std.stderr.on('data', function(data){
+            console.log('isis2std Error: ' + data.toString());
+        });
+
+        isis2std.on('exit',function(code){
+            console.log('isis2std Exited with code: ' + code);
             resolve();
-            });
+        });
+        
         });
     }
 
@@ -436,16 +482,24 @@ var imageExtraction = function(imagename, filepath, imagePath){
 var makeIsisCall = function(filepath, returnPath, isisCall){
     return new Promise(function(resolve){
         // execute the isis2std function
-        exec( 
-            isisCall + ' from= ' + filepath
-            + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
-            if(err){
-                // log error
-                console.log('Failed isis2std call');
-                //console.log(err);
-            }
+       
+        var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
+
+
+        isisSpawn.stdout.on('data', function(data){
+            console.log('stdout: ' + data.toString());
+        });
+
+
+        isisSpawn.stderr.on('data', function(data){
+            console.log(isisCall + ' Error: ' + data.toString());
+        });
+
+        isisSpawn.on('exit',function(code){
+            console.log(isisCall + ' Exited with code: ' + code);
             resolve();
         });
+        
     });
 }
 

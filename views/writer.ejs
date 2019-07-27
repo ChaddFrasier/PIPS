@@ -10,15 +10,21 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
 </head>
 
 <body>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
     <div id="data-output">
-            <div class="jumbotron jumbotron-fluid text-center">
+        <div class="container"> 
+            <div class="jumbotron text-center">
                 <h1 class="display-4">Upload Successfully!</h1>
                 <p class="lead">Write your caption using the [[tags]] to extracts ISIS3 data</p>
                 <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube File</a>
             </div>
+        </div>
 
         <div class="container">
             <div id="template" class="text-center form-group">
@@ -102,11 +108,16 @@
         
         <br>
         <form method="POST" action="/showImage" class="lg-form text-center">
-            <div class=" form-group">
+            <div class="form-group">
                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                <input type="submit" value="Display Image" class="btn btn-primary btn-lg" />
+                <input type="submit" value="Display Image" class="btn btn-primary btn-lg"
+                onclick="loaderActivate('loading')" />
             </div>
         </form>
+    <br>
+        <div id="loading" class="float-md-center text-center lead" style="visibility:visible">
+            <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br>Loading
+    </div>
 
 
     </div>
@@ -218,10 +229,35 @@
                 textArea.value = importantTags.value;
             }
         }
+
+        function loadInvisible(){
+            var loader = document.getElementById('loading');
+            loader.style.visibility = 'hidden';    
+        }
+
+        function loaderActivate(divId){
+
+            var loader = document.getElementById(divId);
+            loader.style.visibility = 'visible';
+        }
+
+
+        $(window).bind('pageshow',function(event){
+            if(event.originalEvent.persisted){
+                loadInvisible();
+            }
+
+
+        });
+          
+        loadInvisible();
         setOutput();
         getMetadata();
         getAllTags();
         showMoreTags();
+        
+
+       
         setInterval(output, 1000);
     </script>
 </body>

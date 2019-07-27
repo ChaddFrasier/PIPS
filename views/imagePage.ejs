@@ -40,7 +40,7 @@
             margin-right: auto;
             display: block;
             align-content: center;
-            padding: auto;
+            padding:0%;
                     
         }
         .image-symbols{
@@ -78,11 +78,12 @@
             height: 50px;
         }
 
-        svg { position: relative; top: 0; left: 0; width: '<%= w %>px'; height: '<%= h %>px'}
+        svg { position: relative; top: 0; left: 0; width: 100%; height: 100%;}
     </style>
 </head>
 
 <body>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%">
     <div class="container">
         <div class="jumbotron text-center" >
             <h2>Edit the Cube Image</h2>      
@@ -103,24 +104,22 @@
         </div>
     </div>
 
-    <div id="metadata" style="display:none;"  class="text-center green-border-focus">
-        <label for="metadata-text">
-            <h2>Metadata Output</h2>
-        </label>
-        <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
+    <div id="loading" class="float-md-right lead" style="visibility:visible">
+        <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br>Loading
     </div>
+    
+    <div class="container">
+        <div class="float-center image-controls text-center">
+            <button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button>
+            <button id="backBtn" class="btn btn-primary btn-lg" onclick="loaderActivate('loading')">Undo Crop</button>
+        </div>
+        <br>
+        <div class="float-center image-controls text-center">
+            <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
+            <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
+            <button class="btn btn-primary btn-lg" id="eyeFlag"> Add Eye Image</button>
+        </div>
 
-    <div id="metadata-tags" style="display:none;" class="text-center green-border-focus">
-        <label for="metadataTagArea">
-            <h2>Metadata Tags</h2>
-        </label>
-        <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
-    </div>
-              
-    <div class="image-controls text-center">
-        <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
-        <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
-        <button class="btn btn-primary btn-lg" id="cropFlag"> Crop Image</button>
     </div>
     <br/>
     <div class="float-center image-editor">
@@ -136,6 +135,22 @@
                 <image id="sunIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
             </svg>
     </div>
+
+    <div id="metadata" style="display:none;"  class="text-center green-border-focus">
+            <label for="metadata-text">
+                <h2>Metadata Output</h2>
+            </label>
+            <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
+        </div>
+    
+        <div id="metadata-tags" style="display:none;" class="text-center green-border-focus">
+            <label for="metadataTagArea">
+                <h2>Metadata Tags</h2>
+            </label>
+            <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
+        </div>
+
+
 
 <script>
     var outlineBox = document.getElementById('cropOutline');
@@ -158,6 +173,18 @@
     svg.setAttribute('height',<%= h %>);
     
 
+
+
+    function loadInvisible(){
+            var loader = document.getElementById('loading');
+            loader.style.visibility = 'hidden';    
+        }
+
+    function loaderActivate(divId){
+
+        var loader = document.getElementById(divId);
+        loader.style.visibility = 'visible';
+    }
 
 
     function getIconWidth(imageWidth){
@@ -187,10 +214,11 @@
     
 
     console.log("<%= w %>: <%= h %>");
+    loadInvisible();
 </script>
 
 <script>
-
+        var doneResizing = false;
         var northFlag = false;
         var cropFlag = false; 
         var sunFlag = false;
@@ -254,6 +282,8 @@
                         }
                     }
                     else if( cropFlag && clickArray.length === 4){
+                        loaderActivate('loading');
+                        doneResizing = true;
                         let arrayStr = clickArray.toString();
                         $.ajax({
                             type: 'POST',
@@ -284,10 +314,17 @@
 
             var minDim = 100;
 
+
             $('#crop').mousemove(function(event){
                 // change size of box 
                 mouseX = event.offsetX;
                 mouseY = event.offsetY;
+
+                
+                if(!doneResizing){
+                    adjustBox();
+                }
+
             });
 
             /* $('#cropOutline').mousemove(function(event){
@@ -461,19 +498,36 @@
                 
             });
 
-            $("#backBtn").click(function(){
-                $.ajax({
-                    type: 'GET',
-                    url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
-                    success: function(response) {
-                        $("html").html(response);
-                    
+
+            $("#backBtn").on('click',function(event){
+                event.preventDefault();
+
+                var currentImg = '<%= image %>';
+
+                console.log(currentImg);
+                if(currentImg.indexOf('_crop.png') > -1){
+                    $.ajax({
+                        type: 'GET',
                         
-                    },
-                    error: function(xhr, status, err) {
-                        console.log(xhr.responseText);
-                    }
-                });
+                        cache: false,
+                        url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
+                        success: function(response) {
+                            $("html").html(response);
+                        
+                            
+                        },
+                        error: function(xhr, status, err) {
+                            console.log(xhr.responseText);
+                            loadInvisible();
+                            
+                        }
+                    });
+                }else{
+                    loadInvisible();
+                    alert('This Image is not cropped');
+                }
+
+                
             });
     });
 
@@ -484,13 +538,13 @@
             clickArray.push(y);
         }
 
-        
-    </script>
-    <br/>
 
-    <div class="float-center text-center" style="margin-left:auto; margin-right:auto;">
-        <h1 style="padding-top:5%;">Image Legend</h1>
-        <table class="float-center text-center" style="margin-left:auto; margin-right:auto;">
+
+    </script>
+
+    <div class="float-center text-center" style="margin-left:auto; margin-right:auto; padding: 1%;">
+        <h1 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h1>
+        <table class="float-center text-center" style="margin-left:auto; margin-right:auto; margin-top: 0px;">
             <tr>
                 <td>
                     <svg id="legend-image" width="500" height="200">
@@ -537,10 +591,9 @@
                 </td>
             </tr>
         </table>
-    </div>
+</div>
+    
 
-    <button onclick="exportLegend()">Export Legend</button>
-    </div>
 
     <div id="legend-export-div" style="margin-left:35%;">
     </div>
@@ -612,159 +665,48 @@
     setInterval(showHide, 1000);
 </script>
 <script>
-    var keys = [];
-    var vals = [];
-    // Gets All Metadata from the "metadata-text" div, and formats into two arrays. Keys and Vals.
-    function getMetadata() {
+    // Gets Important Metadata from the "metadata-text" div
+    function getMetadata(){
         //TODO parse the metadata
-
-
-        //console.log(vals);
+        var metadata = document.getElementById("metadata-text").innerHTML;
+        var metadataString = JSON.parse(metadata);
+        
+        // Important Metadata Values
+        var northDegree = metadataString['NorthAzimuth'];
+        var sunDegree = metadataString['SubSolarAzimuth'];
+        var observerDegree = metadataString['SubSpacecraftGroundAzimuth'];
+        var scale = metadataString['SampleResolution'];
+        //// Hard Coding North Arrow For Testing /////
+        northDegree = 90;
+        if(northDegree == "None"){
+            document.getElementById("north-radio").checked = false;
+        }else{
+            setLegendAngles("northImg", "northDeg", northDegree);
+        }
+        if(sunDegree == "None"){
+            document.getElementById("sun-radio").checked = false;
+        }
+        if(observerDegree == "None"){
+            document.getElementById("obs-radio").checked = false;
+        }
+        if(scale == "None"){
+            document.getElementById("scalebar-radio").checked = false;
+        }
     }
     getMetadata();
+    // Set Legend Images
+    function setLegendAngles(img, deg, value){
+        var image = document.getElementById(String(img));
+        var deg = document.getElementById(String(deg));
+        var rotateVal = String("transform: rotate(" + String(value) + "deg);");
+        deg.innerHTML = String(value) + "degrees";
+      
+        image.setAttribute("style", rotateVal);
+    }
 </script>
 <script>
     window.onload = function(){
-        /*
-        // Cub Variables
-        var northDegree = 0;
-        var sunDegree = 0;
-        var observerDegree = 0;
-        var scale = 0;
-        // Legend Icons
-        var northImg = new Image();
-        northImg.src = "images/north.png";
-        var sunImg = new Image();
-        sunImg.src = "images/sun_symbol.png";
-        var obsImg = new Image();
-        obsImg.src = " images/eye_symbol.png";
-        
-        // Canvas Stuff
-        var northCanvas = document.getElementById("north-canvas");
-        var northCanvasCtx = northCanvas.getContext("2d");
-        var sunCanvas = document.getElementById("sun-canvas");
-        var sunCanvasCtx = sunCanvas.getContext("2d");
-        var obsCanvas = document.getElementById("obs-canvas");
-        var obsCanvasCtx = obsCanvas.getContext("2d");
-        var scalebarCanvas = document.getElementById("scalebar-canvas");
-        var scalebarCanvasCtx = scalebarCanvas.getContext("2d");
-        
-        // HTML Degree Stuff
-        var norDeg = document.getElementById("northDeg");
-        var sunDeg = document.getElementById("sunDeg");
-        var obsDeg = document.getElementById("obsDeg");
-        var scaleRange = document.getElementById("img-range");
-        var range1 = document.getElementById("range-1");
-        var range2 = document.getElementById("range-2");
-        // Rotates North Arrow Image to inputted degree 
-        function rotateNorth(degree){
-            northCanvasCtx.clearRect(0, 0, northCanvas.width, northCanvas.height);
-            // save the unrotated context of the canvas so we can restore it later
-            // the alternative is to untranslate & unrotate after drawing
-            northCanvasCtx.save();
-            // move to the center of the canvas
-            northCanvasCtx.translate(northCanvas.width/2, northCanvas.height/2);
-            // rotate the canvas to the specified degrees
-            northCanvasCtx.rotate(degree*Math.PI/180);
-            // draw the image
-            // since the context is rotated, the image will be rotated also
-            northCanvasCtx.drawImage(northImg, (-northImg.width/2)+50, (-northImg.width/2)+50, 75, 75);
-            // we’re done with the rotating so restore the unrotated context
-        }
-        // Draw Sun Arrow
-        function sunArrow(degree){
-            var x1 = (sunCanvas.width/2)+50;
-            var y1 = (sunCanvas.height/2)+22;
-            var leng = 75;
-            var theta = (degree*Math.PI/180);
-            sunCanvasCtx.drawImage(sunImg, (sunCanvas.width/2)-20, (sunCanvas.height/2)-20, 75, 75);
-            sunCanvasCtx.moveTo(x1, y1);
-            sunCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
-            sunCanvasCtx.lineWidth = 5;
-            sunCanvasCtx.stroke();
-        }
-        // Draw Observer Arrow
-        function obsArrow(degree){
-            var x1 = (obsCanvas.width/2)+50;
-            var y1 = (obsCanvas.height/2)+22;
-            var leng = 75;
-            var theta = (degree*Math.PI/180);
-            obsCanvasCtx.drawImage(obsImg, (obsCanvas.width/2)-20, (obsCanvas.height/2)-20, 75, 75);
-            obsCanvasCtx.moveTo(x1, y1);
-            obsCanvasCtx.lineTo((x1+leng*Math.cos(theta)), (y1+leng*Math.sin(theta)));
-            obsCanvasCtx.lineWidth = 5;
-            obsCanvasCtx.stroke();
-        }
-        // Draw Scalebar
-        function scalebarDraw(scale, range){
-            var wid = 600;
-            var hi = 600;
-            var x1 = 0;
-            var y1 = 100;
-            var x2 = 225;
-            var y2 = 100;
-            range1.innerHTML = 0;
-            range2.innerHTML = scale + " m/pix";
-            scalebarCanvasCtx.moveTo(x1, y1);
-            scalebarCanvasCtx.lineTo(x2, y2);
-            scalebarCanvasCtx.lineWidth = 10;
-            scalebarCanvasCtx.stroke();
-        }
-        for(var i=0; i<keys.length; i++){
-            console.log(keys[i]);
-            if(keys[i] === "NorthAzimuth"){
-                northDegree = vals[i];
-                if(vals[i] !== "None"){
-                    norDeg.innerHTML = northDegree + " degs";
-                    northImg.onload = function(){i
-                        console.log("Got North");
-                        rotateNorth(northDegree+90);
-                    }
-                    //console.log("North Degree is:" + northDegree);
-                }else{
-                    norDeg.innerHTML = "N/A";
-                    document.getElementById("north").checked = false;
-                    console.log("North Degree Not Found");
-                }
-            }
-            if(keys[i] === "SubSolarAzimuth"){
-                sunDegree = vals[i];
-                if(vals[i] !== "None"){
-                    sunDeg.innerHTML = sunDegree + " degs";
-                    sunImg.onload = function(){
-                        sunArrow(sunDegree+90);
-                        console.log("Got here");    
-                    }
-                }else{
-                    sunDegree.innerHTML = "N/A"; 
-                    console.log("Sun Degree Not Found");
-                }
-            }
-            if(keys[i] === "SubSpacecraftGroundAzimuth"){
-                observerDegree = vals[i];
-                if(vals[i] !== "None"){
-                    obsDeg.innerHTML = observerDegree + " degs";
-                    obsImg.onload = function(){
-                        obsArrow(observerDegree+90);    
-                    }
-                }else{
-                    obsDeg.innerHTML = "N/A";
-                    console.log("Observer Degree Not Found");
-                }
-            }
-            if(keys[i] === "SampleResolution"){
-                scale = vals[i];
-                var factor = scaleRange.value;
-                
-                if(vals[i] !== "None"){
-                    scalebarDraw(scale, factor);     
-                }else{
-                    scale = "N/A";
-                    console.log("Observer Degree Not Found");
-                }
-            }
-        }
-        */
+
     }
 
 </script>
