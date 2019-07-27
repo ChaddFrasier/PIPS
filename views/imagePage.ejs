@@ -93,8 +93,6 @@
 
             <div style="display:inline;">
                 <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
-
-                <button id="backBtn" class="btn btn-primary btn-lg">Undo Crop</button>
                 
                 <form method="POST" action="/imageDownload" display="inline" class=" float-right text-center">
                         <input type="hidden" value='<%= image %>' name="passedIMG">
@@ -377,8 +375,6 @@
                 }
             } 
 
-
-            setInterval(adjustBox, 100);
 
             $('#northIconFlag').click(function(){
                 northFlag = !northFlag;
