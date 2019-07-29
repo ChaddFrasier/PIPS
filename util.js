@@ -3,8 +3,8 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 07/17/19
- * Version: 2.3.1
+ * Date Last Modified: 07/29/19
+ * Version: 2.4.0
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
  * 
@@ -14,7 +14,7 @@
 
 
 // require dependencies
-var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var path = require('path');
 var jimp = require('jimp');
 var Promises = require('bluebird');
@@ -33,7 +33,7 @@ module.exports = {
      * @function calls the isis commands using promises to ensure the processes are finished
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
-        return new Promise(function(resolve){
+        return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
             // call the isis commands
@@ -41,7 +41,11 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
+                console.log('isis calls finished');
                 resolve();
+            }).catch(function(){
+                console.log('image extraction failed to create image');
+                reject();
             });
         });
     },
@@ -56,15 +60,55 @@ module.exports = {
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
             var promises = [];
-
+            
             // create a promise of the processFile function
             promises.push(processFile(path.join('pvl', cubeName.replace('.cub','.pvl'))));
     
             // this block will pass and run when all isis commands are finished
             Promise.all(promises).then(function(cubeData){
-                console.log('extract finished');
                 // return the data
                 resolve(cubeData);
+            });
+        });
+    },
+
+
+    /**
+     * 
+     * @param {string} tiffName name of the tiff to be converted to a .cub
+     * 
+     * @function converts tiff to cube for later processing 
+     */
+    tiffToCube: function(tiffName) {
+        return new Promise(function(resolve, reject){
+            // variables for proper isis call
+            var isisCall = 'std2isis';
+            
+            var cubeName = tiffName.replace(".tif",".cub");
+         
+            console.log('running std2isis\n');
+            var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
+
+            std2isis.stdout.on('data', function(data){
+                console.log('stdout: ' + data.toString());
+            });
+
+
+            std2isis.stderr.on('data', function(data){
+                console.log(isisCall + ' Error: ' + data.toString());
+            });
+
+            std2isis.on('exit',function(code){
+                console.log(isisCall + ' Exited with code: ' + code);
+
+                if(code === 0){
+                    console.log('std2isis finised successfully');
+                    resolve(cubeName);
+                }
+                else{
+                    reject(isisCall + 'Error: ' + code.toString());
+                }
+                
             });
         });
     },
@@ -118,6 +162,7 @@ module.exports = {
 
 
 
+    // could be used by passing the icon locations from the svg section and generating the new image on the server
     superImposeIcon: async function(starterImage, iconPath, x, y){
 
         console.log('impose onto: ' + starterImage);
@@ -237,7 +282,6 @@ module.exports = {
                 importantTags.push(tags[i].replace('<tag>','').replace('</tag>','').trim());
             }
         }
-
         return importantTags;
     },
 
@@ -293,9 +337,9 @@ module.exports = {
 
     // parses the query string off of the image link
     parseQuery: function(imageName){
-    try{return imageName.split('?')[0];}
-    catch{return imageName;}
-}
+        try{return imageName.split('?')[0];}
+        catch{return imageName;}
+    }
 };
 
 
@@ -376,16 +420,18 @@ var shortenName = function(name){
  * promises to ensure the PVL file is full created before processing continues
  */
 var callIsis = function(cubeName, filepath, returnPath, imagePath){
-    return new Promise(function(resolve){
+    return new Promise(function(resolve,reject){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+        
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
         // run the isis commands
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
+            console.log(isisCalls[i] + 'Starting Now');
             promises.push(makeIsisCall(filepath, returnPath, isisCalls[i]));
         }
         // call and push image command
@@ -393,8 +439,10 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
-            console.log('Isis call is finished');
             resolve();
+        }).catch(function(){
+            console.log('image rejection caught');
+            reject();
         });
     });
  }
@@ -409,19 +457,33 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @function calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath){
-    return new Promise(function(resolve){
+    console.log('Running isis2std for image now');
+    return new Promise(function(resolve,reject){
         // execute the isis2std function
-        exec('isis2std from= ' + filepath
-        + " to= " + imagePath + '/' + imagename, function(err, stdout, stderr){
-            if(err){
-                // log error
-                console.log('Failed isis2std call');
-                //console.log(err);
-            }
-            resolve();
-            });
+        
+        var isis2std = spawn('isis2std',['from=', filepath, "to=", path.join(imagePath,imagename)]);
+
+
+        isis2std.stdout.on('data', function(data){
+            console.log('isis2std stdout: ' + data.toString());
         });
-    }
+
+
+        isis2std.stderr.on('data', function(data){
+            console.log('isis2std Error: ' + data.toString());
+        });
+
+        isis2std.on('exit',function(code){
+            console.log('isis2std Exited with code: ' + code);
+            if(code === 0){
+                resolve();
+            }else{
+                reject('isis2std Error: ' + code.toString);
+            }
+        });
+        
+    });
+}
 
 
 /**
@@ -436,16 +498,25 @@ var imageExtraction = function(imagename, filepath, imagePath){
 var makeIsisCall = function(filepath, returnPath, isisCall){
     return new Promise(function(resolve){
         // execute the isis2std function
-        exec( 
-            isisCall + ' from= ' + filepath
-            + " to= " + returnPath + ' append= true', function(err, stdout, stderr){
-            if(err){
-                // log error
-                console.log('Failed isis2std call');
-                //console.log(err);
-            }
+       
+        var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
+
+
+        // log output to file lgf
+        isisSpawn.stdout.on('data', function(data){
+            console.log(isisCall + 'stdout: ' + data.toString());
+        });
+
+
+        isisSpawn.stderr.on('data', function(data){
+            console.log(isisCall + ' Error: ' + data.toString());
+        });
+
+        isisSpawn.on('exit',function(code){
+            console.log(isisCall + ' Exited with code: ' + code);    
             resolve();
         });
+        
     });
 }
 
@@ -484,9 +555,10 @@ var endTag = function(nameString){
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
  * @param {string} cubeName just the name of the cube for getting the image output name more easily.
+ * @returns {JSON string}
  * @requires fs, instream, outstream, and readline.
  * 
- * @function this function reads a file line by line, it will chnage into the data parser in later commits.
+ * @function this function reads a file line by line parseing into a JSON format.
  */
 var processFile = function(inputFile, cubeName){
     return new Promise(function(resolve){
@@ -582,11 +654,4 @@ var newImageName = function(imageLink){
     let newImageName = imagename.replace('.png','_crop') + '.png';
 
     return path.join('jimp',newImageName);
-}
-
-
-// parses the query string off of the image link
-var parseQuery = function(imageName){
-    try{return imageName.split('?')[0];}
-    catch{return imageName;}
 }

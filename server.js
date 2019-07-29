@@ -8,7 +8,7 @@
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 07/25/19
+ * Last Modified: 07/29/19
  *
  * @todo 1 unit test all componets
  * 
@@ -23,7 +23,7 @@
  */
 
  /** READ ME BEFORE EDITING
-  * @fileoverview   07/17/19 
+  * @fileoverview   07/29/19 
   * 
   *       Promises were used to let the appication work in a Syncronous manner which javascript is not build for. The data
   *     extraction and object creation should not be changed for this reason. If it is changed then the functions could
@@ -68,12 +68,6 @@ app.use(cookieparser());
 app.set('etag', false);
 app.disable('view cache');
 
-/* app.use(function (req, res, next) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
-    next();
-}); */
 // set OS flag
 var isWindows = process.platform === 'win32';
 
@@ -92,14 +86,20 @@ app.set('view engine', 'ejs');
 
 try{
     exec('rm ./images/*.pgw');
+    exec('rm ./jimp/*');
+    exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');    
 }
 catch{
-    console.log('file not found');
+    console.log('file error occured');
 }
 
+
+// read the config file to get only important tags for webpage
+const importantTagArr = util.configServer(fs.readFileSync(
+    path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
 // HTTP Handling Functions
 
@@ -125,11 +125,8 @@ app.get('/', function(request, response){
     }
 
     // render the index page w/ proper code
-    if(code == undefined){
-        response.render("index.ejs", {alertCode: 0});
-    }else{
-        response.render("index.ejs", {alertCode: code});
-    }
+    response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
+    
 });
  
 
@@ -140,7 +137,7 @@ app.get('/', function(request, response){
 app.get('/upload',function(request,response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -175,11 +172,12 @@ app.get('/tpl',function(request, response){
  * 
  * allows file upload and data extraction to take place when upload button is activated
  */
-app.post('/upload', function(request, response){
+app.post('/upload', async function(request, response){
     console.log(request.path);
 
     // prepare the variables for response to user
     var templateText = '';
+    let isTiff = false;
     
     // for testing only
     console.log('=================== New Upload ========================');
@@ -195,24 +193,32 @@ app.post('/upload', function(request, response){
             response.end();
         }
         // cube (.cub) file regexp
-        else if(/^.*\.(cub|CUB)$/gm.test(request.files.uploadFile.name)){
+        else if(/^.*\.(cub|CUB|tif|TIF)$/gm.test(request.files.uploadFile.name)){
            
             // get the file from request
             var cubeFile = request.files.uploadFile;
+
+            var uid = request.cookies["userId"];
             
             // create promises array for syncronous behavior
-            let promises = [];
+            var promises = [];
+
+            // set tiff flag
+            if(cubeFile.name.indexOf('.tif') > -1){
+                isTiff = true;
+            }else{
+                isTiff = false;
+            }
 
 
-            // get correct cube object
-            if(request.cookies['userId'] === undefined || cubeArray.length === 0){
-                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++); 
-                
+            if(uid === undefined || cubeArray.length === 0){
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
             }else{
                 for(i in cubeArray){
-                    console.log(cubeArray[i]);
-                    if(cubeArray[i].userId === parseInt(request.cookies['userId'])){
+                    if(cubeArray[i].userId === parseInt(uid)){
+                        // reset user cubeName
                         cubeArray[i].name = 'u-' + cubeArray[i].userId + cubeFile.name;
+                        //save the users instance into the cubeObj
                         cubeObj = cubeArray[i];
                         break;
                     }
@@ -221,7 +227,7 @@ app.post('/upload', function(request, response){
 
 
             // save the cube upload to upload folder
-            cubeFile.mv('./uploads/' + cubeObj.name , function(err){
+            await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
                 if(err){
                     console.log('This Error could have been because "/uploads" folder does not exist');
@@ -229,103 +235,130 @@ app.post('/upload', function(request, response){
                 }
             });
 
+            
+            //convert tiff to cube
+            if(cubeObj.name.split('.tif').length > 1){
+                promises.push(util.tiffToCube('uploads/' + cubeObj.name));
+            }else{
+                console.log('cube file was uploaded');    
+            }
+            
 
-            // create the cookie instance for the user
-            response.cookie('cubeFile', cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});
+            // set the cookie based on the type of file uploaded
+            response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
 
+            // reset server tif val
+            isTiff = false;
 
-            // make promise on the isis function calls
-            promises.push(util.makeSystemCalls(cubeObj.name,
-                path.join('.','uploads',cubeObj.name),
-                   path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
-                   'images'));
-              
-            
-            // when isis is done read the pvl file
-             Promise.all(promises).then(function(){
-                //console.log('server heard back from ISIS');
-                //reset promises array
-                promises = [];
-
-                // make new promise on the data extraction functions
-                promises.push(util.readPvltoStruct(cubeObj.name));
-
-                // when the readPvltoStructf function resolves create data instance
-                Promise.all(promises).then(function(cubeData){
-                    console.log('server got data: \n' + cubeObj);
+            // run the conversion
+            Promise.all(promises).then(function(cubeName){
                 
-                    // add the cube instance to the cube array if it does not already exist
-                    cubeArray = util.addCubeToArray(cubeObj,cubeArray);
+                
+                cubeObj.name = path.basename(cubeName[0]);
+                promises = [];
+                
+                // make promise on the isis function calls
+                promises.push(util.makeSystemCalls(cubeObj.name,
+                    path.join('.','uploads',cubeObj.name),
+                    path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
+                    'images'));
+                
+                
+                // when isis is done read the pvl file
+                Promise.all(promises).then(function(){
+                    console.log('server heard back from ISIS, starting pvl data extraction');
+                    //reset promises array
+                    promises = [];
 
-                    console.log(cubeArray);
-                   
-                    // save data to object using setter in class
-                    cubeObj.data = JSON.parse(cubeData);
+
+                    // make new promise on the data extraction functions
+                    promises.push(util.readPvltoStruct(cubeObj.name));
+
+                    // when the readPvltoStructf function resolves create data instance
+                    Promise.all(promises).then(function(cubeData){
                     
-                    // read the config file to get only important tags for webpage
-                    let importantTagArr = util.configServer(fs.readFileSync(
-                        path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
+                        console.log("PVL Extraction Finished");
+                        // add the cube instance to the cube array if it does not already exist
+                        cubeArray = util.addCubeToArray(cubeObj,cubeArray);
+                        //console.log(cubeArray);
+                    
+                        // save data to object using setter in class
+                        cubeObj.data = JSON.parse(cubeData);
+                        
+                    
+                        // obtain the data for the important tags
+                        var impDataString = util.importantData(cubeObj.data, importantTagArr);
 
-                    // obtain the data for the important tags
-                    var impDataString = util.importantData(cubeObj.data, importantTagArr);
+                        // save the important data values to object using setter
+                        cubeObj.impData = JSON.parse(impDataString);
 
-                    // save the important data values to object using setter
-                    cubeObj.impData = JSON.parse(impDataString);
+                        // template file section
+                        try{
+                            // regexp for verifying tpl file
+                            if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
+                                // get file object
+                                let tplFile = request.files.templateFile;
 
-                    // template file section
-                    try{
-                        // regexp for verifying tpl file
-                        if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
-                            // get file object
-                            let tplFile = request.files.templateFile;
-
-                            // save to server
-                            tplFile.mv('./tpl/'+tplFile.name, function(err){
-                                // report any errors
-                                if(err){
-                                    return response.status(500).send(err);
-                                }
-                            });
-                            // set output for template
-                            templateText = tplFile.data.toString();
+                                // save to server
+                                tplFile.mv('./tpl/'+tplFile.name, function(err){
+                                    // report any errors
+                                    if(err){
+                                        return response.status(500).send(err);
+                                    }
+                                });
+                                // set output for template
+                                templateText = tplFile.data.toString();
+                            }
+                            else{
+                                console.log('Wrong file type for template');
+                                // send the alert code and redirect
+                                response.redirect('/?alertCode=2');
+                                // end response
+                                response.end();
+                            }
+                        }catch(err){
+                            // tpl is null set default
+                            templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
                         }
-                        else{
-                            console.log('Wrong file type for template');
-                            // send the alert code and redirect
-                            response.redirect('/?alertCode=2');
-                            // end response
-                            response.end();
-                        }
-                    }catch(err){
-                        // tpl is null set default
-                        templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-                    }
 
-                    // get the csv string
-                    let csv = util.getCSV(cubeObj.data);
+                        // get the csv string
+                        let csv = util.getCSV(cubeObj.data);
 
-                    // get name of csv and write it to the csv folder
-                    let csvFilename = cubeObj.name.replace('.cub','.csv');
+                        // get name of csv and write it to the csv folder
+                        let csvFilename = cubeObj.name.replace('.cub','.csv');
 
-                    // get name of possible output
-                    let txtFilename = cubeObj.name.replace('.cub','_Orion_caption.txt');
+                        // get name of possible output
+                        let txtFilename = cubeObj.name.replace('.cub','_Orion_Caption.txt');
 
-                    fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+                        fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
 
-                    // send response w/ all variables
-                    response.render('writer.ejs',
-                        { templateText: templateText, 
-                        dictionaryString: impDataString,
-                        wholeData: cubeObj.data,
-                        csvString: csv,
-                        outputName: txtFilename}); 
+                        // send response w/ all variables
+                        response.render('writer.ejs',
+                            { templateText: templateText, 
+                            dictionaryString: impDataString,
+                            wholeData: cubeObj.data,
+                            csvString: csv,
+                            outputName: txtFilename}); 
 
-                }).catch(function(err){
-                    // catch any promise error
-                    console.log('Promise Error Occured: ' + err);
-                    response.write('<html>HORRIBLE ERROR</html>');
-                });
+                    }).catch(function(err){
+                        // catch any promise error
+                        console.log('Promise Error Occured: ' + err);
+                        response.write('<html>HORRIBLE ERROR</html>');
+                        response.end();
+                    });
+                }).catch(function(){
+                    // alert 5 which happens when isis fails to convert a tif
+                    response.redirect('/?alertCode=6');
+                    // end response
+                    response.end();
+                });          
+            }).catch(function(err){
+                // alert 5 which happens when isis fails to convert a tif
+                response.redirect('/?alertCode=5');
+                // end response
+                response.end();
+
             });
         }
         else{
@@ -391,7 +424,7 @@ app.post('/imageDownload', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -409,7 +442,7 @@ app.get('/csv', function(request, response){
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -427,7 +460,7 @@ app.get('/imageDownload', function(request, response){
 app.get('/showImage', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeName'];
+    var cookieval = request.cookies['cubeFile'];
 
     if(cookieval === undefined){
         // send response w/ all variables
@@ -474,6 +507,8 @@ app.post('/showImage', function(request, response){
         // image path could not be found
         imagepath = 'none';
     }
+
+   
     var w;
     var h;
     jimp.read(imagepath).then(function(img){
@@ -498,9 +533,11 @@ app.get('/crop',async function(request, response){
     var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
     var newImage;
 
+    console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
       // search for data in array given by user cookie
       data = util.getObjectFromArray(cookieval, cubeArray);
 
+      
     if(currentImage.split('_').length === 2){
         // remove current file
         await fs.unlinkSync(currentImage.split('?')[0]);
@@ -538,8 +575,6 @@ app.get('/crop',async function(request, response){
         strArray.pop();
 
         newImage = strArray.join('_');
-
-        console.log(newImage + ' image after undo');
         
     
         if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
@@ -553,7 +588,7 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 1: ' + err);
             });
         }else{
             var w;
@@ -566,7 +601,8 @@ app.get('/crop',async function(request, response){
                 response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
                 response.end();
             }).catch(function(err){
-                console.log(err);
+                console.log('ERROR 2: ' + err);
+            
             });
         }
     }
@@ -581,7 +617,7 @@ app.get('/crop',async function(request, response){
             response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
-            console.log(err);
+            console.log('ERROR 3: ' + err);
         });
     }
 });
