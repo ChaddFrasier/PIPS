@@ -71,7 +71,7 @@
 
             </form>
         </div>
-            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info">
+            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center">
                 <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                    &times;
                 </button>
@@ -79,14 +79,21 @@
             </div>
 
 
-            <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary">
+            <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
                     <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                        &times;
                     </button>
                     Must start with upload
                 </div>
 
-        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning" role="alert">
+                <div id="fail-upload" style= "visibility:hidden" class = "alert alert-primary text-center">
+                    <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                       &times;
+                    </button>
+                    Failed to Upload
+                </div>
+
+        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning text-center" role="alert">
                 <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
                 </button>
@@ -98,6 +105,7 @@
         var InfoBox = 'info-alert';
         var tplBox = 'tplAlert';
         var failureBox = 'fail-alert';
+        var uploadFail = 'fail-upload';
 
          // parse the url and flag the appropriate error messages
         function fixLoader(){
@@ -111,6 +119,10 @@
             }
             else if(<%= alertCode %> == 4){
                 var alert3 = document.getElementById(failureBox);
+                alert3.style.visibility = 'visible';
+            }
+            else if(<%= alertCode %> == 5){
+                var alert3 = document.getElementById(uploadFail);
                 alert3.style.visibility = 'visible';
             }
             else if(<%= alertCode %> != 0){

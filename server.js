@@ -8,7 +8,7 @@
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 07/25/19
+ * Last Modified: 07/29/19
  *
  * @todo 1 unit test all componets
  * 
@@ -23,7 +23,7 @@
  */
 
  /** READ ME BEFORE EDITING
-  * @fileoverview   07/17/19 
+  * @fileoverview   07/29/19 
   * 
   *       Promises were used to let the appication work in a Syncronous manner which javascript is not build for. The data
   *     extraction and object creation should not be changed for this reason. If it is changed then the functions could
@@ -68,12 +68,6 @@ app.use(cookieparser());
 app.set('etag', false);
 app.disable('view cache');
 
-/* app.use(function (req, res, next) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    res.header('Expires', '-1');
-    res.header('Pragma', 'no-cache');
-    next();
-}); */
 // set OS flag
 var isWindows = process.platform === 'win32';
 
@@ -99,9 +93,13 @@ try{
     exec('rm ./print.prt');    
 }
 catch{
-    console.log('file not found');
+    console.log('file error occured');
 }
 
+
+// read the config file to get only important tags for webpage
+const importantTagArr = util.configServer(fs.readFileSync(
+    path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
 // HTTP Handling Functions
 
@@ -127,11 +125,8 @@ app.get('/', function(request, response){
     }
 
     // render the index page w/ proper code
-    if(code == undefined){
-        response.render("index.ejs", {alertCode: 0});
-    }else{
-        response.render("index.ejs", {alertCode: code});
-    }
+    response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
+    
 });
  
 
@@ -182,6 +177,7 @@ app.post('/upload', async function(request, response){
 
     // prepare the variables for response to user
     var templateText = '';
+    let isTiff = false;
     
     // for testing only
     console.log('=================== New Upload ========================');
@@ -201,24 +197,28 @@ app.post('/upload', async function(request, response){
            
             // get the file from request
             var cubeFile = request.files.uploadFile;
+
+            var uid = request.cookies["userId"];
             
             // create promises array for syncronous behavior
             var promises = [];
 
+            // set tiff flag
             if(cubeFile.name.indexOf('.tif') > -1){
-                console.log('tiff found')
-                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
-                //ignore this chunk
+                isTiff = true;
+            }else{
+                isTiff = false;
             }
-            // get correct cube object
-            else if(request.cookies['userId'] === undefined || cubeArray.length === 0){
-                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++); 
-                
+
+
+            if(uid === undefined || cubeArray.length === 0){
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
             }else{
                 for(i in cubeArray){
-                    console.log(cubeArray[i]);
-                    if(cubeArray[i].userId === parseInt(request.cookies['userId'])){
+                    if(cubeArray[i].userId === parseInt(uid)){
+                        // reset user cubeName
                         cubeArray[i].name = 'u-' + cubeArray[i].userId + cubeFile.name;
+                        //save the users instance into the cubeObj
                         cubeObj = cubeArray[i];
                         break;
                     }
@@ -227,63 +227,36 @@ app.post('/upload', async function(request, response){
 
 
             // save the cube upload to upload folder
-
-
             await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
                 if(err){
                     console.log('This Error could have been because "/uploads" folder does not exist');
                     return response.status(500).send(err);
-                }else{
-                    
                 }
             });
 
             
-            var wait = true;
-            while( wait ){
-                try{
-                    fs.accessSync('uploads/' + cubeObj.name,fs.constants.R_OK);
-                    wait = false;
-                }catch(err){
-                    console.log('waiting')
-                    wait = true;
-                }
-            }
             //convert tiff to cube
-            //TODO:
             if(cubeObj.name.split('.tif').length > 1){
-                
                 promises.push(util.tiffToCube('uploads/' + cubeObj.name));
             }else{
-                console.log('cube file');    
+                console.log('cube file was uploaded');    
             }
             
 
-            // create the cookie instance for the user
-            response.cookie('cubeFile', cubeObj.name.replace('.tif', '.cub'), {expires: new Date(Date.now() + 1000000), httpOnly: true});
+            // set the cookie based on the type of file uploaded
+            response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
+
+            // reset server tif val
+            isTiff = false;
 
             // run the conversion
             Promise.all(promises).then(function(cubeName){
                 
-                console.log('waiting for: ' + cubeName[0] + ' to be found');
-                if(cubeName[0]!== undefined){
-                    while(!fs.existsSync(cubeName[0])){
-                        //wait for the file
-                    }
-                    cubeObj.name = cubeName[0].split('/')[1];
-    
-                }
                 
+                cubeObj.name = path.basename(cubeName[0]);
                 promises = [];
-                
-                
-
-                console.log(cubeObj.name + ' this is the cubeObje file namew');
-
-            
-
                 
                 // make promise on the isis function calls
                 promises.push(util.makeSystemCalls(cubeObj.name,
@@ -294,22 +267,18 @@ app.post('/upload', async function(request, response){
                 
                 // when isis is done read the pvl file
                 Promise.all(promises).then(function(){
-                    console.log('server heard back from ISIS');
+                    console.log('server heard back from ISIS, starting pvl data extraction');
                     //reset promises array
                     promises = [];
 
-                    console.log('currently looking for: ' + path.join('pvl',cubeObj.name.replace('.cub','.pvl')));
-                    while(!fs.existsSync(path.join('pvl',cubeObj.name.replace('.cub','.pvl')))){
-                        //wait for the file
-                    }
 
                     // make new promise on the data extraction functions
                     promises.push(util.readPvltoStruct(cubeObj.name));
 
                     // when the readPvltoStructf function resolves create data instance
                     Promise.all(promises).then(function(cubeData){
-                        console.log('server got data: \n' + cubeObj);
                     
+                        console.log("PVL Extraction Finished");
                         // add the cube instance to the cube array if it does not already exist
                         cubeArray = util.addCubeToArray(cubeObj,cubeArray);
                         //console.log(cubeArray);
@@ -317,10 +286,7 @@ app.post('/upload', async function(request, response){
                         // save data to object using setter in class
                         cubeObj.data = JSON.parse(cubeData);
                         
-                        // read the config file to get only important tags for webpage
-                        let importantTagArr = util.configServer(fs.readFileSync(
-                            path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
-
+                    
                         // obtain the data for the important tags
                         var impDataString = util.importantData(cubeObj.data, importantTagArr);
 
@@ -384,6 +350,13 @@ app.post('/upload', async function(request, response){
                 }).catch(function(err){
                     console.log(err);
                     });          
+            }).catch(function(err){
+                console.log("Error Caught from std2isis call");
+                // alert 5 which happens when isis fails to convert a tif
+                response.redirect('/?alertCode=5');
+                // end response
+                response.end();
+
             });
         }
         else{
