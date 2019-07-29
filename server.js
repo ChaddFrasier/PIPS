@@ -535,7 +535,8 @@ app.get('/crop',async function(request, response){
 
     console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
       // search for data in array given by user cookie
-      data = util.getObjectFromArray(cookieval, cubeArray);
+      var data = util.getObjectFromArray(cookieval, cubeArray);
+      data = (data === -1) ? 'None' : data.impData;
 
       
     if(currentImage.split('_').length === 2){
