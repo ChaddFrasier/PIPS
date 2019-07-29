@@ -347,11 +347,13 @@ app.post('/upload', async function(request, response){
                         response.write('<html>HORRIBLE ERROR</html>');
                         response.end();
                     });
-                }).catch(function(err){
-                    console.log(err);
-                    });          
+                }).catch(function(){
+                    // alert 5 which happens when isis fails to convert a tif
+                    response.redirect('/?alertCode=6');
+                    // end response
+                    response.end();
+                });          
             }).catch(function(err){
-                console.log("Error Caught from std2isis call");
                 // alert 5 which happens when isis fails to convert a tif
                 response.redirect('/?alertCode=5');
                 // end response

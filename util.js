@@ -33,7 +33,7 @@ module.exports = {
      * @function calls the isis commands using promises to ensure the processes are finished
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
-        return new Promise(function(resolve){
+        return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
             // call the isis commands
@@ -43,6 +43,9 @@ module.exports = {
             Promises.all(promises).then(function(){
                 console.log('isis calls finished');
                 resolve();
+            }).catch(function(){
+                console.log('image extraction failed to create image');
+                reject();
             });
         });
     },
@@ -417,7 +420,7 @@ var shortenName = function(name){
  * promises to ensure the PVL file is full created before processing continues
  */
 var callIsis = function(cubeName, filepath, returnPath, imagePath){
-    return new Promise(function(resolve){
+    return new Promise(function(resolve,reject){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
@@ -437,8 +440,9 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
             resolve();
-        }).catch(function(reject){
+        }).catch(function(){
             console.log('image rejection caught');
+            reject();
         });
     });
  }

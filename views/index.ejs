@@ -16,8 +16,13 @@
         
         <script type="text/javascript"
                 src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    </head>
+    <style>
+    .alertBoxes{ padding: 2px;}
 
+    </style>
+   
+   
+    </head>
     <body>
             
             <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
@@ -71,19 +76,25 @@
 
             </form>
         </div>
-            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center">
+
+            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center alertBoxes">
                 <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                    &times;
                 </button>
                 Upload a .cub file
             </div>
-
-
             <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
                     <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                        &times;
                     </button>
                     Must start with upload
+                </div>
+
+                <div id="fail-image" style= "visibility:hidden" class = "alert alert-primary text-center">
+                    <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                       &times;
+                    </button>
+                    Failed to create image from upload
                 </div>
 
                 <div id="fail-upload" style= "visibility:hidden" class = "alert alert-primary text-center">
@@ -106,6 +117,7 @@
         var tplBox = 'tplAlert';
         var failureBox = 'fail-alert';
         var uploadFail = 'fail-upload';
+        var imageFail = 'fail-image';
 
          // parse the url and flag the appropriate error messages
         function fixLoader(){
@@ -123,6 +135,10 @@
             }
             else if(<%= alertCode %> == 5){
                 var alert3 = document.getElementById(uploadFail);
+                alert3.style.visibility = 'visible';
+            }
+            else if(<%= alertCode %> == 6){
+                var alert3 = document.getElementById(imageFail);
                 alert3.style.visibility = 'visible';
             }
             else if(<%= alertCode %> != 0){
