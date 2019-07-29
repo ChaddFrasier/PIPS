@@ -253,9 +253,10 @@ app.post('/upload', async function(request, response){
 
             // run the conversion
             Promise.all(promises).then(function(cubeName){
-                
-                
-                cubeObj.name = path.basename(cubeName[0]);
+
+                if(cubeName.length > 0){
+                    cubeObj.name = path.basename(cubeName[0]);
+                }
                 promises = [];
                 
                 // make promise on the isis function calls
@@ -354,6 +355,7 @@ app.post('/upload', async function(request, response){
                     response.end();
                 });          
             }).catch(function(err){
+                console.log(err);
                 // alert 5 which happens when isis fails to convert a tif
                 response.redirect('/?alertCode=5');
                 // end response
