@@ -338,7 +338,7 @@ module.exports = {
     // parses the query string off of the image link
     parseQuery: function(imageName){
         try{return imageName.split('?')[0];}
-        catch{return imageName;}
+        catch(err){return imageName;}
     }
 };
 

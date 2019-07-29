@@ -92,7 +92,7 @@ try{
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');    
 }
-catch{
+catch(err){
     console.log('file error occured');
 }
 
