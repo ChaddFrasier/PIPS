@@ -520,6 +520,8 @@
                                 </tr>   
                             </table>
                         </foreignObject>
+                        <line id="observerArrow" x1="0" y1="0" x2="50" y2="0" style="stroke:rgb(255,0,0);stroke-width:2; display:none;"/>
+                        <line id="sunArrow" x1="0" y1="0" x2="50" y2="0" style="stroke:rgb(255,0,0);stroke-width:2; display:none;"/>
                     </svg>
                 </td>
                 <td valign="top">
@@ -628,7 +630,7 @@
         if(northDegree == "None"){
             document.getElementById("north-radio").checked = false;
         }else{
-            setLegendAngles("northImg", "northDeg", northDegree);
+            setLegendAngle("northImg", "northDeg", northDegree);
         }
 
         if(sunDegree == "None"){
@@ -645,14 +647,20 @@
     }
     getMetadata();
 
-    // Set Legend Images
-    function setLegendAngles(img, deg, value){
+    // Set Legend North Angle Angle
+    function setLegendAngle(img, deg, value){
         var image = document.getElementById(String(img));
         var deg = document.getElementById(String(deg));
         var rotateVal = String("transform: rotate(" + String(value) + "deg);");
+
         deg.innerHTML = String(value) + "degrees";
-      
         image.setAttribute("style", rotateVal);
+    }
+
+    // Generate Arrow Legend Icons
+    function setLegendArrow(img, arrow, deg, value){
+        var image = document.getElementById(String(img));
+        var arrow = document.getElementById();
     }
 </script>
 <script>
