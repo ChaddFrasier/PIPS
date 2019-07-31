@@ -784,6 +784,7 @@
         var image = document.getElementById(String(img));
         var deg = document.getElementById(String(deg));
         var rotateVal = String("transform: rotate(" + String(value) + "deg);");
+        image.setAttribute("transform-origin", "50%; 50%;");
 
         deg.innerHTML = String(value) + "degrees";
         image.setAttribute("style", rotateVal);
@@ -794,6 +795,13 @@
         var image = document.getElementById(String(img));
         var arrow = document.getElementById();
     }
+
+    /////// This Function is for testing the Rotation Orgin Point ///////
+    i = 0;
+    setInterval(function(){
+        i += 1;
+        setLegendAngle("northImg", "northDeg", i);
+    }, 1000);
 </script>
 <script>
     window.onload = function(){
