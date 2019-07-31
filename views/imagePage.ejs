@@ -117,25 +117,28 @@
         <div class="float-center image-controls text-center">
             <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
             <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
-            <button class="btn btn-primary btn-lg" id="eyeFlag"> Add Eye Image</button>
+            <button class="btn btn-primary btn-lg" id="eyeFlag"> Add Eye Image</button><br><br>
+            <button class="btn btn-primary btn-lg" id="exportBtn"> Export The Vector Image</button>
         </div>
 
     </div>
     <br/>
     <div class="float-center image-editer" style="text-align: center;">
-        <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" style="border:2px black solid;" width="100%" height="100%">
+        <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" preserveAspectRatio="xMidYMin" style="border:2px black solid;" width="<%= w %>" height="<%=h%>">
+            <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
             <defs>
                 <clipPath id="image_box">
                     <rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,255);"/>
                 </clipPath>
-            </defs>
-            <image id="crop" width="100%" height="100%" xlink:href="/<%=image%>" clip-path="url(#image_box)"/>
-                <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
-                <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
-                <image id="sunIcon" x="500" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
-                <image id="eyeIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/eye_symbol.png"/>
-            </svg>
+            </defs>        
+            <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
+            <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
+            <image id="sunIcon" x="500" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
+            <image id="eyeIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/eye_symbol.png"/>
+        </svg>
     </div>
+
+
 
     <div id="metadata" style="display:none;"  class="text-center green-border-focus">
             <label for="metadata-text">
@@ -151,29 +154,51 @@
             <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
         </div>
 
-
+        <!--  This is just for testing right now -->
+        This is a canvas
+        <canvas id="canvasTest" width="<%=w%>px" height="<%=h%>px" style="display:block; border: 5px solid black; width:<%=w%>px; height:<%=h%>px;" ></canvas>
 
 <script>
-    
-    var outlineBox = document.getElementById('cropOutline');
-    outlineBox.style.visibility = 'hidden';
-    var svg = document.getElementById('svgWrapper');
+
+
+    var exportBtn =  document.getElementById('exportBtn');
 
 
     var northImage = document.getElementById("northIcon");
     var sunImage = document.getElementById("sunIcon");
     var eyeImage = document.getElementById('eyeIcon');
 
+    // resize
 
-    northImage.setAttribute('width',getIconWidth(<%= w %>));
-    northImage.setAttribute('height',getIconHeight(<%= h %>));
+    let iconDim = getIconDim(<%= w %>, <%= h %>);
 
 
-    sunImage.setAttribute('width',getIconWidth(<%= w %>));
-    sunImage.setAttribute('height',getIconHeight(<%= h %>));
 
-    eyeImage.setAttribute('width',getIconWidth(<%= w %>));
-    eyeImage.setAttribute('height',getIconHeight(<%= h %>));
+
+    if(iconDim[0] > iconDim[1]){
+        setIconDimensions(iconDim[0]);
+    }else{
+        setIconDimensions(iconDim[1]);
+    }
+
+
+    function setIconDimensions(dim){
+        northImage.setAttribute('width',dim);
+        northImage.setAttribute('height', String(Number(dim.split('px')[0]) + 40 ) + 'px');
+        
+        
+        sunImage.setAttribute('width',dim);
+        sunImage.setAttribute('height', dim);
+        
+        eyeImage.setAttribute('width',dim);
+        eyeImage.setAttribute('height', dim);
+        
+    }
+
+ 
+    var outlineBox = document.getElementById('cropOutline');
+    outlineBox.style.visibility = 'hidden';
+    var svg = document.getElementById('svgWrapper');
 
     svg.setAttribute('width',Number(<%= w %>));
     svg.setAttribute('height',Number(<%= h %>));
@@ -193,45 +218,38 @@
     }
 
 
-    function getIconWidth(imageWidth){
-        let iconSize = imageWidth*.1;
+    function getIconDim(imageWidth, imageHeight){
+        let iconW = imageWidth*.1;
+        let iconH = imageHeight*.1;
        
-        if(iconSize < 25){
-            iconSize = '30px';
-            return iconSize;
+
+console.log(iconW);
+console.log(iconH);
+        if(iconW < 15 || iconH < 15){
+           
+            return ['10px','10px'];
         }else{
-            return iconSize.toString()+'px';
+            return [iconW.toString()+'px', iconH.toString()+'px']; 
         }
         
     }
-    
-    function getIconHeight(imageHeight){
-        let iconSize = imageHeight*.1;
-        if(iconSize < 25){
-            iconSize = '30px';
-            return iconSize;
-        }else{
-            return iconSize.toString()+'px';
-        }
-    }
-
-
-
     
 
     console.log("<%= w %>: <%= h %>");
     loadInvisible();
 </script>
 <script>
+    var sunIconPlaced = false;
+    var northIconPlaced = false;
+    var eyeIconPlaced = false;
+
     var doneResizing = false;
     var northFlag = false;
     var cropFlag = false; 
     var sunFlag = false;
     var eyeFlag = false;
 
-    var sunIconPlaced = false;
-    var northIconPlaced = false;
-    var eyeIconPlaced = false;
+    
 
     var outlineVisible = false;
 
@@ -253,6 +271,7 @@
             if(northFlag || cropFlag || sunFlag || eyeFlag){
                 if(clickArray.length < 1 || clickArray[0]<x || clickArray[1]< y){
                     captureClick(x,y);
+                    // clickArray
                     console.log(clickArray);
                 }
                 
@@ -311,6 +330,8 @@
 
                         
                         sunIconPlaced = true;
+                        console.log(sunImage.getAttribute('width'));
+                        console.log(sunImage.getAttribute('height'));
                         document.getElementById('sunIconFlag').innerHTML = "Remove?";
                         clickArray = [];
                         sunFlag = false;
@@ -330,7 +351,8 @@
                             
                             
                             $("html").html(response);
-                            
+
+                            loadInvisible();
                             clickArray = [];
                             cropFlag = false;
                         
@@ -600,7 +622,7 @@
                 });
             }else{
                 loadInvisible();
-                alert('This Image is not cropped');
+                alert('Base Image:\nCannot Be Undone');
             }
 
             
@@ -614,6 +636,79 @@
         clickArray.push(y);
     }
 
+    
+// Export Section
+
+    // ======= TESTING EXPORT ============
+
+    // download works well
+    function triggerDownload (imgURI) {
+        var evt = new MouseEvent('click', {
+            view: window,
+            bubbles: false,
+            cancelable: true
+        });
+        var a = document.createElement('a');
+        a.setAttribute('download', 'testing.png');
+        a.setAttribute('href', imgURI);
+        a.setAttribute('target', '_blank');
+
+        a.dispatchEvent(evt);
+    }
+
+    var image = document.getElementById('crop');
+    
+    // canvas is redering a blank image
+    exportBtn.addEventListener('click', function () {
+        
+        var iconArr = [northIconPlaced, sunIconPlaced, eyeIconPlaced];
+        
+
+        var svg = document.getElementById('svgWrapper');
+        var canvas = document.getElementById('canvasTest');
+        var ctx = canvas.getContext('2d');
+
+        var data = (new XMLSerializer()).serializeToString(svg);
+        var DOMURL = window.URL || window.webkitURL || window;
+
+        var img = new Image();
+        var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+        var url = DOMURL.createObjectURL(svgBlob);
+
+        
+            
+            // img is drawing as white box
+            ctx.drawImage(image, dx=0, dy=0,dWidth=image.width.animVal.value, dHeight=image.height.animVal.value);
+
+            if(sunIconPlaced){
+                
+                ctx.drawImage(sunImage, dx=sunImage.x.animVal.value,dy=sunImage.y.animVal.value, dWidth=sunImage.width.animVal.value  , dHeight=sunImage.height.animVal.value );
+                console.log('runns');
+            
+            }
+            if(northIconPlaced){
+                
+                ctx.drawImage(northImage, dx=northImage.x.animVal.value,dy=northImage.y.animVal.value, dWidth=northImage.width.animVal.value  , dHeight=northImage.height.animVal.value );
+                
+            
+            }
+            
+            
+
+            DOMURL.revokeObjectURL(url);
+
+            try{
+                var imgURI = canvas
+                .toDataURL('image/png', 1.0)
+                .replace('image/png', 'image/octet-stream');
+
+                triggerDownload(imgURI);
+            }catch(err){
+                alert('Image is too large to save from browser');
+            }
+            
+        img.src = url;
+    });
 
 </script>
 
