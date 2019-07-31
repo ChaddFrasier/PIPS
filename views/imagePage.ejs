@@ -27,6 +27,7 @@
 
         .image-image {
         display: block;
+        align-content: center;
         margin-left: auto;
         margin-right: auto;
         }
@@ -78,7 +79,7 @@
             height: 50px;
         }
 
-        svg { position: relative; top: 0; left: 0; width: 100%; height: 100%;}
+        svg { position: relative; text-align: center; top: 0; left: 0; width: 100%; height: 100%;}
     </style>
    
 </head>
@@ -121,8 +122,8 @@
 
     </div>
     <br/>
-    <div class="float-center image-editor" style="overflow: hidden;">
-        <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" style="border:2px black solid;" width="1000px" height="1000px">
+    <div class="float-center image-editer" style="text-align: center;">
+        <svg id="svgWrapper" class="image-image" viewBox="0 0 <%= w %> <%= h %>" style="border:2px black solid;" width="100%" height="100%">
             <defs>
                 <clipPath id="image_box">
                     <rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,0,255);"/>
@@ -133,8 +134,6 @@
                 <image id="northIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/north.png"/>
                 <image id="sunIcon" x="500" y="500" width="50px" height="50px" xlink:href="/images/sun_symbol.png"/>
                 <image id="eyeIcon" x="350" y="500" width="50px" height="50px" xlink:href="/images/eye_symbol.png"/>
-
-                
             </svg>
     </div>
 
@@ -655,19 +654,21 @@
                     </svg>
                 </td>
                 <td valign="top">
-                    <div id="hide-legend" class="float-center" style="text-align:left;">
-                        <table>
-                            <tr><h4>Hide Legend Elements</h4></tr>
-                            <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
-                            <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
-                            <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
-                            <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
-                        </table>
+                    <div class="float-center" style="align-content: center; width: 300px; height: auto; margin: auto;">
+                        <div id="hide-legend" class="float-center" style="text-align: left;">
+                            <table style="text-align:left;">
+                                <tr><h4>Hide Legend Elements</h4></tr>
+                                <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
+                                <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
+                                <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
+                                <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
+                            </table>
+                        </div>
                     </div>
                 </td>
             </tr>
         </table>
-</div>
+    </div>
     
 
 
@@ -774,6 +775,7 @@
         if(scale == "None"){
             document.getElementById("scalebar-radio").checked = false;
         }
+    }
 
     getMetadata();
 
@@ -782,6 +784,7 @@
         var image = document.getElementById(String(img));
         var deg = document.getElementById(String(deg));
         var rotateVal = String("transform: rotate(" + String(value) + "deg);");
+        image.setAttribute("transform-origin", "50%; 50%;");
 
         deg.innerHTML = String(value) + "degrees";
         image.setAttribute("style", rotateVal);
@@ -792,6 +795,13 @@
         var image = document.getElementById(String(img));
         var arrow = document.getElementById();
     }
+
+    /////// This Function is for testing the Rotation Orgin Point ///////
+    i = 0;
+    setInterval(function(){
+        i += 1;
+        setLegendAngle("northImg", "northDeg", i);
+    }, 1000);
 </script>
 <script>
     window.onload = function(){
