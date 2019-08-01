@@ -223,6 +223,7 @@ app.post('/upload', async function(request, response){
                         break;
                     }
                 }
+                console.log('no cubeObject found');
             }
 
 
