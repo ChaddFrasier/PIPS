@@ -1,35 +1,26 @@
-<!DOCTYPE html>
 <html>
     <head>
-
         <title>Orion Project</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <meta property="og:url" content="https://orion-usgs/"/>
-        <meta property="og:title" content="Planetary Image Caption Writer"/>
+        <meta property="og:url" content="https://pips-usgs/"/>
+        <meta property="og:title" content="Planetary Image Processing Server"/>
         <meta property="og:type" content="application"/>
-        <meta property="og:description" content="A publication tool for The USGS's and other agencies researchers"/>
+        <meta property="og:description" content="A publication tool for The USGS, and other agencies, researchers"/>
 
-        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <link rel="stylesheet" type="text/css" href="css/pips.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         
-        <script type="text/javascript"
-                src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <style>
-    .alertBoxes{ padding: 2px;}
-
-    </style>
-   
-   
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
     </head>
-    <body>
-            
-            <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
-            <div id="loading" class="float-md-right lead" style="visibility:hidden">
-                    <img src="../images/loading.gif" class='float-md-left;' height="125px" weight="135px"/><br>Loading
-            </div>
-            <br>
+
+    <body>  
+        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <div id="loading" class="float-md-right lead" style="visibility:hidden">
+                <img src="../images/loading.gif" class='float-md-left;' height="125px" weight="135px"/><br>Loading
+        </div>
+        <br/>
         <div class="lead text-center" style="align-content: center;">
             <div class="float-center" style=" margin-left:5%; margin-right:20%; margin-bottom: 0%;"><br>
                 <div class="text-center">
@@ -38,148 +29,136 @@
                 </div>
             </div>
         </div>
-            
-        <br>
-        <br>
-            <hr class="my-9">
-            <div class="title text-center">
-                    
-                    <p class="lead" style="margin-left: auto; margin-right: auto;">You can upload .cub file and .tpl file </p>
-                        <a class="btn btn-secondary btn-lg" style= "border-color: black;" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
-                            role="button">Learn About The Orion Project</a>
-        
-                        <a class="btn btn-secondary btn-lg" href= '/tpl'
-                            role="button">What is a TPL file?</a>
-                   
-                </div>
-        
-    <br>
+        <br/>
+        <br/>
+        <hr class="my-9">
+        <div class="title text-center">
+            <p class="lead" style="margin-left: auto; margin-right: auto;">You can upload .cub file and .tpl file </p>
+                <a class="btn btn-secondary btn-lg" style= "border-color: black;" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
+                    role="button">Learn About The Orion Project</a>
+                <a class="btn btn-secondary btn-lg" href= '/tpl'
+                    role="button">What is a TPL file?</a>
+        </div>
+        <br/>
         <div class="container">
-            
-
             <form class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
                 <div class="btn btn-primary btn-lg form-group">
                     <label for="cubUpload">Choose an ISIS Cube File</label>
                     <input name="uploadFile" id="cubUpload" type="file" class="form-control-file" />
                 </div>
-
-                <br>
+                <br/>
                 <hr class="style5">
                 <div class="btn btn-primary btn-lg form-group">
                     <label for="tplUpload">Choose a Template File</label>
                     <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
                 </div>
-                
-                <br>
+                <br/>
                 <input type="submit" class="btn btn-secondary btn-lg" name="SubmitCube" value="Upload"  class="btn btn btn-outline-dark btn-lg"
-                    onclick="loaderActivate('loading')" />
-
+                    onclick="loaderActivate()" />
             </form>
         </div>
 
-            <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center alertBoxes">
-                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                   &times;
-                </button>
-                Upload a .cub file
-            </div>
-            <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
-                    <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                       &times;
-                    </button>
-                    Must start with upload
-                </div>
-
-                <div id="fail-image" style= "visibility:hidden" class = "alert alert-primary text-center">
-                    <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                       &times;
-                    </button>
-                    Failed to create image from upload
-                </div>
-
-                <div id="fail-upload" style= "visibility:hidden" class = "alert alert-primary text-center">
-                    <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                       &times;
-                    </button>
-                    Failed to Upload
-                </div>
-
-        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning text-center" role="alert">
-                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
+        <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center alertBoxes">
+            <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
-                </button>
-                     
-                Template must be (.tpl) or left blank.
-            </div>
+            </button>
+            Upload a .cub file
+        </div>
+        <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
+            <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Must start with upload
+        </div>
+        <div id="fail-image" style= "visibility:hidden" class = "alert alert-primary text-center">
+            <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Failed to create image from upload
+        </div>
+        <div id="fail-upload" style= "visibility:hidden" class = "alert alert-primary text-center">
+            <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Failed to Upload
+        </div>
+        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning text-center" role="alert">
+            <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
+            &times;
+            </button>
+                    
+            Template must be (.tpl) or left blank.
+        </div>
 
-        <script>
-        var InfoBox = 'info-alert';
-        var tplBox = 'tplAlert';
-        var failureBox = 'fail-alert';
-        var uploadFail = 'fail-upload';
-        var imageFail = 'fail-image';
-
-         // parse the url and flag the appropriate error messages
-        function fixLoader(){
-            if(<%= alertCode %> == 1){
-                var alert = document.getElementById(InfoBox);
-                alert.style.visibility = 'visible';
-            }
-            else if(<%= alertCode %> == 2){
-                var alert2 = document.getElementById(tplBox);
-                alert2.style.visibility = 'visible';
-            }
-            else if(<%= alertCode %> == 4){
-                var alert3 = document.getElementById(failureBox);
-                alert3.style.visibility = 'visible';
-            }
-            else if(<%= alertCode %> == 5){
-                var alert3 = document.getElementById(uploadFail);
-                alert3.style.visibility = 'visible';
-            }
-            else if(<%= alertCode %> == 6){
-                var alert3 = document.getElementById(imageFail);
-                alert3.style.visibility = 'visible';
-            }
-            else if(<%= alertCode %> != 0){
-                var alert = document.getElementById(InfoBox);
-                alert.style.visibility = 'visible';
-                var alert2 = document.getElementById(tplBox);
-                alert2.style.visibility = 'visible';
-
-            }
-        }
-       
-       // get the id of the parent element of the button that was clicked and hide the div box
-        function setNotVisible(element){
-            var hideElement = document.getElementById($(element).parent().attr('id'));
-            hideElement.style.visibility = 'hidden';    
-        }
-
-
-        function loadInvisible(){
+        <script type="text/javascript">
+            // get needed DOM element
             var loader = document.getElementById('loading');
-            loader.style.visibility = 'hidden';    
-        }
-
-        function loaderActivate(divId){
-
-            var loader = document.getElementById(divId);
-            loader.style.visibility = 'visible';
-        }
 
 
-        // this bind call is used to make the loader gif minvisible on the page load
-        $(window).bind("pageshow", function(event) {
-            if (event.originalEvent.persisted) {
-                // functions to run when page loads
+            var InfoBox = 'info-alert';
+            var tplBox = 'tplAlert';
+            var failureBox = 'fail-alert';
+            var uploadFail = 'fail-upload';
+            var imageFail = 'fail-image';
 
-                loadInvisible();
-                fixLoader();
-                
+            // parse the url and flag the appropriate error messages
+            function fixLoader(){
+                if(<%= alertCode %> == 1){
+                    var alert = document.getElementById(InfoBox);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> == 2){
+                    var alert = document.getElementById(tplBox);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> == 4){
+                    var alert = document.getElementById(failureBox);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> == 5){
+                    var alert = document.getElementById(uploadFail);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> == 6){
+                    var alert = document.getElementById(imageFail);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> != 0){
+                    var alert = document.getElementById(InfoBox);
+                    alert.style.visibility = 'visible';
+                    var alert2 = document.getElementById(tplBox);
+                    alert2.style.visibility = 'visible';
+
+                }
             }
-        });
-        fixLoader();
+        
+            /* get the id of the parent element of the button that was clicked and
+             hide the div box this is to help make the x buttons on the alerts work properly */
+            function setNotVisible(element){
+                var hideElement = document.getElementById($(element).parent().attr('id'));
+                hideElement.style.visibility = 'hidden';    
+            }
+
+            // showing an hiding the loading gif
+            function loadInvisible(){
+                
+                loader.style.visibility = 'hidden';    
+            }
+            function loaderActivate(){
+                loader.style.visibility = 'visible';
+            }
+
+
+            // this bind call is used to make the loader gif invisible on the page load
+            $(window).bind("pageshow", function(event) {
+                if (event.originalEvent.persisted) {
+                    // functions to run when page loads
+                    loadInvisible();
+                    fixLoader(); 
+                }else{
+                    fixLoader();
+                }
+            });
         </script>
     </body>
 </html>

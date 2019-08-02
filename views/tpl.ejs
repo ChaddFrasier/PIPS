@@ -1,11 +1,10 @@
-<!DOCTYPE html>
 <html>
     <head>
 
         <title>Template File</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" type="text/css" href="../css/index.css">
+        <link rel="stylesheet" type="text/css" href="../css/pips.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -16,31 +15,25 @@
     </head>
 
     <body>
-        
         <div class="jumbotron jumbotron-fluid text-center" style="padding: 1%;">
-
             <h1 class="display-6"> A tpl file is a special Orion text file that is used to parse and exchange tags with data values</h1>
             <p class="lead"> (simply write a text file like normal and save it to a .tpl extrension)</p>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="/"
                     role="button">Back</a>
-
             </p>
-
         </div>
 
         <div class="container" style="background-color: lightgray;">
             <div class="row">       
-            <label for="TPLForm" style="align-content: center; color: black; ">Template File (.tpl)</label>
+                <label for="TPLForm" style="align-content: center; color: black; ">Template File (.tpl)</label>
             </div>
             <div class="row">
                 <textarea class="form-control rounded-0" style="align-content: center; background-color: lightsteelblue; color: black;" 
                 readonly='readonly' id="TPLForm" rows="10">
-        <%= tplData %>
+                    <%= tplData %>
                 </textarea>
-            </div>
-             
+            </div>  
         </div>
-        
     </body>
-    </html>
+</html>
