@@ -63,5 +63,7 @@ must be approved prior to submitting pull requests.
 ### Links
 
 Project Home: https://github.com/ChaddFrasier/PIPS
+
 Issue Tracker: https://github.com/ChaddFrasier/PIPS/issues
+
 Related Repos: https://github.com/USGS-Astrogeology/ISIS3
