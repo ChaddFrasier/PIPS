@@ -51,8 +51,17 @@ any changes that you would like to make after review by the repository leads you
 request will either be merged or closed without merge depending on what has been done. 
 Any request will be considered. 
 
+Post and issue if you wish to become a contributor stating who you are 
+and why you feel you could benefit the project.
+
 ## Licensing
 -----------------------------------------------------------------------------
 Right now PIPS is holding a GPLv3 for the reason that this project could be kept up 
 and worked on by you the users whenever you feel fit although as of now contributors
-must be approved prior to submitting pull requests. 
+must be approved prior to submitting pull requests.
+
+### Links
+-----------------------------------------------------------
+Project Home: https://github.com/ChaddFrasier/PIPS
+Issue Tracker: https://github.com/ChaddFrasier/PIPS/issues
+Related Repos: https://github.com/USGS-Astrogeology/ISIS3
