@@ -1,9 +1,9 @@
 ![USGS](images/usgsLogo.png)
-
+-------------------------------------------------------------------
 # PIPS: Planetary Image Processing Server
-=====================================================================
+--------------------------------------------------------------------
 ### Introduction
----------------------------------------------------------------------
+
 This is a server that is supported by ISIS3 on the backend, its purpose is to brings the 
 power that ISIS has when processing a cube or tiff file to the click of a button.
 Users can upload cube (.cub) or geotiff (.tif) files to the server and be returned 
@@ -28,7 +28,7 @@ to a whole new field of users and data.
 
 
 ## Developing
------------------------------------------------------------------------------
+
 In order to develop on this project you will first need to install a working version of ISIS, and Node.js & npm.
 
 To check if they are installed simply run `node -v` & `npm -v` 
@@ -45,7 +45,7 @@ Then you can start developing.
 Start the server with the command `node server` in the project directory.
 
 ## Contributing
--------------------------------------------------------------------------------
+
 When contributing to this project we ask that you create a new pull request for 
 any changes that you would like to make after review by the repository leads your
 request will either be merged or closed without merge depending on what has been done. 
@@ -55,13 +55,13 @@ Post and issue if you wish to become a contributor stating who you are
 and why you feel you could benefit the project.
 
 ## Licensing
------------------------------------------------------------------------------
+
 Right now PIPS is holding a GPLv3 for the reason that this project could be kept up 
 and worked on by you the users whenever you feel fit although as of now contributors
 must be approved prior to submitting pull requests.
 
 ### Links
------------------------------------------------------------
+
 Project Home: https://github.com/ChaddFrasier/PIPS
 Issue Tracker: https://github.com/ChaddFrasier/PIPS/issues
 Related Repos: https://github.com/USGS-Astrogeology/ISIS3
