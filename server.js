@@ -4,18 +4,18 @@
  * @run node server 
  * 
  * @author Chadd Frasier
- * @version 2.4.5
+ * @version 2.5.0
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 07/29/19
+ * Last Modified: 08/02/19
  *
  * @todo 1 unit test all componets
  * 
  *     
- * @todo 4 get image page working again
+ * @todo 4 scalebars
  * 
- * TODO: simplify the object code
+ * @todo 10 simplify the object code
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
  * @requires ./js/cubeObj.js
  * 
@@ -83,7 +83,7 @@ app.use("/pvl " , express.static("pvl"));
 // start view engine
 app.set('view engine', 'ejs');
 
-
+// erase uneeded files before startup
 try{
     exec('rm ./images/*.pgw');
     exec('rm ./jimp/*');
@@ -96,13 +96,12 @@ catch(err){
     console.log('file error occured');
 }
 
-
 // read the config file to get only important tags for webpage
 const importantTagArr = util.configServer(fs.readFileSync(
     path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
 
-// HTTP Handling Functions
 
+// HTTP Handling Functions
 /**
  * GET '/' 
  * 
@@ -110,44 +109,13 @@ const importantTagArr = util.configServer(fs.readFileSync(
  */
 app.get('/', function(request, response){
     console.log(request.path);
-    
     // query for alert code
     let code = request.query.alertCode;
-    
-    // TODO: windows can't use the exec call
-        // maybe create an admin reset function that cleans the server
-    
-    // clean print.prt files from isis3
-    if( !isWindows ){
-        exec('rm print.prt');
-    }else{
-        exec('del "print.prt"');
-    }
-
     // render the index page w/ proper code
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
     
 });
  
-
-
-/**
- * if no cookie can be found then fail
- */
-app.get('/upload',function(request,response){
-    console.log(request.path);
-
-    var cookieval = request.cookies['cubeFile'];
-
-    if(cookieval === undefined){
-        // send response w/ all variables
-        response.redirect('/?alertCode=4');
-
-    }else{
-        console.log('cookie found: its value is: ' + cookieval);
-    }
-});
-
 
 /**
  * GET '/tpl'
@@ -168,6 +136,24 @@ app.get('/tpl',function(request, response){
 
 
 /**
+ * if no cookie can be found then fail
+ * @todo make sure this works with no errors or freezes
+ */
+app.get('/upload',function(request,response){
+    console.log(request.path);
+
+    var cookieval = request.cookies['cubeFile'];
+
+    if(cookieval === undefined){
+        // send response w/ all variables
+        response.redirect('/?alertCode=4');
+
+    }else{
+        console.log('cookie found: its value is: ' + cookieval);
+    }
+});
+
+/**
  * POST '/upload'
  * 
  * allows file upload and data extraction to take place when upload button is activated
@@ -179,9 +165,10 @@ app.post('/upload', async function(request, response){
     var templateText = '';
     let isTiff = false;
     
-    // for testing only
+    //============== for testing only=======================
     console.log('=================== New Upload ========================');
-
+    //================================================
+    
     // cube file section
     try{
         if(request.files == null ){
@@ -197,7 +184,7 @@ app.post('/upload', async function(request, response){
            
             // get the file from request
             var cubeFile = request.files.uploadFile;
-
+            //  find user id if it exists
             var uid = request.cookies["userId"];
             
             // create promises array for syncronous behavior
@@ -210,10 +197,12 @@ app.post('/upload', async function(request, response){
                 isTiff = false;
             }
 
-
+            // if no user id is found or the cubeArray is empty
             if(uid === undefined || cubeArray.length === 0){
+                // create new instance
                 var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
             }else{
+                // loop through the active cubes and search for the user instance
                 for(i in cubeArray){
                     if(cubeArray[i].userId === parseInt(uid)){
                         // reset user cubeName
@@ -223,7 +212,15 @@ app.post('/upload', async function(request, response){
                         break;
                     }
                 }
-                console.log('no cubeObject found');
+                // TODO: NEEDS TESTING STILL
+                try{
+                    if(cubeObj.userId !== undefined){
+                        console.log('User was found');
+                    }
+                }catch(err){
+                    // create new instance
+                    var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
+                }    
             }
 
 
@@ -238,26 +235,27 @@ app.post('/upload', async function(request, response){
 
             
             //convert tiff to cube
-            if(cubeObj.name.split('.tif').length > 1){
+            if(isTiff){
                 promises.push(util.tiffToCube('uploads/' + cubeObj.name));
             }else{
                 console.log('cube file was uploaded');    
             }
             
-
-            // set the cookie based on the type of file uploaded
+            // set the cookie based on the type of file uploaded (expire times will be messed with)
             response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
 
-            // reset server tif val
+            // reset server tif val because conversion completed
             isTiff = false;
 
-            // run the conversion
+            // after conversion finished
             Promise.all(promises).then(function(cubeName){
 
+                // if the return array legth is not 0 extract the new cubefile name
                 if(cubeName.length > 0){
                     cubeObj.name = path.basename(cubeName[0]);
                 }
+                // reset the promises array
                 promises = [];
                 
                 // make promise on the isis function calls
@@ -273,7 +271,6 @@ app.post('/upload', async function(request, response){
                     //reset promises array
                     promises = [];
 
-
                     // make new promise on the data extraction functions
                     promises.push(util.readPvltoStruct(cubeObj.name));
 
@@ -283,12 +280,10 @@ app.post('/upload', async function(request, response){
                         console.log("PVL Extraction Finished");
                         // add the cube instance to the cube array if it does not already exist
                         cubeArray = util.addCubeToArray(cubeObj,cubeArray);
-                        //console.log(cubeArray);
                     
                         // save data to object using setter in class
                         cubeObj.data = JSON.parse(cubeData);
                         
-                    
                         // obtain the data for the important tags
                         var impDataString = util.importantData(cubeObj.data, importantTagArr);
 
@@ -330,9 +325,10 @@ app.post('/upload', async function(request, response){
                         // get name of csv and write it to the csv folder
                         let csvFilename = cubeObj.name.replace('.cub','.csv');
 
-                        // get name of possible output
-                        let txtFilename = cubeObj.name.replace('.cub','_Orion_Caption.txt');
+                        // get name of possible output file
+                        let txtFilename = cubeObj.name.replace('.cub','_PIPS_Caption.txt');
 
+                        // write the csv data to the file
                         fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
 
                         // send response w/ all variables
@@ -346,11 +342,11 @@ app.post('/upload', async function(request, response){
                     }).catch(function(err){
                         // catch any promise error
                         console.log('Promise Error Occured: ' + err);
-                        response.write('<html>HORRIBLE ERROR</html>');
+                        response.write('<html>PROGRAMMING SYNC ERROR</html>');
                         response.end();
                     });
                 }).catch(function(){
-                    // alert 5 which happens when isis fails to convert a tif
+                    // alert 6 which happens when isis failed to create an image form the cube
                     response.redirect('/?alertCode=6');
                     // end response
                     response.end();
@@ -403,25 +399,6 @@ app.post('/csv', function(request,response){
 });
 
 /**
- * POST '/imageDownload'
- * 
- *  this post function is only for sending the basic image to the user as a download  
- */
-app.post('/imageDownload', function(request,response){
-    // send download file
-    response.download(path.join('images',request.cookies['cubeFile'].replace('.cub','.png')),function(err){
-        if(err){
-            console.log('file was not sent successfully');
-        }else{
-            // file sent
-            response.end();
-        }
-    });
-});
-
-
-
-/**
  * if no cookie can be found then fail
  */
 app.get('/csv', function(request, response){
@@ -438,6 +415,23 @@ app.get('/csv', function(request, response){
     }
 });
 
+
+/**
+ * POST '/imageDownload'
+ * 
+ *  this post function is only for sending the raw image to the user as a download  
+ */
+app.post('/imageDownload', function(request,response){
+    // send download file
+    response.download(path.join('images',request.cookies['cubeFile'].replace('.cub','.png')),function(err){
+        if(err){
+            console.log('file was not sent successfully');
+        }else{
+            // file sent
+            response.end();
+        }
+    });
+});
 
 /**
  * if no cookie can be found then fail
@@ -474,15 +468,12 @@ app.get('/showImage', function(request, response){
     }
 });
 
-
-
 /**
  * POST '/showImage'
  * 
  * renders the image page with needed data
  */
 app.post('/showImage', function(request, response){
-    //TODO: image page
     console.log(request.path);
 
     // prepare variables 
@@ -514,6 +505,7 @@ app.post('/showImage', function(request, response){
    
     var w;
     var h;
+    // get the hight and width of the image and render the page with all needed variables
     jimp.read(imagepath).then(function(img){
         w = img.bitmap.width;
         h = img.bitmap.height;
@@ -527,7 +519,12 @@ app.post('/showImage', function(request, response){
 });
 
 
-
+/**
+ * GET '/crop'
+ * 
+ * Undoes the previous cropped image by uniform naming and 
+ * array parsing after recieveing ajax get request
+ */
 app.get('/crop',async function(request, response){
     console.log(request.url + 'from GET');
 
@@ -537,11 +534,12 @@ app.get('/crop',async function(request, response){
     var newImage;
 
     console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
-      // search for data in array given by user cookie
-      var data = util.getObjectFromArray(cookieval, cubeArray);
-      data = (data === -1) ? 'None' : data.impData;
+    // search for data in array given by user cookie
+    var data = util.getObjectFromArray(cookieval, cubeArray);
+    // check return value for the function
+    data = (data === -1) ? 'None' : data.impData;
 
-      
+    // if spliting on _ equals legth 2
     if(currentImage.split('_').length === 2){
         // remove current file
         await fs.unlinkSync(currentImage.split('?')[0]);
@@ -553,6 +551,7 @@ app.get('/crop',async function(request, response){
         // render with variables
         var w;
         var h;
+        // read in new image and dimensions
         jimp.read(newImage).then(function(img){
             w = img.bitmap.width;
             h = img.bitmap.height;
@@ -564,26 +563,28 @@ app.get('/crop',async function(request, response){
             console.log(err);
         });
     }
+    // if the legth is greater than 2
     else if(currentImage.split('_').length > 2){
+        // check for base image and remove if not equal
         if(currentImage !== baseImg){
             console.log('current image is: ' + currentImage);
             await fs.unlinkSync(currentImage.split('?')[0]);
         }
-        
+        // remove the timestring query
         let imageLink = currentImage.split('?')[0];
         // split name on underscore
         let strArray = imageLink.split('_');
 
-        // second to last string
+        // set second to last string equal to the last and rejoin after popping the end off
         strArray[strArray.length - 2] += '.' + strArray[strArray.length-1].split('.')[strArray[strArray.length-1].split('.').length - 1];
         strArray.pop();
-
         newImage = strArray.join('_');
         
-    
+        // check to see of the new image name is the base name
         if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
             var w;
             var h;
+            // if yes read the base image back in
             jimp.read(baseImg).then(function(img){
                 w = img.bitmap.width;
                 h = img.bitmap.height;
@@ -595,8 +596,10 @@ app.get('/crop',async function(request, response){
                 console.log('ERROR 1: ' + err);
             });
         }else{
+            // else read the new image in
             var w;
             var h;
+            // read heigth and width
             jimp.read(newImage).then(function(img){
                 w = img.bitmap.width;
                 h = img.bitmap.height;
@@ -611,6 +614,7 @@ app.get('/crop',async function(request, response){
         }
     }
     else{
+        console.log('should never run but is a catch all');
         var w;
         var h;
         jimp.read(cookieval).then(function(img){
@@ -627,9 +631,15 @@ app.get('/crop',async function(request, response){
 });
 
 
+/**
+ * POST '/crop'
+ * 
+ * this handels the actual jimp crop functionality
+ */
 app.post('/crop', async function(request,response){
     console.log(request.url);
 
+    // retrieve all parts from the request queries and cookie
     let arrayString = request.query.cropArray;
     let pxArray = arrayString.split(',');
     var croppedImage = request.query.currentImage.split('?')[0];
@@ -637,37 +647,36 @@ app.post('/crop', async function(request,response){
 
     // search for data in array given by user cookie
     var data = util.getObjectFromArray(cookieval, cubeArray);
-    // if the data val is an error code then fail
-    if(data < 1){
-        console.log('Object Search Failed');
-        data = 'NONE';
-    }else{
-        // otherwise load the important data from the active object array into data variable
-        data = data.impData;
-    }
+
+    // if the data val is an error code then fail otherwise return important data string
+    data = (data < 1) ? 'NONE': data.impData;
+    
     // set header to html
     response.setHeader("Content-Type", "text/html","charset=utf-8");
 
+    // if the cropped image is the original image location
     if(croppedImage === util.findImageLocation(cookieval)){
-
+        // do the basic crop action
         var imageLocation = croppedImage;
 
         console.log('image location is: ' + imageLocation);
-
+        // get the pixel crop locations by calculating width and height
         pxArray = util.calculateCrop(pxArray);
-
+        // await on the jimp crop function
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
-          
+            // return the new image and its width and height
             if(isWindows){newImage = newImage.replace("\\","/");}
             response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
         });
 
     }
+    // we know the current image is already cropped before
     else{
+        // calulate the crop array like before and get the image location from the queryString
         pxArray = util.calculateCrop(pxArray);
         imageLocation = util.parseQuery(croppedImage);
 
-        
+        // await on the crop function like before
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
             if(isWindows){newImage = newImage.replace("\\","/");}
             response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
