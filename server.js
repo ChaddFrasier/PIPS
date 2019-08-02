@@ -676,51 +676,8 @@ app.post('/crop', async function(request,response){
     }
 });
 
-
-//TODO this will change alot in the near future
-app.post('/addIcon', async function(request,response){
-    console.log(request.url);
-
-    var imageUrl = request.query.imageLink;
-    var coordinates = request.query.coordinates;
-    var cookieval = request.cookies['cubeFile'];
-    var baseImg = cookieval.replace('.cub','.png');
-
-    console.log(baseImg);
-
-
-    // search for data in array given by user cookie
-    var data = util.getObjectFromArray(cookieval, cubeArray);
-    // if the data val is an error code then fail
-    if(data < 1){
-        console.log('Object Search Failed');
-        data = 'NONE';
-    }else{
-        // otherwise load the important data from the active object array into data variable
-        data = data.impData;
-    }
-
-    // TESTING THE ICON FUNCTION USING A LINK SOLUTION
-    console.log(imageUrl + ' at the coordanates -> ' + coordinates);
-
-    var coorArray = coordinates.split(',');
-    newImage = await util.superImposeIcon(imageUrl, 'images/north.png', parseInt(coorArray[0]), parseInt(coorArray[1]));
-
-    await jimp.read(newImage).then(function(img){
-        console.log(img);
-        w = img.bitmap.width;
-        h = img.bitmap.height;
-        // render image page with needed data
-        response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
-        response.end();
-    }).catch(function(err){
-        console.log(err);
-    });
-});
-
-
-
 /* activate the server */
+
 // listen on some port
 // FOR TESTING ONLY!!! should be 'const PORT = process.env.PORT || 8080;'
 const PORT = 8080 || process.env.PORT;

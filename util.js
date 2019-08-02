@@ -160,32 +160,6 @@ module.exports = {
         });
     },
 
-
-
-    // could be used by passing the icon locations from the svg section and generating the new image on the server
-    superImposeIcon: async function(starterImage, iconPath, x, y){
-
-        console.log('impose onto: ' + starterImage);
-        console.log('impose this: ' + iconPath);
-
-        starterImage = require(__filename).parseQuery(starterImage);
-        
-
-    
-        var image = await jimp.read(starterImage);
-        var icon = await jimp.read(iconPath);
-
-        await icon.resize(.10 * image.bitmap.width, .10 * image.bitmap.height);
-
-        var outputFile = getIconFilename(starterImage,iconPath);
-
-        await image.composite(icon, x, y)
-        .write(outputFile);
-
-        return outputFile;
-        
-    },
-
     /**
      * 
      * @param {Cube Object} cubeObj cube object to be added
