@@ -14,6 +14,7 @@
  * 
  *     
  * @todo 4 scalebars
+ * @todo 8 log the isis returns to a file if the user wants that
  * 
  * @todo 10 simplify the object code
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
@@ -289,6 +290,7 @@ app.post('/upload', async function(request, response){
 
                         // save the important data values to object using setter
                         cubeObj.impData = JSON.parse(impDataString);
+                        
 
                         // template file section
                         try{

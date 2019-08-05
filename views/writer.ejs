@@ -179,6 +179,7 @@
                 return 'None'
             }
 
+            // prototype function for strings to replace all occurances of 1 string with another 
             String.prototype.replaceAll = function (find, replace) {
                 var str = this;
                 return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
@@ -227,6 +228,7 @@
                 }
             }
 
+            // functions to control the loading gif visibility  
             function loadInvisible(){
                 loader.style.visibility = 'hidden';    
             }

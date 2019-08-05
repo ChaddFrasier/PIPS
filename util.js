@@ -3,7 +3,7 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 07/29/19
+ * Date Last Modified: 08/05/19
  * Version: 2.4.0
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
@@ -18,7 +18,6 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var jimp = require('jimp');
 var Promises = require('bluebird');
-
 
 
 // exportable functions
@@ -54,6 +53,7 @@ module.exports = {
     /**
      * 
      * @param {string} cubeName name of the cube to be analyzed
+     * @returns {JSON String} cube data from the pvl file
      * 
      * @function takes the cube used and runs the pvl data extraction algorithm 
      */
@@ -114,11 +114,26 @@ module.exports = {
     },
     
 
+    /**
+     * 
+     * @param {String} cookieval this variable will be the cookie value of the user
+     * @returns {String} the string path to the base image file
+     * 
+     * @function this function is used to create the path to the given cube file image in the images folder 
+     */
     findImageLocation: function(cookieval){
         return path.join('images', cookieval.replace('.cub','.png'));
     },
 
 
+    /**
+     * 
+     * @param {Number Array} cropArray click location of the user 
+     * @returns {Number Array} the array of Numbers needed to crop the image using jimp js
+     * 
+     * @function this function calculates the height and width of the new image and store the x,y coordinates (index 0 and 1)
+     * and the height and width of the crop for the jimp function (2 and 3)
+     */
     calculateCrop: function(cropArray){
         console.log(cropArray.toString());
 
@@ -135,6 +150,14 @@ module.exports = {
     },
 
 
+    /**
+     * 
+     * @param {string} imageLink the path to the image that jimp is going to be cropping
+     * @param {Number Array} cropArray the array of the coordinate that jimp needs in order to crop the given image 
+     * @returns {String} the path to the newly created image
+     * 
+     * @function this function asyncrounously calls the crop function from jimp module and awaits for its response befor passing the string back
+     */
     cropImage: async function(imageLink,cropArray){
         const cubeImage = await jimp.read(imageLink);
         var returnImage;
@@ -149,6 +172,13 @@ module.exports = {
         return returnImage;
     },
 
+    /**
+     * 
+     * @param {string} newImage path to the image to be analyzed
+     * @returns {Number Array} the width and height of the image as a Number array
+     * 
+     * @function uses the jimp module to pull out the width and height of the image in pxls 
+     */
     getDimensions: async function(newImage){
         await jimp.read(newImage).then(function(img){
             console.log('fails after READ');
@@ -164,6 +194,7 @@ module.exports = {
      * 
      * @param {Cube Object} cubeObj cube object to be added
      * @param {array} cubeArray array of cube objects.
+     * @returns {CubeObj Array} returns the new array with the value added for just the array if the valkue is already there
      * 
      * @function  scans through the array and adds the element if it is not already there
      */
@@ -222,6 +253,7 @@ module.exports = {
     /**
      * 
      * @param {JSON string} cubeData the stringify'ed version of the data to be converted
+     * @returns {string} the csv data string
      * 
      * @function converts data from JSON string to csv string
      */
@@ -241,6 +273,7 @@ module.exports = {
     /**
      * 
      * @param {string} cfgString the whole config file string
+     * @returns {String Array} the important data tags
      * 
      * @function creates and returns an array of tags from the cfg file
      */
@@ -263,6 +296,7 @@ module.exports = {
      * 
      * @param {JSON string} cubeFileData stringify'ed version of cube data
      * @param {array} importantTagArr important tags array that need to be filled
+     * @returns {string} the JSON string of the important data tags
      * 
      * @function takes important tag array and extracts data if it exists returns none otherwise 
      */
@@ -309,7 +343,10 @@ module.exports = {
         return namearr.join('.');
     },
 
-    // parses the query string off of the image link
+    /**
+     * @param {string} the name of the string that is being parsed by the server
+     * @returns the image name with no time string query attached
+     */
     parseQuery: function(imageName){
         try{return imageName.split('?')[0];}
         catch(err){return imageName;}
@@ -321,6 +358,7 @@ module.exports = {
 /**
  * 
  * @param {string} testValue  value to check if it a cube hearder keyword
+ * @returns {Boolean} 
  * 
  * @function tests if the value is a header for the isis data
  */
@@ -341,6 +379,7 @@ var testHeader = function(testValue){
  * 
  * @param {string} name  name of the current tag
  * @param {string} str string to add to the tag
+ * @returns {string} adds the new tag to the long string of tag values
  * 
  * @function combines tags to make keys for JSON object
  */
@@ -361,6 +400,7 @@ var combineName = function(name, str=undefined){
 /**
  * 
  * @param {string} name current name to be shortened by 1 string
+ * @returns {string} the new name of the tags for data parsing
  * 
  * @function removes last added element
  */
@@ -388,7 +428,7 @@ var shortenName = function(name){
  * @param {string} returnPath path to return file on server
  * @param {string} imagePath path to image on server
  *
- *  @return {int} error codes
+ * @return {Number} error codes
  * 
  * @function this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
@@ -476,7 +516,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
 
 
-        // log output to file lgf
+        // TODO: log the output to file if the instance has the log flag true
         isisSpawn.stdout.on('data', function(data){
             console.log(isisCall + 'stdout: ' + data.toString());
         });
@@ -494,22 +534,11 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
     });
 }
 
- 
-
-var getIconFilename = function(imagePath, iconPath){
-    let imageArr = imagePath.split('/');
-    let iconArr = iconPath.split('/');
-
-    var imageName = imageArr[imageArr.length - 1];
-    var iconName = iconArr[iconArr.length - 1];
-
-    return 'jimp/' + imageName.replace('.png','_') + iconName;
-}
-
 
 /**
  * 
  * @param {string} nameString tag to be checked for End keywords
+ * @returns {Boolean} true or false
  * 
  * @function determines if the line is one of the End keywords
  */
