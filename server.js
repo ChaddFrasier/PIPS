@@ -657,7 +657,7 @@ app.post('/crop', async function(request,response){
     response.setHeader("Content-Type", "text/html","charset=utf-8");
 
     // if the cropped image is the original image location
-    if(croppedImage === util.findImageLocation(cookieval)){
+    if(cookieval !== undefined && croppedImage === util.findImageLocation(cookieval)){
         // do the basic crop action
         var imageLocation = croppedImage;
 
