@@ -16,7 +16,7 @@
     </head>
 
     <body>  
-        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="loading" class="float-md-right lead" style="visibility:hidden">
                 <img src="../images/loading.gif" class='float-md-left;' height="125px" weight="135px"/><br>Loading
         </div>
@@ -24,7 +24,7 @@
         <div class="lead text-center" style="align-content: center;">
             <div class="float-center" style=" margin-left:5%; margin-right:20%; margin-bottom: 0%;"><br>
                 <div class="text-center">
-                    <h1 class="display-1" >Orion</h1> 
+                    <h1 class="display-1" style="margin-left: 15%">Planetary Image Publication Server</h1> 
                     <h4 class="display-4" style="margin-left: 15%">Powered by ISIS3</h4>
                 </div>
             </div>
@@ -34,18 +34,24 @@
         <hr class="my-9">
         <div class="title text-center">
             <p class="lead" style="margin-left: auto; margin-right: auto;">You can upload .cub file and .tpl file </p>
-                <a class="btn btn-secondary btn-lg" style= "border-color: black;" href="https://www.cefns.nau.edu/capstone/projects/CS/2019/Orion-S19/"
-                    role="button">Learn About The Orion Project</a>
+                <a class="btn btn-secondary btn-lg" style= "border-color: black; color: white;" role="button" onclick="alert('1. Upload a .cub or a .tif file\n\n2. Input the desired output size of the figure\nor leave blank for Raw Image size')">Help</a>
                 <a class="btn btn-secondary btn-lg" href= '/tpl'
                     role="button">What is a TPL file?</a>
         </div>
         <br/>
         <div class="container">
             <form class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
-                <div class="btn btn-primary btn-lg form-group">
+                <div class="btn btn-primary btn-lg form-group" style="display: inline-block;">
                     <label for="cubUpload">Choose an ISIS Cube File</label>
                     <input name="uploadFile" id="cubUpload" type="file" class="form-control-file" />
+
+                    <div class="form-group float-md-right" style="padding-top: -2rem;">
+                            <input class="form-control form-control-sm text-right" type="text" name="desiredWidth" placeholder="Output Width (Px)"/>
+                            <input class="form-control form-control-sm text-right" type="text" name="desiredHeight" placeholder="Output Height (Px)"/>
+                    </div>
                 </div>
+
+                
                 <br/>
                 <hr class="style5">
                 <div class="btn btn-primary btn-lg form-group">
@@ -64,6 +70,7 @@
             </button>
             Upload a .cub file
         </div>
+        
         <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
             <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
@@ -159,6 +166,9 @@
                     fixLoader();
                 }
             });
+
+
+            
         </script>
     </body>
 </html>

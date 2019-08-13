@@ -15,23 +15,165 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     </head>
+<!--  FOR TESTING WILL MOVE TO CSS FILE LATER -->
+    <style>
+    .draggable{
+        cursor: move;
+    }
+
+    .resize{
+        cursor:nwse-resize;
+        pointer-events: painted;
+    }
+    </style>
+<!--============================================= -->
+<script>
+
+//==================== DRAGGABLE TESTING +=======================================
+
+function makeDraggable(evt) {
+    
+    // get svg element
+        var svg = evt;
+    
+        
+        // adds event functions to the whole svg element
+        svg.addEventListener('mousedown', startDrag);
+        svg.addEventListener('mousemove', drag);
+        svg.addEventListener('mouseup', endDrag);
+        svg.addEventListener('mouseleave', endDrag);
+        
+
+        var selectedElement, offset, transform,
+            bbox, minX, maxX, minY, maxY, confined;
+        
+            
+        // sets boundries for drag starting from 0,0 and going to length of image 
+        var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);   
+        var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
+        var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
+        var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
+
+        // 
+        function getMousePosition(evt) {
+          var CTM = svg.getScreenCTM();
+         
+        
+          return {
+            x: (evt.clientX - CTM.e) / CTM.a,
+            y: (evt.clientY - CTM.f) / CTM.d
+          };
+        }
+
+        function startDrag(evt) {
+            console.log('prepairing icon to drag');
+          if (evt.target.parentNode.classList.contains('draggable')) {
+            selectedElement = evt.target.parentNode;
+            
+            offset = getMousePosition(evt);
+
+            // Make sure the first transform on the element is a translate transform
+            var transforms = selectedElement.transform.baseVal;
+
+            if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+              // Create an transform that translates by (0, 0)
+              var translate = svg.createSVGTransform();
+              translate.setTranslate(0, 0);
+              selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+            }
+
+            // Get initial translation
+            transform = transforms.getItem(0);
+            offset.x -= transform.matrix.e;
+            offset.y -= transform.matrix.f;
+
+            confined = evt.target.parentNode.classList.contains('confine');
+            if (confined) {
+                bbox = selectedElement.getBBox();
+                
+                let scaleFactor = calculateScaleFactor(selectedElement);
+
+                
+                minX = boundaryX1 - bbox.x;
+                maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
+                minY = boundaryY1 - bbox.y;
+                maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
+
+                console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  )
+            }
+          }
+        }
+
+        function drag(evt) {
+          if (selectedElement) {
+            console.log('dragging now');
+            evt.preventDefault();
+
+            var coord = getMousePosition(evt);
+            var dx = coord.x - offset.x;
+            var dy = coord.y - offset.y;
+
+            if (confined) {
+                if (dx < minX) { dx = minX; }
+                else if (dx > maxX) { dx = maxX; }
+                if (dy < minY) { dy = minY; }
+                else if (dy > maxY) { dy = maxY; }
+            }
+
+            transform.setTranslate(dx, dy);
+          }
+        }
+
+        function endDrag(evt) {
+            console.log('stops drag');
+            
+            if(selectedElement){
+                drag(evt);
+            }
+
+          selectedElement = false;
+        }
+
+
+        function calculateScaleFactor(selectedObject){
+            let tmpStr = selectedObject.getAttribute('transform');
+            
+            if(tmpStr.indexOf('scale') > -1){
+                let tmpArr = tmpStr.split(' ');
+
+                for(index in tmpArr){
+                    if(tmpArr[index].indexOf('scale') > -1){
+                        tmpStr = tmpArr[index];
+
+                        return Number(extractScaleVal(tmpStr));
+                    }
+                }
+            }else{
+                return 'none';
+            }
+      }
+
+
+      function extractScaleVal(str){
+          let tmpStr = str.split('scale(')[1];
+
+          return parseFloat(tmpStr.replace(')','').trim());
+      }
+
+    }// end make dragable
+
+
+
+//=================================================================================
+
+</script>
 
     <body>
         <!-- Page Header Block-->
-        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%">
+        <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%">
         <div class="container">
             <div class="jumbotron text-center" >
                 <h2>Edit the Cube Image</h2>      
-                <p class="lead">First crop the image by selecting the crop button and clicking on the image</p>
-                <p class="lead medium">Then add the icons by clicking the button for each icon and selecting the location on the image 1 at a time</p>
-                <p ><em>Icons will be removed if they are placed before a crop action</em></p>
-                <div style="display:inline;">
-                    <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New Cube</a>
-                    <button class="btn btn-primary btn-lg float-center" onclick="window.history.back();">Back to Caption</button>
-                    <form method="POST" action="/imageDownload" display="inline" class=" float-right text-center">
-                            <input type="hidden" value='<%= image %>' name="passedIMG">
-                            <input type="submit" value="Save Raw Image" class="btn btn-secondary btn-lg" />
-                    </form>
                 </div>
             </div>
         </div>
@@ -42,35 +184,41 @@
         </div>
         
         <!-- Button Interface-->
-        <div class="container">
-            <div class="float-center image-controls text-center">
-                <button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button>
-                <button id="backBtn" class="btn btn-primary btn-lg" onclick="loaderActivate()">Undo Crop</button>
-            </div>
+        <div class="container float-left" style="width: auto; height: 5%; position: fixed; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
             <br/>
-            <div class="float-center image-controls text-center">
-                <button class="btn btn-primary btn-lg" id="northIconFlag">Add North Icon</button>
-                <button class="btn btn-primary btn-lg" id="sunIconFlag">Add Sun Icon</button>
-                <button class="btn btn-primary btn-lg" id="eyeFlag"> Add Eye Image</button><br><br>
-                <button class="btn btn-primary btn-lg" id="exportBtn"> Export The Vector Image</button>
-            </div>
-        </div>
-        <br/>
-
+            <div class="image-controls">
+                <h2 class="text-right float-left" style="position: inherit; left: 25%;">Tools</h2>
+                <br/>
+                <table style="width: 100%; height:100%; table-layout:fixed;">
+                    <tr>
+                    <th colspan="1" class="text-left">
+                        <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
+                        <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
+                        <li><button class="btn btn-secondary btn-lg" onclick="window.history.back();">Back to Caption</button></li>
+                        <li><a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a></li>
+                        
+                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" src="/images/north.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" src="/images/sun_symbol.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="height:fit-content;" src="/images/eye_symbol.png"></img></li>
+                        <li style="padding-bottom: 0;"><p class="lead text-left">Pad Image</p></li>
+                        <li style="padding-top: 0; "><input id="paddingInput" type="text" placeholder="Image Padding (px)"/></li>
+                        <br/>
+                        <li><button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button></li>
+                    </th>
+                </tr>
+            </table>
+    </div>
+</div>
+        
         <!-- Editor Box -->
-        <svg id="svgWrapper" class="image-image"  viewBox="0 0 <%=w%> <%=h%>"> 
-            <image id="crop" width="<%=w%>" height="<%=h%>" xlink:href="/<%=image%>"  clip-path="url(#image_box)"/>
-            <defs>
-                <clipPath id="image_box">
-                    <rect x="0" y='0' width="<%=w%>" height="<%=h%>" style="fill:rgb(0,0,255);"/>
-                </clipPath>
-            </defs>        
-            <rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />
-            <image id="northIcon" x="350" y="500" width="50" height="50" style="pointer-events:none;" xlink:href="/images/north.png"/>
-            <image id="sunIcon" x="500" y="500" width="50" height="50" style="pointer-events:none;" xlink:href="/images/sun_symbol.png"/>
-            <image id="eyeIcon" x="350" y="500" width="50" height="50" style="pointer-events:none;" xlink:href="/images/eye_symbol.png"/>
+        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black" preserveAspectRatio="xMidYMid" xmlns:xlink="http://www.w3.org/1999/xlink" 
+        class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
+            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>    
         </svg>
-
+        
+   
+<br/>
         <!-- Hidden Tags for data parsing-->
         <div id="metadata" style="display:none;"  class="text-center green-border-focus">
                 <label for="metadata-text">
@@ -86,49 +234,64 @@
                 <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
             </div>
             <!-- Canvas for extracting inline svg-->
-            <canvas id="canvasTest" width="<%=w%>px" height="<%=h%>px" style="display:none; border: 5px solid black; width:<%=w%>px; height:<%=h%>px;" ></canvas>
+            <canvas id="canvasTest" width="<%=w%>px" height="<%=h%>px" style="display:none; border: 5px solid black; fill: black; width:<%=w%>px; height:<%=h%>px;" ></canvas>
 
 
         <script type="text/javascript">
 
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.2)"  style="border:0; padding:0; pointer-events:visible;"> '+
+                    '<rect x="0" y="0" width="300" height="300" style="visibility: hidden;"fill="red"/>'+'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'+
+            '<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle></g>';
+            
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.2)" stroke-width="7" style="border:0; padding:0; pointer-events:visible;">'+
+                '<rect x="0" y="0" class="resize" style="visibility: hidden;"width="200" height="400" fill="black"/>'+
+             '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" style="border:0;"></path>'+
+            '<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" transform="translate(0,200)"fill="black" style="border:0;"></path></g>';
+
+            var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
+            
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,150) scale(.2)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'+
+                '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse><circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white"  style="border:0;">'+
+                '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" fill="black"  style="border:0;"></circle></g>';
+            
             // grab DOM elements that are needed
             var exportBtn =  document.getElementById('exportBtn');
-            var northImage = document.getElementById("northIcon");
-            var sunImage = document.getElementById("sunIcon");
-            var eyeImage = document.getElementById('eyeIcon');
+            
             var myImage = document.getElementById('crop');
-            var outlineBox = document.getElementById('cropOutline');
+            
             var svg = document.getElementById('svgWrapper');
             var loader = document.getElementById('loading');
+            var northScaleString = 'scale(.2)';
+            var sunScaleString = 'scale(.2)';
+            var eyeScaleString = 'scale(.2)';
 
+            // dynamically add the elements to export better 
+            svg.insertAdjacentHTML("beforeend",sunObjectString);
+            var sunImage = document.getElementById("sunPosition");
+            svg.insertAdjacentHTML("beforeend",northObjectString);
+            var northImage = document.getElementById("northPosition");
+            svg.insertAdjacentHTML('beforeend',outlineObjectString);
+            var outlineBox = document.getElementById('cropOutline');
+            svg.insertAdjacentHTML("beforeend",eyeObjectString);
+            var eyeImage = document.getElementById('eyePosition');
+
+            northImage.remove();
+            sunImage.remove();
+            outlineBox.remove();
+            eyeImage.remove();
 
             // set defaults
             outlineBox.style.visibility = 'hidden';
-            svg.setAttribute('width',Number(<%= w %>));
-            svg.setAttribute('height',Number(<%= h %>));
+            /* svg.setAttribute('width',Number(<%= w %>));
+            svg.setAttribute('height',Number(<%= h %>)); */
             
             // find icon dimensions
-            let iconDim = getIconDim(<%= w %>, <%= h %>);
-            
-            // set icon dimensions acording to which side is larger
-            if(iconDim[0] > iconDim[1]){
-                setIconDimensions(iconDim[0]);
-            }else{
-                setIconDimensions(iconDim[1]);
-            }
+            northScaleString = getIconDim(northScaleString,<%= w %>, <%= h %>);
+            sunScaleString = getIconDim(sunScaleString,<%= w %>, <%= h %>);
 
-            // function to set attributes of the icons
-            function setIconDimensions(dim){
-                northImage.setAttribute('width',dim);
-                northImage.setAttribute('height', dim);
-                
-                sunImage.setAttribute('width',dim);
-                sunImage.setAttribute('height', dim);
-                
-                eyeImage.setAttribute('width',dim);
-                eyeImage.setAttribute('height', dim);
-                
-            }
+            console.log('NORTH: '+ northScaleString);
+            console.log('SUN:  '+ sunScaleString);
+
 
             // function to hide the loading gif
             function loadInvisible(){
@@ -140,21 +303,24 @@
             }
             // function that calulates the icon sizes based on image size
             /** TODO: needs adjusting */
-            function getIconDim(imageWidth, imageHeight){
-                let iconW = imageWidth*.1;
-                let iconH = imageHeight*.1;
-            
-        // ===============FOR TESTING================
-        console.log('iconw: '+ iconW);
-        console.log('iconh: '+ iconH);
-        // ======================================
-                if(iconW < 15 || iconH < 15){
-                
-                    return ['10','10'];
-                }else{
-                    return [iconW, iconH ]; 
+            function getIconDim(scaleStr,imageWidth, imageHeight){
+                // always greater than 1
+                let ratio = (imageHeight>imageWidth) ? imageHeight/imageWidth : imageWidth/imageHeight;
+
+                if(imageHeight < 250 || imageWidth < 250){
+                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.000005: imageWidth* .000005).toFixed(6) + ')';
+                }
+                else if(imageHeight < 500 || imageWidth < 500){
+                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.00025: imageWidth* .00025).toFixed(6) + ')';
+                }
+                else if(imageHeight < 1000 || imageWidth < 1000){
+                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.00025: imageWidth*.00025).toFixed(6) + ')';
+                }
+                else if(ratio > 2){
+                    scaleStr = 'scale(' + parseFloat(ratio) + ')';
                 }
                 
+                return scaleStr;
             }
             
             console.log(" image dimensions are => <%= w %>: <%= h %>");
@@ -165,6 +331,7 @@
 
         <script type="text/javascript">
             // function to convert client pixel values to svg DOM relative values
+
             function svgPoint(element, x, y) {
                 // get a new svg point
                 var pt = svg.createSVGPoint();
@@ -172,11 +339,39 @@
                 pt.x = x;
                 // same for y
                 pt.y = y;
+
                 /* use matrixTransform to convert the x and y using getScreenCTM to capture
                     the browsers coordinate matrix */
                 return pt.matrixTransform(element.getScreenCTM().inverse());    
             }
             
+            // TODO: will need to parse differently when rotating
+            function extractScaleVal(str){
+                let tmpStr = str.split('scale(')[1];
+
+                return Number(tmpStr.replace(')','').trim());
+            }
+
+            function getDataUri(url, callback) {
+                var image = new Image();
+
+                image.onload = function () {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+                    canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+                    canvas.getContext('2d').drawImage(this, 0, 0);
+
+                    // Get raw image data
+                    callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+                    // ... or get as Data URI
+                    callback(canvas.toDataURL('image/png'));
+                };
+
+                image.src = url;
+            }
+
         </script>
 
         <script type="text/javascript">
@@ -189,8 +384,9 @@
                 northFlag = false,
                 cropFlag = false, 
                 sunFlag = false,
-                eyeFlag = false,
-                outlineVisible = false;
+                eyeFlag = false;
+
+            
             
             //create clickArray
             var clickArray = [];
@@ -205,17 +401,52 @@
             $(document).ready(function() {
                 // reset click array on a new load
                 clickArray = [];
+                var svgDOM = document.getElementById('svgWrapper');
+                makeDraggable(svgDOM);
 
+                // convert image to data Base64
+                getDataUri('/<%=image%>', function(dataUri) {
+                    myImage.setAttribute('xlink:href',dataUri);
+                });
+                
+                
+                var paddingBoxInput = document.getElementById("paddingInput");
+                paddingBoxInput.value =''
+                var bg = document.getElementById("svgBackground");
+
+                function setImagePadding(val){
+                    let imageW = <%=w%> - val*2;
+                    let imageH = <%=h%> - val*2; 
+
+                    myImage.setAttribute("width",imageW);
+                    myImage.setAttribute("height",imageH);
+                    bg.setAttribute("x",val*-1);
+                    bg.setAttribute("y",val*-1);
+                    svgDOM.setAttribute("viewBox", String(val*-1) + " " + String(val*-1) + " <%=w%> <%=h%>");
+                    makeDraggable(svgDOM);
+
+                    
+                
+                }
+
+                $("#paddingInput").on('keyup',function(event){
+                    if(!isNaN(parseInt(paddingBoxInput.value))){
+                        setImagePadding(parseInt(paddingBoxInput.value));
+                    }else{
+                        setImagePadding(parseInt(0));   
+                    }
+                });
+/* 
                 // when the image registers a click
                 $("image").on("click", function(event) {
-                    
+                    event.preventDefault();
                     // capture event variables for px calculations
                     var t = event.target;
-                    var x = event.clientX;
-                    var y = event.clientY;
+                    var x = event.pageX;
+                    var y = event.pageY;
                 
-                    /* if the target is the svg DOM then keep it the same 
-                        otherwise set it to the parent of the current target */
+                    // if the target is the svg DOM then keep it the same 
+                      //  otherwise set it to the parent of the current target 
                     var target = (t == svg ? svg : t.parentNode);
                     // get the converted svg coordinates
                     var svgP = svgPoint(target, x, y);
@@ -228,19 +459,19 @@
                     console.log("y is:" + y);
                     // ===========================
 
-                    // if any of the flags are true
-                    if(northFlag || cropFlag || sunFlag || eyeFlag){
+                    /* // if any of the flags are true
+                    if(cropFlag){
 
-                        /* and if the click array is either length = 0 or the clicks are in 
-                            a proper location for cropping capture the click in the clickArray */
+                        // and if the click array is either length = 0 or the clicks are in 
+                           // a proper location for cropping capture the click in the clickArray 
                         if(clickArray.length === 0){
                             captureClick(x,y);
                             // check click array
                             console.log(clickArray);
                         }else if(clickArray.length === 2){
                             
-                                captureClick(x,y);
-                                prepareCrop(clickArray);
+                            captureClick(x,y);
+                            prepareCrop(clickArray);
                             
                             
                         }
@@ -249,58 +480,10 @@
                         if(cropFlag && clickArray.length === 2){
                             // set the dimensions and visibilty of the outline box
                             outlineBox.style.visibility = 'visible';
-                            outlineVisible = true;
+                            svg.insert(outlineBox);
+                            
                             outlineBox.setAttribute('x',clickArray[0]);
                             outlineBox.setAttribute('y',clickArray[1]);
-                        }
-
-                        // Chekc for icon flags and set the needed icon location
-                        if(northFlag){
-                            
-                            // if the click location is too close to the edge dont draw the icon
-                            if(x < svg.getAttribute('width') - parseInt(northImage.getAttribute('width'))
-                                && y < svg.getAttribute('height') - parseInt(northImage.getAttribute('height'))){
-                                // if it passes set all attributes for displaying and set flags
-                                northImage.setAttribute('x',x);
-                                northImage.setAttribute('y',y);
-                                northImage.style.visibility = 'visible';
-                                northIconPlaced = true;
-                                document.getElementById('northIconFlag').innerHTML = "Remove North Arrow?";
-                                northFlag = false;
-                                // reset the clickArray
-                                clickArray = [];
-                            }
-                            
-                        }
-                        // repeat the process for the other icons
-                        else if(eyeFlag){
-                            
-                            if(x < svg.getAttribute('width') - parseInt(eyeImage.getAttribute('width'))
-                                && y < svg.getAttribute('height') - parseInt(eyeImage.getAttribute('height'))){
-
-                                eyeImage.setAttribute('x',x);
-                                eyeImage.setAttribute('y',y);
-                                eyeImage.style.visibility = 'visible';
-                                eyeIconPlaced = true;
-                                document.getElementById('eyeFlag').innerHTML = "Remove Observer Icon?";
-                                eyeFlag = false;
-
-                                clickArray = [];
-                            }
-                        }
-                        else if(sunFlag){
-                            if(x < svg.getAttribute('width') - parseInt(sunImage.getAttribute('width'))
-                                && y < svg.getAttribute('height') - parseInt(sunImage.getAttribute('height'))){
-
-                                sunImage.setAttribute('x',x);
-                                sunImage.setAttribute('y',y);
-                                sunImage.style.visibility = 'visible';
-                                sunIconPlaced = true;
-                                document.getElementById('sunIconFlag').innerHTML = "Remove Sun Icon?";
-                                sunFlag = false;
-
-                                clickArray = [];
-                            }
                         }
                         // if the crop flag is true and the length of the click array is 4 crop the image
                         else if( cropFlag && clickArray.length === 4){
@@ -316,6 +499,7 @@
                             $.ajax({
                                 type: 'POST',
                                 cache: false,
+                                async: true,
                                 url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>',
                                 success: function(response) { 
                                     // on success load the new html data into the page    
@@ -336,9 +520,9 @@
                             });
                             
                         }
-                    } 
+                    }  
                 }); // end image click
-
+ */
                 // set values for calculating outline box size 
                 var mouseX,
                     mouseY,
@@ -375,8 +559,10 @@
                     return clickArray;
                 }
 
+               /*  // capture mouse position on image mouse over
                 $('#crop').mousemove(function(event){
-                    
+                    event.preventDefault();
+
                     // set event variables
                     var t = event.target;
                     var x = event.clientX;
@@ -390,14 +576,183 @@
                     // convert to int
                     mouseX = parseInt(svgP.x),
                     mouseY = parseInt(svgP.y);
+
+                    console.log( "mouse over image: " + mouseX +': ' + mouseY);
                     
                     // only adjust the box if currently croppping
                     if(!doneResizing && clickArray.length > 1){
                         
                         adjustBox();
                     }
+                }); */
+
+
+                 
+                $('#svgWrapper').on("click", function(event){
+                    
+                    // set event variables
+                    var t = event.target;
+                    var x = event.clientX;
+                    var y = event.clientY;
+                    // TODO: figure our how to buffer the Y portion
+                    var bufferY = parseInt(Number(<%=h%>) * .09);
+                    // get proper svg as target
+                    var target = (t == svg ? svg : t.parentNode);
+                    
+                    // get new svg relative point
+                    var svgP = svgPoint(target, x, y);
+                    // convert to int
+                    mouseX = parseInt(svgP.x),
+                    mouseY = parseInt(svgP.y);
+                    
+                    console.log('MOUSE CLICK ON SVG OUTTER BOX: '+ mouseX + ' '+ mouseY);
+
+                   
+                 /*   COMMENTING OUT FOR NOW
+                     if(cropFlag){
+                        // clicking close to the 0,0
+                        if(mouseX < 0 && mouseY < bufferY){
+                            captureClick(0,0);
+                        }
+                        // if the click is close to max corner(bottom right)
+                        else if(mouseY > Number(<%=h%>) - bufferY && mouseX > Number(<%=w%>)){
+                            captureClick(<%=w%>,<%=h%>);
+                        }
+                        // if the click is close to the top right 
+                        else if(mouseX > Number(<%=w%>) && mouseY < bufferY){
+                            captureClick(<%=w%>,0);
+                        }
+                        // if the click is close to bottom left corner
+                        else if(mouseX < 0 && mouseY > Number(<%=h%>) - bufferY){
+                            captureClick(0,<%=h%>);
+                        }
+                        // for left side
+                        else if(mouseX < 0 && mouseY < Number(<%=h%>) - bufferY){
+                            captureClick(0,mouseY);
+                        }
+                        // for right side
+                        else if(mouseX > Number(<%=w%>) && mouseY < Number(<%=h%>) - bufferY && mouseY > bufferY){
+                            captureClick(<%=w%>,mouseY);
+                        }
+
+                        if(!doneResizing){
+                                console.log(clickArray);
+                            outlineBox.style.visibility = 'visible';
+                            svg.appendChild(outlineBox);
+                            outlineBox.setAttribute('x',clickArray[0]);
+                            outlineBox.setAttribute('y',clickArray[1]);
+                        }
+
+                        if(clickArray.length === 4){
+                            // and if the points arent stacked
+                            if((clickArray[0] === clickArray[2] && clickArray[0] !== 0) || clickArray[1] === clickArray[3]){
+                                clickArray = [];
+                                alert('Cannot be cropped in this manner');
+                                cropFlag = false;
+                                document.getElementById('cropFlag').innerHTML = "Crop Image";
+                            
+                            }
+                            else{
+                                prepareCrop(clickArray);
+                                // activate loader gif 
+                                loaderActivate();
+                                // set done resizeing flag
+                                doneResizing = true;
+                                //get the array string for the request
+                                let arrayStr = clickArray.toString();
+                                // prevent defaults 
+                                event.preventDefault();
+                                // send ajax POST request through http
+                                $.ajax({
+                                    type: 'POST',
+                                    cache: false,
+                                    async: true,
+                                    url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>',
+                                    success: function(response) { 
+                                        // on success load the new html data into the page    
+                                        $("html").html(response);
+                                        // set the loader to invisible
+                                        loadInvisible();
+                                        // reset clickarray
+                                        clickArray = [];
+                                        // reset flag
+                                        cropFlag = false;
+                                    },
+                                    error: function(xhr, status, err) {
+                                        // on error log the error
+                                        console.log(xhr.responseText);
+                                        alert('Crop Failed');
+                                        loadInvisible();
+                                    }
+                                });
+                            }
+                        } 
+                        
+                        
+                    }
+                     */
                 });
-            
+
+
+
+                 $('#svgWrapper').mousemove(function(event){
+                    
+
+                        // set event variables
+                        var t = event.target;
+                        var x = event.clientX;
+                        var y = event.clientY;
+                        // TODO: figure our how to buffer the Y portion
+                        var bufferY = 50;
+                        // get proper svg as target
+                        var target = (t == svg ? svg : t.parentNode);
+                        
+                        
+                        // get new svg relative point
+                        var svgP = svgPoint(target, x, y);
+                        // convert to int
+                        mouseX = parseInt(svgP.x),
+                        mouseY = parseInt(svgP.y);
+
+                        console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
+
+
+                    /* if(cropFlag && !doneResizing){
+
+
+                        // clicking close to the 0,0
+                        if(mouseX < 0 && mouseY < bufferY){
+                            mouseX = 0;
+                            mouseY = 0;
+                        }
+                        // if the click is close to max corner(bottom right)
+                        else if(mouseY > Number(<%=h%>) - bufferY && mouseX > Number(<%=w%>)){
+                            mouseX = <%=w%>;
+                            mouseY = <%=h%>;
+                        }
+                        // if the click is close to the top right 
+                        else if(mouseX > Number(<%=w%>) && mouseY < bufferY){
+                            mouseX = <%=w%>;
+                            mouseY = 0;
+                        }
+                        // if the click is close to bottom left corner
+                        else if(mouseX < 0 && mouseY > Number(<%=h%>) - bufferY){
+                            mouseX = 0;
+                            mouseY = <%=h%>;
+                        }
+                        // for left side
+                        else if(mouseX < 0 && mouseY < Number(<%=h%>) - bufferY){
+                            mouseX = 0;
+                            
+                        }
+                        // for right side
+                        else if(mouseX > Number(<%=w%>) && mouseY < Number(<%=h%>) - bufferY && mouseY > bufferY){
+                            mouseX = <%=w%>;
+                        }
+                        adjustBox();
+                    } */
+                });
+            /*
                 // function to change the outline box dimensions to the calulated size
                 function adjustBox(){
 
@@ -440,51 +795,48 @@
                         }
                         
                     }
-                } 
+                } */
 
                 // when north button is clicked
-                $('#northIconFlag').click(function(){
+                $('#northIconFlag').on('mousedown',function(){
                     // change north flag
                     northFlag = !northFlag;
-
+                    
                     // if north flag is placed currently remove it
                     if(northIconPlaced){
                         northIconPlaced = !northIconPlaced;
+                        northImage.remove();
                         northImage.style.visibility = 'hidden';
+                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                         northFlag = !northFlag;
                     }
                     
                     // otherwise set the other flags to false and adjust their html
                     if(northFlag){
-                        if(sunFlag && !sunIconPlaced){
+                        if(!sunIconPlaced){
                             sunFlag = false;
                             document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
                         }
 
-                        if(eyeFlag && !eyeIconPlaced){
+                        if(!eyeIconPlaced){
                             eyeFlag = false;
-                            document.getElementById('eyeFlag').innerHTML = "Add Eye Icon";
+                            document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
                         }
 
-                        cropFlag = false;
-                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                        /* cropFlag = false;
+                        document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                        outlineBox.remove();
                         outlineBox.style.visibility = 'hidden';
                         
-                        document.getElementById('northIconFlag').innerHTML = "Cancel?";
+                        svg.appendChild(northImage);
+                        northImage.style.visibility = 'visible';
+                        northIconPlaced = !northIconPlaced;
+                        northFlag = false;
+                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
                     }
-                    else{
-                        // if cancel is clicked
-                        clickArray = [];
-                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
-
-                        if(cropFlag){
-                            cropFlag = !cropFlag;
-                            document.getElementById('cropFlag').innerHTML = "Crop Image";
-                            outlineBox.style.visibility = 'hidden';
-                        }
-                    }
+                    
                     clickArray = [];
-                });
+                }); 
 
 
                 // use same logic for other button
@@ -493,39 +845,26 @@
 
                     if(eyeIconPlaced){
                         eyeIconPlaced = !eyeIconPlaced;
+                        eyeImage.remove();
                         eyeImage.style.visibility = 'hidden';
                         eyeFlag = !eyeFlag;
+                        document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
                     }
                     
                     if(eyeFlag){
-                        if(sunFlag && !sunIconPlaced){
-                            sunFlag = false;
-                            document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                        }
-
-                        if(northFlag && !northIconPlaced){
-                            northFlag = false;
-                            document.getElementById('northIconFlag').innerHTML = "Add North Icon";
-                        }
-
+                        
                         cropFlag = false;
-                        document.getElementById('cropFlag').innerHTML = "Crop Image";
+                       /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                        outlineBox.remove();
                         outlineBox.style.visibility = 'hidden';
                         
-                        document.getElementById('eyeFlag').innerHTML = "Cancel?";
+                        svg.appendChild(eyeImage);
+                        eyeImage.style.visibility = 'visible'
+                        document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                        eyeFlag = false;
+                        eyeIconPlaced = true;
                     }
-                    else{
-                        clickArray = [];
-                        document.getElementById('eyeFlag').innerHTML = "Add Eye Icon";
-
-                        if(cropFlag){
-                            cropFlag = !cropFlag;
-                            document.getElementById('cropFlag').innerHTML = "Crop Image";
-                            outlineBox.style.visibility = 'hidden';
-                        
-                        }
-                    }
-                    clickArray = [];
+                    
                 });
 
                 // use same logic for other button
@@ -535,58 +874,48 @@
                     if(sunIconPlaced){
                         sunIconPlaced = !sunIconPlaced;
                         sunImage.style.visibility = 'hidden';
-                        sunFlag = !sunFlag;
+                        sunImage.remove();
+                        document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                        sunFlag = false;
+                        
                             
                     }
                     
                     if(sunFlag){
-                        if(northFlag && !northIconPlaced){
-                            northFlag = false;
-                            document.getElementById('northIconFlag').innerHTML = "Add North Icon";
-                        }
-
-                        if(eyeFlag && !eyeIconPlaced){
-                            eyeFlag = false;
-                            document.getElementById('eyeFlag').innerHTML = "Add Eye Icon";
-                        }
                         
                         cropFlag = false;
                         outlineBox.style.visibility = 'hidden';
                         
-                        document.getElementById('cropFlag').innerHTML = "Crop Image";
-                        document.getElementById('sunIconFlag').innerHTML = "Cancel?";
-                    }
-                    else{
+                       /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                        sunImage.style.visibility = 'visible';
+                        svg.appendChild(sunImage);
+                        sunFlag = false;
+                        sunIconPlaced = true;
+                        document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
                         
-                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                        if(cropFlag){
-                            cropFlag = !cropFlag;
-                            document.getElementById('cropFlag').innerHTML = "Crop Image";
-                            outlineBox.style.visibility = 'hidden';
-                        
-                        }
                     }
+                    
                     clickArray = [];
                 });
 
 
-
+/* 
                 // use same logic for other button
                 $("#cropFlag").click(function(){
                     cropFlag = !cropFlag;
 
                     if(cropFlag){
-                        if(northFlag && !northIconPlaced){
+                        if(!northIconPlaced){
                             northFlag = false
-                            document.getElementById('northIconFlag').innerHTML = "Add North Icon";
+                            document.getElementById('northIconFlag').innerHTML = "Add North Arrow";
                         }
-                        if(sunFlag && !sunIconPlaced){
+                        if(!sunIconPlaced){
                             sunFlag = false;
                             document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
                         }
                         if(eyeFlag && !eyeIconPlaced){
                             eyeFlag = false;
-                            document.getElementById('eyeFlag').innerHTML = "Add Eye Icon";
+                            document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
                         }
 
                         document.getElementById('cropFlag').innerHTML = "Cancel?";
@@ -597,42 +926,12 @@
                         outlineBox.style.visibility = 'hidden';
                     }
                     
-                });
+                }); */
 
 
-                // check interval to reset any buttons in conjuction with their flags
-                //setInterval(checkBtns(),1000);
 
-                // function to set button text according to their flags
-                // TODO: May not be needed 
-                function checkBtns(){
-                    if(!cropFlag){
-                        document.getElementById('cropFlag').innerHTML = "Crop Image";
-                        outlineBox.style.visibility = 'hidden';
-                    }
-                    if(!northFlag){
-                        document.getElementById('northIconFlag').innerHTML = "Add North Icon";
-                    }
-                    if(northIconPlaced){
-                            document.getElementById('northIconFlag').innerHTML = "Remove North Arrow?";
-                        }
-                    if(!sunFlag){
-                        document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                        
-                    }
-                    if(sunIconPlaced){
-                            document.getElementById('sunIconFlag').innerHTML = "Remove Sun Icon?";
-                        }
 
-                    if(!eyeFlag){
-                        document.getElementById('eyeFlag').innerHTML = "Add Eye Icon";
-                        
-                    }
-                    if(eyeIconPlaced){
-                            document.getElementById('eyeFlag').innerHTML = "Remove Observer Icon?";
-                        }
-                }
-
+/* 
                 // button to undo the cropped image
                 $("#backBtn").on('click',function(event){
                     event.preventDefault();
@@ -667,7 +966,8 @@
                     }
 
                     
-                });
+                }); */
+            
             }); // end doc.ready
             
             // function to push the x,y coordinates into the clickArray
@@ -680,14 +980,14 @@
             // Export Section
 
             // download works well for pngs
-            function triggerDownload (imgURI) {
+            function triggerDownload (imgURI,filename) {
                 var evt = new MouseEvent('click', {
                     view: window,
                     bubbles: false,
                     cancelable: true
                 });
                 var a = document.createElement('a');
-                a.setAttribute('download', 'testing.png');
+                a.setAttribute('download', filename);
                 a.setAttribute('href', imgURI);
                 a.setAttribute('target', '_blank');
 
@@ -708,41 +1008,52 @@
                 var data = (new XMLSerializer()).serializeToString(svg);
                 var DOMURL = window.URL || window.webkitURL || window;
 
+                // creates new image from svg inline elements excludiong the actual image
                 var img = new Image();
                 var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
                 var url = DOMURL.createObjectURL(svgBlob);
 
                 
+                img.onload = function(){
                     
-                // draw the image into the canvas
-                ctx.drawImage(image, dx=0, dy=0,dWidth=image.width.animVal.value, dHeight=image.height.animVal.value);
-
-                // check to see if the flags are true and impose the image 
-                if(sunIconPlaced){
-                    ctx.drawImage(sunImage, dx=sunImage.x.animVal.value,dy=sunImage.y.animVal.value, dWidth=sunImage.width.animVal.value  , dHeight=sunImage.height.animVal.value );
-                }
-                if(northIconPlaced){
-                    ctx.drawImage(northImage, dx=northImage.x.animVal.value,dy=northImage.y.animVal.value, dWidth=northImage.width.animVal.value  , dHeight=northImage.height.animVal.value );
-                }
-                if(eyeIconPlaced){
-                    ctx.drawImage(eyeImage, dx=eyeImage.x.animVal.value,dy=eyeImage.y.animVal.value, dWidth=eyeImage.width.animVal.value  , dHeight=eyeImage.height.animVal.value );
-                }
                     
-                // revoke the url
-                DOMURL.revokeObjectURL(url);
+                    ctx.drawImage(img,0,0);
+                    
 
-                try{
-                    // export and png only
-                    var imgURI = canvas
-                    .toDataURL('image/png', 1.0)
-                    .replace('image/png', 'image/octet-stream');
+                    var filename = prompt("Save File as png svg or jpeg","");
 
-                    triggerDownload(imgURI);
+                    console.log(filename);
+                    if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
+                        var fileExt = filename.split(".")[filename.split(".").length - 1];
+
+                        if(fileExt !== 'svg'){
+                            try{
+                                // export and png only
                                 
-                }catch(err){
-                    alert('Image is too large to save from browser');
-                }
+                                var imgURI = canvas
+                                .toDataURL('image/'+fileExt, 1.0)
+                                .replace('image/'+fileExt, 'image/octet-stream');
 
+                                triggerDownload(imgURI,filename);
+                                            
+                            }catch(err){
+                                alert('Image is too large to save from browser');
+                            }
+                        }else{
+                            try{
+
+                                triggerDownload(url,filename);
+                                            
+                            }catch(err){
+                                alert('Image is too large to save from browser');
+                            }
+
+                        }
+                    }
+                    // revoke the url
+                    DOMURL.revokeObjectURL(url);
+                };
+                
                 try{
                     img.src = url;
                 }catch(err){
@@ -751,8 +1062,10 @@
             });
         </script>
         <!-- Legend Section-->
-        <div class="float-center text-center" style="margin-left:auto; margin-right:auto; padding: 1%;">
-            <h1 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h1>
+        <br/>
+       
+        <div class="position-relative text-center" style="margin-left:auto; margin-right:auto; display: none;">
+            <h2 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h2>
             <table class="float-center text-center" style="margin-left:auto; margin-right:auto; margin-top: 0px;">
                 <tr>
                     <td>
@@ -803,7 +1116,10 @@
                 </tr>
             </table>
         </div>
-        
+        <br/>
+        <br/>
+        <br/>
+         
         <!-- Exporting The Legend-->
         <div id="legend-export-div" style="margin-left:35%;">
         </div>

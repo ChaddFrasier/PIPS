@@ -12,10 +12,16 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
-    </head>
 
+        
+    </head>
+    <style>
+            .metadata:hover{
+                cursor:not-allowed;
+            }
+    </style>
     <body>
-        <img src="../images/usgsLogo.png" class="float-md-left" width="20%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="data-output">
             <div class="container"> 
                 <div class="jumbotron text-center">
@@ -26,16 +32,26 @@
             </div>
 
             <div class="container">
-                <div id="template" class="text-center form-group">
-                    <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary">Template Text</h2>
-                    </label>
-                    <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                        style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
-                </div>
+
+                    <div id="template-output" class="text-center form-group metadata">
+                            <label for="template-text-output">
+                                <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
+                            </label>
+                            <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
+                                style="resize: vertical; font-size: 22px;" rows="7"></textarea>
+                                <br/>
+        
+                            <form class="lg-form text-center float-right">
+                                <div class="form-group">
+                                    <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
+                                        Caption</a>
+                                </div>
+                            </form>
+                        </div>
+
                 <br/>
                 <br/>
-                <div id="metadata"  style = "display: none;" class="text-center green-border-focus">
+                <div id="metadata" style = "display: none;" class="text-center green-border-focus">
                     <label for="metadata-text">
                         <h2>Metadata Output DICTSTRING </h2>
                     </label>
@@ -66,14 +82,14 @@
                     <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
                         style="resize: vertical; font-size: 22px;"></textarea>
                 </div>
-                
+                <br/>
                 <div id="test-metadata" class="text-center form-group">
                     <label for="test">
-                        <h3 class="display-5 float-center alert alert-secondary">Current Tags</h2>
+                        <h3 class="display-5 float-center alert alert-secondary">Usable Tags</h2>
                     </label>
                     <textarea readonly id="test" class="form-control bg-white text-dark"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                    <button id="button-more-tags" onclick="showMoreTags()">Show Important Tags</button>
+                    <button id="button-more-tags" class="btn btn-md btn-secondary" onclick="showMoreTags()">Show Important Tags</button>
                     <br/>
                     <form action="/csv" method='POST' class="lg-form text-center float-right">
                         <div class="lg-form text-center">
@@ -85,21 +101,13 @@
                 </div>
                 <br/>
                 <br/>
-                <div id="template-output" class="text-center form-group">
-                    <label for="template-text-output">
-                        <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
-                    </label>
-                    <textarea readonly id="template-text-output" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                        <br/>
-
-                    <form class="lg-form text-center float-right">
-                        <div class="form-group">
-                            <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
-                                Caption</a>
-                        </div>
-                    </form>
-                </div>
+                <div id="template" class="text-center form-group">
+                        <label for="template-text">
+                            <h3 class="display-5 alert alert-secondary">Edit Text</h2>
+                        </label>
+                        <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
+                            style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
+                    </div>
             </div>
             <br/>
             <br/>
@@ -145,8 +153,6 @@
                     }
                 }
 
-                console.log(key)
-
             }
             // Gets All Tags
             function getAllTags() {
@@ -161,7 +167,7 @@
 
             // Converts Key to Tag
             function keyToTag(key) {
-                var tag = "[[" + key + "]]";
+                var tag = "[[ " + key + " ]]";
                 return tag;
             }
 
@@ -169,14 +175,19 @@
             function getMetadataVal(key) {
                 //variable text will read all content in first textarea(user entered)
                 var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
+                var impData = JSON.parse(document.getElementById("metadata-text").value);
+
+                allMetaData = Object.assign(allMetaData,impData);
                 
                 for(datakey in allMetaData){
-                    if(datakey.indexOf(key) > -1){
+                    if(datakey === key || datakey === key.replace('.'," ").trim()){
                         //console.log(metaData[datakey]);
                         return allMetaData[datakey].trim();
+                    } else{
+
                     }
                 }
-                return 'None'
+                return key;
             }
 
             // prototype function for strings to replace all occurances of 1 string with another 
@@ -191,10 +202,10 @@
                 //Find values of keys one by one, replace "[[...]]" with their value
                 var tempArr = tempText.split(' ');
                 for(var i=0; i<tempArr.length; i++){
-                    if(tempArr[i].indexOf('[[') > -1 && tempArr[i] != '[[tag]]'){
-                        // get the val of the tag
-                        tempArr[i] = getMetadataVal(tempArr[i].slice(2,tempArr[i].length - 2));
-                    }
+                    
+                    // get the val of the tag
+                    tempArr[i] = getMetadataVal(tempArr[i]);
+                    
                 }
                 
                 tempText = tempArr.join(' ');

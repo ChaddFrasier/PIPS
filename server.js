@@ -169,7 +169,7 @@ app.post('/upload', async function(request, response){
     //============== for testing only=======================
     console.log('=================== New Upload ========================');
     //================================================
-    
+
     // cube file section
     try{
         if(request.files == null ){
@@ -245,6 +245,8 @@ app.post('/upload', async function(request, response){
             // set the cookie based on the type of file uploaded (expire times will be messed with)
             response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
+
+            cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
 
             // reset server tif val because conversion completed
             isTiff = false;
@@ -493,9 +495,11 @@ app.post('/showImage', function(request, response){
 
         // if the data val is an error code then fail
         if(data < 1){
-            console.log('Object Serch Failed');
+            console.log('Object Search Failed');
             data = 'NONE';
         }else{
+            var userDim = data.userDim;
+            
             // otherwise load the important data from the active object array into data variable
             data = data.impData;
         }
@@ -508,16 +512,24 @@ app.post('/showImage', function(request, response){
     var w;
     var h;
     // get the hight and width of the image and render the page with all needed variables
-    jimp.read(imagepath).then(function(img){
-        w = img.bitmap.width;
-        h = img.bitmap.height;
-        // render image page with needed data
+    if( userDim !== undefined && userDim[0] !== 0 && userDim[1] !== 0)
+    {
         if(isWindows){ imagepath = imagepath.replace("\\","/");}
         response.render("imagePage.ejs", {image:imagepath, tagField: data,
-            w: w, h: h});
-    }).catch(function(err){
-        console.log(err);
-    });
+            w: userDim[0], h: userDim[1]});
+    }
+    else{
+        jimp.read(imagepath).then(function(img){
+            w = img.bitmap.width;
+            h = img.bitmap.height;
+            // render image page with needed data
+            if(isWindows){ imagepath = imagepath.replace("\\","/");}
+            response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                w: w, h: h});
+        }).catch(function(err){
+            console.log(err);
+        });
+    }
 });
 
 
@@ -532,7 +544,11 @@ app.get('/crop',async function(request, response){
 
     var currentImage = request.query.currentImage;
     var cookieval = request.cookies['cubeFile'];
-    var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
+    if(cookieval !== undefined){
+        var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
+    }else{
+        console.log('No cookie has been found');
+    }
     var newImage;
 
     console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');

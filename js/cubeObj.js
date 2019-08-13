@@ -18,6 +18,7 @@ module.exports = class Cube{
         // init JSON elements
         this._data = {};
         this._impData = {};
+        this._userDim = [0,0];
         this._logFlag = false;
     }
 
@@ -58,6 +59,25 @@ module.exports = class Cube{
      */
     get data(){
         return JSON.stringify(this._data);    
+    }
+
+     /**
+     * @param void
+     * 
+     * @function return userID.
+     */
+    get userDim(){
+        return this._userDim;
+    }
+
+    /**
+     * 
+     * @param void 
+     * @function get data as stringify'ed JSON.
+     */
+    set userDim(dimArray){
+        console.log(dimArray);
+        this._userDim = dimArray;    
     }
 
     /**
