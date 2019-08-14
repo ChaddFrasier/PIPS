@@ -313,35 +313,36 @@ function makeDraggable(evt) {
             <div class="image-controls">
                 <h2 class="text-right float-left" style="position: inherit; left: 25%;">Tools</h2>
                 <br/>
-                <table style="width: 100%; height:100%; table-layout:fixed;">
+                <table style="width: 100%; height:100%; table-layout:auto;">
                     <tr>
-                    <th colspan="2" class="text-left float-center">
+                    <th colspan="1" class="text-left float-center">
                         <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                         <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                         <li><button class="btn btn-secondary btn-lg" onclick="window.history.back();">Back to Caption</button></li>
                         <li><a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a></li>
                         
-                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:7rem;"src="/images/north.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:7rem;" src="/images/sun_symbol.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:7rem;" src="/images/eye_symbol.png"></img></li>
-                        <li style="padding-bottom: 0; width: 12rem;"><h2 class="text-left">Pad Image</h2></li>
-                        <li style="padding: 0; border:0;">
-                            <div class="row" style="padding: 0;">
-                                    <div class="col" style="padding-bottom: 0;"><input class="form-control form-control-lg" style="width: 15rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> 
-                                <button  style="position: relative; left: 16rem; top: -2.5rem;" class="btn btn-secondary btn-md" id="resetPaddingBtn"> Reset </button> </div>
-                            
+                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img></li>
+
+                        <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
+                            <h2 class="text-left">Pad Image</h2>
+                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
+                                    <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
+                                    <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem"><button  style="left: 15rem; top: 0rem;" class="btn btn-secondary btn-md" id="resetPaddingBtn"> Reset </button> </div>
                             </div>
                         
-                            <div class="row">
-                                <div class="col" style="top:0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="bottomPaddingBtn"> Bottom </button> </div>
-                                <div class="col" style="top:-2.35rem; left: 5rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="topPaddingBtn"> Top </button> </div>
-                                <div class="col"style="top:-2rem; left: 5rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="rightPaddingBtn"> Right </button> </div>
-                                <div class="col"style="top:-4.35rem; left: 0rem;"><button style="width: 4.5rem;" class="btn btn-secondary btn-md" id="leftPaddingBtn"> Left </button> </div>
+                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
+                                <div class="col" style="top:0; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="topPaddingBtn"> Top </button> </div>
+                                <div class="col" style="top:0rem; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="bottomPaddingBtn"> Bottom </button> </div>
+                            
+                                <div class="col"style="top:0rem;padding: 0; left: 0rem;"><button style="width: 4.5rem;" class="btn btn-secondary btn-md" id="leftPaddingBtn"> Left </button> </div>
+                                <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="rightPaddingBtn"> Right </button> </div>
                                 
                             </div>
                         </li>
                         <li>
-                            <div class="row">
+                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; border: 0px solid blue;">
                                 <div class="col" style="padding: 0; top: 0rem">
                                 <button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button>
                             </div>

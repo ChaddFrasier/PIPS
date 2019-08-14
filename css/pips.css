@@ -96,9 +96,9 @@ svg{
     border: 5%; 
 }
 li{
-    padding-top:25%;
+    padding-top:2rem;
     right: 80%;
-    padding-left: 15%; 
+    padding-left: 5rem; 
     list-style-type: none;
     margin-left: auto;
     margin-right: 10%;
