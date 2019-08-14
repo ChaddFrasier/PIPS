@@ -246,8 +246,11 @@ app.post('/upload', async function(request, response){
             response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
             response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
 
-            cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
+            if(Number(request.body.desiredWidth) > 50 && Number(request.body.desiredHeight)> 50){
+                cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
 
+            }
+            
             // reset server tif val because conversion completed
             isTiff = false;
 
