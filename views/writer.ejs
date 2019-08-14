@@ -23,16 +23,15 @@
     <body>
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="data-output">
-            <div class="container"> 
-                <div class="jumbotron text-center">
-                    <h1 class="display-4">Upload Successfully!</h1>
-                    <p class="lead">Write your caption using the [[tags]] to extracts ISIS3 data</p>
+            <div class="container" style="height: 20rem; padding: 0; border: 0;"> 
+                <div class="jumbotron text-center" style="padding: 2rem;">
+                    <h1 class="display-4">Upload Successful</h1>
+                    <p class="lead">Edit in the bottom box using tags in the middle box</p>
                     <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube File</a>
                 </div>
             </div>
 
-            <div class="container">
-
+            <div class="container" style="padding:0;">
                     <div id="template-output" class="text-center form-group metadata">
                             <label for="template-text-output">
                                 <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
@@ -171,7 +170,7 @@
                 return tag;
             }
 
-            let unwantedPunc = ['.',',','?','!','%','#','@','$',':',';'];
+            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';'];
 
             function removePunctuation(key){
                 for(index in unwantedPunc){
