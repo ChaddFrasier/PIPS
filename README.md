@@ -33,7 +33,8 @@ In order to develop on this project you will first need to install a working ver
 
 To check if they are installed simply run `node -v` & `npm -v` 
 these commands should return a version number that your machine has. Otherwise you will need to install them.
-Node will download npm for you, go [here](https://nodejs.org/en/) for the Node.js install
+Node will download npm for you, go [here](https://nodejs.org/en/) for the Node.js install.
+__if you are on company servers you will need IT to install it for you because you lack permissions__
 
 ISIS install can be achieved by following the instructions for installation [here](https://github.com/USGS-Astrogeology/ISIS3).
 
