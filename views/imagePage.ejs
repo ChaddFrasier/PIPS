@@ -64,7 +64,9 @@ function makeDraggable(evt) {
             var resizing = false,
                 dragging = false,
                 currentScale,
-                transformString;
+                transformString,
+                startH,
+                startW;
         
             
         // sets boundries for drag starting from 0,0 and going to length of image 
@@ -97,10 +99,12 @@ function makeDraggable(evt) {
             
                 // get the coorsinates where the click happend
                 offset = getMousePosition(evt);
+
+                
                 
                 transformString = selectedElement.getAttribute("transform").split("scale(")[0];
                 currentScale = calculateScaleFactor(selectedElement);
-
+                
             }
             else if (evt.target.parentNode.classList.contains('draggable')) {
                 
@@ -127,8 +131,9 @@ function makeDraggable(evt) {
                 if (confined) {
                     bbox = selectedElement.getBBox();
                     
-                    let scaleFactor = calculateScaleFactor(selectedElement);
 
+                    let scaleFactor = calculateScaleFactor(selectedElement);
+                    
                     
                     minX = boundaryX1 - bbox.x;
                     maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
@@ -151,40 +156,50 @@ function makeDraggable(evt) {
             let growingFactor = .02;
 
             var elementOver = document.elementFromPoint(mX,mY);
+            
             evt.preventDefault();
                         
             if(selectedElement && resizing && !dragging){
                console.log('resizing now');
                 // get the new position of the mouse
                var coord = getMousePosition(evt);
-               
+               startH = selectedElement.getBBox().height * currentScale;
+               startW = selectedElement.getBBox().width * currentScale;
 
                if( (!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
                     topR = true;
                     if(coord.x < offset.x && coord.y > offset.y){
                         currentScale -= growingFactor;
                         if(currentScale < .2){currentScale = .2;}
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+
                     }
                     else if(coord.x > offset.x && coord.y < offset.y){
                         currentScale += growingFactor;
-                        
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+
                     }
+
+                    let translateString = shiftTranslate(transformString, 0, startH - selectedElement.getBBox().height * currentScale);
+                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
                     offset = coord;
+                    
                 }
                 else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
                     topL = true;
                     if(coord.x > offset.x && coord.y > offset.y){
                         currentScale -= growingFactor;
                         if(currentScale < .2){currentScale = .2;}
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+
+                        
                     }
                     else if(coord.x < offset.x && coord.y < offset.y){
                         currentScale += growingFactor;
                         
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
                     }
+
+
+                    let translateString = shiftTranslate(transformString, startW - selectedElement.getBBox().width * currentScale, startH - selectedElement.getBBox().height * currentScale);
+                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
+
                     offset = coord;
                 }
 
@@ -192,18 +207,20 @@ function makeDraggable(evt) {
                     bottomL = true;
                     
                     if(coord.x > offset.x && coord.y < offset.y){
-                        console.log("SHRINKING FROM LEFT TO RIGHT, BOTTOM TO TOP");
+                        
                         currentScale -= growingFactor;
 
                         if(currentScale < .2){currentScale = .2;}
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
-                    }
-                    else if(coord.x < offset.x && coord.y > offset.y){
-                        console.log("GROWING FROM RIGHT TO LEFT, FROM BOTTOM");
-                        currentScale += growingFactor;
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
                         
                     }
+                    else if(coord.x < offset.x && coord.y > offset.y){
+                        
+                        currentScale += growingFactor;
+                        
+                    }
+                    // scale and retranslate
+                    let translateString = shiftTranslate(transformString, startW - selectedElement.getBBox().width * currentScale, 0);
+                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
                     offset = coord;
                 }
                 else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
@@ -211,16 +228,17 @@ function makeDraggable(evt) {
                     if(coord.x < offset.x && coord.y < offset.y){
                         currentScale -= growingFactor;
                         if(currentScale < .2){currentScale = .2;}
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                        
                     }
                     else if(coord.x > offset.x && coord.y > offset.y){
                         currentScale += growingFactor;
                         
-                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
                     }
+                    selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
                     offset = coord;
                 }
 
+                transformString = selectedElement.getAttribute("transform").split("scale(")[0];
                    
             }
             else if (selectedElement && dragging) {
@@ -255,7 +273,7 @@ function makeDraggable(evt) {
                 topR = false;
             }
 
-          selectedElement = false;
+          selectedElement = null;
         }
 
 
@@ -278,6 +296,21 @@ function makeDraggable(evt) {
       }
 
 
+
+      function shiftTranslate(transformString, offsetW, offsetH){
+          let translateArr = getTranslateArray(transformString);
+           translateArr[0]= translateArr[0]+offsetW;
+           translateArr[1]= translateArr[1]+offsetH/2;
+
+           return "translate("+parseInt(translateArr[0])+","+parseInt(translateArr[1])+")";
+      }
+
+
+      function getTranslateArray(transformString){
+          let tmpArr = transformString.split("translate(")[1].split(",");
+          tmpArr[1] = tmpArr[1].replace(')',' ').trim();
+          return [Number(tmpArr[0]),Number(tmpArr[1])]; 
+      }
       function extractScaleVal(str){
           let tmpStr = str.split('scale(')[1];
 
@@ -397,8 +430,8 @@ function makeDraggable(evt) {
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
                 +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
                 +'<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
-                +'<rect class= "resize bottom-left"x="0" y="365" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
-                +'<rect class= "resize bottom-right"x="100" y="365" width="100" height="100" style="visibility: hidden;"fill="green"/></g>'
+                +'<rect class= "resize bottom-left"x="0" y="300" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
+                +'<rect class= "resize bottom-right"x="100" y="300" width="100" height="100" style="visibility: hidden;"fill="green"/></g>'
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
             
@@ -635,6 +668,24 @@ function makeDraggable(evt) {
                             break;
 
 
+                        case "left":
+                            imageW = <%=w%> + val;
+                            bg.setAttribute("y",0);
+                            bg.setAttribute("x",val*-1);
+
+                            bg.setAttribute("width",imageW);
+                            bg.setAttribute("height",<%=h%>);
+                            
+                            
+                            svgDOM.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " <%=h%>");
+                            canvas.setAttribute("width", imageW);
+                            canvas.setAttribute("height",<%=h%>);
+                            svgDOM.setAttribute("width", imageW);
+                            svgDOM.setAttribute("height",<%=h%>);
+
+                            makeDraggable(svgDOM);
+                            break;
+
                         default:
                             // reset
                             imageW = <%=w%>;
@@ -680,8 +731,16 @@ function makeDraggable(evt) {
                     }else{
                         setImagePadding(parseInt(0),"none");   
                     } 
-                   
                });
+
+               $("#leftPaddingBtn").on('click',function(event){
+                   
+                   if(!isNaN(parseInt(paddingBoxInput.value))){
+                       setImagePadding(parseInt(paddingBoxInput.value),'left');
+                   }else{
+                       setImagePadding(parseInt(0),"none");   
+                   } 
+              });
 
                 $("#resetPaddingBtn").on('click',function(event){
                    
@@ -947,7 +1006,7 @@ function makeDraggable(evt) {
                 });
 
 
-
+ /*
                  $('#svgWrapper').mousemove(function(event){
                     
 
@@ -970,7 +1029,7 @@ function makeDraggable(evt) {
                         console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
 
 
-                    /* if(cropFlag && !doneResizing){
+                    if(cropFlag && !doneResizing){
 
 
                         // clicking close to the 0,0
@@ -1003,8 +1062,8 @@ function makeDraggable(evt) {
                             mouseX = <%=w%>;
                         }
                         adjustBox();
-                    } */
-                });
+                    }
+                }); */
             /*
                 // function to change the outline box dimensions to the calulated size
                 function adjustBox(){
