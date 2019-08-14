@@ -90,9 +90,9 @@ svg{
     position: relative;
     text-align: center; 
     top: 0; 
-    left: 0; 
+    left: 1rem; 
     margin-right: auto;
-    margin-left: 30%;
+    margin-left: 40%;
     border: 5%; 
 }
 li{
@@ -102,4 +102,10 @@ li{
     list-style-type: none;
     margin-left: auto;
     margin-right: 10%;
+}
+.btnList{
+    padding-top: 0rem;
+    padding-left: 0rem;
+    padding-right: 1rem;
+    display: inline;
 }

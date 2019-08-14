@@ -22,8 +22,22 @@
     }
 
     .resize{
-        cursor:nwse-resize;
         pointer-events: painted;
+    }
+
+    .bottom-right{
+        cursor:nwse-resize;
+    }
+
+    .bottom-left{
+        cursor:nesw-resize;
+    }
+    .top-left{
+        cursor:nwse-resize;
+    }
+
+    .top-right{
+        cursor:nesw-resize;
     }
     </style>
 <!--============================================= -->
@@ -46,6 +60,11 @@ function makeDraggable(evt) {
 
         var selectedElement, offset, transform,
             bbox, minX, maxX, minY, maxY, confined;
+
+            var resizing = false,
+                dragging = false,
+                currentScale,
+                transformString;
         
             
         // sets boundries for drag starting from 0,0 and going to length of image 
@@ -67,61 +86,160 @@ function makeDraggable(evt) {
 
         function startDrag(evt) {
             console.log('prepairing icon to drag');
-          if (evt.target.parentNode.classList.contains('draggable')) {
+            mX = evt.clientX, mY = evt.clientY;
+
+            var elementOver = document.elementFromPoint(mX,mY);
             selectedElement = evt.target.parentNode;
             
-            offset = getMousePosition(evt);
 
-            // Make sure the first transform on the element is a translate transform
-            var transforms = selectedElement.transform.baseVal;
-
-            if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-              // Create an transform that translates by (0, 0)
-              var translate = svg.createSVGTransform();
-              translate.setTranslate(0, 0);
-              selectedElement.transform.baseVal.insertItemBefore(translate, 0);
-            }
-
-            // Get initial translation
-            transform = transforms.getItem(0);
-            offset.x -= transform.matrix.e;
-            offset.y -= transform.matrix.f;
-
-            confined = evt.target.parentNode.classList.contains('confine');
-            if (confined) {
-                bbox = selectedElement.getBBox();
+            if(elementOver.classList.contains('resize') && !resizing){
+                resizing = true;
+            
+                // get the coorsinates where the click happend
+                offset = getMousePosition(evt);
                 
-                let scaleFactor = calculateScaleFactor(selectedElement);
+                transformString = selectedElement.getAttribute("transform").split("scale(")[0];
+                currentScale = calculateScaleFactor(selectedElement);
 
-                
-                minX = boundaryX1 - bbox.x;
-                maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
-                minY = boundaryY1 - bbox.y;
-                maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
-
-                console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  )
             }
-          }
+            else if (evt.target.parentNode.classList.contains('draggable')) {
+                
+                dragging = true;
+                
+                offset = getMousePosition(evt);
+
+                // Make sure the first transform on the element is a translate transform
+                var transforms = selectedElement.transform.baseVal;
+
+                if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                // Create an transform that translates by (0, 0)
+                var translate = svg.createSVGTransform();
+                translate.setTranslate(0, 0);
+                selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+                }
+
+                // Get initial translation
+                transform = transforms.getItem(0);
+                offset.x -= transform.matrix.e;
+                offset.y -= transform.matrix.f;
+
+                confined = evt.target.parentNode.classList.contains('confine');
+                if (confined) {
+                    bbox = selectedElement.getBBox();
+                    
+                    let scaleFactor = calculateScaleFactor(selectedElement);
+
+                    
+                    minX = boundaryX1 - bbox.x;
+                    maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
+                    minY = boundaryY1 - bbox.y;
+                    maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
+
+                    console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  )
+                }
+            }
         }
 
+        var bottomL = false,
+            bottomR = false,
+            topR = false,
+            topL = false;
+        
         function drag(evt) {
-          if (selectedElement) {
-            console.log('dragging now');
+            mX = evt.clientX, mY = evt.clientY;
+
+            let growingFactor = .02;
+
+            var elementOver = document.elementFromPoint(mX,mY);
             evt.preventDefault();
+                        
+            if(selectedElement && resizing && !dragging){
+               console.log('resizing now');
+                // get the new position of the mouse
+               var coord = getMousePosition(evt);
+               
 
-            var coord = getMousePosition(evt);
-            var dx = coord.x - offset.x;
-            var dy = coord.y - offset.y;
+               if( (!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
+                    topR = true;
+                    if(coord.x < offset.x && coord.y > offset.y){
+                        currentScale -= growingFactor;
+                        if(currentScale < .2){currentScale = .2;}
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    else if(coord.x > offset.x && coord.y < offset.y){
+                        currentScale += growingFactor;
+                        
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    offset = coord;
+                }
+                else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
+                    topL = true;
+                    if(coord.x > offset.x && coord.y > offset.y){
+                        currentScale -= growingFactor;
+                        if(currentScale < .2){currentScale = .2;}
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    else if(coord.x < offset.x && coord.y < offset.y){
+                        currentScale += growingFactor;
+                        
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    offset = coord;
+                }
 
-            if (confined) {
-                if (dx < minX) { dx = minX; }
-                else if (dx > maxX) { dx = maxX; }
-                if (dy < minY) { dy = minY; }
-                else if (dy > maxY) { dy = maxY; }
+                else if((!bottomR && !topR && !topL) && (elementOver.classList.contains('bottom-left') || bottomL)){
+                    bottomL = true;
+                    
+                    if(coord.x > offset.x && coord.y < offset.y){
+                        console.log("SHRINKING FROM LEFT TO RIGHT, BOTTOM TO TOP");
+                        currentScale -= growingFactor;
+
+                        if(currentScale < .2){currentScale = .2;}
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    else if(coord.x < offset.x && coord.y > offset.y){
+                        console.log("GROWING FROM RIGHT TO LEFT, FROM BOTTOM");
+                        currentScale += growingFactor;
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                        
+                    }
+                    offset = coord;
+                }
+                else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
+                    bottomR = true;
+                    if(coord.x < offset.x && coord.y < offset.y){
+                        currentScale -= growingFactor;
+                        if(currentScale < .2){currentScale = .2;}
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    else if(coord.x > offset.x && coord.y > offset.y){
+                        currentScale += growingFactor;
+                        
+                        selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    }
+                    offset = coord;
+                }
+
+                   
             }
+            else if (selectedElement && dragging) {
+                console.log('dragging now');
+                
 
-            transform.setTranslate(dx, dy);
-          }
+                var coord = getMousePosition(evt);
+                var dx = coord.x - offset.x;
+                var dy = coord.y - offset.y;
+
+                if (confined) {
+                    if (dx < minX) { dx = minX; }
+                    else if (dx > maxX) { dx = maxX; }
+                    if (dy < minY) { dy = minY; }
+                    else if (dy > maxY) { dy = maxY; }
+                }
+
+                transform.setTranslate(dx, dy);
+            }
         }
 
         function endDrag(evt) {
@@ -129,6 +247,12 @@ function makeDraggable(evt) {
             
             if(selectedElement){
                 drag(evt);
+                resizing = false;
+                dragging = false;
+                bottomL = false;
+                bottomR = false;
+                topL = false;
+                topR = false;
             }
 
           selectedElement = false;
@@ -191,19 +315,38 @@ function makeDraggable(evt) {
                 <br/>
                 <table style="width: 100%; height:100%; table-layout:fixed;">
                     <tr>
-                    <th colspan="1" class="text-left">
+                    <th colspan="2" class="text-left float-center">
                         <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                         <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                         <li><button class="btn btn-secondary btn-lg" onclick="window.history.back();">Back to Caption</button></li>
                         <li><a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a></li>
                         
-                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" src="/images/north.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" src="/images/sun_symbol.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="height:fit-content;" src="/images/eye_symbol.png"></img></li>
-                        <li style="padding-bottom: 0;"><p class="lead text-left">Pad Image</p></li>
-                        <li style="padding-top: 0; "><input id="paddingInput" type="text" placeholder="Image Padding (px)"/></li>
-                        <br/>
-                        <li><button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button></li>
+                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:7rem;"src="/images/north.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:7rem;" src="/images/sun_symbol.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:7rem;" src="/images/eye_symbol.png"></img></li>
+                        <li style="padding-bottom: 0; width: 12rem;"><h2 class="text-left">Pad Image</h2></li>
+                        <li style="padding: 0; border:0;">
+                            <div class="row" style="padding: 0;">
+                                    <div class="col" style="padding-bottom: 0;"><input class="form-control form-control-lg" style="width: 15rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> 
+                                <button  style="position: relative; left: 16rem; top: -2.5rem;" class="btn btn-secondary btn-md" id="resetPaddingBtn"> Reset </button> </div>
+                            
+                            </div>
+                        
+                            <div class="row">
+                                <div class="col" style="top:0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="bottomPaddingBtn"> Bottom </button> </div>
+                                <div class="col" style="top:-2.35rem; left: 5rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="topPaddingBtn"> Top </button> </div>
+                                <div class="col"style="top:-2rem; left: 5rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="rightPaddingBtn"> Right </button> </div>
+                                <div class="col"style="top:-4.35rem; left: 0rem;"><button style="width: 4.5rem;" class="btn btn-secondary btn-md" id="leftPaddingBtn"> Left </button> </div>
+                                
+                            </div>
+                        </li>
+                        <li>
+                            <div class="row">
+                                <div class="col" style="padding: 0; top: 0rem">
+                                <button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button>
+                            </div>
+                        </div>
+                        </li>
                     </th>
                 </tr>
             </table>
@@ -211,9 +354,9 @@ function makeDraggable(evt) {
 </div>
         
         <!-- Editor Box -->
-        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black" preserveAspectRatio="xMidYMid" xmlns:xlink="http://www.w3.org/1999/xlink" 
+        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
         class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
-            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="red"/>
             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>    
         </svg>
         
@@ -234,25 +377,38 @@ function makeDraggable(evt) {
                 <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
             </div>
             <!-- Canvas for extracting inline svg-->
-            <canvas id="canvasTest" width="<%=w%>px" height="<%=h%>px" style="display:none; border: 5px solid black; fill: black; width:<%=w%>px; height:<%=h%>px;" ></canvas>
+            <canvas id="canvas" width="<%=w%>" height="<%=h%>" style="display:none; border: 5px solid black; fill: black;" ></canvas>
 
 
         <script type="text/javascript">
 
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.2)"  style="border:0; padding:0; pointer-events:visible;"> '+
-                    '<rect x="0" y="0" width="300" height="300" style="visibility: hidden;"fill="red"/>'+'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'+
-            '<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle></g>';
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.2)"  style="border:0; padding:0; pointer-events:visible;"> '
+                    +'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
+                    +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
+                    +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
+                    +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
+                    +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
+                    +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
             
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.2)" stroke-width="7" style="border:0; padding:0; pointer-events:visible;">'+
-                '<rect x="0" y="0" class="resize" style="visibility: hidden;"width="200" height="400" fill="black"/>'+
-             '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" style="border:0;"></path>'+
-            '<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" transform="translate(0,200)"fill="black" style="border:0;"></path></g>';
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.2)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+                +'<rect x="0" y="0" style="visibility: visible;"width="200" height="400" fill="black"/>'
+                +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
+                +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
+                +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
+                +'<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
+                +'<rect class= "resize bottom-left"x="0" y="365" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
+                +'<rect class= "resize bottom-right"x="100" y="365" width="100" height="100" style="visibility: hidden;"fill="green"/></g>'
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,150) scale(.2)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'+
-                '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse><circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white"  style="border:0;">'+
-                '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" fill="black"  style="border:0;"></circle></g>';
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.2)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
+                + '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
+                + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white"  style="border:0;">'
+                + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" fill="black"  style="border:0;"></circle>'
+                + '<rect x="0" y="-10" class="resize top-left" style="visibility: hidden;"width="100" height="80" fill="red"/>'
+                + '<rect x="220" y="-10" class="resize top-right" style="visibility: hidden;"width="100" height="80" fill="blue"/>'
+                + '<rect x="220" y="120" class="resize bottom-right" style="visibility: hidden;"width="100" height="100" fill="green"/>'
+                + '<rect x="0" y="120" class="resize bottom-left" style="visibility: hidden;"width="95" height="100" fill="yellow"/></g>';
             
             // grab DOM elements that are needed
             var exportBtn =  document.getElementById('exportBtn');
@@ -393,7 +549,7 @@ function makeDraggable(evt) {
 
 
             // set defaults 
-            northImage.style.visibility = 'hidden';
+            northImage.style.visibility = 'visible';
             sunImage.style.visibility = 'hidden';
             eyeImage.style.visibility = 'hidden';
 
@@ -413,28 +569,124 @@ function makeDraggable(evt) {
                 var paddingBoxInput = document.getElementById("paddingInput");
                 paddingBoxInput.value =''
                 var bg = document.getElementById("svgBackground");
+                var canvas = document.getElementById("canvas");
 
-                function setImagePadding(val){
-                    let imageW = <%=w%> - val*2;
-                    let imageH = <%=h%> - val*2; 
+                function setImagePadding(val,location){
+                    let imageW;
+                    let imageH;
 
-                    myImage.setAttribute("width",imageW);
-                    myImage.setAttribute("height",imageH);
-                    bg.setAttribute("x",val*-1);
-                    bg.setAttribute("y",val*-1);
-                    svgDOM.setAttribute("viewBox", String(val*-1) + " " + String(val*-1) + " <%=w%> <%=h%>");
-                    makeDraggable(svgDOM);
+                    switch(location){
+                        
+                        case 'bottom':
+                            imageH = <%=h%> + val; 
+                            
+                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> " + imageH);
+                            bg.setAttribute("x",0);
+                            bg.setAttribute("y",0);
 
+                            bg.setAttribute("height", imageH);
+                            bg.setAttribute("width",<%=w%>);
+
+                            canvas.setAttribute("height", imageH);
+                            canvas.setAttribute("width",<%=w%>);
+
+                            svgDOM.setAttribute("height", imageH);
+                            svgDOM.setAttribute("width",<%=w%>);
+
+                            makeDraggable(svgDOM);
+                            break;
+
+                        case "top":
+                            imageH = <%=h%> + val;
+                            
+                            bg.setAttribute("y",val*-1);
+                            bg.setAttribute("x",0);
+
+                            bg.setAttribute("height",imageH);
+                            bg.setAttribute("height",<%=w%>);
+                            
+                            
+                            svgDOM.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
+
+                            canvas.setAttribute("height", imageH);
+                            canvas.setAttribute("width",<%=w%>);
+                            svgDOM.setAttribute("height", imageH);
+                            svgDOM.setAttribute("width",<%=w%>);
+                            makeDraggable(svgDOM);
+                            break;
+
+                        case "right":
+                            imageW = <%=w%> + val;
+                            bg.setAttribute("y",0);
+                            bg.setAttribute("x",0);
+
+                            bg.setAttribute("width",imageW);
+                            bg.setAttribute("height",<%=h%>);
+                            
+                            
+                            svgDOM.setAttribute("viewBox", "0 0 "  + imageW + " <%=h%>");
+                            canvas.setAttribute("width", imageW);
+                            canvas.setAttribute("height",<%=h%>);
+                            svgDOM.setAttribute("width", imageW);
+                            svgDOM.setAttribute("height",<%=h%>);
+
+                            makeDraggable(svgDOM);
+                            break;
+
+
+                        default:
+                            // reset
+                            imageW = <%=w%>;
+                            imageH = <%=h%>; 
+
+                            myImage.setAttribute("width",imageW);
+                            myImage.setAttribute("height",imageH);
+                            bg.setAttribute("x",0);
+                            bg.setAttribute("y",0);
+                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
+
+                            canvas.setAttribute("width", <%=w%>);
+                            canvas.setAttribute("height",<%=h%>);
+                            svgDOM.setAttribute("width", <%=w%>);
+                            svgDOM.setAttribute("height",<%=h%>);
+                            makeDraggable(svgDOM);
+
+                    }
+                        
                     
-                
                 }
 
-                $("#paddingInput").on('keyup',function(event){
+                $("#bottomPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
-                        setImagePadding(parseInt(paddingBoxInput.value));
+                        setImagePadding(parseInt(paddingBoxInput.value),'bottom');
                     }else{
-                        setImagePadding(parseInt(0));   
+                        setImagePadding(parseInt(0),"none");   
                     }
+                });
+
+                $("#topPaddingBtn").on('click',function(event){
+                    if(!isNaN(parseInt(paddingBoxInput.value))){
+                        setImagePadding(parseInt(paddingBoxInput.value),'top');
+                    }else{
+                        setImagePadding(parseInt(0),"none");   
+                    }
+                });
+
+                $("#rightPaddingBtn").on('click',function(event){
+                   
+                    if(!isNaN(parseInt(paddingBoxInput.value))){
+                        setImagePadding(parseInt(paddingBoxInput.value),'right');
+                    }else{
+                        setImagePadding(parseInt(0),"none");   
+                    } 
+                   
+               });
+
+                $("#resetPaddingBtn").on('click',function(event){
+                   
+                    setImagePadding(parseInt(0),"none"); 
+                    paddingBoxInput.value = "";  
+                    
                 });
 /* 
                 // when the image registers a click
@@ -808,6 +1060,7 @@ function makeDraggable(evt) {
                         northImage.remove();
                         northImage.style.visibility = 'hidden';
                         document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                        northImage.setAttribute("transform","translate(0,0) scale(.2)");
                         northFlag = !northFlag;
                     }
                     
@@ -849,6 +1102,7 @@ function makeDraggable(evt) {
                         eyeImage.style.visibility = 'hidden';
                         eyeFlag = !eyeFlag;
                         document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                        eyeImage.setAttribute("transform","translate(0,100) scale(.2)");
                     }
                     
                     if(eyeFlag){
@@ -877,7 +1131,7 @@ function makeDraggable(evt) {
                         sunImage.remove();
                         document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                         sunFlag = false;
-                        
+                        sunImage.setAttribute("transform","translate(0,150) scale(.2)");
                             
                     }
                     
@@ -1001,8 +1255,8 @@ function makeDraggable(evt) {
             exportBtn.addEventListener('click', function () {
                 
                 // get the svg element and the canvas information
-                
-                var canvas = document.getElementById('canvasTest');
+               
+                var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext('2d');
 
                 var data = (new XMLSerializer()).serializeToString(svg);
@@ -1019,10 +1273,12 @@ function makeDraggable(evt) {
                     
                     ctx.drawImage(img,0,0);
                     
+                    if(!filename){
+                        var filename = prompt("Save File as png svg or jpeg","");
+                    }
+                    
 
-                    var filename = prompt("Save File as png svg or jpeg","");
-
-                    console.log(filename);
+                    
                     if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
                         var fileExt = filename.split(".")[filename.split(".").length - 1];
 
@@ -1049,6 +1305,10 @@ function makeDraggable(evt) {
                             }
 
                         }
+                    }
+                    else{
+                       
+                        exportBtn.click();
                     }
                     // revoke the url
                     DOMURL.revokeObjectURL(url);
