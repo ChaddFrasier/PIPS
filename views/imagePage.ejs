@@ -66,7 +66,11 @@ function makeDraggable(evt) {
                 currentScale,
                 transformString,
                 startH,
-                startW;
+                startW,
+                minNorth = .121952,
+                minSun = .15625,
+                minEye = .15625,
+                iconMin;
         
             
         // sets boundries for drag starting from 0,0 and going to length of image 
@@ -89,10 +93,11 @@ function makeDraggable(evt) {
         function startDrag(evt) {
             console.log('prepairing icon to drag');
             mX = evt.clientX, mY = evt.clientY;
-
+            evt.preventDefault();
             var elementOver = document.elementFromPoint(mX,mY);
             selectedElement = evt.target.parentNode;
             
+            iconMin = findMin(selectedElement);
 
             if(elementOver.classList.contains('resize') && !resizing){
                 resizing = true;
@@ -100,7 +105,6 @@ function makeDraggable(evt) {
                 // get the coorsinates where the click happend
                 offset = getMousePosition(evt);
 
-                
                 
                 transformString = selectedElement.getAttribute("transform").split("scale(")[0];
                 currentScale = calculateScaleFactor(selectedElement);
@@ -166,11 +170,14 @@ function makeDraggable(evt) {
                startH = selectedElement.getBBox().height * currentScale;
                startW = selectedElement.getBBox().width * currentScale;
 
+               console.log("width is " + startW);
+               console.log("height is " + startH);
+               
                if( (!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
                     topR = true;
                     if(coord.x < offset.x && coord.y > offset.y){
                         currentScale -= growingFactor;
-                        if(currentScale < .2){currentScale = .2;}
+                        if(currentScale < iconMin){currentScale = iconMin;}
 
                     }
                     else if(coord.x > offset.x && coord.y < offset.y){
@@ -187,7 +194,7 @@ function makeDraggable(evt) {
                     topL = true;
                     if(coord.x > offset.x && coord.y > offset.y){
                         currentScale -= growingFactor;
-                        if(currentScale < .2){currentScale = .2;}
+                        if(currentScale < iconMin){currentScale = iconMin;}
 
                         
                     }
@@ -210,7 +217,7 @@ function makeDraggable(evt) {
                         
                         currentScale -= growingFactor;
 
-                        if(currentScale < .2){currentScale = .2;}
+                        if(currentScale < iconMin){currentScale =iconMin;}
                         
                     }
                     else if(coord.x < offset.x && coord.y > offset.y){
@@ -227,7 +234,8 @@ function makeDraggable(evt) {
                     bottomR = true;
                     if(coord.x < offset.x && coord.y < offset.y){
                         currentScale -= growingFactor;
-                        if(currentScale < .2){currentScale = .2;}
+                        if(currentScale < iconMin){currentScale = iconMin;}
+                        
                         
                     }
                     else if(coord.x > offset.x && coord.y > offset.y){
@@ -303,6 +311,19 @@ function makeDraggable(evt) {
            translateArr[1]= translateArr[1]+offsetH/2;
 
            return "translate("+parseInt(translateArr[0])+","+parseInt(translateArr[1])+")";
+      }
+
+
+      function findMin(selectedElement){
+        if(selectedElement.id.indexOf('north') !== -1){
+            return minNorth;
+        }
+        else if(selectedElement.id.indexOf('sun') !== -1){
+            return minSun;
+        }
+        else if(selectedElement.id.indexOf('eye') !== -1){
+            return minEye;
+        }
       }
 
 
@@ -416,7 +437,7 @@ function makeDraggable(evt) {
 
         <script type="text/javascript">
 
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.2)"  style="border:0; padding:0; pointer-events:visible;"> '
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625)"  style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
@@ -424,18 +445,18 @@ function makeDraggable(evt) {
                     +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
                     +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
             
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.2)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.121952)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
                 +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
                 +'<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
-                +'<rect class= "resize bottom-left"x="0" y="300" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
-                +'<rect class= "resize bottom-right"x="100" y="300" width="100" height="100" style="visibility: hidden;"fill="green"/></g>'
+                +'<rect class= "resize bottom-left"x="-10" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
+                +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/></g>'
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.2)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
                 + '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
                 + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white"  style="border:0;">'
                 + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" fill="black"  style="border:0;"></circle>'
@@ -451,8 +472,8 @@ function makeDraggable(evt) {
             
             var svg = document.getElementById('svgWrapper');
             var loader = document.getElementById('loading');
-            var northScaleString = 'scale(.2)';
-            var sunScaleString = 'scale(.2)';
+            var northScaleString = 'scale(.25)';
+            var sunScaleString = 'scale(.1566)';
             var eyeScaleString = 'scale(.2)';
 
             // dynamically add the elements to export better 
@@ -470,17 +491,13 @@ function makeDraggable(evt) {
             outlineBox.remove();
             eyeImage.remove();
 
+
             // set defaults
             outlineBox.style.visibility = 'hidden';
             /* svg.setAttribute('width',Number(<%= w %>));
             svg.setAttribute('height',Number(<%= h %>)); */
             
             // find icon dimensions
-            northScaleString = getIconDim(northScaleString,<%= w %>, <%= h %>);
-            sunScaleString = getIconDim(sunScaleString,<%= w %>, <%= h %>);
-
-            console.log('NORTH: '+ northScaleString);
-            console.log('SUN:  '+ sunScaleString);
 
 
             // function to hide the loading gif
@@ -491,27 +508,7 @@ function makeDraggable(evt) {
             function loaderActivate(){
                 loader.style.visibility = 'visible';
             }
-            // function that calulates the icon sizes based on image size
-            /** TODO: needs adjusting */
-            function getIconDim(scaleStr,imageWidth, imageHeight){
-                // always greater than 1
-                let ratio = (imageHeight>imageWidth) ? imageHeight/imageWidth : imageWidth/imageHeight;
 
-                if(imageHeight < 250 || imageWidth < 250){
-                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.000005: imageWidth* .000005).toFixed(6) + ')';
-                }
-                else if(imageHeight < 500 || imageWidth < 500){
-                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.00025: imageWidth* .00025).toFixed(6) + ')';
-                }
-                else if(imageHeight < 1000 || imageWidth < 1000){
-                    scaleStr = 'scale(' + ((imageWidth<imageHeight)? imageHeight*.00025: imageWidth*.00025).toFixed(6) + ')';
-                }
-                else if(ratio > 2){
-                    scaleStr = 'scale(' + parseFloat(ratio) + ')';
-                }
-                
-                return scaleStr;
-            }
             
             console.log(" image dimensions are => <%= w %>: <%= h %>");
             // set loader to invisible
@@ -582,10 +579,7 @@ function makeDraggable(evt) {
             var clickArray = [];
 
 
-            // set defaults 
-            northImage.style.visibility = 'visible';
-            sunImage.style.visibility = 'hidden';
-            eyeImage.style.visibility = 'hidden';
+            
 
             // on doc ready run the button logic and click capturing events
             $(document).ready(function() {
@@ -1120,7 +1114,7 @@ function makeDraggable(evt) {
                         northImage.remove();
                         northImage.style.visibility = 'hidden';
                         document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        northImage.setAttribute("transform","translate(0,0) scale(.2)");
+                        northImage.setAttribute("transform","translate(0,0) scale(.121952)");
                         northFlag = !northFlag;
                     }
                     
@@ -1162,7 +1156,7 @@ function makeDraggable(evt) {
                         eyeImage.style.visibility = 'hidden';
                         eyeFlag = !eyeFlag;
                         document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        eyeImage.setAttribute("transform","translate(0,100) scale(.2)");
+                        eyeImage.setAttribute("transform","translate(0,100) scale(.15625)");
                     }
                     
                     if(eyeFlag){
@@ -1191,7 +1185,7 @@ function makeDraggable(evt) {
                         sunImage.remove();
                         document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                         sunFlag = false;
-                        sunImage.setAttribute("transform","translate(0,150) scale(.2)");
+                        sunImage.setAttribute("transform","translate(0,150) scale(.15625)");
                             
                     }
                     
@@ -1336,9 +1330,7 @@ function makeDraggable(evt) {
                     if(!filename){
                         var filename = prompt("Save File as png svg or jpeg","");
                     }
-                    
-
-                    
+                                        
                     if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
                         var fileExt = filename.split(".")[filename.split(".").length - 1];
 
@@ -1366,9 +1358,8 @@ function makeDraggable(evt) {
 
                         }
                     }
-                    else{
-                       
-                        exportBtn.click();
+                    else if(filename !== null){
+                       exportBtn.click();
                     }
                     // revoke the url
                     DOMURL.revokeObjectURL(url);

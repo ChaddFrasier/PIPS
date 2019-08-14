@@ -45,11 +45,11 @@ image:hover {
 .image-controls{
     position: absolute;
     margin-left: 0%;
-    margin-right: 10%;
+    margin-right: 5%;
     display: block;
     align-content: left;
     padding-right:auto;
-    top: 15%;
+    top: -2rem;
     padding-left: 0%;            
 }
 
