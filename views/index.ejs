@@ -45,8 +45,8 @@
                     <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"type="file" class="form-control-file" />
 
                     <div class="form-group float-center" style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;">
-                            <input class="form-control form-control-sm text-center" type="text" name="desiredWidth" placeholder="Output Width (Px)"/>
-                            <input class="form-control form-control-sm text-center" type="text" name="desiredHeight" placeholder="Output Height (Px)"/>
+                            <input class="form-control form-control-sm text-center" type="text" id="widthInput" name="desiredWidth" placeholder="Output Width (Px)"/>
+                            <input class="form-control form-control-sm text-center" type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (Px)"/>
                     </div>
                 </div>
 
@@ -155,6 +155,29 @@
             }
 
 
+            var widthInputBox = document.getElementById("widthInput");
+            var heightInputBox = document.getElementById("heightInput");
+            var alerted = false;
+            function checkInput(){
+                let width = widthInputBox.value;
+                let height = heightInputBox.value;
+
+                console.log(window.screen.width-window.screen.width*.2);
+                if(!alerted){
+                    if(width >= window.screen.width-window.screen.width*.2){
+                        alert("Warning: The selected width is too larger \n     Continuing will cause redering issues");
+                        alerted = true;
+                    }
+                    else if(height >= window.screen.height-window.screen.height*.2){
+                        alert("Warning: The selected height is too larger \n    Continuing will cause redering issues");
+                        alerted = true;
+                    }
+                }
+            }
+            
+            setInterval(checkInput,1500);
+
+
             // this bind call is used to make the loader gif invisible on the page load
             $(window).bind("pageshow", function(event) {
                 if (event.originalEvent.persisted) {
@@ -164,10 +187,11 @@
                 }else{
                     fixLoader();
                 }
+
+                
             });
-
-
             
         </script>
+        
     </body>
 </html>
