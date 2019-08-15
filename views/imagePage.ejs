@@ -455,8 +455,8 @@
                             <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem;">
                         </li>
                         <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img>
-                            <label for="sunCheckbox" style="top: 20rem">Toggle Color</label>
-                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 28rem;">
+                            <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
+                            <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
 
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
@@ -518,7 +518,6 @@
         <script type="text/javascript">
 
             // string version of off the icons so they can be added dynamicly with a single function call 
-
             // (sun and eye) MIN .15625 MAX 1.5625
             var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
@@ -566,6 +565,19 @@
             svg.insertAdjacentHTML("beforeend",eyeObjectString);
             var eyeImage = document.getElementById('eyePosition');
 
+            // grab the image data for changing colors before it is removed
+            var sunIconInner = document.getElementById("sunIcon");
+            var sunIconOutter = document.getElementById("sunIconOutter");
+
+            var northBG = document.getElementById("northBG");
+            var northArrow = document.getElementById("northIcon");
+            var northLetter = document.getElementById("nLetter");
+
+            var eyeIconOutter = document.getElementById("eyeIconOutter");
+            var eyeIconCenter = document.getElementById("eyeIconCenter");
+            var eyePupel = document.getElementById("eyeIconPupel");
+
+            // reove the objects because they are not needed yet
             northImage.remove();
             sunImage.remove();
             outlineBox.remove();
@@ -588,6 +600,75 @@
             console.log(" image dimensions are => <%= w %>: <%= h %>");
             // set loader to invisible
             loadInvisible();
+        
+            // toggle colors tracker
+            var toggleNorth = true,
+                toggleSun = true,
+                toggleEye = true;
+
+
+            // everytime  the check boxes is changed switch the places of the fill and stroke
+            $("#northCheckbox").on("change",function(){
+                if(toggleNorth){
+                    northBG.setAttribute("fill","white");
+                    northArrow.setAttribute("fill", "black");
+                    northArrow.setAttribute("stroke", "white");
+                    northLetter.setAttribute("stroke", "black");
+                    northLetter.setAttribute("fill","white");
+                    toggleNorth = false;
+                }else{
+                    northBG.setAttribute("fill","black");
+                    northArrow.setAttribute("fill", "white");
+                    northArrow.setAttribute("stroke", "black");
+                    northLetter.setAttribute("stroke", "white");
+                    northLetter.setAttribute("fill","black");
+                    toggleNorth = true;
+                }
+            });
+
+            // everytime  the check boxes is changed switch the places of the fill and stroke
+            $("#sunCheckbox").on("change",function(){
+                if(toggleSun){
+                    
+                    sunIconInner.setAttribute("fill", "black");
+                    sunIconInner.setAttribute("stroke", "white");
+                    sunIconOutter.setAttribute("stroke", "black");
+                    sunIconOutter.setAttribute("fill","white");
+                    toggleSun = false;
+
+                }else{
+                    sunIconInner.setAttribute("fill", "white");
+                    sunIconInner.setAttribute("stroke", "black");
+                    sunIconOutter.setAttribute("stroke", "white");
+                    sunIconOutter.setAttribute("fill","black");
+                    toggleSun = true;
+                }
+            });
+            // everytime  the check boxes is changed switch the places of the fill and stroke
+            $("#eyeCheckbox").on("change",function(){
+                if(toggleEye){
+                    eyeIconOutter.setAttribute("fill","white");
+                    eyeIconOutter.setAttribute("stroke","black");
+                    eyeIconCenter.setAttribute("fill", "black");
+                    eyeIconCenter.setAttribute("stroke", "white");
+                    eyePupel.setAttribute("stroke", "black");
+                    eyePupel.setAttribute("fill","white");
+                    toggleEye = false;
+
+                }else{
+                    eyeIconOutter.setAttribute("fill","black");
+                    eyeIconOutter.setAttribute("stroke","white");
+                    eyeIconCenter.setAttribute("fill", "white");
+                    eyeIconCenter.setAttribute("stroke", "black");
+                    eyePupel.setAttribute("stroke", "white");
+                    eyePupel.setAttribute("fill","black");
+                    toggleEye = true;
+                }
+            });
+        
+        
+        
+        
         </script>
 
 
