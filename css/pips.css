@@ -96,6 +96,30 @@ svg{
     margin-left: 40%;
     border: 5%; 
 }
+
+.draggable{
+    cursor: move;
+}
+
+.resize{
+    pointer-events: painted;
+}
+
+.bottom-right{
+    cursor:nwse-resize;
+}
+
+.bottom-left{
+    cursor:nesw-resize;
+}
+.top-left{
+    cursor:nwse-resize;
+}
+
+.top-right{
+    cursor:nesw-resize;
+}
+
 li{
     padding-top:2rem;
     right: 80%;

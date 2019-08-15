@@ -1,5 +1,4 @@
 <html>
-
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -17,262 +16,363 @@
     </head>
 <!--  FOR TESTING WILL MOVE TO CSS FILE LATER -->
     <style>
-    .draggable{
-        cursor: move;
-    }
-
-    .resize{
-        pointer-events: painted;
-    }
-
-    .bottom-right{
-        cursor:nwse-resize;
-    }
-
-    .bottom-left{
-        cursor:nesw-resize;
-    }
-    .top-left{
-        cursor:nwse-resize;
-    }
-
-    .top-right{
-        cursor:nesw-resize;
-    }
+        
     </style>
 <!--============================================= -->
 <script>
-
-//==================== DRAGGABLE TESTING +=======================================
-
-function makeDraggable(evt) {
+    // function to create a draggable field from svg element
+    function makeDraggable(event) {
     
-    // get svg element
-        var svg = evt;
+        // get svg element
+        var svg = event;
     
-        
         // adds event functions to the whole svg element
         svg.addEventListener('mousedown', startDrag);
         svg.addEventListener('mousemove', drag);
         svg.addEventListener('mouseup', endDrag);
         svg.addEventListener('mouseleave', endDrag);
         
-
+        // decrale all global function variables for dragging
         var selectedElement, offset, transform,
             bbox, minX, maxX, minY, maxY, confined;
-
-            var resizing = false,
-                dragging = false,
-                currentScale,
-                transformString,
-                startH,
-                startW,
-                minNorth = .121952,
-                minSun = .15625,
-                minEye = .15625,
-                iconMin;
+        // & for resizing
+        var resizing = false,
+            dragging = false,
+            currentScale,
+            transformString,
+            startH,
+            startW,
+            minNorth = .1219513,
+            maxNorth = 1.219513,
+            minSun = .15625,
+            maxSun = 1.5625,
+            minEye = .15625,
+            maxEye = 1.5625,
+            iconMin,
+            scale;
         
             
-        // sets boundries for drag starting from 0,0 and going to length of image 
-        var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);   
+        // sets boundries for draggable objects when confined based on the view box
+        // minX = x of viewbox
+        var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
+        // maxX = the width of the viewbox - the absolute value of the x value
         var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
+        // minY = y of the viewBox
         var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
+        // maxY = the height of the viewbox - the absolute value of the  y of the view box
         var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
 
-        // 
-        function getMousePosition(evt) {
-          var CTM = svg.getScreenCTM();
-         
-        
-          return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
-          };
+        // get the mouse position relative to the svg screen matrix
+        // math functions were found on a blog post
+        function getMousePosition(event) {
+            var CTM = svg.getScreenCTM();
+            
+            return {
+                x: (event.clientX - CTM.e) / CTM.a,
+                y: (event.clientY - CTM.f) / CTM.d
+            };
         }
 
-        function startDrag(evt) {
-            console.log('prepairing icon to drag');
-            mX = evt.clientX, mY = evt.clientY;
-            evt.preventDefault();
+        // start the drag on mousedown
+        function startDrag(event){
+            // get the mouseX and mouseY on the client
+            mX = event.clientX, mY = event.clientY;
+            // prevent all other mousedown events
+            event.preventDefault();
+            // find what element the event is on
             var elementOver = document.elementFromPoint(mX,mY);
-            selectedElement = evt.target.parentNode;
-            
-            iconMin = findMin(selectedElement);
+            // get the element that needs to be dragged or scaled
+            selectedElement = event.target.parentNode;
+            // grab the limits scale value for whichever icon is selected
+            // functions find min if passed true and find max if passed false
+            iconMin = findLimit(selectedElement,true);
+            iconMax = findLimit(selectedElement, false);
+            // get the bounding box of the group element
+            bbox = selectedElement.getBBox();
+            // Make sure the first transform on the element is a translate transform
+            var transforms = selectedElement.transform.baseVal;
 
+            // get scale data
+            scale = transforms.getItem(transforms.length -1);
+
+            console.log(bbox.width * scale.matrix.a);
+            console.log(bbox.height * scale.matrix.a);
+
+            // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
+            // start resize logic
             if(elementOver.classList.contains('resize') && !resizing){
+                // set resizing flag
                 resizing = true;
             
-                // get the coorsinates where the click happend
-                offset = getMousePosition(evt);
+                // get the coordinates where the click happend inside the svg box
+                offset = getMousePosition(event);
 
-                
+                // get the transform string so we can change it later strip the scale part off the end because we are resizing
                 transformString = selectedElement.getAttribute("transform").split("scale(")[0];
-                currentScale = calculateScaleFactor(selectedElement);
                 
+                // extract the scale value as a number
+                currentScale = scale.matrix.a;
+
+                console.log(scale.matrix.a);
+                
+                // get translate data
+                transform = transforms.getItem(0);
+
+
             }
-            else if (evt.target.parentNode.classList.contains('draggable')) {
-                
+            // if the event click happened on a draggable element start drag logic
+            else if (event.target.parentNode.classList.contains('draggable')) {
+                // set dragging flag
                 dragging = true;
-                
-                offset = getMousePosition(evt);
+                // get the offset value for the translation
+                offset = getMousePosition(event);
 
-                // Make sure the first transform on the element is a translate transform
-                var transforms = selectedElement.transform.baseVal;
-
+                // make sure that the first element of the tranform object is the translate and create one if it isnt there
                 if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                // Create an transform that translates by (0, 0)
+                // sets current transform position to 0,0 to make moving item easier
                 var translate = svg.createSVGTransform();
                 translate.setTranslate(0, 0);
                 selectedElement.transform.baseVal.insertItemBefore(translate, 0);
                 }
 
-                // Get initial translation
+                // Get initial translation in relation to the current mouse position (offset) and the current translation
                 transform = transforms.getItem(0);
+
+                // calculate the transform location in relation to the svg element
                 offset.x -= transform.matrix.e;
                 offset.y -= transform.matrix.f;
 
-                confined = evt.target.parentNode.classList.contains('confine');
-                if (confined) {
-                    bbox = selectedElement.getBBox();
-                    
+                // is the selected item confined?
+                confined = event.target.parentNode.classList.contains('confine');
 
-                    let scaleFactor = calculateScaleFactor(selectedElement);
+                // if true
+                if (confined) {
                     
+                    // get the current scale of the icon
+                    let scaleFactor = scale.matrix.a;
                     
+                    // set the new boundry values based on the view box and the width/height of the icons
+                    // dim * scale = dim of icon
                     minX = boundaryX1 - bbox.x;
                     maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
                     minY = boundaryY1 - bbox.y;
                     maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
 
-                    console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  )
+                    //console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                 }
             }
         }
 
+        // set flags for rescale
         var bottomL = false,
             bottomR = false,
             topR = false,
             topL = false;
         
-        function drag(evt) {
-            mX = evt.clientX, mY = evt.clientY;
+        // move the icon when mouse moves or scale the icon when needed
 
+        /* IMORTANT: 
+            In order to scale the icon in a manner that looks and feels natural for the user
+                I am calculating the staring width and height of the icon and shifting the translate by that much
+                This gives the illusion that the  icon is growing from the side they are dragging from
+            */
+        function drag(event) {
+            // get the mouse x and y based on client
+            mX = event.clientX, mY = event.clientY;
+
+            // set the factor at which the resize happens
             let growingFactor = .02;
-
+            // get the element that the mouse is over
             var elementOver = document.elementFromPoint(mX,mY);
+            // prevent all other mousemove events
+            event.preventDefault();
             
-            evt.preventDefault();
-                        
+            // if the selectedElement is not null and resizing is true and dragging is false
             if(selectedElement && resizing && !dragging){
-               console.log('resizing now');
-                // get the new position of the mouse
-               var coord = getMousePosition(evt);
-               startH = selectedElement.getBBox().height * currentScale;
-               startW = selectedElement.getBBox().width * currentScale;
+         
+                // get new mouse position in svg space
+                var coord = getMousePosition(event);
 
-               console.log("width is " + startW);
-               console.log("height is " + startH);
-               
-               if( (!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
+                // calculate icon size using bbox height and width times the scale 
+                startH = bbox.height * currentScale;
+                startW = bbox.width * currentScale;
+
+                
+                // first make sure there are no other flags active and
+                // either the top right element is moused over or the top right is being moved
+                if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
+                    //set the flag just incase it isn't
                     topR = true;
+                    // if the new x is less  & the new y is greater than the old position then shrink
                     if(coord.x < offset.x && coord.y > offset.y){
+                        // decrement by the growing factor
                         currentScale -= growingFactor;
+                        // check for the min
                         if(currentScale < iconMin){currentScale = iconMin;}
 
+                        // translate the icon 0 in the x direction and by the difference in the positive y direction
+                        dx = parseInt(transform.matrix.e);
+                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale));
                     }
+                    // if the old x is greater and the new y is smaller then we are growing
                     else if(coord.x > offset.x && coord.y < offset.y){
+                        // increment by the factor
                         currentScale += growingFactor;
 
+                        // check for max size
+                        if(currentScale > iconMax){currentScale = iconMax;}
+                        
+                        // translate the icon 0 in the x direction and by the difference in the negative y direction        
+                        dx = parseInt(transform.matrix.e);
+                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale));
+
+                       
                     }
 
-                    let translateString = shiftTranslate(transformString, 0, startH - selectedElement.getBBox().height * currentScale);
-                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
+                    // set scale using svg data method
+                    scale.setScale(currentScale,currentScale);
+                    // if parse it returns a true value for both
+                    if(dx && dy){
+                        // set the new translate
+                        transform.setTranslate(dx,dy);
+                    }
+                    // set the new mouse position as the old so we can scale up and down
                     offset = coord;
-                    
                 }
+                // using the same logic for other corners of the scale
                 else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
                     topL = true;
+                    // if new x is greater than the old & the new y is greater than the old
+                    // shrink the scale
                     if(coord.x > offset.x && coord.y > offset.y){
                         currentScale -= growingFactor;
+                        // check for min
                         if(currentScale < iconMin){currentScale = iconMin;}
 
-                        
+                        // transform the icon by the positive difference in the sizes                        
+                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale));
+                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale));
                     }
+                    // if the new x and new y are both less than the old position
+                    // grow
                     else if(coord.x < offset.x && coord.y < offset.y){
                         currentScale += growingFactor;
-                        
+
+
+                        // check for max size
+                        if(currentScale > iconMax){currentScale = iconMax;}
+
+                        // transform the icon by the negative difference in the sizes
+                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale));
+                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale));
                     }
 
+                    // set scale using svg data method
+                    scale.setScale(currentScale,currentScale);
+                    // if parse it returns a true value for both
+                    if(dx && dy){
+                        // set the new translate
+                        transform.setTranslate(dx,dy);
+                    }
 
-                    let translateString = shiftTranslate(transformString, startW - selectedElement.getBBox().width * currentScale, startH - selectedElement.getBBox().height * currentScale);
-                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
-
+                    // set new mouse position
                     offset = coord;
                 }
-
+                // same logic as other corners
                 else if((!bottomR && !topR && !topL) && (elementOver.classList.contains('bottom-left') || bottomL)){
                     bottomL = true;
-                    
+                    // if new x is greater and new y is less
+                    // shrink
                     if(coord.x > offset.x && coord.y < offset.y){
-                        
                         currentScale -= growingFactor;
-
+                        // check for min
                         if(currentScale < iconMin){currentScale =iconMin;}
-                        
+
+                        // transform the icon by the negative difference in the sizes keep y the same
+                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale));
+                        dy = parseInt(transform.matrix.f);
+
+
                     }
+                    // of the new x is less and the new y is greater
+                    // grow the icon
                     else if(coord.x < offset.x && coord.y > offset.y){
-                        
                         currentScale += growingFactor;
+
+                        // check for max size
+                        if(currentScale > iconMax){currentScale = iconMax;}
                         
+                        // transform the icon by the negative difference in the sizes keep y the same
+                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale));
+                        dy = parseInt(transform.matrix.f);
+
                     }
-                    // scale and retranslate
-                    let translateString = shiftTranslate(transformString, startW - selectedElement.getBBox().width * currentScale, 0);
-                    selectedElement.setAttribute("transform", translateString + " scale(" + currentScale.toString() +")");
+                    
+                    // set scale using svg data method
+                    scale.setScale(currentScale,currentScale);
+                    // if parse it returns a true value for both
+                    if(dx && dy){
+                        // set the new translate
+                        transform.setTranslate(dx,dy);
+                    }
+
+                    // set new mouse position
                     offset = coord;
                 }
+                // same logic as other corners 
                 else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
                     bottomR = true;
+                    // if the new x is less and the new y is also less
+                    // shrink
                     if(coord.x < offset.x && coord.y < offset.y){
                         currentScale -= growingFactor;
+                        // check min bound
                         if(currentScale < iconMin){currentScale = iconMin;}
-                        
-                        
                     }
+                    // if the new x is greater than the old and the new y is greater
+                    // grow
                     else if(coord.x > offset.x && coord.y > offset.y){
                         currentScale += growingFactor;
-                        
+
+                        //check for max size
+                        if(currentScale > iconMax){currentScale = iconMax;}
                     }
-                    selectedElement.setAttribute("transform", transformString + " scale(" + currentScale.toString() +")");
+                    // set scale using svg data method
+                    scale.setScale(currentScale,currentScale);
+                    // no need to translate for bottom right corner
+
+                    // set new mouse coordinates
                     offset = coord;
                 }
-
-                transformString = selectedElement.getAttribute("transform").split("scale(")[0];
-                   
+                       
             }
+            // if the selected element is not null and the dragging flag is true
             else if (selectedElement && dragging) {
-                console.log('dragging now');
-                
-
-                var coord = getMousePosition(evt);
+             
+                // get mouse coordinates
+                var coord = getMousePosition(event);
+                // calculate the difference in the two
                 var dx = coord.x - offset.x;
                 var dy = coord.y - offset.y;
 
+                // if the icon is confined check for boundry values
                 if (confined) {
                     if (dx < minX) { dx = minX; }
                     else if (dx > maxX) { dx = maxX; }
                     if (dy < minY) { dy = minY; }
                     else if (dy > maxY) { dy = maxY; }
                 }
-
+                // set the transform
                 transform.setTranslate(dx, dy);
             }
         }
 
-        function endDrag(evt) {
-            console.log('stops drag');
+        // when mouseup or mouse leave the svg box reset all flags 
+        // and set the selectedElement to null
+        function endDrag(event) {
             
             if(selectedElement){
-                drag(evt);
+                drag(event);
                 resizing = false;
                 dragging = false;
                 bottomL = false;
@@ -280,69 +380,35 @@ function makeDraggable(evt) {
                 topL = false;
                 topR = false;
             }
-
           selectedElement = null;
         }
 
-
-        function calculateScaleFactor(selectedObject){
-            let tmpStr = selectedObject.getAttribute('transform');
-            
-            if(tmpStr.indexOf('scale') > -1){
-                let tmpArr = tmpStr.split(' ');
-
-                for(index in tmpArr){
-                    if(tmpArr[index].indexOf('scale') > -1){
-                        tmpStr = tmpArr[index];
-
-                        return Number(extractScaleVal(tmpStr));
-                    }
+        // given an icon element returnns the min scale value for each icon to test against the new scale
+        function findLimit(selectedElement, isMin){
+            if(isMin){
+                if(selectedElement.id.indexOf('north') !== -1){
+                    return minNorth;
                 }
-            }else{
-                return 'none';
+                else if(selectedElement.id.indexOf('sun') !== -1){
+                    return minSun;
+                }
+                else if(selectedElement.id.indexOf('eye') !== -1){
+                    return minEye;
+                }
             }
-      }
-
-
-
-      function shiftTranslate(transformString, offsetW, offsetH){
-          let translateArr = getTranslateArray(transformString);
-           translateArr[0]= translateArr[0]+offsetW;
-           translateArr[1]= translateArr[1]+offsetH/2;
-
-           return "translate("+parseInt(translateArr[0])+","+parseInt(translateArr[1])+")";
-      }
-
-
-      function findMin(selectedElement){
-        if(selectedElement.id.indexOf('north') !== -1){
-            return minNorth;
-        }
-        else if(selectedElement.id.indexOf('sun') !== -1){
-            return minSun;
-        }
-        else if(selectedElement.id.indexOf('eye') !== -1){
-            return minEye;
-        }
-      }
-
-
-      function getTranslateArray(transformString){
-          let tmpArr = transformString.split("translate(")[1].split(",");
-          tmpArr[1] = tmpArr[1].replace(')',' ').trim();
-          return [Number(tmpArr[0]),Number(tmpArr[1])]; 
-      }
-      function extractScaleVal(str){
-          let tmpStr = str.split('scale(')[1];
-
-          return parseFloat(tmpStr.replace(')','').trim());
-      }
-
+            else{
+                if(selectedElement.id.indexOf('north') !== -1){
+                    return maxNorth;
+                }
+                else if(selectedElement.id.indexOf('sun') !== -1){
+                    return maxSun;
+                }
+                else if(selectedElement.id.indexOf('eye') !== -1){
+                    return maxEye;
+                }
+            }
+        }        
     }// end make dragable
-
-
-
-//=================================================================================
 
 </script>
 
@@ -437,7 +503,10 @@ function makeDraggable(evt) {
 
         <script type="text/javascript">
 
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625)"  style="border:0; padding:0; pointer-events:visible;"> '
+            // string version of off the icons so they can be added dynamicly with a single function call 
+
+            // (sun and eye) MIN .15625 MAX 1.5625
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
@@ -445,13 +514,14 @@ function makeDraggable(evt) {
                     +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
                     +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
             
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.121952)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+            // (North) MIN .1219513 MAX 1.219513
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
                 +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
                 +'<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
-                +'<rect class= "resize bottom-left"x="-10" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
+                +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
                 +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/></g>'
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
@@ -467,14 +537,10 @@ function makeDraggable(evt) {
             
             // grab DOM elements that are needed
             var exportBtn =  document.getElementById('exportBtn');
-            
             var myImage = document.getElementById('crop');
-            
             var svg = document.getElementById('svgWrapper');
             var loader = document.getElementById('loading');
-            var northScaleString = 'scale(.25)';
-            var sunScaleString = 'scale(.1566)';
-            var eyeScaleString = 'scale(.2)';
+           
 
             // dynamically add the elements to export better 
             svg.insertAdjacentHTML("beforeend",sunObjectString);
@@ -494,11 +560,6 @@ function makeDraggable(evt) {
 
             // set defaults
             outlineBox.style.visibility = 'hidden';
-            /* svg.setAttribute('width',Number(<%= w %>));
-            svg.setAttribute('height',Number(<%= h %>)); */
-            
-            // find icon dimensions
-
 
             // function to hide the loading gif
             function loadInvisible(){
@@ -532,13 +593,11 @@ function makeDraggable(evt) {
                 return pt.matrixTransform(element.getScreenCTM().inverse());    
             }
             
-            // TODO: will need to parse differently when rotating
-            function extractScaleVal(str){
-                let tmpStr = str.split('scale(')[1];
 
-                return Number(tmpStr.replace(')','').trim());
-            }
-
+            /**
+            * converts image to a data url so that when exporting all that is needed 
+            * is to convert the svg block to a canvas and then export as an image
+            **/
             function getDataUri(url, callback) {
                 var image = new Image();
 
@@ -573,13 +632,8 @@ function makeDraggable(evt) {
                 sunFlag = false,
                 eyeFlag = false;
 
-            
-            
             //create clickArray
             var clickArray = [];
-
-
-            
 
             // on doc ready run the button logic and click capturing events
             $(document).ready(function() {
@@ -593,108 +647,135 @@ function makeDraggable(evt) {
                     myImage.setAttribute('xlink:href',dataUri);
                 });
                 
-                
+                // get padding input box and other important DOM elements for export
                 var paddingBoxInput = document.getElementById("paddingInput");
-                paddingBoxInput.value =''
                 var bg = document.getElementById("svgBackground");
                 var canvas = document.getElementById("canvas");
-
+                
+                // init the padding value
+                paddingBoxInput.value = '';
+                
+                // function that adjusts the view box and background to add padding to the image
                 function setImagePadding(val,location){
+                    // image w and h vars
                     let imageW;
                     let imageH;
 
+
+                    // switch on the location of the padding
                     switch(location){
-                        
+                        // if bottom padding
                         case 'bottom':
+                            // get the new image height for the box and background
                             imageH = <%=h%> + val; 
-                            
+                            // set the viewbox values to how on the bottom of the image
                             svgDOM.setAttribute("viewBox", "0 0 <%=w%> " + imageH);
+
+                            // set background x,y to 0 to show at the bottom of the image
                             bg.setAttribute("x",0);
                             bg.setAttribute("y",0);
 
+                            // adjust the height and set the width to what it should be
                             bg.setAttribute("height", imageH);
                             bg.setAttribute("width",<%=w%>);
-
+                            // same with canvas to allow exporting the padding
                             canvas.setAttribute("height", imageH);
                             canvas.setAttribute("width",<%=w%>);
-
+                            // fix the svg to properly export all content
                             svgDOM.setAttribute("height", imageH);
                             svgDOM.setAttribute("width",<%=w%>);
-
+                            // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svgDOM);
                             break;
 
                         case "top":
+                            // get the new image height for the box and background
                             imageH = <%=h%> + val;
-                            
+                            // set background x,y to show padding at the right spot
                             bg.setAttribute("y",val*-1);
                             bg.setAttribute("x",0);
-
+                            // adjust the height and set the width to what it should be
                             bg.setAttribute("height",imageH);
                             bg.setAttribute("height",<%=w%>);
                             
-                            
+                            // set the viewbox values 
                             svgDOM.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
-
+                            // same with canvas to allow exporting the padding
                             canvas.setAttribute("height", imageH);
                             canvas.setAttribute("width",<%=w%>);
+                            // fix the svg to properly export all content
                             svgDOM.setAttribute("height", imageH);
                             svgDOM.setAttribute("width",<%=w%>);
+                            // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svgDOM);
                             break;
 
                         case "right":
+                            // get the new image width for the box and background
                             imageW = <%=w%> + val;
+                            // set background x,y to padding at the right spot
                             bg.setAttribute("y",0);
                             bg.setAttribute("x",0);
-
+                            // adjust the height and set the width to what it should be
                             bg.setAttribute("width",imageW);
                             bg.setAttribute("height",<%=h%>);
                             
-                            
+                            // set the viewbox values
                             svgDOM.setAttribute("viewBox", "0 0 "  + imageW + " <%=h%>");
+                            // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
                             canvas.setAttribute("height",<%=h%>);
+                            // fix the svg to properly export all content
                             svgDOM.setAttribute("width", imageW);
                             svgDOM.setAttribute("height",<%=h%>);
-
+                            // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svgDOM);
                             break;
 
 
                         case "left":
+                            // get the new image width for the box and background
                             imageW = <%=w%> + val;
+                            // set background x,y to padding at the right spot
                             bg.setAttribute("y",0);
                             bg.setAttribute("x",val*-1);
-
+                            // adjust the height and set the width to what it should be
                             bg.setAttribute("width",imageW);
                             bg.setAttribute("height",<%=h%>);
                             
-                            
+                            // set the viewbox values 
                             svgDOM.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " <%=h%>");
+                            // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
                             canvas.setAttribute("height",<%=h%>);
+                            // fix the svg to properly export all content
                             svgDOM.setAttribute("width", imageW);
                             svgDOM.setAttribute("height",<%=h%>);
-
+                            // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svgDOM);
                             break;
 
                         default:
-                            // reset
+                            // get the new image width and height for the box and background
                             imageW = <%=w%>;
                             imageH = <%=h%>; 
 
-                            myImage.setAttribute("width",imageW);
-                            myImage.setAttribute("height",imageH);
+                            // set background x,y to padding at the right spot                            
                             bg.setAttribute("x",0);
                             bg.setAttribute("y",0);
-                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
+                            // adjust the height and set the width to what it should be
+                            bg.setAttribute("width",imageW);
+                            bg.setAttribute("height",imageH);
 
+                            // set the viewbox values
+                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
+                            // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", <%=w%>);
                             canvas.setAttribute("height",<%=h%>);
+                            // fix the svg to properly export all content
                             svgDOM.setAttribute("width", <%=w%>);
                             svgDOM.setAttribute("height",<%=h%>);
+                            // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svgDOM);
 
                     }
@@ -702,6 +783,7 @@ function makeDraggable(evt) {
                     
                 }
 
+                // jquery to detect a click on the padding buttons 
                 $("#bottomPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'bottom');
@@ -1289,7 +1371,7 @@ function makeDraggable(evt) {
 
             // download works well for pngs
             function triggerDownload (imgURI,filename) {
-                var evt = new MouseEvent('click', {
+                var event = new MouseEvent('click', {
                     view: window,
                     bubbles: false,
                     cancelable: true
@@ -1299,18 +1381,15 @@ function makeDraggable(evt) {
                 a.setAttribute('href', imgURI);
                 a.setAttribute('target', '_blank');
 
-                a.dispatchEvent(evt);
+                a.dispatchEvent(event);
             }
 
-            // get the image element
-            var image = document.getElementById('crop');
             
             // when the export is clicked
             exportBtn.addEventListener('click', function () {
                 
                 // get the svg element and the canvas information
-               
-                var canvas = document.getElementById('canvas');
+                canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext('2d');
 
                 var data = (new XMLSerializer()).serializeToString(svg);
@@ -1323,48 +1402,62 @@ function makeDraggable(evt) {
 
                 
                 img.onload = function(){
-                    
-                    
+                    // draw the svg image onto the canvas
                     ctx.drawImage(img,0,0);
                     
+                    // if the filename a false value
                     if(!filename){
+                        // read in a filename with prompt
                         var filename = prompt("Save File as png svg or jpeg","");
                     }
-                                        
+
+                    // if the filename is one of the accepted filenames and it isnt null              
                     if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
                         var fileExt = filename.split(".")[filename.split(".").length - 1];
 
+                        // if the fileExt is NOT svg
                         if(fileExt !== 'svg'){
                             try{
-                                // export and png only
+                                if(fileExt === 'jpg'){
+                                    // export an image of the extension type
+                                    var imgURI = canvas
+                                    .toDataURL('image/jpeg', 1.0)
+                                    .replace('image/jpeg', 'image/octet-stream');
+                                }
+                                else{
+                                    // export an image of the extension type
+                                    var imgURI = canvas
+                                    .toDataURL('image/'+fileExt, 1.0)
+                                    .replace('image/'+fileExt, 'image/octet-stream');
+                                }
                                 
-                                var imgURI = canvas
-                                .toDataURL('image/'+fileExt, 1.0)
-                                .replace('image/'+fileExt, 'image/octet-stream');
-
-                                triggerDownload(imgURI,filename);
-                                            
+                                // start the download
+                                triggerDownload(imgURI,filename);            
                             }catch(err){
                                 alert('Image is too large to save from browser');
                             }
                         }else{
+                            // fileExt === 'svg'
                             try{
-
-                                triggerDownload(url,filename);
-                                            
+                                // trigger the download with the svg url instead of converting to image
+                                triggerDownload(url,filename);       
                             }catch(err){
                                 alert('Image is too large to save from browser');
                             }
 
                         }
                     }
+                    // must enter an accepted fileExt
                     else if(filename !== null){
                        exportBtn.click();
                     }
                     // revoke the url
                     DOMURL.revokeObjectURL(url);
+
+                    // Note:
+                    //     if the user hits cancel the filename will be null, we ignore this case
                 };
-                
+                // set the img src to the url
                 try{
                     img.src = url;
                 }catch(err){
@@ -1372,9 +1465,9 @@ function makeDraggable(evt) {
                 }
             });
         </script>
+
         <!-- Legend Section-->
         <br/>
-       
         <div class="position-relative text-center" style="margin-left:auto; margin-right:auto; display: none;">
             <h2 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h2>
             <table class="float-center text-center" style="margin-left:auto; margin-right:auto; margin-top: 0px;">
