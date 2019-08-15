@@ -16,7 +16,11 @@
     </head>
 <!--  FOR TESTING WILL MOVE TO CSS FILE LATER -->
     <style>
-        
+        input.largeBox{
+            left: 13rem;
+            top: 16.5rem;
+            transform: scale(1.75); 
+        }
     </style>
 <!--============================================= -->
 <script>
@@ -441,9 +445,19 @@
                         <li><button class="btn btn-secondary btn-lg" onclick="window.history.back();">Back to Caption</button></li>
                         <li><a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a></li>
                         
-                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img></li>
-                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img></li>
+                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img>
+                            <label for="northCheckbox">Toggle Color</label>
+                            <input class="form-check-input largeBox" type="checkbox" id="northCheckbox">
+                            
+                        </li>
+                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img>
+                            <label for="sunCheckbox" style="top: 20rem">Toggle Color</label>
+                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem;">
+                        </li>
+                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img>
+                            <label for="sunCheckbox" style="top: 20rem">Toggle Color</label>
+                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 28rem;">
+                        </li>
 
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
                             <h2 class="text-left">Pad Image</h2>
@@ -516,11 +530,11 @@
             
             // (North) MIN .1219513 MAX 1.219513
             var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
-                +'<rect x="0" y="0" style="visibility: visible;"width="200" height="400" fill="black"/>'
+                +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
                 +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
-                +'<path d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
+                +'<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
                 +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
                 +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/></g>'
 
@@ -528,8 +542,8 @@
             
             var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
                 + '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
-                + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white"  style="border:0;">'
-                + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" fill="black"  style="border:0;"></circle>'
+                + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white" stroke="black"  style="border:0;">'
+                + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" stroke="white" fill="black"  style="border:0;"></circle>'
                 + '<rect x="0" y="-10" class="resize top-left" style="visibility: hidden;"width="100" height="80" fill="red"/>'
                 + '<rect x="220" y="-10" class="resize top-right" style="visibility: hidden;"width="100" height="80" fill="blue"/>'
                 + '<rect x="220" y="120" class="resize bottom-right" style="visibility: hidden;"width="100" height="100" fill="green"/>'
