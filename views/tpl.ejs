@@ -1,7 +1,7 @@
 <html>
     <head>
 
-        <title>Template File</title>
+        <title>Template Help</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" type="text/css" href="../css/pips.css">
@@ -16,24 +16,58 @@
 
     <body>
         <div class="jumbotron jumbotron-fluid text-center" style="padding: 1%;">
-            <h1 class="display-6"> A tpl file is a special Orion text file that is used to parse and exchange tags with data values</h1>
-            <p class="lead"> (simply write a text file like normal and save it to a .tpl extrension)</p>
+            <h1 class="display-6"> Template Files</h1>
+            <p class="lead">.tpl is a special text file for this server.</p>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="/"
                     role="button">Back</a>
             </p>
         </div>
 
-        <div class="container" style="background-color: lightgray;">
-            <div class="row">       
-                <label for="TPLForm" style="align-content: center; color: black; ">Template File (.tpl)</label>
-            </div>
-            <div class="row">
-                <textarea class="form-control rounded-0" style="align-content: center; background-color: lightsteelblue; color: black;" 
-                readonly='readonly' id="TPLForm" rows="10">
-                    <%= tplData %>
-                </textarea>
-            </div>  
+
+        <div id="tplRaw" style="display: none"><%= tplData %></div>
+
+        <div class="jumbotron-fluid jumbotron text-center" style="background-color: lightgray;">
+            <h2>Template Files (.tpl)</h2>
+            <div class="lead jumbotron" id="textbox"></div> 
         </div>
     </body>
+
+    
+    <script type="text/javascript">
+    // script to read the template help raw text and turns it into html DOM elements
+        var tplData = document.getElementById("tplRaw").innerHTML;
+        var textbox = document.getElementById("textbox");
+        let tmpArr = tplData.split('\n');
+
+        function setOutput(array){
+            // loop over the remaining array
+            for(index in array){
+                if(array[index] === ''){
+                    // create a break
+                    let br = document.createElement("br");
+                    textbox.appendChild(br);
+                }
+                else{
+                    let h4 = document.createElement("h5");
+                    // look for <u> tags
+                    if(array[index].indexOf("&lt;u&gt;") !== -1){
+                        let tmp = array[index].split("&lt;u&gt;")[1];
+                        let u = document.createElement("u");
+                        u.innerHTML = tmp;
+                        h4.appendChild(u);
+                        textbox.appendChild(h4);
+
+                    }else{
+                        h4.innerHTML = array[index];
+                        textbox.appendChild(h4);
+                    }
+                }
+            }
+        }
+        // make the call
+        setOutput(tmpArr);
+    </script>
+
+
 </html>
