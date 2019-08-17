@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        <title>Image Edit</title>
+        <title>Image Editor</title>
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     </head>
@@ -66,6 +66,10 @@
         // maxY = the height of the viewbox - the absolute value of the  y of the view box
         var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
 
+
+        
+
+
         // get the mouse position relative to the svg screen matrix
         // math functions were found on a blog post
         function getMousePosition(event) {
@@ -87,6 +91,7 @@
             var elementOver = document.elementFromPoint(mX,mY);
             // get the element that needs to be dragged or scaled
             selectedElement = event.target.parentNode;
+
             // grab the limits scale value for whichever icon is selected
             // functions find min if passed true and find max if passed false
             iconMin = findLimit(selectedElement,true);
@@ -154,7 +159,7 @@
                     
                     // get the current scale of the icon
                     let scaleFactor = scale.matrix.a;
-                    
+                    console.log(bbox);
                     // set the new boundry values based on the view box and the width/height of the icons
                     // dim * scale = dim of icon
                     minX = boundaryX1 - bbox.x;
@@ -162,7 +167,7 @@
                     minY = boundaryY1 - bbox.y;
                     maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
 
-                    //console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                    console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                 }
             }
         }
@@ -459,6 +464,8 @@
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
 
+                        <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
+
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
                             <h2 class="text-left">Pad Image</h2>
                             <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
@@ -491,10 +498,41 @@
         <!-- Editor Box -->
         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
         class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
-            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="red"/>
-            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>    
+            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="darkgray"/>
+            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
+               
+                
+                <g id="scalebarPosition2"class="draggable confine scalebar" transform="translate(0,175) scale(.5)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">
+                    <rect x="0" y="0" id="scalebarBG" width="4000" height="500" stroke="black" fill="red" ></rect>
+                    <rect x="0" y="200" id="scalebarOuter" width="4000" height="300" stroke="white" fill="black" ></rect>
+                    <path id="scalebarLine" d="M 2000 350 L 4000 350"  stroke="white" stroke-width="7"/>
+                    <path id="scalebarVert" d="M 2000 200 L 2000 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarVert10th" d="M 200 200 L 200 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarLine10th" d="M 100 350 L 200 350"  stroke="white" stroke-width="7"/>
+    
+                    <path id="scalebarVert20th" d="M 400 200 L 400 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarVert30th" d="M 600 200 L 600 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarLine30th" d="M 400 350 L 600 350"  stroke="white" stroke-width="7"/>
+    
+                    <path id="scalebarVert40th" d="M 800 200 L 800 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarVert50th" d="M 1000 200 L 1000 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarLine50th" d="M 800 350 L 1000 350"  stroke="white" stroke-width="7"/>
+    
+                    <path id="scalebarVert60th" d="M 1200 200 L 1200 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarVert70th" d="M 1400 200 L 1400 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarLine70th" d="M 1200 350 L 1400 350"  stroke="white" stroke-width="7"/>
+    
+                    <path id="scalebarVert80th" d="M 1600 200 L 1600 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarVert90th" d="M 1800 200 L 1800 500"  stroke="white" stroke-width="5"/>
+                    <path id="scalebarLine90th" d="M 1600 350 L 1800 350"  stroke="white" stroke-width="7"/>
+    
+                    <text id="scalebarText" x="3500" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%> <%=scalebarUnits%></text>
+                    <text id="scalebar1" x="10" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>
+                    <text id="scalebarHalf2" x="1000" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>
+                    <text id="scalebar0" x="2025" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>
+
+
         </svg>
-        
    
 <br/>
         <!-- Hidden Tags for data parsing-->
@@ -520,7 +558,7 @@
             // string version of off the icons so they can be added dynamicly with a single function call 
             // (sun and eye) MIN .15625 MAX 1.5625
             var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
-                    +'<circle id= "sunIconOutter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
+                    +'<circle id= "sunIconOuter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
                     +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
@@ -540,7 +578,7 @@
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
             
             var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
-                + '<ellipse id= "eyeIconOutter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
+                + '<ellipse id= "eyeIconOuter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
                 + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white" stroke="black"  style="border:0;">'
                 + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" stroke="white" fill="black"  style="border:0;"></circle>'
                 + '<rect x="0" y="-10" class="resize top-left" style="visibility: hidden;"width="100" height="80" fill="red"/>'
@@ -548,6 +586,36 @@
                 + '<rect x="220" y="120" class="resize bottom-right" style="visibility: hidden;"width="100" height="100" fill="green"/>'
                 + '<rect x="0" y="120" class="resize bottom-left" style="visibility: hidden;"width="95" height="100" fill="yellow"/></g>';
             
+            var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+                + '<rect x="0" y="0" id="scalebarBG" width="4000" height="500" stroke="black" fill="red" ></rect>'
+                + '<rect x="0" y="200" id="scalebarOuter" width="4000" height="300" stroke="white" fill="black" ></rect>'
+                + '<path id="scalebarLine" d="M 2000 350 L 4000 350"  stroke="white" stroke-width="7"/>'
+                + '<path id="scalebarVert" d="M 2000 200 L 2000 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarVert10th" d="M 200 200 L 200 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarLine10th" d="M 0 350 L 200 350"  stroke="white" stroke-width="7"/>'
+
+                + '<path id="scalebarVert20th" d="M 400 200 L 400 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarVert30th" d="M 600 200 L 600 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarLine30th" d="M 400 350 L 600 350"  stroke="white" stroke-width="7"/>'
+
+                + '<path id="scalebarVert40th" d="M 800 200 L 800 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarVert50th" d="M 1000 200 L 1000 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarLine50th" d="M 800 350 L 1000 350"  stroke="white" stroke-width="7"/>'
+
+                + '<path id="scalebarVert60th" d="M 1200 200 L 1200 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarVert70th" d="M 1400 200 L 1400 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarLine70th" d="M 1200 350 L 1400 350"  stroke="white" stroke-width="7"/>'
+
+                + '<path id="scalebarVert80th" d="M 1600 200 L 1600 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarVert90th" d="M 1800 200 L 1800 500"  stroke="white" stroke-width="5"/>'
+                + '<path id="scalebarLine90th" d="M 1600 350 L 1800 350"  stroke="white" stroke-width="7"/>'
+
+                + '<text id="scalebarText" x="3400" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%> <%=scalebarUnits%></text>'
+                + '<text id="scalebar1" x="10" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
+                + '<text id="scalebarHalf" x="900" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>'
+                + '<text id="scalebar0" x="1950" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>';
+
+
             // grab DOM elements that are needed
             var exportBtn =  document.getElementById('exportBtn');
             var myImage = document.getElementById('crop');
@@ -564,16 +632,40 @@
             var outlineBox = document.getElementById('cropOutline');
             svg.insertAdjacentHTML("beforeend",eyeObjectString);
             var eyeImage = document.getElementById('eyePosition');
+            svg.insertAdjacentHTML("beforeend",scaleBarObject);
+            var scaleBarIcon = document.getElementById('scalebarPosition');
+            var testbar =  document.getElementById('scalebarPosition2');
+
+            let half = parseFloat("<%=scalebarLength%>")/2;
+            
+            let scalePX = parseFloat("<%=scalebarPx%>");
+            console.log(scalePX);
+            
+            if('<%=scalebarPx%>' !== 'none'){
+                scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (<%=w%>/<%=origW%>) + ')');
+                testbar.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 *(<%=w%>/<%=origW%>) + ')');
+                
+                if(half < 1){
+                    document.getElementById("scalebarHalf").innerHTML = half;
+                }
+                else{
+                    document.getElementById("scalebarHalf").innerHTML = parseInt(half);
+                }
+            }
+            else{
+                document.getElementById("scaleBarButton").setAttribute("class",document.getElementById("scaleBarButton").getAttribute("class") + " disabled"); 
+            }
+            
 
             // grab the image data for changing colors before it is removed
             var sunIconInner = document.getElementById("sunIcon");
-            var sunIconOutter = document.getElementById("sunIconOutter");
+            var sunIconOuter = document.getElementById("sunIconOuter");
 
             var northBG = document.getElementById("northBG");
             var northArrow = document.getElementById("northIcon");
             var northLetter = document.getElementById("nLetter");
 
-            var eyeIconOutter = document.getElementById("eyeIconOutter");
+            var eyeIconOuter = document.getElementById("eyeIconOuter");
             var eyeIconCenter = document.getElementById("eyeIconCenter");
             var eyePupel = document.getElementById("eyeIconPupel");
 
@@ -582,6 +674,7 @@
             sunImage.remove();
             outlineBox.remove();
             eyeImage.remove();
+            scaleBarIcon.remove();
 
 
             // set defaults
@@ -604,7 +697,8 @@
             // toggle colors tracker
             var toggleNorth = true,
                 toggleSun = true,
-                toggleEye = true;
+                toggleEye = true,
+                toggleScalebar = true;
 
 
             // everytime  the check boxes is changed switch the places of the fill and stroke
@@ -632,23 +726,23 @@
                     
                     sunIconInner.setAttribute("fill", "black");
                     sunIconInner.setAttribute("stroke", "white");
-                    sunIconOutter.setAttribute("stroke", "black");
-                    sunIconOutter.setAttribute("fill","white");
+                    sunIconOuter.setAttribute("stroke", "black");
+                    sunIconOuter.setAttribute("fill","white");
                     toggleSun = false;
 
                 }else{
                     sunIconInner.setAttribute("fill", "white");
                     sunIconInner.setAttribute("stroke", "black");
-                    sunIconOutter.setAttribute("stroke", "white");
-                    sunIconOutter.setAttribute("fill","black");
+                    sunIconOuter.setAttribute("stroke", "white");
+                    sunIconOuter.setAttribute("fill","black");
                     toggleSun = true;
                 }
             });
             // everytime  the check boxes is changed switch the places of the fill and stroke
             $("#eyeCheckbox").on("change",function(){
                 if(toggleEye){
-                    eyeIconOutter.setAttribute("fill","white");
-                    eyeIconOutter.setAttribute("stroke","black");
+                    eyeIconOuter.setAttribute("fill","white");
+                    eyeIconOuter.setAttribute("stroke","black");
                     eyeIconCenter.setAttribute("fill", "black");
                     eyeIconCenter.setAttribute("stroke", "white");
                     eyePupel.setAttribute("stroke", "black");
@@ -656,8 +750,8 @@
                     toggleEye = false;
 
                 }else{
-                    eyeIconOutter.setAttribute("fill","black");
-                    eyeIconOutter.setAttribute("stroke","white");
+                    eyeIconOuter.setAttribute("fill","black");
+                    eyeIconOuter.setAttribute("stroke","white");
                     eyeIconCenter.setAttribute("fill", "white");
                     eyeIconCenter.setAttribute("stroke", "black");
                     eyePupel.setAttribute("stroke", "white");
@@ -667,7 +761,17 @@
             });
         
         
-        
+        $("#scaleBarButton").on("click",function(){
+            if(!this.classList.contains("disabled")){
+                if(toggleScalebar){
+                    svg.appendChild(scaleBarIcon);
+                    toggleScalebar = false;
+                }else{
+                    scaleBarIcon.remove();
+                    toggleScalebar = true;
+                }
+            }
+        });
         
         </script>
 
@@ -736,6 +840,7 @@
                 clickArray = [];
                 var svgDOM = document.getElementById('svgWrapper');
                 makeDraggable(svgDOM);
+                var myImage = document.getElementById('crop');
 
                 // convert image to data Base64
                 getDataUri('/<%=image%>', function(dataUri) {
@@ -1088,7 +1193,7 @@
                     mouseX = parseInt(svgP.x),
                     mouseY = parseInt(svgP.y);
                     
-                    console.log('MOUSE CLICK ON SVG OUTTER BOX: '+ mouseX + ' '+ mouseY);
+                    console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
 
                    
                  /*   COMMENTING OUT FOR NOW

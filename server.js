@@ -249,6 +249,8 @@ app.post('/upload', async function(request, response){
             if(Number(request.body.desiredWidth) > 50 && Number(request.body.desiredHeight)> 50){
                 cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
 
+            }else{
+                cubeObj.userDim = [0,0];
             }
             
             // reset server tif val because conversion completed
@@ -442,6 +444,8 @@ app.post('/imageDownload', function(request,response){
 
 /**
  * if no cookie can be found then fail
+ * 
+ * TODO: when cookie found retrieve the file needed
  */
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
@@ -460,6 +464,8 @@ app.get('/imageDownload', function(request, response){
 
 /**
  * if no cookie can be found then fail
+ * 
+ * TODO: when cookie is found retrieve the needed file if the file is not found return the index page
  */
 app.get('/showImage', function(request, response){
     console.log(request.path);
@@ -486,7 +492,8 @@ app.post('/showImage', function(request, response){
     // prepare variables 
     var cookieval = request.cookies['cubeFile'];
     var imagepath;
-    var data;
+    var data,
+    resolution;
 
     if(cookieval != undefined){
         // get image name and path
@@ -502,7 +509,9 @@ app.post('/showImage', function(request, response){
             data = 'NONE';
         }else{
             var userDim = data.userDim;
-            
+            // get resolution value
+            var resolution = util.getPixelResolution(data);
+
             // otherwise load the important data from the active object array into data variable
             data = data.impData;
         }
@@ -512,27 +521,91 @@ app.post('/showImage', function(request, response){
     }
 
    
-    var w;
-    var h;
+    var w,
+        h;
+
     // get the hight and width of the image and render the page with all needed variables
-    if( userDim !== undefined && userDim[0] !== 0 && userDim[1] !== 0)
-    {
-        if(isWindows){ imagepath = imagepath.replace("\\","/");}
-        response.render("imagePage.ejs", {image:imagepath, tagField: data,
-            w: userDim[0], h: userDim[1]});
-    }
-    else{
-        jimp.read(imagepath).then(function(img){
-            w = img.bitmap.width;
-            h = img.bitmap.height;
+    jimp.read(imagepath).then(function(img){
+        w = img.bitmap.width;
+        h = img.bitmap.height;
+
+
+        
+        // calculate image width in meters
+        if(resolution !== -1){
+            var imageMeterWidth = util.calculateWidth(resolution, w);
+
+            console.log(imageMeterWidth + ' in meters\n');
+
+            console.log(imageMeterWidth/1000 + ' in Kilometers\n');
+
+            if(imageMeterWidth){
+                let x = Math.log10(imageMeterWidth/2);
+                let a = Math.floor(x);
+                let b = x - a;
+
+                if(b >= 0.69897){
+                    b = 5;
+                }else if(b >= 0.30103){
+                    b = 2;
+                }else{
+                    b = 1;
+                }
+
+                var scalebarMeters = b*Math.pow(10,a);
+
+                var scalebarLength,
+                    scalebarUnits="";
+                // if the length is less than 1KM return length in meters
+                if(imageMeterWidth/1000 < 1){
+                    console.log(scalebarMeters + " would be the legth in meters that the scalebar represents\n");
+                    scalebarLength = scalebarMeters;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                    console.log(scalebarLength + " m");
+                    scalebarUnits = "m";
+                }
+                else{
+                    console.log(scalebarMeters/1000 + " would be the legth in Km that the scalebar represents\n");
+                    
+                    scalebarLength = scalebarMeters/1000;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                    console.log(scalebarLength + " Km");
+                    scalebarUnits = "Km";
+                }
+
+
+                console.log(scalebarPx);
+
+                // render image page with needed data
+                if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                        origW: w, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                }else{
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                        w: w, h: h, origW: w,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                }
+
+
+
+            }else{
+                console.log("Image Width is Meters Failed to Calculate");
+            }
+        }else{
+            console.log("Scalebar could not be generated from present data");
+
             // render image page with needed data
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
-            response.render("imagePage.ejs", {image:imagepath, tagField: data,
-                w: w, h: h});
-        }).catch(function(err){
-            console.log(err);
-        });
-    }
+            if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                    origW: w, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+            }else{
+                response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                    w: w, h: h, origW: w,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+            }
+
+        }
+    });
 });
 
 

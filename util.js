@@ -73,6 +73,33 @@ module.exports = {
     },
 
 
+    getPixelResolution: function(cubeObj){
+        let jsonData = JSON.parse(cubeObj.data);
+        
+        let resolution = jsonData["IsisCube.Mapping.PixelResolution"];
+        
+        if(resolution === undefined){
+            resolution = jsonData["GroundPoint.ObliquePixelResolution"];
+        }
+
+        if(resolution !== undefined){
+            return resolution;
+        }else{
+            return -1;
+        }
+    },
+
+
+    calculateWidth: function(resStr, w){
+        let resFloat = parseFloat(resStr);
+        if(resFloat){
+            return resFloat * w;
+        }else{
+            console.log("Could not parse float from given resString");
+        }
+    },
+
+
     /**
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub

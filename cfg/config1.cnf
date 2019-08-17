@@ -14,7 +14,8 @@
     <tag>Phase</tag>
     <tag>Emission</tag>
     <tag>Incidence</tag>
-    <tag>SampleResolution</tag>
+    <tag>PixelResolution</tag>
+    <tag>ObliquePixelResolution</tag>
     <tag>NorthAzimuth</tag>
     <tag>StartTime</tag>
     <tag>SubSpacecraftGroundAzimuth</tag>
