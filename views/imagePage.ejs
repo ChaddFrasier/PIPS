@@ -21,6 +21,9 @@
             top: 16.5rem;
             transform: scale(1.75); 
         }
+        .draw:hover{
+            cursor: url("images/pencilcursor.png"),auto;
+        }
     </style>
 <!--============================================= -->
 <script>
@@ -53,6 +56,7 @@
             minEye = .15625,
             maxEye = 1.5625,
             iconMin,
+            outlineMin = .125,
             scale;
         
             
@@ -101,11 +105,6 @@
             // Make sure the first transform on the element is a translate transform
             var transforms = selectedElement.transform.baseVal;
 
-            // get scale data
-            scale = transforms.getItem(transforms.length -1);
-
-            console.log(bbox.width * scale.matrix.a);
-            console.log(bbox.height * scale.matrix.a);
 
             // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
             // start resize logic
@@ -113,6 +112,9 @@
                 // set resizing flag
                 resizing = true;
             
+                 // get scale data
+                scale = transforms.getItem(transforms.length -1);
+
                 // get the coordinates where the click happend inside the svg box
                 offset = getMousePosition(event);
 
@@ -127,7 +129,6 @@
                 // get translate data
                 transform = transforms.getItem(0);
 
-
             }
             // if the event click happened on a draggable element start drag logic
             else if (event.target.parentNode.classList.contains('draggable')) {
@@ -135,6 +136,8 @@
                 dragging = true;
                 // get the offset value for the translation
                 offset = getMousePosition(event);
+                 // get scale data
+                scale = transforms.getItem(transforms.length -1);
 
                 // make sure that the first element of the tranform object is the translate and create one if it isnt there
                 if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
@@ -156,18 +159,65 @@
 
                 // if true
                 if (confined) {
-                    
-                    // get the current scale of the icon
-                    let scaleFactor = scale.matrix.a;
-                    console.log(bbox);
-                    // set the new boundry values based on the view box and the width/height of the icons
-                    // dim * scale = dim of icon
-                    minX = boundaryX1 - bbox.x;
-                    maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
-                    minY = boundaryY1 - bbox.y;
-                    maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
+                    // if no rotate has occured
+                    if(selectedElement.getAttribute("transform").indexOf("rotate(0)") !== -1){
+                        // get the current scale of the icon
+                        let scaleFactor = scale.matrix.a;
+                        bbox = selectedElement.getBBox();
+                        // set the new boundry values based on the view box and the width/height of the icons
+                        // dim * scale = dim of icon
+                        minX = boundaryX1 - bbox.x;
+                        maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
+                        minY = boundaryY1 - bbox.y;
+                        maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
 
-                    console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                    }
+                    else{
+                        // rotate has been applied
+                        let rotateVal = transforms.getItem(1).angle;
+                        console.log(rotateVal/90);
+
+                        if(rotateVal < 90 && rotateVal <= 60){
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + (bbox.height*(rotateVal/90)) * scaleFactor;
+                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+                            minY = boundaryY1 - bbox.y;
+                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor);
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+
+                        }
+                        else if(rotateVal <= 100 && rotateVal > 60){
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + (bbox.height*(rotateVal/90)) * scaleFactor;
+                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+                            minY = boundaryY1 - bbox.y;
+                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+
+                        }
+                        else if(rotateVal > 100 && rotateVal < 120){
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor) * (rotateVal/180) + (bbox.width * scaleFactor) * (rotateVal/90)/2;
+                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/180))*2;
+                            minY = boundaryY1 - bbox.y + (bbox.width * scaleFactor)* (rotateVal/180);
+                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/180))*2;
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+
+                        }
+                    }
                 }
             }
         }
@@ -404,6 +454,9 @@
                 else if(selectedElement.id.indexOf('eye') !== -1){
                     return minEye;
                 }
+                else if(selectedElement.id.indexOf('attension') !== -1){
+                    return outlineMin;
+                }
             }
             else{
                 if(selectedElement.id.indexOf('north') !== -1){
@@ -436,11 +489,19 @@
             <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br/>Loading
         </div>
         
+
+<!-- Editor Box -->
+<svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
+class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
+    <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+    <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
+       
+</svg>
         <!-- Button Interface-->
         <div class="container float-left" style="width: auto; height: 5%; position: fixed; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
             <br/>
             <div class="image-controls">
-                <h2 class="text-right float-left" style="position: inherit; left: 25%;">Tools</h2>
+                <h2 class="text-right float-left" style="position: inherit; left: 7rem;">Tools</h2>
                 <br/>
                 <table style="width: 100%; height:100%; table-layout:auto;">
                     <tr>
@@ -455,6 +516,7 @@
                             <input class="form-check-input largeBox" type="checkbox" id="northCheckbox">
                             
                         </li>
+
                         <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img>
                             <label for="sunCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem;">
@@ -463,8 +525,9 @@
                             <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
-
+                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img> <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</li>
                         <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
+                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button></li>
 
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
                             <h2 class="text-left">Pad Image</h2>
@@ -495,45 +558,6 @@
     </div>
 </div>
         
-        <!-- Editor Box -->
-        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
-        class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
-            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="darkgray"/>
-            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
-               
-                
-                <g id="scalebarPosition2"class="draggable confine scalebar" transform="translate(0,175) scale(.5)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">
-                    <rect x="0" y="0" id="scalebarBG" width="4000" height="500" stroke="black" fill="red" ></rect>
-                    <rect x="0" y="200" id="scalebarOuter" width="4000" height="300" stroke="white" fill="black" ></rect>
-                    <path id="scalebarLine" d="M 2000 350 L 4000 350"  stroke="white" stroke-width="7"/>
-                    <path id="scalebarVert" d="M 2000 200 L 2000 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarVert10th" d="M 200 200 L 200 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarLine10th" d="M 100 350 L 200 350"  stroke="white" stroke-width="7"/>
-    
-                    <path id="scalebarVert20th" d="M 400 200 L 400 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarVert30th" d="M 600 200 L 600 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarLine30th" d="M 400 350 L 600 350"  stroke="white" stroke-width="7"/>
-    
-                    <path id="scalebarVert40th" d="M 800 200 L 800 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarVert50th" d="M 1000 200 L 1000 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarLine50th" d="M 800 350 L 1000 350"  stroke="white" stroke-width="7"/>
-    
-                    <path id="scalebarVert60th" d="M 1200 200 L 1200 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarVert70th" d="M 1400 200 L 1400 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarLine70th" d="M 1200 350 L 1400 350"  stroke="white" stroke-width="7"/>
-    
-                    <path id="scalebarVert80th" d="M 1600 200 L 1600 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarVert90th" d="M 1800 200 L 1800 500"  stroke="white" stroke-width="5"/>
-                    <path id="scalebarLine90th" d="M 1600 350 L 1800 350"  stroke="white" stroke-width="7"/>
-    
-                    <text id="scalebarText" x="3500" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%> <%=scalebarUnits%></text>
-                    <text id="scalebar1" x="10" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>
-                    <text id="scalebarHalf2" x="1000" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>
-                    <text id="scalebar0" x="2025" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>
-
-
-        </svg>
-   
 <br/>
         <!-- Hidden Tags for data parsing-->
         <div id="metadata" style="display:none;"  class="text-center green-border-focus">
@@ -557,7 +581,7 @@
 
             // string version of off the icons so they can be added dynamicly with a single function call 
             // (sun and eye) MIN .15625 MAX 1.5625
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform="translate(0,150) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,150) rotate(0) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOuter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
@@ -566,18 +590,25 @@
                     +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
             
             // (North) MIN .1219513 MAX 1.219513
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform="translate(0,0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(110) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
-                +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white" stroke="black" stroke-width="4" style="border:0;"></path>'
+                +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white"  stroke="black" stroke-width="4" style="border:0;"></path>'
                 +'<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
                 +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
                 +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/></g>'
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
+
+            var attensionBoxObjectString = '<g id="attensionOutlinePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,0) rotate(0) scale(.5)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+                + '<rect id="attensionBox" x="0" y="0" width="400" height="400" style="fill:rgba(0, 0, 0, 0.15); stroke-width:2;stroke:rgb(255,255,255);" />'
+                + '<rect class=" resize top-left" x="0" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
+                + '<rect class=" resize top-right" x="275" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
+                + '<rect class=" resize bottom-right" x="275" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
+                + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" /></g>'
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform="translate(0,100) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
                 + '<ellipse id= "eyeIconOuter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
                 + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white" stroke="black"  style="border:0;">'
                 + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" stroke="white" fill="black"  style="border:0;"></circle>'
@@ -634,16 +665,35 @@
             var eyeImage = document.getElementById('eyePosition');
             svg.insertAdjacentHTML("beforeend",scaleBarObject);
             var scaleBarIcon = document.getElementById('scalebarPosition');
-            var testbar =  document.getElementById('scalebarPosition2');
+            svg.insertAdjacentHTML("beforeend",attensionBoxObjectString);
+            var attensionBox = document.getElementById('attensionOutlinePosition');
+            
+           
 
+            console.log(northImage.getBoundingClientRect());
+            console.log(northImage.getBBox().height * .1219513);
             let half = parseFloat("<%=scalebarLength%>")/2;
             
-            let scalePX = parseFloat("<%=scalebarPx%>");
-            console.log(scalePX);
+            let scalePX = parseFloat("<%=scalebarPx%>"),
+                w = parseInt("<%=w%>"),
+                h = parseInt("<%=h%>"),
+                origW = parseInt("<%=origW%>"),
+                origH = parseInt("<%=origH%>");
+            
+
+
+            console.log(parseInt("<%= origW %>"))
+            console.log(parseInt("<%= origH %>"));
             
             if('<%=scalebarPx%>' !== 'none'){
-                scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (<%=w%>/<%=origW%>) + ')');
-                testbar.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 *(<%=w%>/<%=origW%>) + ')');
+                if((w/origW) < (h/origH)){
+                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
+                   
+                }else{
+                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
+                    
+                }
+                
                 
                 if(half < 1){
                     document.getElementById("scalebarHalf").innerHTML = half;
@@ -675,6 +725,7 @@
             outlineBox.remove();
             eyeImage.remove();
             scaleBarIcon.remove();
+            attensionBox.remove();
 
 
             // set defaults
@@ -765,10 +816,12 @@
             if(!this.classList.contains("disabled")){
                 if(toggleScalebar){
                     svg.appendChild(scaleBarIcon);
+                    document.getElementById("scaleBarButton").className = "btn btn-secondary btn-lg button";
                     toggleScalebar = false;
                 }else{
                     scaleBarIcon.remove();
                     toggleScalebar = true;
+                    document.getElementById("scaleBarButton").className = "btn btn-primary btn-lg button";
                 }
             }
         });
@@ -829,7 +882,8 @@
                 northFlag = false,
                 cropFlag = false, 
                 sunFlag = false,
-                eyeFlag = false;
+                eyeFlag = false,
+                attensionBoxVisible = false;
 
             //create clickArray
             var clickArray = [];
@@ -1174,7 +1228,8 @@
                     }
                 }); */
 
-
+                var line,
+                    lineArr = [];
                  
                 $('#svgWrapper').on("click", function(event){
                     
@@ -1195,6 +1250,30 @@
                     
                     console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
 
+                    // if the draw flag is true and length of clicks is 0
+                    if(drawFlag && clickArray.length === 0){
+                        line = document.createElementNS("http://www.w3.org/2000/svg","line");
+                        line.setAttribute("x1",mouseX);
+                        line.setAttribute("y1",mouseY);
+                        line.setAttribute("x2",mouseX);
+                        line.setAttribute("y2",mouseY);
+                        line.style.visibility = "visible";
+                        line.style.stroke = "red";
+                        line.style.strokeWidth = 4;
+                        svg.appendChild(line);
+                        
+                        lineArr.push(line);
+                        captureClick(mouseX,mouseY);
+                    }
+                    else if(drawFlag && clickArray.length > 1){
+                        line.setAttribute("x2",mouseX);
+                        line.setAttribute("y2",mouseY);
+            
+                        clickArray = [];
+                        drawFlag = false;
+                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        svg.className.baseVal = "image-image float-center";
+                    }
                    
                  /*   COMMENTING OUT FOR NOW
                      if(cropFlag){
@@ -1282,7 +1361,13 @@
                 });
 
 
- /*
+ 
+                function drawLine(lineElement,x2,y2){
+                    lineElement.setAttribute("x2", x2);
+                    lineElement.setAttribute("y2",y2);
+                }
+
+
                  $('#svgWrapper').mousemove(function(event){
                     
 
@@ -1302,9 +1387,15 @@
                         mouseX = parseInt(svgP.x),
                         mouseY = parseInt(svgP.y);
 
-                        console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
-
-
+                        //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
+                        if( drawFlag && clickArray.length >1){
+                            console.log("runs");
+                            console.log(line);
+                            drawLine(line, mouseX, mouseY);
+                        }
+                        
+                        
+/*
                     if(cropFlag && !doneResizing){
 
 
@@ -1338,9 +1429,9 @@
                             mouseX = <%=w%>;
                         }
                         adjustBox();
-                    }
-                }); */
-            /*
+                    }*/
+                }); 
+            
                 // function to change the outline box dimensions to the calulated size
                 function adjustBox(){
 
@@ -1351,13 +1442,13 @@
                     // convert number and do the math
                     let w = Number(mouseX) - startX;
                     let h = Number(mouseY) - startY;
-
                     
                     // reset the outline box if the values are not NaN
                     if(w !== NaN && h !== NaN){
                         if(w < 0 && h < 0){
                             h = Math.abs(h);
                             w = Math.abs(w);
+                            
 
                             outlineBox.setAttribute('x' , startX  - w);
                             outlineBox.setAttribute('y' , startY - h);
@@ -1383,7 +1474,62 @@
                         }
                         
                     }
-                } */
+                } 
+
+
+                // when the outline box is clicked
+                $("#outlineBtn").on("mousedown",function(){
+                    
+                    if(attensionBoxVisible){
+                        attensionBox.remove();
+                        document.getElementById("outlineBtn").className = "btn btn-primary btn-lg button";
+                        attensionBoxVisible = false;
+                    }else{
+                        document.getElementById("outlineBtn").className = "btn btn-secondary btn-lg button";
+                        svg.appendChild(attensionBox);
+                        attensionBoxVisible = true;
+                    }
+                });
+
+
+                var drawFlag = false;
+
+                $("#pencilIconFlag").on('mousedown',function(){
+                    if(drawFlag){
+                        drawFlag = false;
+                        
+                        svg.className.baseVal = "image-image float-center";
+                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        clickArray = [];
+                        if(lineArr.length){
+                            lineArr.pop().remove();
+                        }
+                    }
+                    else{
+                        svg.className.baseVal = "image-image float-center draw";
+                        drawFlag = true;
+                        document.getElementById("pencilIconFlag").className = "btn btn-secondary btn-lg button";
+                        
+                    }
+                });
+
+                $("#undoLine").on("mousedown",function(){
+                    if(lineArr.length > 0 && clickArray.length > 1){
+                        lineArr.pop().remove();
+                        svg.className.baseVal = "image-image float-center";
+                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        drawFlag = false;
+                        clickArray = [];
+                    }
+                    else if(lineArr.length > 0){
+                        lineArr.pop().remove();
+                    }
+                    else{
+                        alert("No lines drawn");
+                    }
+                });
+
+
 
                 // when north button is clicked
                 $('#northIconFlag').on('mousedown',function(){
@@ -1396,7 +1542,7 @@
                         northImage.remove();
                         northImage.style.visibility = 'hidden';
                         document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        northImage.setAttribute("transform","translate(0,0) scale(.121952)");
+                        northImage.setAttribute("transform","translate(100,100) scale(.121952)");
                         northFlag = !northFlag;
                     }
                     
@@ -1798,6 +1944,7 @@
         </script>
 
         <script>
+            var northDeg;
             // Gets Important Metadata from the "metadata-text" div
             function getMetadata(){
                 // get value string from hidden DOM element
@@ -1806,13 +1953,13 @@
                 var metadataString = JSON.parse(metadata);
                 
                 // Important Metadata Values
-                var northDegree = metadataString['NorthAzimuth'];
+                northDeg = metadataString['NorthAzimuth'];
                 var sunDegree = metadataString['SubSolarAzimuth'];
                 var observerDegree = metadataString['SubSpacecraftGroundAzimuth'];
                 var scale = metadataString['SampleResolution'];
 
                 // ======= Hard Coding North Arrow For Testing =========
-                northDegree = 90;
+                let northDegree = 90;
                 // ==================================================
 
                 // TODO: generate an arrow in the proper direction in relation to the degree of the sun and eye angles
@@ -1860,6 +2007,36 @@
                 var image = document.getElementById(String(img));
                 //var arrow = document.getElementById();
             }
+
+            function setIconAngle(icon, degree){
+
+                if(degree !== "None"){
+                    let transformVal = icon.getAttribute("transform");
+                    let transformArray = transformVal.split(" ");
+
+                    for(index in transformArray){
+                        if(transformArray[index].indexOf("rotate")){
+                            console.log("parse to find value and change it");
+                        }
+                    }
+
+                    let scaleStr = transformArray[transformArray.length -1];
+                    let translateStr = transformArray[0];
+
+                    let rotateStr = "rotate(" + String(degree) + "deg)";
+
+                    transformArray.pop();
+                    transformArray.push(rotateStr);
+                    transformArray.push(scaleStr);
+                    icon.setAttribute("transform-origin", "50% 50%");
+                    icon.setAttribute("transform", transformArray.join(" "));
+                    
+                }
+
+            }
+
+            //setIconAngle(northImage, 90);
+
 
         /*  //========== This Function is for testing the Rotation Orgin Point ===============
             i = 0;

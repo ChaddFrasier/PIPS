@@ -43,13 +43,14 @@ image:hover {
 }
 
 .image-controls{
-    position: absolute;
+    position: fixed;
     margin-left: 0%;
-    margin-right: 5%;
+    margin-right: 10%;
     display: block;
     align-content: left;
     padding-right:auto;
-    top: -2rem;
+    left: 2rem;
+    top: 10rem;
     padding-left: 0%;            
 }
 
@@ -91,9 +92,9 @@ svg{
     position: relative;
     text-align: center; 
     top: 0; 
-    left: 1rem; 
+    left: 5rem;
     margin-right: auto;
-    margin-left: 40%;
+    margin-left: auto;
     border: 5%; 
 }
 
@@ -132,5 +133,6 @@ li{
     padding-top: 0rem;
     padding-left: 0rem;
     padding-right: 1rem;
+    border: 5rem;
     display: inline;
 }

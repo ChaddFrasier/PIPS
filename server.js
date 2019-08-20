@@ -520,7 +520,9 @@ app.post('/showImage', function(request, response){
         imagepath = 'none';
     }
 
-   
+   if(imagepath === 'none'){
+       response.render("index.ejs", {alertCode: 1});
+   }
     var w,
         h;
 
@@ -530,7 +532,6 @@ app.post('/showImage', function(request, response){
         h = img.bitmap.height;
 
 
-        
         // calculate image width in meters
         if(resolution !== -1){
             var imageMeterWidth = util.calculateWidth(resolution, w);
@@ -573,23 +574,20 @@ app.post('/showImage', function(request, response){
                     scalebarUnits = "Km";
                 }
 
-
-                console.log(scalebarPx);
-
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
                     response.render("imagePage.ejs", {image:imagepath, tagField: data,
-                        origW: w, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                        origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }else{
                     response.render("imagePage.ejs", {image:imagepath, tagField: data,
-                        w: w, h: h, origW: w,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                        w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }
 
 
 
             }else{
-                console.log("Image Width is Meters Failed to Calculate");
+                console.log("Image Width in Meters Failed to Calculate");
             }
         }else{
             console.log("Scalebar could not be generated from present data");
