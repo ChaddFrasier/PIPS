@@ -60,6 +60,8 @@
             maxSun = 1.5625,
             minEye = .15625,
             maxEye = 1.5625,
+            maxText = 26,
+            minText = 2.6,
             iconMin,
             outlineMin = .125,
             scale;
@@ -107,8 +109,10 @@
 
             // grab the limits scale value for whichever icon is selected
             // functions find min if passed true and find max if passed false
-            iconMin = findLimit(selectedElement,true);
-            iconMax = findLimit(selectedElement, false);
+            if(selectedElement){
+                iconMin = findLimit(selectedElement,true);
+                iconMax = findLimit(selectedElement, false);
+            }
             // get the bounding box of the group element
             bbox = selectedElement.getBBox();
             // Make sure the first transform on the element is a translate transform
@@ -346,7 +350,8 @@
         var bottomL = false,
             bottomR = false,
             topR = false,
-            topL = false;
+            topL = false,
+            bottom=false;
         
         // move the icon when mouse moves or scale the icon when needed
 
@@ -532,6 +537,34 @@
                     // set new mouse position
                     offset = coord;
                 }
+
+                // same logic as other corners 
+                else if((!topL && !topR && !bottomL && !bottomR) && (elementOver.classList.contains('bottom') || bottom)){
+                    bottom = true;
+                    // if the new x is less and the new y is also less
+                    // shrink
+                    if(coord.y < offset.y){
+                        currentScale -= growingFactor*10;
+                        // check min bound
+                        if(currentScale < iconMin){currentScale = iconMin;}
+                    }
+                    // if the new x is greater than the old and the new y is greater
+                    // grow
+                    else if(coord.y > offset.y){
+                        currentScale += growingFactor*10;
+
+                        console.log(" Height of Text: " + bbox.height * currentScale);
+                        console.log("currentScale = " + currentScale);
+                        //check for max size
+                        if(currentScale > iconMax){currentScale = iconMax;}
+                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                    }
+                    // set scale using svg data method
+                    scale.setScale(currentScale,currentScale);
+                    // no need to translate for bottom right corner
+                    // set new mouse position
+                    offset = coord;
+                }
                        
             }
             // if the selected element is not null and the dragging flag is true
@@ -568,35 +601,44 @@
                 bottomR = false;
                 topL = false;
                 topR = false;
+                bottom = false;
             }
           selectedElement = null;
         }
 
         // given an icon element returnns the min scale value for each icon to test against the new scale
         function findLimit(selectedElement, isMin){
-            if(isMin){
-                if(selectedElement.id.indexOf('north') !== -1){
-                    return minNorth;
+            if(selectedElement && selectedElement !== 'null'){
+                if(isMin){
+                    if(selectedElement.id.indexOf('north') !== -1){
+                        return minNorth;
+                    }
+                    else if(selectedElement.id.indexOf('sun') !== -1){
+                        return minSun;
+                    }
+                    else if(selectedElement.id.indexOf('eye') !== -1){
+                        return minEye;
+                    }
+                    else if(selectedElement.id.indexOf('attension') !== -1){
+                        return outlineMin;
+                    }
+                    else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                        return minText;
+                    }
                 }
-                else if(selectedElement.id.indexOf('sun') !== -1){
-                    return minSun;
-                }
-                else if(selectedElement.id.indexOf('eye') !== -1){
-                    return minEye;
-                }
-                else if(selectedElement.id.indexOf('attension') !== -1){
-                    return outlineMin;
-                }
-            }
-            else{
-                if(selectedElement.id.indexOf('north') !== -1){
-                    return maxNorth;
-                }
-                else if(selectedElement.id.indexOf('sun') !== -1){
-                    return maxSun;
-                }
-                else if(selectedElement.id.indexOf('eye') !== -1){
-                    return maxEye;
+                else{
+                    if(selectedElement.id.indexOf('north') !== -1){
+                        return maxNorth;
+                    }
+                    else if(selectedElement.id.indexOf('sun') !== -1){
+                        return maxSun;
+                    }
+                    else if(selectedElement.id.indexOf('eye') !== -1){
+                        return maxEye;
+                    }
+                    else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                        return maxText;
+                    }
                 }
             }
         }        
@@ -658,8 +700,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ff0000"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button><input id="colorPickerBox"type="color" name="boxColor"  value="black"/> <button class="btn btn-secondary btn-sm" id="undoBox">Undo Box</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:8rem; color: black">Text Box</button>
-                            <br/><label for="textColorPicker" style="top: 15rem">Pick Color</label>
+                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:7rem; color: black">Text Box</button>
                             <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
                             <button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
@@ -1676,18 +1717,38 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 $("#textBtn").on("mousedown",function(){
                     
                     var textboxVal = prompt("What Should It Say?","");
+                    
 
-                    if(textboxVal !== ""){
+                    if(textboxVal !== "" && textboxVal){
                         console.log(textboxVal + "= textboxVal");
+                        let strlength = textboxVal.length; 
 
                         var text = document.createElementNS("http://www.w3.org/2000/svg","text");
-                        text.setAttribute("class","draggable confine textbox");
+                        
+                        var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+
+                        g.setAttribute("class","draggable confine textbox");
+                        g.setAttribute("x",0);
+                        g.setAttribute("y",0);
                         text.setAttribute("x",0);
-                        text.setAttribute("y",0);
-                        text.setAttribute("transform","translate(50,50) rotate(0) scale(1)");
+                        text.setAttribute("y",15);
+                        g.setAttribute("height",20);
+                        g.setAttribute("transform","translate(50,50) rotate(0) scale(2.6)");
+
+                        var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                        rect.setAttribute("x",2);
+                        rect.setAttribute("y",15);
+                        rect.setAttribute("width", 9 * strlength);
+                        rect.setAttribute("height", 5);
+                        rect.style.visibility = "hidden";
+                        rect.setAttribute("class","resize bottom");
+                        
+
                         text.style.pointerEvents = "visible";
                         text.innerHTML = textboxVal;
-
+                        g.appendChild(text);
+                        g.appendChild(rect);
                         if(userTextColor){
                             text.setAttribute("stroke",userTextColor);
                             text.setAttribute("fill",userTextColor);
@@ -1700,8 +1761,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
 
                         text.setAttribute("stroke-width","1");
-                        svg.appendChild(text);
-                        textBoxArray.push(text);
+                        svg.appendChild(g);
+                        textBoxArray.push(g);
                         makeDraggable(svg);
                         
 
@@ -1711,8 +1772,25 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                 // everytime  the check boxes is changed switch the places of the fill and stroke
                 $("#textColorPicker").on("change",function(){
-                    console.log("change colors");
                     userTextColor = document.getElementById("textColorPicker").value;
+                    if(textBoxArray.length>0){
+                     for(index in textBoxArray){
+                        var children = textBoxArray[index].childNodes;
+                        
+                        if(children){
+                            for(index2 in children){
+                               
+                                if(children[index2].tagName ==="text"){
+                                    children[index2].setAttribute("fill",userTextColor);
+                                    children[index2].setAttribute("stroke",userTextColor);
+                                }
+                                
+                            }
+                        }
+
+                     }   
+                    }
+                    
                 });
         
 
