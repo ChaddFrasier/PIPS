@@ -114,11 +114,6 @@ app.get('/', function(request, response){
     let code = request.query.alertCode;
 
 
-    //================= testing uid function===============
-    console.log('USER ID IS: '+ util.createUserID(23));
-    //=====================
-
-
     // render the index page w/ proper code
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
     
@@ -150,14 +145,16 @@ app.get('/tpl',function(request, response){
 app.get('/upload',function(request,response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeFile'];
+    var userid = request.cookies['userId'];
 
-    if(cookieval === undefined){
+    if(userid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=4');
 
     }else{
-        console.log('cookie found: its value is: ' + cookieval);
+        // TODO: retrieve the last found file for the user if it is there
+        // otherwise rensder index with an alert that the session timed out and they should upload again
+        console.log('cookie found: its value is: ' + userid);
     }
 });
 
@@ -179,7 +176,7 @@ app.post('/upload', async function(request, response){
 
     // cube file section
     try{
-        if(request.files == null ){
+        if(request.files === null ){
             // if no files uploaded
             console.log('User Error Upload a Cube File to begin');
             // redirect the user & alert they need a .cub
@@ -192,6 +189,7 @@ app.post('/upload', async function(request, response){
            
             // get the file from request
             var cubeFile = request.files.uploadFile;
+
             //  find user id if it exists
             var uid = request.cookies["userId"];
             
@@ -199,36 +197,44 @@ app.post('/upload', async function(request, response){
             var promises = [];
 
             // set tiff flag
-            if(cubeFile.name.indexOf('.tif') > -1){
+            if(cubeFile.name.indexOf('.tif') !== -1){
                 isTiff = true;
             }else{
                 isTiff = false;
             }
 
-            // if no user id is found or the cubeArray is empty
-            if(uid === undefined || cubeArray.length === 0){
+            // if no user id is found 
+            if(uid === undefined){
+                // create a random 23 character user id
+                uid = util.createUserID(23);
+                // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) (TEST SERVER USING SHORT EXPIRE TIMES)
+                response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: true});
+            }
+
+            // if the cubeArray is empty
+            if(cubeArray.length === 0){
                 // create new instance
-                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
+                var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
+                cubeObj.userNum = numUsers++;
             }else{
                 // loop through the active cubes and search for the user instance
                 for(i in cubeArray){
-                    if(cubeArray[i].userId === parseInt(uid)){
-                        // reset user cubeName
-                        cubeArray[i].name = 'u-' + cubeArray[i].userId + cubeFile.name;
+                    if(cubeArray[i].userId === uid){
+                        // reset the user cubeName
+                        cubeArray[i].name = 'u-' + cubeArray[i].userNum + cubeFile.name;
                         //save the users instance into the cubeObj
                         cubeObj = cubeArray[i];
                         break;
                     }
                 }
-                // TODO: NEEDS TESTING STILL
-                try{
-                    if(cubeObj.userId !== undefined){
-                        console.log('User was found');
-                    }
-                }catch(err){
-                    // create new instance
-                    var cubeObj = new Cube('u-' + numUsers + cubeFile.name, numUsers++);
-                }    
+                // User id is found but not in the currnt server instances
+                // create a new instance for this user
+                if(cubeObj === undefined){
+                    console.log('Old User was found');
+                    var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
+                    cubeObj.userNum = numUsers++;
+                }
+                   
             }
 
 
@@ -249,14 +255,12 @@ app.post('/upload', async function(request, response){
                 console.log('cube file was uploaded');    
             }
             
-            // set the cookie based on the type of file uploaded (expire times will be messed with)
-            response.cookie('cubeFile', (isTiff) ? cubeObj.name.replace('.tif', '.cub') : cubeObj.name, {expires: new Date(Date.now() + 1000000), httpOnly: true});    
-            response.cookie('userId', cubeObj.userId, {expires: new Date(Date.now() + 1000000), httpOnly: true}); 
-
+            // if the desired width and height are both given set that to be the user dimensions 
             if(Number(request.body.desiredWidth) > 50 && Number(request.body.desiredHeight)> 50){
                 cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
 
             }else{
+                // otherwise ignore and default
                 cubeObj.userDim = [0,0];
             }
             
@@ -404,14 +408,22 @@ app.post('/upload', async function(request, response){
  */
 app.post('/csv', function(request,response){
     // send download file
-    response.download(path.join('csv',request.cookies['cubeFile'].replace('.cub','.csv')),function(err){
-        if(err){
-            console.log('file was not sent successfully');
-        }else{
-            // file sent
-            response.end();
-        }
-    });
+
+    let cubeObj = util.getObjectFromArray(request.cookies["userId"],cubeArray);
+
+    if(typeof(cubeObj) === "object"){
+        response.download(path.join('csv',cubeObj.name.replace('.cub','.csv')),function(err){
+            if(err){
+                console.log('file was not sent successfully');
+            }else{
+                // file sent
+                response.end();
+            }
+        });
+    }else{
+        console.log("Failed to find cube object");
+    }
+    
 });
 
 /**
@@ -420,14 +432,16 @@ app.post('/csv', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeFile'];
+    let userId = request.cookies['userId'];
 
-    if(cookieval === undefined){
+    if(userId === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=4');
 
     }else{
-        console.log('cookie found: its value is: ' + cookieval);
+        // TODO: search for the csv that matches the userid instance
+        // return the index if not found
+        console.log('cookie found: its value is: ' + userId);
     }
 });
 
@@ -438,15 +452,25 @@ app.get('/csv', function(request, response){
  *  this post function is only for sending the raw image to the user as a download  
  */
 app.post('/imageDownload', function(request,response){
-    // send download file
-    response.download(path.join('images',request.cookies['cubeFile'].replace('.cub','.png')),function(err){
-        if(err){
-            console.log('file was not sent successfully');
-        }else{
-            // file sent
-            response.end();
-        }
-    });
+
+    let uid = request.cookies["userId"];
+
+
+    let cubeObj = util.getObjectFromArray(uid, cubeArray);
+    if(typeof(cubeObj) === "object"){
+        // send download file
+        response.download(path.join('images',cubeObj.name.replace('.cub','.png')),function(err){
+            if(err){
+                console.log('file was not sent successfully');
+            }else{
+                // file sent
+                response.end();
+            }
+        });
+    }else{
+        console.log("User instance was not found on server");
+    }
+    
 });
 
 /**
@@ -457,14 +481,14 @@ app.post('/imageDownload', function(request,response){
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeFile'];
+    var uid = request.cookies['userId'];
 
-    if(cookieval === undefined){
+    if(uid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=4');
 
     }else{
-        console.log('cookie found: its value is: ' + cookieval);
+        console.log('cookie found: its value is: ' + uid);
     }
 });
 
@@ -477,14 +501,14 @@ app.get('/imageDownload', function(request, response){
 app.get('/showImage', function(request, response){
     console.log(request.path);
 
-    var cookieval = request.cookies['cubeFile'];
+    var userid= request.cookies['userId'];
 
-    if(cookieval === undefined){
+    if(userid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=4');
 
     }else{
-        console.log('cookie found: its value is: ' + cookieval);
+        console.log('cookie found: its value is: ' + userid);
     }
 });
 
@@ -497,30 +521,31 @@ app.post('/showImage', function(request, response){
     console.log(request.path);
 
     // prepare variables 
-    var cookieval = request.cookies['cubeFile'];
+    var uid = request.cookies['userId'];
     var imagepath;
     var data,
-    resolution;
+        resolution;
 
-    if(cookieval != undefined){
+    if(uid !== undefined){
         // get image name and path
-        let image = util.getimagename(cookieval, 'png');
+        let userObject = util.getObjectFromArray(uid, cubeArray);
+
+
+        let image = util.getimagename(userObject.name, 'png');
         imagepath = 'images/' + image;
 
-        // search for data in array given by user cookie
-        data = util.getObjectFromArray(cookieval, cubeArray);
-
+    
         // if the data val is an error code then fail
-        if(data < 1){
+        if(userObject < 1){
             console.log('Object Search Failed');
             data = 'NONE';
         }else{
-            var userDim = data.userDim;
+            var userDim = userObject.userDim;
             // get resolution value
-            var resolution = util.getPixelResolution(data);
+            var resolution = util.getPixelResolution(userObject);
 
             // otherwise load the important data from the active object array into data variable
-            data = data.impData;
+            data = userObject.impData;
         }
     }else{
         // image path could not be found
@@ -620,23 +645,29 @@ app.post('/showImage', function(request, response){
  * Undoes the previous cropped image by uniform naming and 
  * array parsing after recieveing ajax get request
  */
+
 app.get('/crop',async function(request, response){
     console.log(request.url + 'from GET');
 
     var currentImage = request.query.currentImage;
-    var cookieval = request.cookies['cubeFile'];
-    if(cookieval !== undefined){
-        var baseImg = util.findImageLocation(cookieval.replace('.cub','.png'));
+
+    var uid = request.cookies['userId'];
+
+    let cubeObj = util.getObjectFromArray(uid, cubeArray);
+
+
+    if(uid !== undefined){
+        var baseImg = util.findImageLocation(cubeObj.name.replace('.cub','.png'));
     }else{
+        // TODO: must redirexct and end response
         console.log('No cookie has been found');
     }
     var newImage;
 
     console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
-    // search for data in array given by user cookie
-    var data = util.getObjectFromArray(cookieval, cubeArray);
+    
     // check return value for the function
-    data = (data === -1) ? 'None' : data.impData;
+    var data = (cubeObj === -1) ? 'None' : cubeObj.impData;
 
     // if spliting on _ equals legth 2
     if(currentImage.split('_').length === 2){
@@ -644,7 +675,7 @@ app.get('/crop',async function(request, response){
         await fs.unlinkSync(currentImage.split('?')[0]);
 
         // get new Image b/c we know its a default
-        newImage = util.findImageLocation(cookieval);
+        newImage = util.findImageLocation(cubeObj.name);
 
         console.log("undo to : " + newImage);
         // render with variables
@@ -680,7 +711,7 @@ app.get('/crop',async function(request, response){
         newImage = strArray.join('_');
         
         // check to see of the new image name is the base name
-        if(newImage.split("/")[1] === cookieval.replace('.cub','.png')){
+        if(newImage.split("/")[1] === cubeObj.name.replace('.cub','.png')){
             var w;
             var h;
             // if yes read the base image back in
@@ -716,12 +747,12 @@ app.get('/crop',async function(request, response){
         console.log('should never run but is a catch all');
         var w;
         var h;
-        jimp.read(cookieval).then(function(img){
+        jimp.read(cubeObj.name).then(function(img){
             w = img.bitmap.width;
             h = img.bitmap.height;
             // render image page with needed data
             if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render("imagePage.ejs", {image:cookieval, tagField: data, w: w, h: h});
+            response.render("imagePage.ejs", {image:cubeObj.name, tagField: data, w: w, h: h});
             response.end();
         }).catch(function(err){
             console.log('ERROR 3: ' + err);
@@ -735,26 +766,27 @@ app.get('/crop',async function(request, response){
  * 
  * this handels the actual jimp crop functionality
  */
+
 app.post('/crop', async function(request,response){
     console.log(request.url);
 
     // retrieve all parts from the request queries and cookie
     let arrayString = request.query.cropArray;
+
     let pxArray = arrayString.split(',');
     var croppedImage = request.query.currentImage.split('?')[0];
-    var cookieval = request.cookies['cubeFile'];
+    var userid = request.cookies['userId'];
 
-    // search for data in array given by user cookie
-    var data = util.getObjectFromArray(cookieval, cubeArray);
+    let cubeObj = util.getObjectFromArray(userid, cubeArray);
 
     // if the data val is an error code then fail otherwise return important data string
-    data = (data < 1) ? 'NONE': data.impData;
+    var data = (cubeObj < 1) ? 'NONE': cubeObj.impData;
     
     // set header to html
     response.setHeader("Content-Type", "text/html","charset=utf-8");
 
     // if the cropped image is the original image location
-    if(cookieval !== undefined && croppedImage === util.findImageLocation(cookieval)){
+    if(userid !== undefined && croppedImage === util.findImageLocation(cubeObj.name)){
         // do the basic crop action
         var imageLocation = croppedImage;
 

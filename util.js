@@ -102,10 +102,14 @@ module.exports = {
 
     createUserID: function(lengthOfID){
         let charString = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYXYZ';
-
+        let idArr=[];
         charSetLength = charString.length;
-        let char = Math.floor(Math.random()*charSetLength);
-        console.log(charString.charAt(char));
+
+        for(i=lengthOfID; i>0; i--){
+            let char = Math.floor(Math.random()*charSetLength);
+            idArr.push(charString.charAt(char));
+        }
+        return idArr.join("");
     },
 
 
@@ -258,7 +262,7 @@ module.exports = {
 
     /**
      * 
-     * @param {string} findObj name of cube to be found in array
+     * @param {string} userId user instance to be searched for
      * @param {Cube array} cubeArray array to be searched
      * 
      * @function retrieves object that is being searched if it can; return 0 if array is empty , -1 if not found
@@ -267,7 +271,7 @@ module.exports = {
      * @returns {number} -1 if item not found
      * @returns {Cube Object}Cube Object that matches findObj
      */
-    getObjectFromArray: function(findObj,cubeArray){
+    getObjectFromArray: function(userId,cubeArray){
         // if the array is empty return 0
         if(cubeArray.length === 0){
             return 0;
@@ -276,7 +280,7 @@ module.exports = {
             // otherwise check to see if the findObj is already in the array
             for(var index = 0; index < cubeArray.length; index++){
                 // if yes then just return the same array
-                if(findObj === cubeArray[index].name){
+                if(userId === cubeArray[index].userId){
                     return cubeArray[index];
                 }
             }

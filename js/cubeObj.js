@@ -15,6 +15,7 @@ module.exports = class Cube{
     constructor(cubeName,userId){
         this._userId = userId;
         this._cubeName = cubeName;
+        this._userNum;
         // init JSON elements
         this._data = {};
         this._impData = {};
@@ -41,6 +42,29 @@ module.exports = class Cube{
             this._cubeName = name;
         }
     }
+
+
+
+    /**
+     * @param void
+     * 
+     * @function return userNum.
+     */
+    get userNum(){
+        return this._userNum;
+    }
+
+    /**
+     * @param {string} name of the file that the instance is working with
+     * 
+     * @function set the number that the user got when uploading
+     */
+    set userNum(num){
+        
+        this._userNum = Number(num);
+        
+    }
+
 
 
      /**
