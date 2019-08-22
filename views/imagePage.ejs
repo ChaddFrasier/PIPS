@@ -25,8 +25,9 @@
             cursor: url("images/pencilcursor.png"),auto;
         }
         .textbox{
-            font: italic sans-serif;
+            font: bold Courier serif;
             visibility: visible;
+            letter-spacing: 3px
         }
     </style>
 <!--============================================= -->
@@ -363,8 +364,10 @@
             // get the element that the mouse is over
             var elementOver = document.elementFromPoint(mX,mY);
 
-            console.log(selectedElement);
-        
+            if(selectedElement){
+                var isOutline = selectedElement.classList.contains("outline");
+            }
+            
             // prevent all other mousemove events
             event.preventDefault();
             
@@ -402,7 +405,7 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
-                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                         
                         // translate the icon 0 in the x direction and by the difference in the negative y direction        
                         dx = parseInt(transform.matrix.e);
@@ -443,7 +446,7 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
-                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
 
                         // transform the icon by the negative difference in the sizes
                         dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
@@ -470,7 +473,7 @@
                         currentScale -= growingFactor;
                         // check for min
                         if(currentScale < iconMin){currentScale =iconMin;}
-                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        
 
                         // transform the icon by the negative difference in the sizes keep y the same
                         dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
@@ -485,7 +488,7 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
-                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                         
                         // transform the icon by the negative difference in the sizes keep y the same
                         dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
@@ -521,7 +524,7 @@
 
                         //check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
-                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                     }
                     // set scale using svg data method
                     scale.setScale(currentScale,currentScale);
@@ -549,8 +552,7 @@
                 }
                 // set the transform
                 transform.setTranslate(dx, dy);
-                console.log(transform);
-                console.log('transform^^^^^^');
+                
             }
         }
 
@@ -626,14 +628,14 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
        
 </svg>
         <!-- Button Interface-->
-        <div class="container float-left" style="width: auto; height: 5%; position: absolute; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
+        <div class="container float-left" style=" top: 9%; width: 100%; height: 5%; position: absolute; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
             <br/>
             <div class="image-controls">
                 <h2 class="text-right float-left" style="position: inherit; left: 7rem;">Tools</h2>
                 <br/>
-                <table style="width: 100%; height:100%; table-layout:auto;">
+                <table style="width: 25rem; height:100%; table-layout:auto;">
                     <tr>
-                    <th colspan="1" class="text-left float-center">
+                    <th colspan="2" class="text-left float-center">
                         <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                         <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                         <li><button class="btn btn-secondary btn-lg" onclick="window.history.back();">Back to Caption</button></li>
@@ -653,10 +655,13 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
-                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img> <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
+                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ff0000"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:8rem; color: black">Text Box</button><button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
+                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button><input id="colorPickerBox"type="color" name="boxColor"  value="black"/> <button class="btn btn-secondary btn-sm" id="undoBox">Undo Box</button></li>
+                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:8rem; color: black">Text Box</button>
+                            <br/><label for="textColorPicker" style="top: 15rem">Pick Color</label>
+                            <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
+                            <button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
                             <h2 class="text-left">Pad Image</h2>
                             <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
@@ -733,12 +738,11 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
 
-            var attensionBoxObjectString = '<g id="attensionOutlinePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,0) rotate(0) scale(.5)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
-                + '<rect id="attensionBox" x="0" y="0" width="400" height="400" style="fill:rgba(0, 0, 0, 0.15); stroke-width:2;stroke:rgb(255,255,255);" />'
+            var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400" />'
                 + '<rect class=" resize top-left" x="0" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
                 + '<rect class=" resize top-right" x="275" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
                 + '<rect class=" resize bottom-right" x="275" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
-                + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" /></g>'
+                + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />';
             
             var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
                 + '<ellipse id= "eyeIconOuter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
@@ -799,13 +803,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             var eyeImage = document.getElementById('eyePosition');
             svg.insertAdjacentHTML("beforeend",scaleBarObject);
             var scaleBarIcon = document.getElementById('scalebarPosition');
-            svg.insertAdjacentHTML("beforeend",attensionBoxObjectString);
-            var attensionBox = document.getElementById('attensionOutlinePosition');
             
            
 
-            console.log(northImage.getBoundingClientRect());
-            console.log(northImage.getBBox().height * .1219513);
+            
             let half = parseFloat("<%=scalebarLength%>")/2;
             
             let scalePX = parseFloat("<%=scalebarPx%>"),
@@ -859,7 +860,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             outlineBox.remove();
             eyeImage.remove();
             scaleBarIcon.remove();
-            attensionBox.remove();
+            
             arrowImage.remove();
 
 
@@ -884,7 +885,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             var toggleNorth = true,
                 toggleSun = true,
                 toggleEye = true,
-                toggleScalebar = true;
+                toggleScalebar = true,
+                userTextColor;
 
 
             // everytime  the check boxes is changed switch the places of the fill and stroke
@@ -945,7 +947,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     toggleEye = true;
                 }
             });
-        
+
+            
         
         $("#scaleBarButton").on("click",function(){
             if(!this.classList.contains("disabled")){
@@ -1364,7 +1367,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 }); */
 
                 var line,
-                    lineArr = [];
+                    lineArr = [],
+                    userLineColor;
                  
                 $('#svgWrapper').on("click", function(event){
                     
@@ -1393,10 +1397,16 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         line.setAttribute("x2",mouseX);
                         line.setAttribute("y2",mouseY);
                         line.style.visibility = "visible";
-                        line.style.stroke = "red";
+                        if(userLineColor){
+                            line.style.stroke = userLineColor;
+                        }else{
+                            line.style.stroke = "red";
+                        }
+                        
                         line.style.strokeWidth = 4;
                         svg.appendChild(line);
-                        
+
+
                         lineArr.push(line);
                         captureClick(mouseX,mouseY);
                     }
@@ -1408,6 +1418,22 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         drawFlag = false;
                         document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
                         svg.className.baseVal = "image-image float-center";
+
+                        
+                        let svgElements = svg.childNodes;
+                        console.log(svgElements);
+                        for(index in svgElements){
+                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
+                                svgElements[index].style.pointerEvents = "visible";
+                                if(svgElements[index].childNodes){
+                                    for(index2 in svgElements[index].childNodes){
+                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
+                                            svgElements[index].childNodes[index2].style.pointerEvents = "painted";
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                    
                  /*   COMMENTING OUT FOR NOW
@@ -1524,8 +1550,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                         //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
                         if( drawFlag && clickArray.length >1){
-                            console.log("runs");
-                            console.log(line);
+                            
                             drawLine(line, mouseX, mouseY);
                         }
                         
@@ -1612,18 +1637,37 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 } 
 
 
+                var highlightBoxArray = [],
+                    userBoxColor;
                 // when the outline box is clicked
                 $("#outlineBtn").on("mousedown",function(){
                     
-                    if(attensionBoxVisible){
-                        attensionBox.remove();
-                        document.getElementById("outlineBtn").className = "btn btn-primary btn-lg button";
-                        attensionBoxVisible = false;
+                    var g = document.createElementNS("http://www.w3.org/2000/svg","g");
+
+                    
+
+                    g.setAttribute("class","draggable confine outline");
+                    g.setAttribute("transform-origin","50%; 50%;");
+                    g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
+                    g.setAttribute("stroke-width","7");
+                    g.style.border = 0;
+                    g.style.padding = 0;
+                    g.style.pointerEvents = "visible";
+
+                    g.innerHTML = attensionBoxObjectString;
+                    
+                    console.log(userBoxColor);
+                    if(userBoxColor){
+                        g.style.fill = userBoxColor;
+                        g.style.opacity =.27;
+                        
                     }else{
-                        document.getElementById("outlineBtn").className = "btn btn-secondary btn-lg button";
-                        svg.appendChild(attensionBox);
-                        attensionBoxVisible = true;
+                        g.style.fill = "black";
+                        g.style.opacity =.27;
                     }
+                    svg.appendChild(g);
+                    highlightBoxArray.push(g);
+                    makeDraggable(svg);
                 });
 
 
@@ -1643,9 +1687,19 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         text.setAttribute("transform","translate(50,50) rotate(0) scale(1)");
                         text.style.pointerEvents = "visible";
                         text.innerHTML = textboxVal;
-                        text.setAttribute("stroke","white");
-                        text.setAttribute("fill","black");
-                        text.setAttribute("stroke-width","2");
+
+                        if(userTextColor){
+                            text.setAttribute("stroke",userTextColor);
+                            text.setAttribute("fill",userTextColor);
+                        
+                        }else{
+                            text.setAttribute("stroke","white");
+                            text.setAttribute("fill","white");
+                        
+                        }
+
+
+                        text.setAttribute("stroke-width","1");
                         svg.appendChild(text);
                         textBoxArray.push(text);
                         makeDraggable(svg);
@@ -1653,6 +1707,15 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                     }
                 });
+
+
+                // everytime  the check boxes is changed switch the places of the fill and stroke
+                $("#textColorPicker").on("change",function(){
+                    console.log("change colors");
+                    userTextColor = document.getElementById("textColorPicker").value;
+                });
+        
+
 
 
                 $("#undoText").on("mousedown",function(){
@@ -1672,17 +1735,61 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         svg.className.baseVal = "image-image float-center";
                         document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
                         clickArray = [];
-                        if(lineArr.length){
+                        if(lineArr.length && clickArray > 1){
                             lineArr.pop().remove();
                         }
+
+                        let svgElements = svg.childNodes;
+                        console.log(svgElements);
+                        for(index in svgElements){
+                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
+                                svgElements[index].style.pointerEvents = "visible";
+                                if(svgElements[index].childNodes){
+                                    for(index2 in svgElements[index].childNodes){
+                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
+                                            svgElements[index].childNodes[index2].style.pointerEvents = "painted";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
                     }
                     else{
                         svg.className.baseVal = "image-image float-center draw";
                         drawFlag = true;
                         document.getElementById("pencilIconFlag").className = "btn btn-secondary btn-lg button";
+
+
+                        let svgElements = svg.childNodes;
+                        console.log(svgElements);
+                        for(index in svgElements){
+                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
+                                svgElements[index].style.pointerEvents = "none";
+                                if(svgElements[index].childNodes){
+                                    for(index2 in svgElements[index].childNodes){
+                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
+                                            svgElements[index].childNodes[index2].style.pointerEvents = "none";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         
                     }
                 });
+
+
+                $("#undoBox").on("mousedown",function(){
+                    if(highlightBoxArray.length > 0){
+                        highlightBoxArray.pop().remove();
+                    }else{
+                        alert("There are no boxes placed yet");
+                    }
+                });
+
 
                 $("#undoLine").on("mousedown",function(){
                     if(lineArr.length > 0 && clickArray.length > 1){
@@ -1699,6 +1806,15 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         alert("No lines drawn");
                     }
                 });
+
+
+                $("#colorPickerLine").change(function(){
+                    userLineColor = document.getElementById("colorPickerLine").value;
+                });
+                $("#colorPickerBox").change(function(){
+                    userBoxColor = document.getElementById("colorPickerBox").value;
+                });
+
 
 
 
@@ -1838,7 +1954,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     if(icon.id.indexOf('sun') > -1){
                        
                         arrowImage.style.transformOrigin = String(Number(x) + " " + Number(y) - (icon.getBBox().height * scale/2));
-                        console.log(rotationVal);
+                        
                         arrowImage.setAttribute("transform","translate(" + String(Number(x) - (icon.getBBox().width * scale/2)) + " " + String(Number(y) - (icon.getBBox().height * scale/2)) 
                         + ") rotate("+ 45 + ")"); 
                 
@@ -2229,11 +2345,12 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 
                 if(!isNaN(northDegree) &&  northDegree!== 0){
                     let childList = northImage.childNodes;
-                    let offset90 = parseInt(northDegree / 90);
+                    let offset90 = Math.round(northDegree / 90);
                     let offset45 = northDegree / 45;
 
+                    console.log("offset 90 is: "+ offset90 )
                     for(index in childList){
-                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
+                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 4){
                             
                             if(childList[index].classList.contains("top-left")){
                                 let newClass = placeEnum["top-left"] + offset90;
@@ -2347,7 +2464,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             tmp = tmp.replace(")"," ").trim();
                             tmp = degree;
                             transformArray[index] = "rotate("+ tmp +")";
-                            console.log(transformArray[index]);
+                            
                             icon.setAttribute("transform", transformArray.join(" "));
                             return;
                         }
