@@ -24,6 +24,10 @@
         .draw:hover{
             cursor: url("images/pencilcursor.png"),auto;
         }
+        .textbox{
+            font: italic sans-serif;
+            visibility: visible;
+        }
     </style>
 <!--============================================= -->
 <script>
@@ -96,6 +100,10 @@
             // get the element that needs to be dragged or scaled
             selectedElement = event.target.parentNode;
 
+            if(selectedElement === svg){
+                selectedElement = event.target;
+            }
+
             // grab the limits scale value for whichever icon is selected
             // functions find min if passed true and find max if passed false
             iconMin = findLimit(selectedElement,true);
@@ -124,14 +132,14 @@
                 // extract the scale value as a number
                 currentScale = scale.matrix.a;
 
-                console.log(scale.matrix.a);
+                
                 
                 // get translate data
                 transform = transforms.getItem(0);
 
             }
             // if the event click happened on a draggable element start drag logic
-            else if (event.target.parentNode.classList.contains('draggable')) {
+            else if (selectedElement.classList.contains('draggable')) {
                 // set dragging flag
                 dragging = true;
                 // get the offset value for the translation
@@ -155,12 +163,13 @@
                 offset.y -= transform.matrix.f;
 
                 // is the selected item confined?
-                confined = event.target.parentNode.classList.contains('confine');
+                confined = selectedElement.classList.contains('confine');
 
                 // if true
                 if (confined) {
+                    let rotateVal = transforms.getItem(1).angle;
                     // if no rotate has occured
-                    if(selectedElement.getAttribute("transform").indexOf("rotate(0)") !== -1){
+                    if(rotateVal ===0 || rotateVal === 360 ){
                         // get the current scale of the icon
                         let scaleFactor = scale.matrix.a;
                         bbox = selectedElement.getBBox();
@@ -175,47 +184,157 @@
                     }
                     else{
                         // rotate has been applied
-                        let rotateVal = transforms.getItem(1).angle;
-                        console.log(rotateVal/90);
+                        
+                        console.log("ROTATE: " + rotateVal);
+                        var trigInput = rotateVal * Math.PI/180;
+                        var trigInput2 = (rotateVal-90) * Math.PI/180;
+                        var trigInput3 = (rotateVal-180) * Math.PI/180;
+                        var trigInput4 = (rotateVal-270) * Math.PI/180;
 
-                        if(rotateVal < 90 && rotateVal <= 60){
+                        // BEST WAY SO FAR ============================================================================================
+                        if(rotateVal === 180){
+                            // get the current scale of the icon
                             let scaleFactor = scale.matrix.a;
                             bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.height*(rotateVal/90)) * scaleFactor;
-                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+                            minX = boundaryX1 - bbox.x+ bbox.width * scaleFactor;
+                            maxX = boundaryX2 - bbox.x;
+                            minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
+                            maxY = boundaryY2 - bbox.y;
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }else if(rotateVal === 90){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
+                            maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y;
-                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor);
+                            maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
 
                             console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
-
-                        }
-                        else if(rotateVal <= 100 && rotateVal > 60){
+                        }else if(rotateVal === 270){
+                            // get the current scale of the icon
                             let scaleFactor = scale.matrix.a;
                             bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.height*(rotateVal/90)) * scaleFactor;
-                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+                            minX = boundaryX1 - bbox.x;
+                            maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor;
+                            minY = boundaryY1 - bbox.y + bbox.width * scaleFactor;
+                            maxY = boundaryY2 - bbox.y;
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal === 45){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2));
+                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor)/Math.sqrt(2);
                             minY = boundaryY1 - bbox.y;
-                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/90));
+                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - (bbox.height * scaleFactor)/Math.sqrt(2);
 
                             console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
-
                         }
-                        else if(rotateVal > 100 && rotateVal < 120){
+                        else if(rotateVal === 135){
+                            // get the current scale of the icon
                             let scaleFactor = scale.matrix.a;
                             bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor) * (rotateVal/180) + (bbox.width * scaleFactor) * (rotateVal/90)/2;
-                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/180))*2;
-                            minY = boundaryY1 - bbox.y + (bbox.width * scaleFactor)* (rotateVal/180);
-                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor) + ((bbox.width * scaleFactor)*(rotateVal/180))*2;
+                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2)+ (bbox.width * scaleFactor/Math.sqrt(2)));
+                            maxX = boundaryX2 - bbox.x;
+                            minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
+                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);
 
                             console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal === 225){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x + (bbox.width * scaleFactor/Math.sqrt(2));
+                            maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor/Math.sqrt(2);
+                            minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) + (bbox.width * scaleFactor)/Math.sqrt(2);
+                            maxY = boundaryY2 - bbox.y;
 
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal === 315){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x;
+                            maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) - bbox.width * scaleFactor/Math.sqrt(2);
+                            minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
+                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
+
+                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal < 90){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
+                            maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
+                            minY = boundaryY1 - bbox.y;
+                            maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
+
+                            console.log('BOUNDING DIMENSIONS ARE HERE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal < 180){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            console.log(trigInput2);
+                            minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
+                            maxX = boundaryX2 - bbox.x;
+                            minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
+                            maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
+
+                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal < 270){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            
+                            minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
+                            maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
+                            minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
+                            maxY = boundaryY2 - bbox.y;
+
+                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                        }
+                        else if(rotateVal < 360){
+                            // get the current scale of the icon
+                            let scaleFactor = scale.matrix.a;
+                            bbox = selectedElement.getBBox();
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            
+                            minX = boundaryX1 - bbox.x;
+                            maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
+                            minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
+                            maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);
+
+                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                     }
                 }
@@ -243,6 +362,9 @@
             let growingFactor = .02;
             // get the element that the mouse is over
             var elementOver = document.elementFromPoint(mX,mY);
+
+            console.log(selectedElement);
+        
             // prevent all other mousemove events
             event.preventDefault();
             
@@ -271,7 +393,7 @@
 
                         // translate the icon 0 in the x direction and by the difference in the positive y direction
                         dx = parseInt(transform.matrix.e);
-                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale));
+                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
                     }
                     // if the old x is greater and the new y is smaller then we are growing
                     else if(coord.x > offset.x && coord.y < offset.y){
@@ -280,10 +402,11 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
+                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                         
                         // translate the icon 0 in the x direction and by the difference in the negative y direction        
                         dx = parseInt(transform.matrix.e);
-                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale));
+                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
 
                        
                     }
@@ -291,10 +414,10 @@
                     // set scale using svg data method
                     scale.setScale(currentScale,currentScale);
                     // if parse it returns a true value for both
-                    if(dx && dy){
+                    /* if(dx && dy){
                         // set the new translate
                         transform.setTranslate(dx,dy);
-                    }
+                    } */
                     // set the new mouse position as the old so we can scale up and down
                     offset = coord;
                 }
@@ -309,8 +432,8 @@
                         if(currentScale < iconMin){currentScale = iconMin;}
 
                         // transform the icon by the positive difference in the sizes                        
-                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale));
-                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale));
+                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
+                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
                     }
                     // if the new x and new y are both less than the old position
                     // grow
@@ -320,19 +443,20 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
+                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
 
                         // transform the icon by the negative difference in the sizes
-                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale));
-                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale));
+                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
+                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
                     }
 
                     // set scale using svg data method
                     scale.setScale(currentScale,currentScale);
                     // if parse it returns a true value for both
-                    if(dx && dy){
+                    /* if(dx && dy){
                         // set the new translate
                         transform.setTranslate(dx,dy);
-                    }
+                    } */
 
                     // set new mouse position
                     offset = coord;
@@ -346,9 +470,10 @@
                         currentScale -= growingFactor;
                         // check for min
                         if(currentScale < iconMin){currentScale =iconMin;}
+                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
 
                         // transform the icon by the negative difference in the sizes keep y the same
-                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale));
+                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
                         dy = parseInt(transform.matrix.f);
 
 
@@ -360,9 +485,10 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
+                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                         
                         // transform the icon by the negative difference in the sizes keep y the same
-                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale));
+                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
                         dy = parseInt(transform.matrix.f);
 
                     }
@@ -370,10 +496,10 @@
                     // set scale using svg data method
                     scale.setScale(currentScale,currentScale);
                     // if parse it returns a true value for both
-                    if(dx && dy){
+                    /* if(dx && dy){
                         // set the new translate
                         transform.setTranslate(dx,dy);
-                    }
+                    } */
 
                     // set new mouse position
                     offset = coord;
@@ -395,12 +521,12 @@
 
                         //check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
+                        if(bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                     }
                     // set scale using svg data method
                     scale.setScale(currentScale,currentScale);
                     // no need to translate for bottom right corner
-
-                    // set new mouse coordinates
+                    // set new mouse position
                     offset = coord;
                 }
                        
@@ -423,6 +549,8 @@
                 }
                 // set the transform
                 transform.setTranslate(dx, dy);
+                console.log(transform);
+                console.log('transform^^^^^^');
             }
         }
 
@@ -525,10 +653,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
-                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img> <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</li>
+                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img> <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button></li>
-
+                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:8rem; color: black">Text Box</button><button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
                         <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
                             <h2 class="text-left">Pad Image</h2>
                             <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
@@ -581,23 +709,27 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
             // string version of off the icons so they can be added dynamicly with a single function call 
             // (sun and eye) MIN .15625 MAX 1.5625
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,150) rotate(0) scale(.15625 )"  style="border:0; padding:0; pointer-events:visible;"> '
-                    +'<circle id= "sunIconOuter"  r="150" cy="150" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
-                    +'<circle id= "sunIcon"  r="35" cy="150" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0; padding:0; pointer-events:visible;"> '
+                    +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
+                    +'<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
+                    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="red" stroke-width="10"/>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
                     +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
                     +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
                     +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
             
+            var arrow = '<path id="arrow" x="0" y="0" d="M 150 150 L 150 300 L 150 0 L 300 150 L 150 0 L 0 150" stroke-width="10" stroke="blue"  style="border: 5px solid green;" fill="none"/>'  
+
             // (North) MIN .1219513 MAX 1.219513
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(110) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
                 +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
                 +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white"  stroke="black" stroke-width="4" style="border:0;"></path>'
                 +'<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
-                +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/>'
-                +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/></g>'
+                +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/>'
+                +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/></g>'
+                
 
             var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
 
@@ -656,6 +788,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
             // dynamically add the elements to export better 
             svg.insertAdjacentHTML("beforeend",sunObjectString);
+            svg.insertAdjacentHTML("beforeend",arrow);
+            var arrowImage = document.getElementById("arrow");
             var sunImage = document.getElementById("sunPosition");
             svg.insertAdjacentHTML("beforeend",northObjectString);
             var northImage = document.getElementById("northPosition");
@@ -726,6 +860,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             eyeImage.remove();
             scaleBarIcon.remove();
             attensionBox.remove();
+            arrowImage.remove();
 
 
             // set defaults
@@ -1492,6 +1627,42 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 });
 
 
+                var textBoxArray = [];
+                // when the text box is clicked
+                $("#textBtn").on("mousedown",function(){
+                    
+                    var textboxVal = prompt("What Should It Say?","");
+
+                    if(textboxVal !== ""){
+                        console.log(textboxVal + "= textboxVal");
+
+                        var text = document.createElementNS("http://www.w3.org/2000/svg","text");
+                        text.setAttribute("class","draggable confine textbox");
+                        text.setAttribute("x",0);
+                        text.setAttribute("y",0);
+                        text.setAttribute("transform","translate(50,50) rotate(0) scale(1)");
+                        text.style.pointerEvents = "visible";
+                        text.innerHTML = textboxVal;
+                        text.setAttribute("stroke","white");
+                        text.setAttribute("fill","black");
+                        text.setAttribute("stroke-width","2");
+                        svg.appendChild(text);
+                        textBoxArray.push(text);
+                        makeDraggable(svg);
+                        
+
+                    }
+                });
+
+
+                $("#undoText").on("mousedown",function(){
+                    
+                    if(textBoxArray.length > 0){
+                        textBoxArray.pop().remove();
+                    }else{
+                        alert("text has not been added");
+                    }
+                });
                 var drawFlag = false;
 
                 $("#pencilIconFlag").on('mousedown',function(){
@@ -1533,106 +1704,149 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                 // when north button is clicked
                 $('#northIconFlag').on('mousedown',function(){
-                    // change north flag
-                    northFlag = !northFlag;
-                    
-                    // if north flag is placed currently remove it
-                    if(northIconPlaced){
-                        northIconPlaced = !northIconPlaced;
-                        northImage.remove();
-                        northImage.style.visibility = 'hidden';
-                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        northImage.setAttribute("transform","translate(100,100) scale(.121952)");
+                    if(!document.getElementById("northIconFlag").classList.contains("disabled")){
+                        // change north flag
                         northFlag = !northFlag;
-                    }
-                    
-                    // otherwise set the other flags to false and adjust their html
-                    if(northFlag){
-                        if(!sunIconPlaced){
-                            sunFlag = false;
-                            document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                        }
-
-                        if(!eyeIconPlaced){
-                            eyeFlag = false;
-                            document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
-                        }
-
-                        /* cropFlag = false;
-                        document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                        outlineBox.remove();
-                        outlineBox.style.visibility = 'hidden';
                         
-                        svg.appendChild(northImage);
-                        northImage.style.visibility = 'visible';
-                        northIconPlaced = !northIconPlaced;
-                        northFlag = false;
-                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                        // if north flag is placed currently remove it
+                        if(northIconPlaced){
+                            northIconPlaced = !northIconPlaced;
+                            northImage.remove();
+                            northImage.style.visibility = 'hidden';
+                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            northImage.setAttribute("transform","translate(100,100) rotate(0) scale(.121952)");
+                            
+                            northFlag = !northFlag;
+                        }
+                        
+                        // otherwise set the other flags to false and adjust their html
+                        if(northFlag){
+                            if(!sunIconPlaced){
+                                sunFlag = false;
+                                document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                            }
+
+                            if(!eyeIconPlaced){
+                                eyeFlag = false;
+                                document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
+                            }
+
+                            /* cropFlag = false;
+                            document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                            outlineBox.remove();
+                            outlineBox.style.visibility = 'hidden';
+                            
+                            svg.appendChild(northImage);
+                            northImage.style.visibility = 'visible';
+                            setIconAngle(northImage, northDegree);
+                            makeDraggable(svg);
+                            northIconPlaced = !northIconPlaced;
+                            northFlag = false;
+                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                        }
+                        
+                        clickArray = [];
                     }
                     
-                    clickArray = [];
                 }); 
 
 
                 // use same logic for other button
                 $('#eyeFlag').click(function(){
-                    eyeFlag = !eyeFlag;
-
-                    if(eyeIconPlaced){
-                        eyeIconPlaced = !eyeIconPlaced;
-                        eyeImage.remove();
-                        eyeImage.style.visibility = 'hidden';
+                    if(!document.getElementById("eyeFlag").classList.contains("disabled")){
                         eyeFlag = !eyeFlag;
-                        document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        eyeImage.setAttribute("transform","translate(0,100) scale(.15625)");
-                    }
-                    
-                    if(eyeFlag){
-                        
-                        cropFlag = false;
-                       /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                        outlineBox.remove();
-                        outlineBox.style.visibility = 'hidden';
-                        
-                        svg.appendChild(eyeImage);
-                        eyeImage.style.visibility = 'visible'
-                        document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button");
-                        eyeFlag = false;
-                        eyeIconPlaced = true;
-                    }
-                    
+
+                        if(eyeIconPlaced){
+                            eyeIconPlaced = !eyeIconPlaced;
+                            eyeImage.remove();
+                            eyeImage.style.visibility = 'hidden';
+                            eyeFlag = !eyeFlag;
+                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            eyeImage.setAttribute("transform","translate(0,100) scale(.15625)");
+                        }
+
+                        if(eyeFlag){
+                            
+                            cropFlag = false;
+                        /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                            outlineBox.remove();
+                            outlineBox.style.visibility = 'hidden';
+                            
+                            svg.appendChild(eyeImage);
+                            eyeImage.style.visibility = 'visible'
+                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                            eyeFlag = false;
+                            eyeIconPlaced = true;
+                        }
+                    } 
                 });
 
                 // use same logic for other button
                 $('#sunIconFlag').click(function(){
-                    sunFlag = !sunFlag;
+                    
+                    if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
+                        sunFlag = !sunFlag;
 
-                    if(sunIconPlaced){
-                        sunIconPlaced = !sunIconPlaced;
-                        sunImage.style.visibility = 'hidden';
-                        sunImage.remove();
-                        document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                        sunFlag = false;
-                        sunImage.setAttribute("transform","translate(0,150) scale(.15625)");
+                        if(sunIconPlaced){
+                            sunIconPlaced = !sunIconPlaced;
+                            sunImage.style.visibility = 'hidden';
+                            sunImage.remove();
+                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            sunFlag = false;
+                            sunImage.setAttribute("transform","translate(150,150) rotate(0) scale(.15625)");
+                            arrowImage.remove();
+
+                           
+                                
+                        }
+                        
+                        if(sunFlag){
                             
+                            cropFlag = false;
+                            outlineBox.style.visibility = 'hidden';
+                            
+                        /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                            sunImage.style.visibility = 'visible';
+                            svg.appendChild(sunImage);
+                            sunFlag = false;
+                            sunIconPlaced = true;
+                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                            
+                            setIconAngle(sunImage, sunDegree);
+                            makeDraggable(svg);  
+                            
+                            //sunImage.appendChild(arrowImage);
+                            
+                        }
+                        
+                        clickArray = [];
                     }
                     
-                    if(sunFlag){
-                        
-                        cropFlag = false;
-                        outlineBox.style.visibility = 'hidden';
-                        
-                       /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                        sunImage.style.visibility = 'visible';
-                        svg.appendChild(sunImage);
-                        sunFlag = false;
-                        sunIconPlaced = true;
-                        document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
-                        
-                    }
-                    
-                    clickArray = [];
                 });
+
+
+
+                function drawArrow(icon, rotationVal){
+                    let transString = icon.getAttribute("transform").split(" ")[0];
+                    let scaleString = icon.getAttribute("transform").split(" ")[icon.getAttribute("transform").split(" ").length -1];
+                    
+
+                    var x = transString.split(",")[0].replace("translate("," "),
+                        y = transString.split(",")[1].replace(")"," "),
+                        scale = scaleString.split("scale(")[1].replace(")"," ");
+
+                    if(icon.id.indexOf('sun') > -1){
+                       
+                        arrowImage.style.transformOrigin = String(Number(x) + " " + Number(y) - (icon.getBBox().height * scale/2));
+                        console.log(rotationVal);
+                        arrowImage.setAttribute("transform","translate(" + String(Number(x) - (icon.getBBox().width * scale/2)) + " " + String(Number(y) - (icon.getBBox().height * scale/2)) 
+                        + ") rotate("+ 45 + ")"); 
+                
+                    }else{
+                        // draw on the eye
+                    }
+                }
+
 
 
 /* 
@@ -1944,7 +2158,29 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
         </script>
 
         <script>
-            var northDeg;
+            
+            var northDegree,
+                sunDegree,
+                observerDegree;
+
+            var placeEnum = new Object({
+                        "top-left":1,
+                        "top-right":2,
+                        "bottom-right":3,
+                        "bottom-left":4
+                        });
+        
+
+            Object.prototype.getNameWithVal = function(val){
+                let tmpArr = Object.keys(this);
+                for(key in tmpArr){
+                    if( this[tmpArr[key]] === val){
+                        return tmpArr[key];
+                    }
+                }
+            }
+
+
             // Gets Important Metadata from the "metadata-text" div
             function getMetadata(){
                 // get value string from hidden DOM element
@@ -1953,39 +2189,128 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 var metadataString = JSON.parse(metadata);
                 
                 // Important Metadata Values
-                northDeg = metadataString['NorthAzimuth'];
-                var sunDegree = metadataString['SubSolarAzimuth'];
-                var observerDegree = metadataString['SubSpacecraftGroundAzimuth'];
-                var scale = metadataString['SampleResolution'];
-
-                // ======= Hard Coding North Arrow For Testing =========
-                let northDegree = 90;
-                // ==================================================
-
+                northDegree = parseFloat(metadataString['NorthAzimuth']);
+                sunDegree = parseFloat(metadataString['SubSolarAzimuth']);
+                observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']);
+                
+                
                 // TODO: generate an arrow in the proper direction in relation to the degree of the sun and eye angles
-                if(northDegree == "None"){
+                if(isNaN(northDegree)){
                     document.getElementById("north-radio").checked = false;
+                    document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
+                    
                 }else{
                     setLegendAngle("northImg", "northDeg", northDegree);
                 }
 
-                if(sunDegree == "None"){
+                if(isNaN(sunDegree)){
                     document.getElementById("sun-radio").checked = false;
+                    document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
                 }
 
-                if(observerDegree == "None"){
+                if(isNaN(observerDegree)){
                     document.getElementById("obs-radio").checked = false;
+                    document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
                 }
 
-                // scale will be generated using the SampleResolution and the size of the image (meters/px)
-                if(scale == "None"){
-                    document.getElementById("scalebar-radio").checked = false;
-                }
+
+
+
+                setScaleboxCorners(northDegree, sunDegree);
             }
 
             // set the arrow directions and recieve the data
             getMetadata();
             
+
+            
+
+            function setScaleboxCorners(northDegree, sunDegree){
+                
+                if(!isNaN(northDegree) &&  northDegree!== 0){
+                    let childList = northImage.childNodes;
+                    let offset90 = parseInt(northDegree / 90);
+                    let offset45 = northDegree / 45;
+
+                    for(index in childList){
+                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
+                            
+                            if(childList[index].classList.contains("top-left")){
+                                let newClass = placeEnum["top-left"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("top-right")){
+                                let newClass = placeEnum["top-right"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("bottom-right")){
+                                let newClass = placeEnum["bottom-right"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("bottom-left")){
+                                let newClass = placeEnum["bottom-left"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                        }
+                        
+                    }
+                }
+                if(!isNaN(sunDegree)){
+                    let childList = sunImage.childNodes;
+                    let offset90 = parseInt(sunDegree / 90);
+                    console.log(offset90);
+                    for(index in childList){
+                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
+                            console.log("found corner");
+                            if(childList[index].classList.contains("top-left")){
+                                let newClass = placeEnum["top-left"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("top-right")){
+                                let newClass = placeEnum["top-right"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("bottom-right")){
+                                let newClass = placeEnum["bottom-right"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                            else if(childList[index].classList.contains("bottom-left")){
+                                let newClass = placeEnum["bottom-left"] + offset90;
+                                if(newClass > 4){newClass -= 4}
+                                
+
+                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+            
+
             // Set Legend North Angle Angle
             function setLegendAngle(img, degree, value){
                 // get the image element and the element to display the angle degree
@@ -2010,32 +2335,42 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
             function setIconAngle(icon, degree){
 
-                if(degree !== "None"){
+                console.log(degree);
+                if(!isNaN(degree)){
                     let transformVal = icon.getAttribute("transform");
                     let transformArray = transformVal.split(" ");
 
                     for(index in transformArray){
-                        if(transformArray[index].indexOf("rotate")){
-                            console.log("parse to find value and change it");
+                        if(transformArray[index].indexOf("rotate") > -1){
+                            var tmp = transformArray[index].split("rotate(")[1];
+                            
+                            tmp = tmp.replace(")"," ").trim();
+                            tmp = degree;
+                            transformArray[index] = "rotate("+ tmp +")";
+                            console.log(transformArray[index]);
+                            icon.setAttribute("transform", transformArray.join(" "));
+                            return;
                         }
+
                     }
 
                     let scaleStr = transformArray[transformArray.length -1];
                     let translateStr = transformArray[0];
 
-                    let rotateStr = "rotate(" + String(degree) + "deg)";
+                    let rotateStr = "rotate(" + String(degree) + ")";
 
                     transformArray.pop();
                     transformArray.push(rotateStr);
                     transformArray.push(scaleStr);
-                    icon.setAttribute("transform-origin", "50% 50%");
+                    
                     icon.setAttribute("transform", transformArray.join(" "));
                     
                 }
 
             }
-
-            //setIconAngle(northImage, 90);
+            
+            // draw an arrow and rotate the arrow for the eye not the actual eye 
+            // setIconAngle(eyeImage, observerDegree);
 
 
         /*  //========== This Function is for testing the Rotation Orgin Point ===============
