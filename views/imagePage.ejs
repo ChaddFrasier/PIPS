@@ -2464,7 +2464,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 }
                 if(!isNaN(sunDegree)){
                     let childList = sunImage.childNodes;
-                    let offset90 = parseInt(sunDegree / 90);
+                    let offset90 = Math.round(sunDegree / 90);
                     console.log(offset90);
                     for(index in childList){
                         if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
