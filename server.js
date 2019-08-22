@@ -112,6 +112,13 @@ app.get('/', function(request, response){
     console.log(request.path);
     // query for alert code
     let code = request.query.alertCode;
+
+
+    //================= testing uid function===============
+    console.log('USER ID IS: '+ util.createUserID(23));
+    //=====================
+
+
     // render the index page w/ proper code
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
     

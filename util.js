@@ -100,6 +100,16 @@ module.exports = {
     },
 
 
+    createUserID: function(lengthOfID){
+        let charString = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYXYZ';
+
+        charSetLength = charString.length;
+        let char = Math.floor(Math.random()*charSetLength);
+        console.log(charString.charAt(char));
+    },
+
+
+
     /**
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
