@@ -43,14 +43,14 @@ image:hover {
 }
 
 .image-controls{
-    position: fixed;
+    position: absolute;
     margin-left: 0%;
     margin-right: 10%;
     display: block;
     align-content: left;
     padding-right:auto;
-    left: 2rem;
-    top: 10rem;
+    left: 0rem;
+    top: -54rem;
     padding-left: 0%;            
 }
 
@@ -146,6 +146,6 @@ li{
     padding-top: 0rem;
     padding-left: 0rem;
     padding-right: 1rem;
-    border: 5rem;
+    border: 2rem;
     display: inline;
 }
