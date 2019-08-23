@@ -79,10 +79,22 @@ try{
     exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
-    exec('rm ./print.prt');    
+    exec('rm ./print.prt');
+    
+    let fileArr = fs.readdirSync("./images");
+
+    for(index in fileArr){
+        if(/^.*(?<!arrow|eye_symbol|north|pencil|pencilcursor|sun_symbol|usgsLogo)\.(png)$/gm.test(fileArr[index])){
+            fs.unlinkSync(path.join('images',fileArr[index]));
+        }
+    }
+
+
+
+
 }
 catch(err){
-    console.log('file error occured');
+    console.log('file error occured: ' + err);
 }
 
 // read the config file to get only important tags for webpage
