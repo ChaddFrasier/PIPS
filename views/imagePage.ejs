@@ -100,7 +100,6 @@
             event.preventDefault();
             // find what element the event is on
             elementOver = document.elementFromPoint(mX,mY);
-            console.log(elementOver);
             // get the element that needs to be dragged or scaled
             selectedElement = event.target.parentNode;
 
@@ -371,6 +370,10 @@
 
             // set the factor at which the resize happens
             let growingFactor = .02;
+
+            if(elementOver.parentElement.classList.contains("textbox")){
+                growingFactor *= 10;
+            }
             
 
             if(selectedElement){
@@ -569,6 +572,11 @@
                     // set new mouse position
                     offset = coord;
                 }
+
+                if(isOutline){
+                 
+                    selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
+                }
                        
             }
             // if the selected element is not null and the dragging flag is true
@@ -655,7 +663,8 @@
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%">
         <div class="container">
             <div class="jumbotron text-center" >
-                <h2>Edit the Cube Image</h2>      
+                <h2>Edit the Cube Image</h2> 
+                <h4 id="imageName"></h4>     
                 </div>
             </div>
         </div>
@@ -934,7 +943,12 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 toggleEye = true,
                 toggleScalebar = true,
                 userTextColor;
+            setImageName("<%=image%>");
 
+            function setImageName(str){
+                str = str.split("/")[1];
+                document.getElementById("imageName").innerHTML = str.replace(".png",".cub");
+            }
 
             // everytime  the check boxes is changed switch the places of the fill and stroke
             $("#northCheckbox").on("change",function(){
@@ -1755,8 +1769,14 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                     if(textboxVal !== "" && textboxVal){
                         console.log(textboxVal + "= textboxVal");
-                        let strlength = textboxVal.length; 
+                        textboxVal = textboxVal.toUpperCase(textboxVal);
+                        
+                        let strlength = textboxVal.length -  countI(textboxVal); 
+                        let numberOfSpaces = textboxVal.split(" ").length;
+                        
 
+                
+                        
                         var text = document.createElementNS("http://www.w3.org/2000/svg","text");
                         
                         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1767,22 +1787,52 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         g.setAttribute("y",0);
                         text.setAttribute("x",0);
                         text.setAttribute("y",15);
-                        g.setAttribute("height",20);
+                        text.style.fontSize = "15";
+                        g.setAttribute("height",15);
+                        g.setAttribute("width",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
                         g.setAttribute("transform","translate(50,50) rotate(0) scale(2.6)");
 
                         var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
-                        rect.setAttribute("x",2);
-                        rect.setAttribute("y",15);
-                        rect.setAttribute("width", 9 * strlength);
+                        rect.setAttribute("x",0);
+                        rect.setAttribute("y",13);
+                        rect.setAttribute("width", 3);
                         rect.setAttribute("height", 5);
                         rect.style.visibility = "hidden";
-                        rect.setAttribute("class","resize bottom");
+                        rect.setAttribute("class","resize bottom-left");
+
+
+                        var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                        rect2.setAttribute("x",0);
+                        rect2.setAttribute("y",0);
+                        rect2.setAttribute("width", 3);
+                        rect2.setAttribute("height", 5);
+                        rect2.style.visibility = "hidden";
+                        rect2.setAttribute("class","resize top-left");
+
+                        var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                        rect3.setAttribute("x",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
+                        rect3.setAttribute("y",0);
+                        rect3.setAttribute("width", 4);
+                        rect3.setAttribute("height", 5);
+                        rect3.style.visibility = "hidden";
+                        rect3.setAttribute("class","resize top-right");
+
+                        var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                        rect4.setAttribute("x",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
+                        rect4.setAttribute("y",13);
+                        rect4.setAttribute("width", 4);
+                        rect4.setAttribute("height", 5);
+                        rect4.style.visibility = "hidden";
+                        rect4.setAttribute("class","resize bottom-right");
                         
 
                         text.style.pointerEvents = "visible";
                         text.innerHTML = textboxVal;
                         g.appendChild(text);
                         g.appendChild(rect);
+                        g.appendChild(rect2);
+                        g.appendChild(rect3);
+                        g.appendChild(rect4);
                         if(userTextColor){
                             text.setAttribute("stroke",userTextColor);
                             text.setAttribute("fill",userTextColor);
@@ -1802,6 +1852,18 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                     }
                 });
+
+
+                function countI(str){
+                    var count = 0;
+                    for(char in str){
+                        
+                        if(str[char] === "I"){
+                            count++;
+                        }
+                    }
+                    return count;
+                }
 
 
                 // everytime  the check boxes is changed switch the places of the fill and stroke
