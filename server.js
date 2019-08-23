@@ -242,11 +242,25 @@ app.post('/upload', async function(request, response){
             }else{
                 console.log('cube file was uploaded');    
             }
-            
             // if the desired width and height are both given set that to be the user dimensions 
-            if(Number(request.body.desiredWidth) > 50 && Number(request.body.desiredHeight)> 50){
-                cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
+            if(Number(request.body.desiredWidth) > 50 || Number(request.body.desiredHeight)> 50){
 
+                
+                if(Number(request.body.desiredHeight) === 0){
+                    // set to negative so we know to calculate it with jimp later
+                    cubeObj.userDim = [Number(request.body.desiredWidth),-1];
+                }
+                else if(Number(request.body.desiredWidth) === 0){
+                    // set to negative so we know to calculate it with jimp later
+                    cubeObj.userDim = [-1,Number(request.body.desiredHeight)];
+                }
+                else{
+                    console.log("default");
+                    cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
+                }
+
+
+                
             }else{
                 // otherwise ignore and default
                 cubeObj.userDim = [0,0];
@@ -509,14 +523,15 @@ app.post('/showImage', function(request, response){
     console.log(request.path);
 
     // prepare variables 
-    var uid = request.cookies['userId'];
+    var uid = request.cookies['userId'],
+        userObject;
     var imagepath;
     var data,
         resolution;
 
     if(uid !== undefined){
         // get image name and path
-        let userObject = util.getObjectFromArray(uid, cubeArray);
+        userObject = util.getObjectFromArray(uid, cubeArray);
 
 
         let image = util.getimagename(userObject.name, 'png');
@@ -528,7 +543,7 @@ app.post('/showImage', function(request, response){
             console.log('Object Search Failed');
             data = 'NONE';
         }else{
-            var userDim = userObject.userDim;
+           
             // get resolution value
             var resolution = util.getPixelResolution(userObject);
 
@@ -550,6 +565,21 @@ app.post('/showImage', function(request, response){
     jimp.read(imagepath).then(function(img){
         w = img.bitmap.width;
         h = img.bitmap.height;
+        // check and calculate user dimensions if needed
+        if(userObject.userDim[0] === -1){
+            let factor = userObject.userDim[1]/h;
+
+            userObject.userDim = [w*factor,userObject.userDim[1]];
+        }
+        else if(userObject.userDim[1] === -1){
+            let factor = userObject.userDim[0]/w;
+
+            userObject.userDim = [userObject.userDim[0],h*factor];
+        
+        }
+
+
+        var userDim = userObject.userDim;
 
 
         // calculate image width in meters
@@ -616,10 +646,10 @@ app.post('/showImage', function(request, response){
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
             if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
                 response.render("imagePage.ejs", {image:imagepath, tagField: data,
-                    origW: w, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                    origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
             }else{
                 response.render("imagePage.ejs", {image:imagepath, tagField: data,
-                    w: w, h: h, origW: w,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                    w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
             }
 
         }
