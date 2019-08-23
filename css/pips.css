@@ -44,7 +44,7 @@ image:hover {
 
 .image-controls{
     position: absolute;
-    width: fit-content;
+    width: 50%;
     margin-left: 0%;
     margin-right: 12%;
     display: block;
