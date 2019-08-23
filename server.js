@@ -4,19 +4,17 @@
  * @run node server 
  * 
  * @author Chadd Frasier
- * @version 2.5.0
+ * @version 2.6.1
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * Date Created: 05/31/19
- * Last Modified: 08/02/19
+ * Last Modified: 08/23/19
  *
  * @todo 1 unit test all componets
  * 
  *     
- * @todo 4 scalebars
  * @todo 8 log the isis returns to a file if the user wants that
  * 
- * @todo 10 simplify the object code
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
  * @requires ./js/cubeObj.js
  * 
@@ -24,19 +22,9 @@
  */
 
  /** READ ME BEFORE EDITING
-  * @fileoverview   07/29/19 
+  * @fileoverview   08/23/19 
   * 
-  *       Promises were used to let the appication work in a Syncronous manner which javascript is not build for. The data
-  *     extraction and object creation should not be changed for this reason. If it is changed then the functions could
-  *     be processed in the improper order and using Promises allows for exec calls to be remerged.
-  *     
-  *       Cookies are used to keep track of user file uploads and subsequent data responses. The user will recieve
-  *     live notifications when files fail to upload and it will inform user of the issue that the server 
-  *     is facing from their attemped upload. Cookies are very important as that is how we will be able to find the correct
-  *     data in the instance array.
-  * 
-  *       Instances of cubeObjects will be saved into an array that the server holds so when a user moves to another page they will recieve
-  *     the correct data from the server.
+  *      //TODO: 
   * 
 */
 
@@ -598,12 +586,12 @@ app.post('/showImage', function(request, response){
                     scalebarUnits = "m";
                 }
                 else{
-                    console.log(scalebarMeters/1000 + " would be the legth in Km that the scalebar represents\n");
+                    console.log(scalebarMeters/1000 + " would be the legth in km that the scalebar represents\n");
                     
                     scalebarLength = scalebarMeters/1000;
                     var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                    console.log(scalebarLength + " Km");
-                    scalebarUnits = "Km";
+                    console.log(scalebarLength + " km");
+                    scalebarUnits = "km";
                 }
 
                 // render image page with needed data

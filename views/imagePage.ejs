@@ -46,7 +46,7 @@
         
         // decrale all global function variables for dragging
         var selectedElement, offset, transform,
-            bbox, minX, maxX, minY, maxY, confined;
+            bbox, minX, maxX, minY, maxY, confined,elementOver;
         // & for resizing
         var resizing = false,
             dragging = false,
@@ -99,7 +99,8 @@
             // prevent all other mousedown events
             event.preventDefault();
             // find what element the event is on
-            var elementOver = document.elementFromPoint(mX,mY);
+            elementOver = document.elementFromPoint(mX,mY);
+            console.log(elementOver);
             // get the element that needs to be dragged or scaled
             selectedElement = event.target.parentNode;
 
@@ -173,6 +174,7 @@
                 // if true
                 if (confined) {
                     let rotateVal = transforms.getItem(1).angle;
+                    if(rotateVal > 360){rotateVal-= 360;}
                     // if no rotate has occured
                     if(rotateVal ===0 || rotateVal === 360 ){
                         // get the current scale of the icon
@@ -191,6 +193,9 @@
                         // rotate has been applied
                         
                         console.log("ROTATE: " + rotateVal);
+
+
+
                         var trigInput = rotateVal * Math.PI/180;
                         var trigInput2 = (rotateVal-90) * Math.PI/180;
                         var trigInput3 = (rotateVal-180) * Math.PI/180;
@@ -366,8 +371,7 @@
 
             // set the factor at which the resize happens
             let growingFactor = .02;
-            // get the element that the mouse is over
-            var elementOver = document.elementFromPoint(mX,mY);
+            
 
             if(selectedElement){
                 var isOutline = selectedElement.classList.contains("outline");
@@ -698,8 +702,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
                         <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ff0000"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button><input id="colorPickerBox"type="color" name="boxColor"  value="black"/> <button class="btn btn-secondary btn-sm" id="undoBox">Undo Box</button></li>
+                        <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button>
+                            <label for="scaleCheckbox" style="top: 20rem">Toggle Color</label>
+                            <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38.5rem; left: 16rem;"></li>
+                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button><input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> <button class="btn btn-secondary btn-sm" id="undoBox">Undo Box</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:7rem; color: black">Text Box</button>
                             <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
                             <button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
@@ -759,10 +765,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
                     + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="red" stroke-width="10"/>'
-                    +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
-                    +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
-                    +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
-                    +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
+                    +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: visible;"fill="red"/>'
+                    +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: visible;"fill="blue"/>'
+                    +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: visible;"fill="green"/>'
+                    +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: visible;"fill="yellow"/></g>';
             
             var arrow = '<path id="arrow" x="0" y="0" d="M 150 150 L 150 300 L 150 0 L 300 150 L 150 0 L 0 150" stroke-width="10" stroke="blue"  style="border: 5px solid green;" fill="none"/>'  
 
@@ -794,34 +800,34 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 + '<rect x="220" y="120" class="resize bottom-right" style="visibility: hidden;"width="100" height="100" fill="green"/>'
                 + '<rect x="0" y="120" class="resize bottom-left" style="visibility: hidden;"width="95" height="100" fill="yellow"/></g>';
             
-            var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
-                + '<rect x="0" y="0" id="scalebarBG" width="4000" height="500" stroke="black" fill="red" ></rect>'
-                + '<rect x="0" y="200" id="scalebarOuter" width="4000" height="300" stroke="white" fill="black" ></rect>'
-                + '<path id="scalebarLine" d="M 2000 350 L 4000 350"  stroke="white" stroke-width="7"/>'
-                + '<path id="scalebarVert" d="M 2000 200 L 2000 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarVert10th" d="M 200 200 L 200 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarLine10th" d="M 0 350 L 200 350"  stroke="white" stroke-width="7"/>'
+            var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="10" style="border:0; padding:0; pointer-events:all;">'
+                + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;" ></rect>'
+                + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white" fill="black" ></rect>'
+                + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="40"/>'
 
-                + '<path id="scalebarVert20th" d="M 400 200 L 400 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarVert30th" d="M 600 200 L 600 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarLine30th" d="M 400 350 L 600 350"  stroke="white" stroke-width="7"/>'
+                + '<path id="scalebarVert20th" d="M 550 200 L 550 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarVert30th" d="M 750 200 L 750 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="40"/>'
 
-                + '<path id="scalebarVert40th" d="M 800 200 L 800 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarVert50th" d="M 1000 200 L 1000 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarLine50th" d="M 800 350 L 1000 350"  stroke="white" stroke-width="7"/>'
+                + '<path id="scalebarVert40th" d="M 950 200 L 950 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarVert50th" d="M 1150 200 L 1150 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="40"/>'
 
-                + '<path id="scalebarVert60th" d="M 1200 200 L 1200 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarVert70th" d="M 1400 200 L 1400 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarLine70th" d="M 1200 350 L 1400 350"  stroke="white" stroke-width="7"/>'
+                + '<path id="scalebarVert60th" d="M 1350 200 L 1350 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarVert70th" d="M 1550 200 L 1550 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="40"/>'
 
-                + '<path id="scalebarVert80th" d="M 1600 200 L 1600 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarVert90th" d="M 1800 200 L 1800 500"  stroke="white" stroke-width="5"/>'
-                + '<path id="scalebarLine90th" d="M 1600 350 L 1800 350"  stroke="white" stroke-width="7"/>'
+                + '<path id="scalebarVert80th" d="M 1750 200 L 1750 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
+                + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="40"/>'
 
-                + '<text id="scalebarText" x="3400" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%> <%=scalebarUnits%></text>'
-                + '<text id="scalebar1" x="10" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
-                + '<text id="scalebarHalf" x="900" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>'
-                + '<text id="scalebar0" x="1950" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>';
+                + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
+                + '<text id="scalebar1" x="50" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
+                + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>'
+                + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>';
 
 
             // grab DOM elements that are needed
@@ -967,6 +973,31 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     toggleSun = true;
                 }
             });
+
+            // everytime  the check boxes is changed switch the places of the fill and stroke
+            $("#scaleCheckbox").on("change",function(){
+                
+                    var children = scaleBarIcon.childNodes;
+
+                    for(index in children){
+                        if(typeof(children[index]) == "object"){
+                            if(children[index].getAttribute("stroke")){
+                                children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                            }
+                            if(children[index].getAttribute("fill")){
+                                children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                            }
+                   
+                        }
+                    }
+            });
+
+
+            function setOpposite(colorString){
+                if(colorString === "black"){return "white";}
+                else{return "black";}
+            }
+
             // everytime  the check boxes is changed switch the places of the fill and stroke
             $("#eyeCheckbox").on("change",function(){
                 if(toggleEye){
@@ -1690,7 +1721,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     g.setAttribute("class","draggable confine outline");
                     g.setAttribute("transform-origin","50%; 50%;");
                     g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
-                    g.setAttribute("stroke-width","7");
+                    g.setAttribute("stroke-width","10");
                     g.style.border = 0;
                     g.style.padding = 0;
                     g.style.pointerEvents = "visible";
@@ -1699,12 +1730,15 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     
                     console.log(userBoxColor);
                     if(userBoxColor){
-                        g.style.fill = userBoxColor;
-                        g.style.opacity =.27;
+                        g.style.stroke = userBoxColor;
+                        g.style.fill = "none";
+                       
                         
                     }else{
-                        g.style.fill = "black";
-                        g.style.opacity =.27;
+                        g.style.fill = "none";
+                        g.style.stroke = "white";
+                       
+                       
                     }
                     svg.appendChild(g);
                     highlightBoxArray.push(g);
@@ -1773,24 +1807,6 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 // everytime  the check boxes is changed switch the places of the fill and stroke
                 $("#textColorPicker").on("change",function(){
                     userTextColor = document.getElementById("textColorPicker").value;
-                    if(textBoxArray.length>0){
-                     for(index in textBoxArray){
-                        var children = textBoxArray[index].childNodes;
-                        
-                        if(children){
-                            for(index2 in children){
-                               
-                                if(children[index2].tagName ==="text"){
-                                    children[index2].setAttribute("fill",userTextColor);
-                                    children[index2].setAttribute("stroke",userTextColor);
-                                }
-                                
-                            }
-                        }
-
-                     }   
-                    }
-                    
                 });
         
 
@@ -1908,7 +1924,6 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             northImage.remove();
                             northImage.style.visibility = 'hidden';
                             document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                            northImage.setAttribute("transform","translate(100,100) rotate(0) scale(.121952)");
                             
                             northFlag = !northFlag;
                         }
@@ -1956,7 +1971,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             eyeImage.style.visibility = 'hidden';
                             eyeFlag = !eyeFlag;
                             document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
-                            eyeImage.setAttribute("transform","translate(0,100) scale(.15625)");
+                           
                         }
 
                         if(eyeFlag){
@@ -1987,7 +2002,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                             sunImage.remove();
                             document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                             sunFlag = false;
-                            sunImage.setAttribute("transform","translate(150,150) rotate(0) scale(.15625)");
+                        
                             arrowImage.remove();
 
                            
@@ -2382,10 +2397,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 // parse back into JSON
                 var metadataString = JSON.parse(metadata);
                 
-                // Important Metadata Values
-                northDegree = parseFloat(metadataString['NorthAzimuth']);
-                sunDegree = parseFloat(metadataString['SubSolarAzimuth']);
-                observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']);
+                // Important Metadata Values adding the offset for isis
+                northDegree = parseFloat(metadataString['NorthAzimuth']) + 90;
+                sunDegree = parseFloat(metadataString['SubSolarAzimuth'])+ 90;
+                observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
                 
                 
                 // TODO: generate an arrow in the proper direction in relation to the degree of the sun and eye angles
@@ -2409,7 +2424,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
 
 
-
+                if(northDegree>360){northDegree-=360;}
+                if(sunDegree>360){sunDegree-=360;}
                 setScaleboxCorners(northDegree, sunDegree);
             }
 
