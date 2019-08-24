@@ -24,6 +24,18 @@ p{
 .alertBoxes{
     padding: 2px;
 }
+.alert{
+    padding: 0;
+}
+
+input.largeBox{
+    left: 13rem;
+    top: 16.5rem;
+    transform: scale(1.75); 
+}
+.draw:hover{
+    cursor: url("../images/pencilcursor.png"),auto;
+}
 
 .image-editer{        
     align-content: center;

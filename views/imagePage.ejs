@@ -16,14 +16,6 @@
     </head>
 <!--  FOR TESTING WILL MOVE TO CSS FILE LATER -->
     <style>
-        input.largeBox{
-            left: 13rem;
-            top: 16.5rem;
-            transform: scale(1.75); 
-        }
-        .draw:hover{
-            cursor: url("images/pencilcursor.png"),auto;
-        }
         .textbox{
             font: bold Courier serif;
             visibility: visible;
@@ -103,6 +95,7 @@
             // get the element that needs to be dragged or scaled
             selectedElement = event.target.parentNode;
 
+            // if the event.target.parentNode is the svg element set it back to the target
             if(selectedElement === svg){
                 selectedElement = event.target;
             }
@@ -113,6 +106,7 @@
                 iconMin = findLimit(selectedElement,true);
                 iconMax = findLimit(selectedElement, false);
             }
+
             // get the bounding box of the group element
             bbox = selectedElement.getBBox();
             // Make sure the first transform on the element is a translate transform
@@ -137,8 +131,6 @@
                 // extract the scale value as a number
                 currentScale = scale.matrix.a;
 
-                
-                
                 // get translate data
                 transform = transforms.getItem(0);
 
@@ -174,176 +166,113 @@
                 if (confined) {
                     let rotateVal = transforms.getItem(1).angle;
                     if(rotateVal > 360){rotateVal-= 360;}
+
+                    // get the current scale of the icon
+                    let scaleFactor = scale.matrix.a;
+                    bbox = selectedElement.getBBox();
+
+
                     // if no rotate has occured
                     if(rotateVal ===0 || rotateVal === 360 ){
-                        // get the current scale of the icon
-                        let scaleFactor = scale.matrix.a;
-                        bbox = selectedElement.getBBox();
                         // set the new boundry values based on the view box and the width/height of the icons
                         // dim * scale = dim of icon
                         minX = boundaryX1 - bbox.x;
                         maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
                         minY = boundaryY1 - bbox.y;
                         maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
-
-                        console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                     }
-                    else{
-                        // rotate has been applied
-                        
-                        console.log("ROTATE: " + rotateVal);
-
-
-
+                    else{ // rotate has been applied
                         var trigInput = rotateVal * Math.PI/180;
                         var trigInput2 = (rotateVal-90) * Math.PI/180;
                         var trigInput3 = (rotateVal-180) * Math.PI/180;
                         var trigInput4 = (rotateVal-270) * Math.PI/180;
 
-                        // BEST WAY SO FAR ============================================================================================
+                        // check for easy angle calculations and if not use trig to calculate what the border will be
                         if(rotateVal === 180){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x+ bbox.width * scaleFactor;
                             maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
                             maxY = boundaryY2 - bbox.y;
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }else if(rotateVal === 90){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
                             maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y;
                             maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }else if(rotateVal === 270){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x;
                             maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor;
                             minY = boundaryY1 - bbox.y + bbox.width * scaleFactor;
                             maxY = boundaryY2 - bbox.y;
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal === 45){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2));
                             maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor)/Math.sqrt(2);
                             minY = boundaryY1 - bbox.y;
                             maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - (bbox.height * scaleFactor)/Math.sqrt(2);
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal === 135){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2)+ (bbox.width * scaleFactor/Math.sqrt(2)));
                             maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
-                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);                            
                         }
                         else if(rotateVal === 225){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x + (bbox.width * scaleFactor/Math.sqrt(2));
                             maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor/Math.sqrt(2);
                             minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) + (bbox.width * scaleFactor)/Math.sqrt(2);
                             maxY = boundaryY2 - bbox.y;
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal === 315){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x;
                             maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) - bbox.width * scaleFactor/Math.sqrt(2);
                             minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
                             maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
-
-                            console.log('BOUNDING DIMENSIONS ARE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal < 90){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
                             maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
                             minY = boundaryY1 - bbox.y;
                             maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
-
-                            console.log('BOUNDING DIMENSIONS ARE HERE: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal < 180){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
-                            console.log(trigInput2);
                             minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
                             maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
                             maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
-
-                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal < 270){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
-                            
                             minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
                             maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
                             minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
                             maxY = boundaryY2 - bbox.y;
-
-                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
                         }
                         else if(rotateVal < 360){
-                            // get the current scale of the icon
-                            let scaleFactor = scale.matrix.a;
-                            bbox = selectedElement.getBBox();
                             // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            
+                            // dim * scale = dim of icon       
                             minX = boundaryX1 - bbox.x;
                             maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
                             minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
-                            maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);
-
-                            console.log('BOUNDING DIMENSIONS ARE HERE2: ' + minX + ' ' + minY +' ' +maxX + ' ' + maxY  );
+                            maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);    
                         }
                     }
                 }
@@ -357,13 +286,8 @@
             topL = false,
             bottom=false;
         
-        // move the icon when mouse moves or scale the icon when needed
 
-        /* IMORTANT: 
-            In order to scale the icon in a manner that looks and feels natural for the user
-                I am calculating the staring width and height of the icon and shifting the translate by that much
-                This gives the illusion that the  icon is growing from the side they are dragging from
-            */
+        // move the icon around using translate or scale it by detecting what the mouse was over on the click
         function drag(event) {
             // get the mouse x and y based on client
             mX = event.clientX, mY = event.clientY;
@@ -371,11 +295,12 @@
             // set the factor at which the resize happens
             let growingFactor = .02;
 
-            if(elementOver.parentElement.classList.contains("textbox")){
+            // reset growing factor if needed
+            if( elementOver && elementOver.parentElement.classList.contains("textbox")){
                 growingFactor *= 10;
             }
             
-
+            // if the selectedElement is non false then check if its an outline
             if(selectedElement){
                 var isOutline = selectedElement.classList.contains("outline");
             }
@@ -560,8 +485,6 @@
                     else if(coord.y > offset.y){
                         currentScale += growingFactor*10;
 
-                        console.log(" Height of Text: " + bbox.height * currentScale);
-                        console.log("currentScale = " + currentScale);
                         //check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
                         if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
@@ -573,8 +496,10 @@
                     offset = coord;
                 }
 
+                // if the element is an outline then reset the stroke to the proper size
+                // removing the current scale and applying the base scale
                 if(isOutline){
-                 
+                    // calculate and set the stroke-width
                     selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
                 }
                        
@@ -675,13 +600,14 @@
         </div>
         
 
-<!-- Editor Box -->
-<svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
-class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
-    <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
-    <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
-       
-</svg>
+        <!-- ---------------------Editor Box--------------------------------------------- -->
+        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
+        class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
+            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
+            
+        </svg>
+
         <!-- Button Interface-->
         <div class="container float-left" style=" top: 9%; width: 25%; height: 5%; position: absolute; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
             <br/>
@@ -769,7 +695,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
         <script type="text/javascript">
 
             // string version of off the icons so they can be added dynamicly with a single function call 
-            // (sun and eye) MIN .15625 MAX 1.5625
+           
             var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
@@ -781,7 +707,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             
             var arrow = '<path id="arrow" x="0" y="0" d="M 150 150 L 150 300 L 150 0 L 300 150 L 150 0 L 0 150" stroke-width="10" stroke="blue"  style="border: 5px solid green;" fill="none"/>'  
 
-            // (North) MIN .1219513 MAX 1.219513
+          
             var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
                 +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
@@ -862,38 +788,35 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             
            
 
-            
+            // get half the scalebar length for drawing
             let half = parseFloat("<%=scalebarLength%>")/2;
-            
+            // get needed dimension values
             let scalePX = parseFloat("<%=scalebarPx%>"),
                 w = parseInt("<%=w%>"),
                 h = parseInt("<%=h%>"),
                 origW = parseInt("<%=origW%>"),
                 origH = parseInt("<%=origH%>");
-            
-
-
-            console.log(parseInt("<%= origW %>"))
-            console.log(parseInt("<%= origH %>"));
-            
+        
+            // if the scale bar is not none
             if('<%=scalebarPx%>' !== 'none'){
+                // set the size based on how the image is drawn
                 if((w/origW) < (h/origH)){
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
-                   
                 }else{
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
-                    
                 }
                 
-                
+                // if half the bar is less than 1 km then give it the decimal
                 if(half < 1){
                     document.getElementById("scalebarHalf").innerHTML = half;
                 }
+                // otherwise parse it to the closest int
                 else{
                     document.getElementById("scalebarHalf").innerHTML = parseInt(half);
                 }
             }
             else{
+                // if the scalebarPx is none disable the button
                 document.getElementById("scaleBarButton").setAttribute("class",document.getElementById("scaleBarButton").getAttribute("class") + " disabled"); 
             }
             
@@ -916,7 +839,6 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             outlineBox.remove();
             eyeImage.remove();
             scaleBarIcon.remove();
-            
             arrowImage.remove();
 
 
@@ -938,10 +860,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             loadInvisible();
         
             // toggle colors tracker
-            var toggleNorth = true,
-                toggleSun = true,
-                toggleEye = true,
-                toggleScalebar = true,
+            var toggleScalebar = true,
                 userTextColor;
             setImageName("<%=image%>");
 
@@ -950,45 +869,44 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 document.getElementById("imageName").innerHTML = str.replace(".png",".cub");
             }
 
-            // everytime  the check boxes is changed switch the places of the fill and stroke
+            // when the box check value changes switch the fills and strokes
             $("#northCheckbox").on("change",function(){
-                if(toggleNorth){
-                    northBG.setAttribute("fill","white");
-                    northArrow.setAttribute("fill", "black");
-                    northArrow.setAttribute("stroke", "white");
-                    northLetter.setAttribute("stroke", "black");
-                    northLetter.setAttribute("fill","white");
-                    toggleNorth = false;
-                }else{
-                    northBG.setAttribute("fill","black");
-                    northArrow.setAttribute("fill", "white");
-                    northArrow.setAttribute("stroke", "black");
-                    northLetter.setAttribute("stroke", "white");
-                    northLetter.setAttribute("fill","black");
-                    toggleNorth = true;
+                // get all children in the group
+                let children = northImage.childNodes;
+                
+                // for each child
+                for(index in children){
+                    // if the child is an object
+                    if(typeof(children[index]) == "object"){
+                        // call opposite for fill and stroke
+                        if(children[index].getAttribute("stroke")){
+                            children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                        }
+                        if(children[index].getAttribute("fill")){
+                            children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                        }
+                    }
                 }
             });
 
-            // everytime  the check boxes is changed switch the places of the fill and stroke
+            // same as above
             $("#sunCheckbox").on("change",function(){
-                if(toggleSun){
-                    
-                    sunIconInner.setAttribute("fill", "black");
-                    sunIconInner.setAttribute("stroke", "white");
-                    sunIconOuter.setAttribute("stroke", "black");
-                    sunIconOuter.setAttribute("fill","white");
-                    toggleSun = false;
-
-                }else{
-                    sunIconInner.setAttribute("fill", "white");
-                    sunIconInner.setAttribute("stroke", "black");
-                    sunIconOuter.setAttribute("stroke", "white");
-                    sunIconOuter.setAttribute("fill","black");
-                    toggleSun = true;
+                let children = sunImage.childNodes;
+                
+                for(index in children){
+                    if(typeof(children[index]) == "object" && children[index].nodeName !== "#text"){
+                        if(children[index].getAttribute("stroke")){
+                            children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                        }
+                        if(children[index].getAttribute("fill")){
+                            children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                        }
+                
+                    }
                 }
             });
 
-            // everytime  the check boxes is changed switch the places of the fill and stroke
+            // same as above
             $("#scaleCheckbox").on("change",function(){
                 
                     var children = scaleBarIcon.childNodes;
@@ -1007,48 +925,43 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             });
 
 
+            // reverses black and white fills for icons
             function setOpposite(colorString){
                 if(colorString === "black"){return "white";}
                 else{return "black";}
             }
 
-            // everytime  the check boxes is changed switch the places of the fill and stroke
+            // same as above
             $("#eyeCheckbox").on("change",function(){
-                if(toggleEye){
-                    eyeIconOuter.setAttribute("fill","white");
-                    eyeIconOuter.setAttribute("stroke","black");
-                    eyeIconCenter.setAttribute("fill", "black");
-                    eyeIconCenter.setAttribute("stroke", "white");
-                    eyePupel.setAttribute("stroke", "black");
-                    eyePupel.setAttribute("fill","white");
-                    toggleEye = false;
-
-                }else{
-                    eyeIconOuter.setAttribute("fill","black");
-                    eyeIconOuter.setAttribute("stroke","white");
-                    eyeIconCenter.setAttribute("fill", "white");
-                    eyeIconCenter.setAttribute("stroke", "black");
-                    eyePupel.setAttribute("stroke", "white");
-                    eyePupel.setAttribute("fill","black");
-                    toggleEye = true;
+                let children = eyeImage.childNodes;
+                
+                for(index in children){
+                    if(typeof(children[index]) == "object"){
+                        if(children[index].getAttribute("stroke")){
+                            children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                        }
+                        if(children[index].getAttribute("fill")){
+                            children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                        }
+                
+                    }
                 }
             });
 
-            
-        
-        $("#scaleBarButton").on("click",function(){
-            if(!this.classList.contains("disabled")){
-                if(toggleScalebar){
-                    svg.appendChild(scaleBarIcon);
-                    document.getElementById("scaleBarButton").className = "btn btn-secondary btn-lg button";
-                    toggleScalebar = false;
-                }else{
-                    scaleBarIcon.remove();
-                    toggleScalebar = true;
-                    document.getElementById("scaleBarButton").className = "btn btn-primary btn-lg button";
+            // toggle scalebar by appending and removing it
+            $("#scaleBarButton").on("click",function(){
+                if(!this.classList.contains("disabled")){
+                    if(toggleScalebar){
+                        svg.appendChild(scaleBarIcon);
+                        document.getElementById("scaleBarButton").className = "btn btn-secondary btn-lg button";
+                        toggleScalebar = false;
+                    }else{
+                        scaleBarIcon.remove();
+                        toggleScalebar = true;
+                        document.getElementById("scaleBarButton").className = "btn btn-primary btn-lg button";
+                    }
                 }
-            }
-        });
+            });
         
         </script>
 
@@ -1090,7 +1003,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     // ... or get as Data URI
                     callback(canvas.toDataURL('image/png'));
                 };
-
+                // set image src
                 image.src = url;
             }
 
@@ -1116,11 +1029,13 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             $(document).ready(function() {
                 // reset click array on a new load
                 clickArray = [];
+                // get and start the draggable svg element
                 var svgDOM = document.getElementById('svgWrapper');
                 makeDraggable(svgDOM);
+                // get the image from the link
                 var myImage = document.getElementById('crop');
 
-                // convert image to data Base64
+                // convert image to data Base64 and set the src
                 getDataUri('/<%=image%>', function(dataUri) {
                     myImage.setAttribute('xlink:href',dataUri);
                 });
@@ -1138,7 +1053,6 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     // image w and h vars
                     let imageW;
                     let imageH;
-
 
                     // switch on the location of the padding
                     switch(location){
@@ -1261,7 +1175,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     
                 }
 
-                // jquery to detect a click on the padding buttons 
+                // jquery to detect a click on the padding buttons just call set function 
+                // with either 0 or the padding input val and tell function where to place the padding 
                 $("#bottomPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'bottom');
@@ -1473,10 +1388,11 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     mouseX = parseInt(svgP.x),
                     mouseY = parseInt(svgP.y);
                     
-                    console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
+                    //console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
 
                     // if the draw flag is true and length of clicks is 0
                     if(drawFlag && clickArray.length === 0){
+                        // create the new  line dynamically and add it to the array so we can remove it later if needed
                         line = document.createElementNS("http://www.w3.org/2000/svg","line");
                         line.setAttribute("x1",mouseX);
                         line.setAttribute("y1",mouseY);
@@ -1492,22 +1408,23 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         line.style.strokeWidth = 4;
                         svg.appendChild(line);
 
-
                         lineArr.push(line);
                         captureClick(mouseX,mouseY);
                     }
                     else if(drawFlag && clickArray.length > 1){
+                        // if the line is being drawn and the seconf click happens set the final location
                         line.setAttribute("x2",mouseX);
                         line.setAttribute("y2",mouseY);
             
                         clickArray = [];
                         drawFlag = false;
+                        // reset the button color and allow for click detection again
                         document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
                         svg.className.baseVal = "image-image float-center";
 
                         
                         let svgElements = svg.childNodes;
-                        console.log(svgElements);
+                        // parse the whole svg and set the pointerevents to accept clicks again
                         for(index in svgElements){
                             if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
                                 svgElements[index].style.pointerEvents = "visible";
@@ -1608,7 +1525,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 });
 
 
- 
+                // used to update the line while still drawing
                 function drawLine(lineElement,x2,y2){
                     lineElement.setAttribute("x2", x2);
                     lineElement.setAttribute("y2",y2);
@@ -1617,7 +1534,6 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                  $('#svgWrapper').mousemove(function(event){
                     
-
                         // set event variables
                         var t = event.target;
                         var x = event.clientX;
@@ -1727,10 +1643,8 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     userBoxColor;
                 // when the outline box is clicked
                 $("#outlineBtn").on("mousedown",function(){
-                    
+                    // generate the new scalable group dynamically 
                     var g = document.createElementNS("http://www.w3.org/2000/svg","g");
-
-                    
 
                     g.setAttribute("class","draggable confine outline");
                     g.setAttribute("transform-origin","50%; 50%;");
@@ -1742,7 +1656,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
                     g.innerHTML = attensionBoxObjectString;
                     
-                    console.log(userBoxColor);
+                    // set the color if needed
                     if(userBoxColor){
                         g.style.stroke = userBoxColor;
                         g.style.fill = "none";
@@ -1754,6 +1668,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                        
                        
                     }
+                    // append the group and reset the draggable functions
                     svg.appendChild(g);
                     highlightBoxArray.push(g);
                     makeDraggable(svg);
@@ -1768,15 +1683,13 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     
 
                     if(textboxVal !== "" && textboxVal){
-                        console.log(textboxVal + "= textboxVal");
+                        
                         textboxVal = textboxVal.toUpperCase(textboxVal);
                         
                         let strlength = textboxVal.length -  countI(textboxVal); 
                         let numberOfSpaces = textboxVal.split(" ").length;
                         
 
-                
-                        
                         var text = document.createElementNS("http://www.w3.org/2000/svg","text");
                         
                         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1896,7 +1809,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                         }
 
                         let svgElements = svg.childNodes;
-                        console.log(svgElements);
+                        
                         for(index in svgElements){
                             if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
                                 svgElements[index].style.pointerEvents = "visible";
@@ -1919,7 +1832,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
 
                         let svgElements = svg.childNodes;
-                        console.log(svgElements);
+                        
                         for(index in svgElements){
                             if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
                                 svgElements[index].style.pointerEvents = "none";
@@ -2371,11 +2284,11 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
         <script>
             function hideNorth(){
                 document.getElementById("north").style.display = "none";
-                //console.log("Hiding North");
+                
             }
             function showNorth(){
                 document.getElementById("north").style.display = "table-row";
-                //console.log("Showing North");
+                
             }
             function hideSun(){
                 document.getElementById("sun-az").style.display = "none";
@@ -2391,11 +2304,11 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
             }
             function hideScale(){
                 document.getElementById("image-scalebar").style.display = "none";
-                //console.log("Showinfgejnhfkjshdf");
+               
             }
             function showScale(){
                 document.getElementById("image-scalebar").style.display = "table-row";
-                //console.log("actually show");
+                
             }
 
             // function to hide the elements in the legend area
@@ -2504,7 +2417,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                     let offset90 = Math.round(northDegree / 90);
                     let offset45 = northDegree / 45;
 
-                    console.log("offset 90 is: "+ offset90 )
+                
                     for(index in childList){
                         if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 4){
                             
@@ -2543,10 +2456,10 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
                 if(!isNaN(sunDegree)){
                     let childList = sunImage.childNodes;
                     let offset90 = Math.round(sunDegree / 90);
-                    console.log(offset90);
+                    
                     for(index in childList){
                         if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
-                            console.log("found corner");
+                            
                             if(childList[index].classList.contains("top-left")){
                                 let newClass = placeEnum["top-left"] + offset90;
                                 if(newClass > 4){newClass -= 4}
@@ -2608,7 +2521,7 @@ class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;"
 
             function setIconAngle(icon, degree){
 
-                console.log(degree);
+             
                 if(!isNaN(degree)){
                     let transformVal = icon.getAttribute("transform");
                     let transformArray = transformVal.split(" ");

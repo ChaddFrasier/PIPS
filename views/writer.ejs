@@ -169,13 +169,13 @@
                 var tag = "[[ " + key + " ]]";
                 return tag;
             }
-
+            // punctuation to be ignored
             let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';'];
 
+            // boolean value that tells if there is puctuation in the key 
             function removePunctuation(key){
                 for(index in unwantedPunc){
                     if(key[key.length - 1] === unwantedPunc[index] || key[0] === unwantedPunc[index]){
-                        
                         return true;
                     }
                 }
@@ -184,17 +184,22 @@
 
             // Return Metadata Val from Key
             function getMetadataVal(key) {
-                //variable text will read all content in first textarea(user entered)
+                // get both data objects
                 var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
                 var impData = JSON.parse(document.getElementById("metadata-text").value);
 
+                // combine the JSONs into 1 object
                 allMetaData = Object.assign(allMetaData,impData);
-                
+                // loop through all data 
                 for(datakey in allMetaData){
+                    //if the key is found
                     if(datakey === key){
-                        //console.log(metaData[datakey]);
+                        //trim the data and return the result
                         return allMetaData[datakey].trim();
-                    } else if(removePunctuation(key)){
+                    } 
+                    // if the key has puncuation in it
+                    else if(removePunctuation(key)){
+                        // remove the punctuation from the ends and add it back after the data is added
                         if(key.substring(0,key.length-1) === datakey){
                             return allMetaData[datakey] + key[key.length-1];
                         }
@@ -212,6 +217,7 @@
                 return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
             }
 
+            // set the output in the text box from the tempplate text
             function output() {
                 var tempText = document.getElementById("template-text").value;
 

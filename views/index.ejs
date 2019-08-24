@@ -96,16 +96,32 @@
             Template must be (.tpl) or left blank.
         </div>
 
+        <div id="server-timeout" style= 'visibility:hidden' class = "alert alert-dark text-center" role="alert">
+                <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+                </button>
+                        
+                Server Timed Out please Reupload a cube
+            </div>
+
         <script type="text/javascript">
             // get needed DOM element
             var loader = document.getElementById('loading');
 
+            // get the input doms for dimensions
+            var widthInputBox = document.getElementById("widthInput");
+            var heightInputBox = document.getElementById("heightInput");
 
-            var InfoBox = 'info-alert';
-            var tplBox = 'tplAlert';
-            var failureBox = 'fail-alert';
-            var uploadFail = 'fail-upload';
-            var imageFail = 'fail-image';
+            // set alert flag for warning the user of input size
+            var alerted = false;
+
+            // get the ids of the different alert boxes
+            var InfoBox = 'info-alert',
+                tplBox = 'tplAlert',
+                failureBox = 'fail-alert',
+                uploadFail = 'fail-upload',
+                imageFail = 'fail-image',
+                timeOut = "server-timeout";
 
             // parse the url and flag the appropriate error messages
             function fixLoader(){
@@ -129,6 +145,10 @@
                     var alert = document.getElementById(imageFail);
                     alert.style.visibility = 'visible';
                 }
+                else if(<%= alertCode %> == 7){
+                    var alert = document.getElementById(timeOut);
+                    alert.style.visibility = 'visible';
+                }
                 else if(<%= alertCode %> != 0){
                     var alert = document.getElementById(InfoBox);
                     alert.style.visibility = 'visible';
@@ -147,22 +167,20 @@
 
             // showing an hiding the loading gif
             function loadInvisible(){
-                
                 loader.style.visibility = 'hidden';    
             }
             function loaderActivate(){
                 loader.style.visibility = 'visible';
             }
 
-
-            var widthInputBox = document.getElementById("widthInput");
-            var heightInputBox = document.getElementById("heightInput");
-            var alerted = false;
+            
+            // contantly chekc the input boxes just in case they are too big to render on the users screen
             function checkInput(){
                 let width = widthInputBox.value;
                 let height = heightInputBox.value;
 
-                console.log(window.screen.width-window.screen.width*.2);
+                // alert of the are too large
+                // the flag is used to only alert the user 1 time
                 if(!alerted){
                     if(width >= window.screen.width-window.screen.width*.2){
                         alert("Warning: The selected width is too larger \n     Continuing will cause redering issues");
@@ -174,7 +192,7 @@
                     }
                 }
             }
-            
+            // interval for the function above =  1.5 seconds
             setInterval(checkInput,1500);
 
 
@@ -186,9 +204,7 @@
                     fixLoader(); 
                 }else{
                     fixLoader();
-                }
-
-                
+                }   
             });
             
         </script>

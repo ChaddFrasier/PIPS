@@ -24,7 +24,19 @@
  /** READ ME BEFORE EDITING
   * @fileoverview   08/23/19 
   * 
-  *      //TODO: 
+  *     Uploads can be in .cub or .tiff and now the server now has more user friendly acceptance of dimensions by auto 
+  * generating the size of the other dimensions when not given. Or the user can specify exact output sizes of the figures.
+  * The user can now add icons at the proper roatation and invert any of the icons. Scalebars are working and 
+  * will be disabled if its not possible. Icons are disabled when the data cannot be found. Icons,Text, and Outline Boxes
+  * all can be scaled using the corners of the icon by clicking when indicated to and dragging the mouse.
+  * 
+  *     Annotation and outline boxes have been added and the user can select a color for the text and
+  *  boxes as well as the pencil tool. Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
+  * not shrinks the image. A new id system has been created to allow users to keep a 23 character id for a month before losing it.
+  * this helps testing and prevents users from having identical ids when the server restarts unexpectedly. 
+  * 
+  *     Exporting is working perfectly now and can be saved as either png,jpeg,jpg (at any size), or svg (when the data is not too large).
+  * SVGs are in standard format and can be opened and edited with Gimp.
   * 
 */
 
@@ -152,9 +164,33 @@ app.get('/upload',function(request,response){
         response.redirect('/?alertCode=4');
 
     }else{
-        // TODO: retrieve the last found file for the user if it is there
+        //retrieve the last found file for the user if it is there
         // otherwise rensder index with an alert that the session timed out and they should upload again
         console.log('cookie found: its value is: ' + userid);
+
+        var userObject = util.getObjectFromArray(userid, cubeArray);
+
+        
+        if(typeof(userObject) !== "number"){
+            console.log("User found");
+            
+            
+            
+            // send response w/ all variables
+            response.render('writer.ejs',
+                {   templateText: fs.readFileSync('tpl/default.tpl', 'utf-8'), 
+                    dictionaryString: userObject.impData,
+                    wholeData: userObject.data,
+                    csvString: util.getCSV(userObject.data),
+                    outputName: userObject.name.replace('.cub','_PIPS_Caption.txt')
+                });
+        }else{
+            console.log("must upload a cube to start");
+
+            response.redirect("/?alertCode=7");
+        }
+
+
     }
 });
 
@@ -436,6 +472,7 @@ app.post('/csv', function(request,response){
         });
     }else{
         console.log("Failed to find cube object");
+        response.redirect("/?alertCode=7");
     }
     
 });
@@ -456,6 +493,21 @@ app.get('/csv', function(request, response){
         // TODO: search for the csv that matches the userid instance
         // return the index if not found
         console.log('cookie found: its value is: ' + userId);
+        let userObject = util.getObjectFromArray(userId,cubeArray);
+
+        if(typeof(userObject)!=="number"){
+            response.download(path.join('csv',userObject.name.replace('.cub','.csv')),function(err){
+                if(err){
+                    console.log('file was not sent successfully');
+                }else{
+                    // file sent
+                    response.end();
+                }
+            });
+        }else{
+            console.log("user doesnt have data on the server");
+            response.redirect('/?alertCode=7');
+        }
     }
 });
 
@@ -483,6 +535,8 @@ app.post('/imageDownload', function(request,response){
         });
     }else{
         console.log("User instance was not found on server");
+        response.redirect("/?alertCode=7");
+        response.end();
     }
     
 });
@@ -490,7 +544,7 @@ app.post('/imageDownload', function(request,response){
 /**
  * if no cookie can be found then fail
  * 
- * TODO: when cookie found retrieve the file needed
+ * 
  */
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
@@ -503,6 +557,22 @@ app.get('/imageDownload', function(request, response){
 
     }else{
         console.log('cookie found: its value is: ' + uid);
+
+        let cubeObj = util.getObjectFromArray(uid, cubeArray);
+        if(typeof(cubeObj) === "object"){
+            // send download file
+            response.download(path.join('images',cubeObj.name.replace('.cub','.png')),function(err){
+                if(err){
+                    console.log('file was not sent successfully');
+                }else{
+                    // file sent
+                    response.end();
+                }
+            });
+        }else{
+            console.log("User instance was not found on server");
+            response.redirect("/?alertCode=7");
+        }
     }
 });
 
@@ -523,6 +593,118 @@ app.get('/showImage', function(request, response){
 
     }else{
         console.log('cookie found: its value is: ' + userid);
+
+        let userObject = util.getObjectFromArray(userid,cubeArray),
+            data = userObject.impData;
+
+        if(typeof(userObject)==="object"){
+            // get image name
+            let image = util.getimagename(userObject.name, 'png');
+            imagepath = 'images/' + image;
+
+
+            var w,
+                h;
+
+            // get the hight and width of the image and render the page with all needed variables
+            jimp.read(imagepath).then(function(img){
+                w = img.bitmap.width;
+                h = img.bitmap.height;
+                // check and calculate user dimensions if needed
+                if(userObject.userDim[0] === -1){
+                    let factor = userObject.userDim[1]/h;
+
+                    userObject.userDim = [w*factor,userObject.userDim[1]];
+                }
+                else if(userObject.userDim[1] === -1){
+                    let factor = userObject.userDim[0]/w;
+
+                    userObject.userDim = [userObject.userDim[0],h*factor];
+                
+                }
+
+
+                var userDim = userObject.userDim;
+                let resolution = util.getPixelResolution(userObject)
+
+
+                // calculate image width in meters
+                if(resolution !== -1){
+                    var imageMeterWidth = util.calculateWidth(resolution, w);
+
+                    console.log(imageMeterWidth + ' in meters\n');
+
+                    console.log(imageMeterWidth/1000 + ' in Kilometers\n');
+
+                    if(imageMeterWidth){
+                        let x = Math.log10(imageMeterWidth/2);
+                        let a = Math.floor(x);
+                        let b = x - a;
+
+                        if(b >= 0.69897){
+                            b = 5;
+                        }else if(b >= 0.30103){
+                            b = 2;
+                        }else{
+                            b = 1;
+                        }
+
+                        var scalebarMeters = b*Math.pow(10,a);
+
+                        var scalebarLength,
+                            scalebarUnits="";
+                        // if the length is less than 1KM return length in meters
+                        if(imageMeterWidth/1000 < 1){
+                            console.log(scalebarMeters + " would be the legth in meters that the scalebar represents\n");
+                            scalebarLength = scalebarMeters;
+                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                            console.log(scalebarLength + " m");
+                            scalebarUnits = "m";
+                        }
+                        else{
+                            console.log(scalebarMeters/1000 + " would be the legth in km that the scalebar represents\n");
+                            
+                            scalebarLength = scalebarMeters/1000;
+                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                            console.log(scalebarLength + " km");
+                            scalebarUnits = "km";
+                        }
+
+                        // render image page with needed data
+                        if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                        if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                                origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                        }else{
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                                w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                        }
+
+
+
+                    }else{
+                        console.log("Image Width in Meters Failed to Calculate");
+                    }
+                }else{
+                    console.log("Scalebar could not be generated from present data");
+
+                    // render image page with needed data
+                    if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                            origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                    }else{
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                            w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                    }
+
+                }
+            });
+
+        }else{
+            response.redirect("/?alertCode=7");
+            response.end();
+        }
     }
 });
 
@@ -568,7 +750,7 @@ app.post('/showImage', function(request, response){
     }
 
    if(imagepath === 'none'){
-       response.render("index.ejs", {alertCode: 1});
+       response.redirect("/?alertCode=1");
    }
     var w,
         h;
@@ -688,9 +870,11 @@ app.get('/crop',async function(request, response){
 
     if(uid !== undefined){
         var baseImg = util.findImageLocation(cubeObj.name.replace('.cub','.png'));
-    }else{
+    }else if(currentImage === undefined || !uid){
         // TODO: must redirexct and end response
         console.log('No cookie has been found');
+        response.redirect("/?alertCode=7");
+        response.end();
     }
     var newImage;
 
