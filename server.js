@@ -630,14 +630,16 @@ app.get('/showImage', function(request, response){
 
 
                 var userDim = userObject.userDim;
-                let resolution = util.getPixelResolution(userObject)
+                let resolution = util.getPixelResolution(userObject);
 
-
+                console.log(resolution + " is the res");
                 // calculate image width in meters
                 if(resolution !== -1){
                     var imageMeterWidth = util.calculateWidth(resolution, w);
 
                     console.log(imageMeterWidth + ' in meters\n');
+
+                    
 
                     console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
@@ -646,10 +648,13 @@ app.get('/showImage', function(request, response){
                         let a = Math.floor(x);
                         let b = x - a;
 
-                        if(b >= 0.69897){
+                        if(b >= 0.75){
                             b = 5;
-                        }else if(b >= 0.30103){
+                        }else if(b >= 0.35){
                             b = 2;
+                        }else if(b<.05){
+                            a -= 1;
+                            b = 5;
                         }else{
                             b = 1;
                         }
@@ -678,14 +683,12 @@ app.get('/showImage', function(request, response){
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
                                 origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }else{
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
                                 w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }
-
-
 
                     }else{
                         console.log("Image Width in Meters Failed to Calculate");
@@ -696,10 +699,10 @@ app.get('/showImage', function(request, response){
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
                             origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
                     }else{
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
                             w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
                     }
 
@@ -778,6 +781,7 @@ app.post('/showImage', function(request, response){
         }
 
         var userDim = userObject.userDim;
+        var rawCube = util.getRawCube(userObject.name,userObject.userNum);
 
         // calculate image width in meters
         if(resolution !== -1){
@@ -792,12 +796,17 @@ app.post('/showImage', function(request, response){
                 let a = Math.floor(x);
                 let b = x - a;
 
-                if(b >= 0.69897){
+                console.log("b is = " + b);
+
+                if(b >= 0.75){
                     b = 5;
-                }else if(b >= 0.30103){
+                }else if(b >= 0.35){
                     b = 2;
+                }else if(b<.05){
+                    a -= 1;
+                    b = 5;
                 }else{
-                    b = 1;
+                    b=1;
                 }
 
                 var scalebarMeters = b*Math.pow(10,a);
@@ -824,10 +833,10 @@ app.post('/showImage', function(request, response){
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
                         origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }else{
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
                         w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }
 
@@ -842,10 +851,10 @@ app.post('/showImage', function(request, response){
             // render image page with needed data
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
             if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
                     origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
             }else{
-                response.render("imagePage.ejs", {image:imagepath, tagField: data,
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
                     w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
             }
 
