@@ -23,7 +23,7 @@
         }
     </style>
 <!--============================================= -->
-<script>
+<script type="text/javascript">
     // function to create a draggable field from svg element
     function makeDraggable(event) {
     
@@ -68,9 +68,6 @@
         var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
         // maxY = the height of the viewbox - the absolute value of the  y of the view box
         var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
-
-
-        
 
 
         // get the mouse position relative to the svg screen matrix
@@ -182,12 +179,14 @@
                         maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
                     }
                     else{ // rotate has been applied
+                        // calculate the degree of the rotation in radians
                         var trigInput = rotateVal * Math.PI/180;
                         var trigInput2 = (rotateVal-90) * Math.PI/180;
                         var trigInput3 = (rotateVal-180) * Math.PI/180;
                         var trigInput4 = (rotateVal-270) * Math.PI/180;
 
-                        // check for easy angle calculations and if not use trig to calculate what the border will be
+                        // check for easy angle calculations, this save processing time if the value is a 45 45 90 triangle
+                        // 30 60 90 triangle, or a interval of 90 degrees
                         if(rotateVal === 180){
                             // set the new boundry values based on the view box and the width/height of the icons
                             // dim * scale = dim of icon
@@ -242,33 +241,31 @@
                             minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
                             maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
                         }
+                        // end of easy calculations
+                        // if less than 90 calculate using trig using the first trig radian value
+                        // the triangles caculated are based on the top left of the original icon so we need 4 different checks
                         else if(rotateVal < 90){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
                             minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
                             maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
                             minY = boundaryY1 - bbox.y;
                             maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
                         }
                         else if(rotateVal < 180){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
+                            // calculate with 2nd radian value
                             minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
                             maxX = boundaryX2 - bbox.x;
                             minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
                             maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
                         }
                         else if(rotateVal < 270){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
+                            //calculate with 3rd radian value
                             minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
                             maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
                             minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
                             maxY = boundaryY2 - bbox.y;
                         }
                         else if(rotateVal < 360){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon       
+                            // calculate with 4th radian value     
                             minX = boundaryX1 - bbox.x;
                             maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
                             minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
@@ -346,9 +343,7 @@
                         
                         // translate the icon 0 in the x direction and by the difference in the negative y direction        
                         dx = parseInt(transform.matrix.e);
-                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
-
-                       
+                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);    
                     }
 
                     // set scale using svg data method
@@ -862,8 +857,11 @@
             // toggle colors tracker
             var toggleScalebar = true,
                 userTextColor;
+
+            // sets image name at top of screen
             setImageName("<%=image%>");
 
+            // removes the path and keeps the cube name ( might need new variable to pass this)
             function setImageName(str){
                 str = str.split("/")[1];
                 document.getElementById("imageName").innerHTML = str.replace(".png",".cub");
@@ -889,7 +887,7 @@
                 }
             });
 
-            // same as above
+            // same inversion as above
             $("#sunCheckbox").on("change",function(){
                 let children = sunImage.childNodes;
                 
@@ -950,12 +948,16 @@
 
             // toggle scalebar by appending and removing it
             $("#scaleBarButton").on("click",function(){
+                // if the scalebar btn is not disabled
                 if(!this.classList.contains("disabled")){
+                    // if scalebar true then toggle the bar on
                     if(toggleScalebar){
+                        // add bar and toggle the boolean
                         svg.appendChild(scaleBarIcon);
                         document.getElementById("scaleBarButton").className = "btn btn-secondary btn-lg button";
                         toggleScalebar = false;
                     }else{
+                        // remove the bar and reset toggleValue
                         scaleBarIcon.remove();
                         toggleScalebar = true;
                         document.getElementById("scaleBarButton").className = "btn btn-primary btn-lg button";
@@ -1638,12 +1640,13 @@
                     }
                 } 
 
-
+                // variables for keeping track of the outline boxes
                 var highlightBoxArray = [],
                     userBoxColor;
+
                 // when the outline box is clicked
                 $("#outlineBtn").on("mousedown",function(){
-                    // generate the new scalable group dynamically 
+                    // generate the new scalable draggables group dynamically 
                     var g = document.createElementNS("http://www.w3.org/2000/svg","g");
 
                     g.setAttribute("class","draggable confine outline");
@@ -1660,36 +1663,37 @@
                     if(userBoxColor){
                         g.style.stroke = userBoxColor;
                         g.style.fill = "none";
-                       
-                        
                     }else{
                         g.style.fill = "none";
                         g.style.stroke = "white";
-                       
-                       
                     }
                     // append the group and reset the draggable functions
                     svg.appendChild(g);
+                    // push the object into the array for undoing
                     highlightBoxArray.push(g);
                     makeDraggable(svg);
                 });
 
-
+                // array for removing text
                 var textBoxArray = [];
+
                 // when the text box is clicked
+                // TODO: Needs to be redone for sizing 
                 $("#textBtn").on("mousedown",function(){
-                    
+                    // prompt for text box contents
                     var textboxVal = prompt("What Should It Say?","");
                     
-
                     if(textboxVal !== "" && textboxVal){
-                        
+                        // will chnage this eventually
+                        // Should allow for lower case
                         textboxVal = textboxVal.toUpperCase(textboxVal);
                         
                         let strlength = textboxVal.length -  countI(textboxVal); 
                         let numberOfSpaces = textboxVal.split(" ").length;
                         
 
+                        
+                        // Draw the scaleable and draggable group with the new text element dynamically
                         var text = document.createElementNS("http://www.w3.org/2000/svg","text");
                         
                         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -1741,32 +1745,33 @@
 
                         text.style.pointerEvents = "visible";
                         text.innerHTML = textboxVal;
+                        // append the scaleing corners
                         g.appendChild(text);
                         g.appendChild(rect);
                         g.appendChild(rect2);
                         g.appendChild(rect3);
                         g.appendChild(rect4);
+
+                        // set the user text color
                         if(userTextColor){
                             text.setAttribute("stroke",userTextColor);
                             text.setAttribute("fill",userTextColor);
-                        
                         }else{
                             text.setAttribute("stroke","white");
                             text.setAttribute("fill","white");
                         
                         }
 
-
+                        // set the stroke of the text and append the elements
                         text.setAttribute("stroke-width","1");
                         svg.appendChild(g);
                         textBoxArray.push(g);
                         makeDraggable(svg);
-                        
-
                     }
                 });
 
 
+                // count s the I characters
                 function countI(str){
                     var count = 0;
                     for(char in str){
@@ -1786,7 +1791,7 @@
         
 
 
-
+                // undoes the last added text element
                 $("#undoText").on("mousedown",function(){
                     
                     if(textBoxArray.length > 0){
@@ -1795,25 +1800,33 @@
                         alert("text has not been added");
                     }
                 });
+                // declare the drawing flag
                 var drawFlag = false;
 
+                // when the mouse clicks the draw button
                 $("#pencilIconFlag").on('mousedown',function(){
                     if(drawFlag){
                         drawFlag = false;
-                        
+                        // reset the interface 
                         svg.className.baseVal = "image-image float-center";
                         document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
                         clickArray = [];
+                        // remove half drawn lines
                         if(lineArr.length && clickArray > 1){
                             lineArr.pop().remove();
                         }
-
+                        // get the children of the svg element
                         let svgElements = svg.childNodes;
                         
+                        // for every child
                         for(index in svgElements){
+                            // if the group is draggable
                             if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
+                                // reset the pointer events
                                 svgElements[index].style.pointerEvents = "visible";
+                                // add if that element has child nodes
                                 if(svgElements[index].childNodes){
+                                    // do the same with its children
                                     for(index2 in svgElements[index].childNodes){
                                         if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
                                             svgElements[index].childNodes[index2].style.pointerEvents = "painted";
@@ -1833,6 +1846,8 @@
 
                         let svgElements = svg.childNodes;
                         
+                        // loop through all children and children of the children and set the pointer 
+                        // events to none so the draw function does not get interfiered with
                         for(index in svgElements){
                             if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
                                 svgElements[index].style.pointerEvents = "none";
@@ -1850,7 +1865,7 @@
                     }
                 });
 
-
+                // removes any outline boxes if they exist
                 $("#undoBox").on("mousedown",function(){
                     if(highlightBoxArray.length > 0){
                         highlightBoxArray.pop().remove();
@@ -1859,7 +1874,7 @@
                     }
                 });
 
-
+                // removes any lines if they exists
                 $("#undoLine").on("mousedown",function(){
                     if(lineArr.length > 0 && clickArray.length > 1){
                         lineArr.pop().remove();
@@ -1876,7 +1891,7 @@
                     }
                 });
 
-
+                // simply sets the color when the value is changed
                 $("#colorPickerLine").change(function(){
                     userLineColor = document.getElementById("colorPickerLine").value;
                 });
@@ -2113,18 +2128,21 @@
             
             // Export Section
 
-            // download works well for pngs
+            // works for any file type as long as the image is not massive
             function triggerDownload (imgURI,filename) {
+                // create a click event
                 var event = new MouseEvent('click', {
                     view: window,
                     bubbles: false,
                     cancelable: true
                 });
+                // create an anchor for the download and the file using the image URI data
                 var a = document.createElement('a');
                 a.setAttribute('download', filename);
                 a.setAttribute('href', imgURI);
                 a.setAttribute('target', '_blank');
 
+                // activate the event
                 a.dispatchEvent(event);
             }
 
@@ -2132,24 +2150,28 @@
             // when the export is clicked
             exportBtn.addEventListener('click', function () {
                 
-                // get the svg element and the canvas information
+                // get the canvas information
                 canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext('2d');
 
+                // encode the svg
                 var data = (new XMLSerializer()).serializeToString(svg);
+                // get the window URL element on any browser
                 var DOMURL = window.URL || window.webkitURL || window;
 
-                // creates new image from svg inline elements excludiong the actual image
+                // creates a new blank image
                 var img = new Image();
+                // creates a blob from the encoded svg and sets the type of the blob to svg
                 var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+                // creates an object url for the download
                 var url = DOMURL.createObjectURL(svgBlob);
 
-                
+                // when the image is done being created and its loaded
                 img.onload = function(){
                     // draw the svg image onto the canvas
                     ctx.drawImage(img,0,0);
                     
-                    // if the filename a false value
+                    // if the filename is a false value
                     if(!filename){
                         // read in a filename with prompt
                         var filename = prompt("Save File as png svg or jpeg","");
@@ -2163,13 +2185,13 @@
                         if(fileExt !== 'svg'){
                             try{
                                 if(fileExt === 'jpg'){
-                                    // export an image of the extension type
+                                    // export an image of jpeg becuse jpg defaults to png
                                     var imgURI = canvas
                                     .toDataURL('image/jpeg', 1.0)
                                     .replace('image/jpeg', 'image/octet-stream');
                                 }
                                 else{
-                                    // export an image of the extension type
+                                    // export an image of the extension type given
                                     var imgURI = canvas
                                     .toDataURL('image/'+fileExt, 1.0)
                                     .replace('image/'+fileExt, 'image/octet-stream');
@@ -2193,6 +2215,7 @@
                     }
                     // must enter an accepted fileExt
                     else if(filename !== null){
+                        // make the user try again
                        exportBtn.click();
                     }
                     // revoke the url
@@ -2201,7 +2224,8 @@
                     // Note:
                     //     if the user hits cancel the filename will be null, we ignore this case
                 };
-                // set the img src to the url
+                // set the img src to the svg url
+                // should be below the img.onload
                 try{
                     img.src = url;
                 }catch(err){
@@ -2210,7 +2234,7 @@
             });
         </script>
 
-        <!-- Legend Section-->
+        <!-- Legend Section (depricated right now) -->
         <br/>
         <div class="position-relative text-center" style="margin-left:auto; margin-right:auto; display: none;">
             <h2 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h2>
@@ -2267,21 +2291,8 @@
         <br/>
         <br/>
         <br/>
-         
-        <!-- Exporting The Legend-->
-        <div id="legend-export-div" style="margin-left:35%;">
-        </div>
-                                                                    
-        <script>
-            function exportLegend(){
-                var div = document.getElementById("legend-export-div");
-                html2canvas(document.querySelector("#legend-table")).then(function(canvas) {
-                    document.getElementById("legend-export-div").append(canvas);        
-                    //document.body.appendChild(canvas);
-                });
-            }
-        </script>
-        <script>
+                                                                     
+        <script type="text/javascript">
             function hideNorth(){
                 document.getElementById("north").style.display = "none";
                 
@@ -2341,12 +2352,13 @@
             setInterval(showHide, 1000);
         </script>
 
-        <script>
-            
+        <script type="text/javascript">
+            // degree variables
             var northDegree,
                 sunDegree,
                 observerDegree;
 
+            // create an enumerated object for setting the scaling boxes
             var placeEnum = new Object({
                         "top-left":1,
                         "top-right":2,
@@ -2354,7 +2366,8 @@
                         "bottom-left":4
                         });
         
-
+            // prototype for any object
+            // when given a value of a JSON object it retrieve the associated key
             Object.prototype.getNameWithVal = function(val){
                 let tmpArr = Object.keys(this);
                 for(key in tmpArr){
@@ -2372,14 +2385,15 @@
                 // parse back into JSON
                 var metadataString = JSON.parse(metadata);
                 
-                // Important Metadata Values adding the offset for isis
+                // Important Metadata Values adding degree offset for isis
                 northDegree = parseFloat(metadataString['NorthAzimuth']) + 90;
                 sunDegree = parseFloat(metadataString['SubSolarAzimuth'])+ 90;
                 observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
                 
                 
-                // TODO: generate an arrow in the proper direction in relation to the degree of the sun and eye angles
+                // TODO: generate an arrow in the proper direction in relation to the degree of the eye angles
                 if(isNaN(northDegree)){
+                    // is able the button if the degree was not found
                     document.getElementById("north-radio").checked = false;
                     document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
                     
@@ -2388,19 +2402,23 @@
                 }
 
                 if(isNaN(sunDegree)){
+                    // is able the button if the degree was not found
                     document.getElementById("sun-radio").checked = false;
                     document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
                 }
 
                 if(isNaN(observerDegree)){
+                    // is able the button if the degree was not found
                     document.getElementById("obs-radio").checked = false;
                     document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
                 }
 
 
-
+                // if the degree value is over 360 just subtract 360 because the math is easier
                 if(northDegree>360){northDegree-=360;}
                 if(sunDegree>360){sunDegree-=360;}
+                if(eyeDegree>360){eyeDegree-=360;}
+                // set the scale bar corners to the correct orientation
                 setScaleboxCorners(northDegree, sunDegree);
             }
 
@@ -2409,15 +2427,20 @@
             
 
             
-
+            // this function figures out where to draw the scalebar corners to better fit the new icon orientation
             function setScaleboxCorners(northDegree, sunDegree){
-                
+                // as long as northDegree is not NaN and not 0 we will need to adjust the boxes
                 if(!isNaN(northDegree) &&  northDegree!== 0){
+                    // get the child list
                     let childList = northImage.childNodes;
                     let offset90 = Math.round(northDegree / 90);
                     let offset45 = northDegree / 45;
 
-                
+                    /* 
+                    1. each corner was given a numeric value starting from top-left and going clockwise around the image
+                    2. I caculate how many times 90 goes into the degree and i shift the boxes by that amount
+                    3. by adding the ossfet to the box values it tells us where that box should move to. 
+                    */
                     for(index in childList){
                         if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 4){
                             
@@ -2453,6 +2476,7 @@
                         
                     }
                 }
+                // same is done for each icon that rotates
                 if(!isNaN(sunDegree)){
                     let childList = sunImage.childNodes;
                     let offset90 = Math.round(sunDegree / 90);
@@ -2513,15 +2537,8 @@
                 image.setAttribute("style", rotateVal);
             }
 
-            // Generate Arrow Legend Icons
-            function setLegendArrow(img, arrow, deg, value){
-                var image = document.getElementById(String(img));
-                //var arrow = document.getElementById();
-            }
-
+            // set the transform rotate() string of the given icon
             function setIconAngle(icon, degree){
-
-             
                 if(!isNaN(degree)){
                     let transformVal = icon.getAttribute("transform");
                     let transformArray = transformVal.split(" ");
@@ -2540,6 +2557,7 @@
 
                     }
 
+                    // adds the new rotate() string in the exact same order as it appeared before to preserve the dragging function
                     let scaleStr = transformArray[transformArray.length -1];
                     let translateStr = transformArray[0];
 
@@ -2554,19 +2572,6 @@
                 }
 
             }
-            
-            // draw an arrow and rotate the arrow for the eye not the actual eye 
-            // setIconAngle(eyeImage, observerDegree);
-
-
-        /*  //========== This Function is for testing the Rotation Orgin Point ===============
-            i = 0;
-            setInterval(function(){
-                i += 1;
-                setLegendAngle("northImg", "northDeg", i);
-            }, 1000);
-            //============================================================================ */
         </script>
-        
     </body>
 </html>

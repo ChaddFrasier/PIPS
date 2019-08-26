@@ -3,6 +3,8 @@
  * 
  * @class ISIS3 Cubes 
  * 
+ * Last Update: 08/26/19
+ * 
  * @constructor cubeName, userId
  * 
  * @description this will make PIPS much easier to manage with the help of client side cookies
@@ -11,15 +13,19 @@ module.exports = class Cube{
     /**
      * 
      * @param {sting} cubeName name of the cube to be contructed into an object.
+     * @param {string} userId the 23 character user id that was randomly generated
      */
     constructor(cubeName,userId){
         this._userId = userId;
         this._cubeName = cubeName;
+        // user num is to track the user instance on the active server( shorter than the id)
         this._userNum;
         // init JSON elements
         this._data = {};
         this._impData = {};
+        // init the image dimensions
         this._userDim = [0,0];
+        // flag to tell if logging to file should occur
         this._logFlag = false;
     }
 
@@ -43,8 +49,6 @@ module.exports = class Cube{
         }
     }
 
-
-
     /**
      * @param void
      * 
@@ -55,22 +59,18 @@ module.exports = class Cube{
     }
 
     /**
-     * @param {string} name of the file that the instance is working with
+     * @param {number} num the number to be set to the userNum
      * 
      * @function set the number that the user got when uploading
      */
     set userNum(num){
-        
         this._userNum = Number(num);
-        
     }
-
-
 
      /**
      * @param void
      * 
-     * @function return userID.
+     * @function return userId.
      */
     get userId(){
         return this._userId;
@@ -88,7 +88,7 @@ module.exports = class Cube{
      /**
      * @param void
      * 
-     * @function return userID.
+     * @function return userDim array.
      */
     get userDim(){
         return this._userDim;
@@ -96,11 +96,10 @@ module.exports = class Cube{
 
     /**
      * 
-     * @param void 
-     * @function get data as stringify'ed JSON.
+     * @param {array} dimArray the dimension array to be set
+     * @function set userDim array to the given array
      */
     set userDim(dimArray){
-        console.log(dimArray);
         this._userDim = dimArray;    
     }
 
@@ -114,8 +113,6 @@ module.exports = class Cube{
             this._data = data;
         }
     }
-
-
 
     /**
      * 
@@ -139,7 +136,6 @@ module.exports = class Cube{
         }
         
     }
-
 
     /**
      * 

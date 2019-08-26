@@ -10,10 +10,10 @@
  * Date Created: 05/31/19
  * Last Modified: 08/23/19
  *
- * @todo 1 unit test all componets
  * 
- *     
  * @todo 8 log the isis returns to a file if the user wants that
+ * 
+ * 
  * 
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
  * @requires ./js/cubeObj.js
@@ -24,15 +24,19 @@
  /** READ ME BEFORE EDITING
   * @fileoverview   08/23/19 
   * 
-  *     Uploads can be in .cub or .tiff and now the server now has more user friendly acceptance of dimensions by auto 
-  * generating the size of the other dimensions when not given. Or the user can specify exact output sizes of the figures.
-  * The user can now add icons at the proper roatation and invert any of the icons. Scalebars are working and 
-  * will be disabled if its not possible. Icons are disabled when the data cannot be found. Icons,Text, and Outline Boxes
-  * all can be scaled using the corners of the icon by clicking when indicated to and dragging the mouse.
+  *     Uploads can be in .cub or .tif and the server now has more user friendly acceptance of dimensions by auto 
+  * generating the size of the other dimensions when not given ( if given a height OR a width and the other box is left blank). 
+  * Or the user can specify exact output sizes of the figures (width AND height).
+  * The user can now add icons with the proper roatation and invert any of the icons' color. Scalebars are working and 
+  * will be disabled if its not possible to calculate. Icons are disabled when the data cannot be found.
+  * Icons,Text, and Outline Boxes all can be scaled using the corners of the icon by clicking when indicated 
+  * and dragging the mouse in the directions of the pointer.
   * 
-  *     Annotation and outline boxes have been added and the user can select a color for the text and
-  *  boxes as well as the pencil tool. Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
-  * not shrinks the image. A new id system has been created to allow users to keep a 23 character id for a month before losing it.
+  *     Annotation and outline boxes have been added, the user can select a color for the text and
+  * boxes as well as the pencil tool. Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
+  * not shrinks the image down. 
+  * 
+  *     A new id system has been created to allow users to keep a 23 character id for a month before losing it.
   * this helps testing and prevents users from having identical ids when the server restarts unexpectedly. 
   * 
   *     Exporting is working perfectly now and can be saved as either png,jpeg,jpg (at any size), or svg (when the data is not too large).
@@ -84,7 +88,7 @@ app.use("/pvl " , express.static("pvl"));
 // start view engine
 app.set('view engine', 'ejs');
 
-// erase uneeded files before startup
+// erase uneeded files before server startup
 try{
     exec('rm ./images/*.pgw');
     exec('rm ./jimp/*');
@@ -93,17 +97,16 @@ try{
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
     
+    // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
-
+    // loop throught then and delete the file if it matchest this regexp
     for(index in fileArr){
+        // regexp uses negativelookbehind to ensure the image file is not one of the required file strings
         if(/^.*(?<!arrow|eye_symbol|north|pencil|pencilcursor|sun_symbol|usgsLogo)\.(png)$/gm.test(fileArr[index])){
+            // remove the file
             fs.unlinkSync(path.join('images',fileArr[index]));
         }
     }
-
-
-
-
 }
 catch(err){
     console.log('file error occured: ' + err);
@@ -118,7 +121,7 @@ const importantTagArr = util.configServer(fs.readFileSync(
 /**
  * GET '/' 
  * 
- * remove the print.prt if it exists and render the page with the proper code
+ * render the page with the proper code
  */
 app.get('/', function(request, response){
     console.log(request.path);
@@ -151,8 +154,12 @@ app.get('/tpl',function(request, response){
 
 
 /**
- * if no cookie can be found then fail
- * @todo make sure this works with no errors or freezes
+ * GET '/upload'
+ * 
+ * this occurs when a user types the '/upload'
+ * matches the last cube instance and returns that data
+ * 
+ * USER MUST POST TO UPLOAD A NEW FILE
  */
 app.get('/upload',function(request,response){
     console.log(request.path);
@@ -170,12 +177,9 @@ app.get('/upload',function(request,response){
 
         var userObject = util.getObjectFromArray(userid, cubeArray);
 
-        
+        // if the user Obj is not an error code
         if(typeof(userObject) !== "number"){
-            console.log("User found");
-            
-            
-            
+        
             // send response w/ all variables
             response.render('writer.ejs',
                 {   templateText: fs.readFileSync('tpl/default.tpl', 'utf-8'), 
@@ -185,7 +189,7 @@ app.get('/upload',function(request,response){
                     outputName: userObject.name.replace('.cub','_PIPS_Caption.txt')
                 });
         }else{
-            console.log("must upload a cube to start");
+            console.log("UnRecognized GET Request from user " + userid);
 
             response.redirect("/?alertCode=7");
         }
@@ -206,7 +210,7 @@ app.post('/upload', async function(request, response){
     var templateText = '';
     let isTiff = false;
     
-    //============== for testing only=======================
+    //============== for testing only =======================
     console.log('=================== New Upload ========================');
     //================================================
 
@@ -440,7 +444,7 @@ app.post('/upload', async function(request, response){
             response.end();
             }
     }catch(err){
-        console.log('Fatal Error Occured');
+        console.log('FATAL ERROR ON SERVER UPLOAD: ');
         console.log(err);
         // alert 4 which should never happen in a successful run
         response.redirect('/?alertCode=4');
@@ -461,7 +465,9 @@ app.post('/csv', function(request,response){
 
     let cubeObj = util.getObjectFromArray(request.cookies["userId"],cubeArray);
 
+    // if the user object is found
     if(typeof(cubeObj) === "object"){
+        // send the image associated with user
         response.download(path.join('csv',cubeObj.name.replace('.cub','.csv')),function(err){
             if(err){
                 console.log('file was not sent successfully');
@@ -478,7 +484,9 @@ app.post('/csv', function(request,response){
 });
 
 /**
- * if no cookie can be found then fail
+ * GET '/csv'
+ * 
+ * sends the csv file of the users last upload if it is found
  */
 app.get('/csv', function(request, response){
     console.log(request.path);
@@ -519,10 +527,11 @@ app.get('/csv', function(request, response){
  */
 app.post('/imageDownload', function(request,response){
 
+    // get user id cookie
     let uid = request.cookies["userId"];
 
-
     let cubeObj = util.getObjectFromArray(uid, cubeArray);
+    // if user instance found
     if(typeof(cubeObj) === "object"){
         // send download file
         response.download(path.join('images',cubeObj.name.replace('.cub','.png')),function(err){
@@ -542,22 +551,18 @@ app.post('/imageDownload', function(request,response){
 });
 
 /**
- * if no cookie can be found then fail
+ * GET '/imageDownload'
  * 
- * 
+ * send the last image upload from the user instance if found
  */
 app.get('/imageDownload', function(request, response){
     console.log(request.path);
-
     var uid = request.cookies['userId'];
 
     if(uid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=4');
-
     }else{
-        console.log('cookie found: its value is: ' + uid);
-
         let cubeObj = util.getObjectFromArray(uid, cubeArray);
         if(typeof(cubeObj) === "object"){
             // send download file
@@ -578,9 +583,9 @@ app.get('/imageDownload', function(request, response){
 
 
 /**
- * if no cookie can be found then fail
+ * GET '/showImage'
  * 
- * TODO: when cookie is found retrieve the needed file if the file is not found return the index page
+ * renders the image data from the users latest upload
  */
 app.get('/showImage', function(request, response){
     console.log(request.path);
@@ -772,9 +777,7 @@ app.post('/showImage', function(request, response){
         
         }
 
-
         var userDim = userObject.userDim;
-
 
         // calculate image width in meters
         if(resolution !== -1){
@@ -978,7 +981,7 @@ app.get('/crop',async function(request, response){
 /**
  * POST '/crop'
  * 
- * this handels the actual jimp crop functionality
+ * this handles the actual jimp crop functionality
  */
 
 app.post('/crop', async function(request,response){

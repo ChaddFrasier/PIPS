@@ -4,27 +4,31 @@
 --------------------------------------------------------------------
 ### Introduction
 
-This is a server that is supported by ISIS3 on the backend, its purpose is to bring the 
-power that ISIS has when processing a cube or tiff file to the click of a button in the specific focus
-of creating publication ready figures. Users can upload cube (.cub) or geotiff (.tif) files to the server and be returned 
-useful data that relates to the contents of the image as well as the image itself.
+This is a server that is supported by USGS's ISIS3 on the backend, its purpose is to bring the 
+power that ISIS has to the click of a button in the specific focus
+of creating publication ready figures.
+
+Users can upload cube (.cub) or geotiff (.tif) files to the server and be returned 
+useful data that relates to the contents of the image header as well as the image itself.
 The users have the able to edit a simple text caption and use the data that is found by ISIS
 to write the captions for the images much faster than before. Using a tag format they can use data 
 from the cube headers on the fly just by copy and pasting the tags into the caption field.
-This will fast track the figure making process for researchers around the world.
+This will fast track the caption writing process for astrogeological researchers.
 
 The other purpose is to allow for simple photo editing capabilities using the relevent data 
-that is inside the cubes or tiffs. Users can ~~crop~~, anottate and add icons to the image on the fly using
+that is inside the cubes or tiffs. Users can ~~crop~~, annotate and add icons to the image on the fly using
 a web interface that works all off the mouse.
 The server will generate correct size scale bars and allow the user to place it where ever they 
-want just by clicking on the icon and dragging it around. 
+want just by clicking on the icon and dragging it around. Icons will be generated with the correct orientation and can be scaled
+up and down in size by dragging from the corners. 
 
-Since the server has no need for a database and it is fed through user input we chose to asyncronously
-return data to the user with cookies to instance users instead of sign ins. There is no need for a 
-database simply because the user already should know what they would like to edit.
+Since the server has no need for a database and is fed through user input we chose to asyncronously
+return data to the user while using cookies to instance users instead of sign ins. There is no need for a 
+database simply because the user already should know what they would like to edit. Saving large amounts of cubes to the server 
+would just slow the server down and there isn't that much of a need for returning to old uploads when the user should already have the file.
 
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
-to a whole new field of users and data.
+to a whole new scope of users and data.
 
 
 ## Developing
@@ -50,7 +54,10 @@ Start the server with the command `node server` in the project directory.
 When contributing to this project we ask that you create a new pull request for 
 any changes that you would like to make, after review by the repository leads your
 request will either be merged or closed without merge depending on what has been done. 
-Any request will be considered. 
+Any request will be considered.
+
+Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js) file before contributing to understand what is currently working, 
+do not depricate any functions without replacing their purpose.
 
 Post and issue if you wish to become a contributor stating who you are 
 and why you feel you could benefit the project. 

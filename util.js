@@ -3,12 +3,11 @@
  * 
  * Author: Chadd Frasier
  * Date Created: 06/03/19
- * Date Last Modified: 08/05/19
+ * Date Last Modified: 08/23/19
  * Version: 2.4.0
  * Description: 
  *      This is the utility file for The Planetary Image Caption Writer  
  * 
- * @todo image manipulation using jimp or other module
  * @todo refactor and clean unused variables in functions
  */
 
@@ -72,7 +71,11 @@ module.exports = {
         });
     },
 
-
+    /**
+     * 
+     * @param {object} cubeObj the current cube object being manipulated
+     * @returns {number/string} returns the value of the pixel resolution values in the cube or -1 if not found
+     */
     getPixelResolution: function(cubeObj){
         let jsonData = JSON.parse(cubeObj.data);
         
@@ -89,7 +92,12 @@ module.exports = {
         }
     },
 
-
+    /**
+     * 
+     * @param {string} resStr the resolution of the image in meters/pixel 
+     * @param {number} w width of the image to be displayed in pixels
+     * @returns {number} the width of the image in meters
+     */
     calculateWidth: function(resStr, w){
         let resFloat = parseFloat(resStr);
         if(resFloat){
@@ -100,15 +108,30 @@ module.exports = {
     },
 
 
+    /**
+     * 
+     * @param {number} lengthOfID 
+     * @returns {string} random id string of length given
+     * 
+     * @function Produces a random user Id of the given length using [a-z,A-Z,0-9]
+     */
     createUserID: function(lengthOfID){
+        // all available characters
         let charString = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYXYZ';
-        let idArr=[];
+        // return arr
+        let idArr=[],
+        // length of string
         charSetLength = charString.length;
 
+        // for the amount of output characters
         for(i=lengthOfID; i>0; i--){
+            // get a random index of a character in the string
             let char = Math.floor(Math.random()*charSetLength);
+            // push the character into the array using the calculated index
             idArr.push(charString.charAt(char));
         }
+        // once all charcters added 
+        // join the array and return
         return idArr.join("");
     },
 
@@ -690,12 +713,14 @@ var processFile = function(inputFile, cubeName){
     });
 }
 
+/**
+ * 
+ * @param {string} imageLink link to the image file
+ * @returns {string} string to new jimp/ path of the image 
+ */
 var newImageName = function(imageLink){
     let imagename = imageLink.split('/');
-
     imagename = imagename[imagename.length-1];
-
     let newImageName = imagename.replace('.png','_crop') + '.png';
-
     return path.join('jimp',newImageName);
 }
