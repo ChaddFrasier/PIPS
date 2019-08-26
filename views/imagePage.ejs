@@ -378,7 +378,9 @@
 
                         // check for max size
                         if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        if(!isOutline && 
+                        (bbox.height * currentScale > parseInt("<%=h%>")/3 || bbox.width * currentScale > parseInt("<%=w%>")/3))
+                        {currentScale -= growingFactor}
 
                         // transform the icon by the negative difference in the sizes
                         dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
@@ -694,7 +696,7 @@
             var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
                     +'<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
-                    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="red" stroke-width="10"/>'
+                    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="black"  fill="white" stroke-width="10"/>'
                     +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
                     +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
                     +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
@@ -858,15 +860,12 @@
             var toggleScalebar = true,
                 userTextColor;
 
-            // sets image name at top of screen
-            setImageName("<%=image%>");
+            
 
-            // removes the path and keeps the cube name ( might need new variable to pass this)
-            function setImageName(str){
-                str = str.split("/")[1];
-                document.getElementById("imageName").innerHTML = str.replace(".png",".cub");
-            }
-
+            // sets the display name
+            
+            document.getElementById("imageName").innerHTML = "<%=displayCube%>";
+            
             // when the box check value changes switch the fills and strokes
             $("#northCheckbox").on("change",function(){
                 // get all children in the group
@@ -1684,11 +1683,8 @@
                     var textboxVal = prompt("What Should It Say?","");
                     
                     if(textboxVal !== "" && textboxVal){
-                        // will chnage this eventually
-                        // Should allow for lower case
-                        textboxVal = textboxVal.toUpperCase(textboxVal);
                         
-                        let strlength = textboxVal.length -  countI(textboxVal); 
+                        let strlength = textboxVal.length; 
                         let numberOfSpaces = textboxVal.split(" ").length;
                         
 
@@ -1705,14 +1701,14 @@
                         text.setAttribute("x",0);
                         text.setAttribute("y",15);
                         text.style.fontSize = "15";
-                        g.setAttribute("height",15);
-                        g.setAttribute("width",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
+                        g.setAttribute("height",0);
+                        g.setAttribute("width",0);
                         g.setAttribute("transform","translate(50,50) rotate(0) scale(2.6)");
 
                         var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
                         rect.setAttribute("x",0);
                         rect.setAttribute("y",13);
-                        rect.setAttribute("width", 3);
+                        rect.setAttribute("width", 5);
                         rect.setAttribute("height", 5);
                         rect.style.visibility = "hidden";
                         rect.setAttribute("class","resize bottom-left");
@@ -1720,25 +1716,27 @@
 
                         var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
                         rect2.setAttribute("x",0);
-                        rect2.setAttribute("y",0);
-                        rect2.setAttribute("width", 3);
+                        rect2.setAttribute("y",1);
+                        rect2.setAttribute("width", 5);
                         rect2.setAttribute("height", 5);
                         rect2.style.visibility = "hidden";
                         rect2.setAttribute("class","resize top-left");
 
                         var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-                        rect3.setAttribute("x",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
-                        rect3.setAttribute("y",0);
-                        rect3.setAttribute("width", 4);
-                        rect3.setAttribute("height", 5);
+                        rect3.setAttribute("x",10);
+                        rect3.setAttribute("y",1);
+                        rect3.setAttribute("width", 9);
+                        rect3.setAttribute("height", 7);
                         rect3.style.visibility = "hidden";
                         rect3.setAttribute("class","resize top-right");
+                        rect3.setAttribute("fill","blue");
 
                         var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-                        rect4.setAttribute("x",(10 * strlength) + (5*countI(textboxVal)) - ((numberOfSpaces -1)*3));
+                        rect4.setAttribute("x",10);
                         rect4.setAttribute("y",13);
-                        rect4.setAttribute("width", 4);
-                        rect4.setAttribute("height", 5);
+                        rect4.setAttribute("width", 7);
+                        rect4.setAttribute("height", 7);
+                        rect4.setAttribute("fill","blue");
                         rect4.style.visibility = "hidden";
                         rect4.setAttribute("class","resize bottom-right");
                         
@@ -1765,6 +1763,15 @@
                         // set the stroke of the text and append the elements
                         text.setAttribute("stroke-width","1");
                         svg.appendChild(g);
+                        let bbox = g.getBBox();
+                        
+                        if(strlength > 1){
+                            rect3.setAttribute("x",bbox.width - 1);
+                            rect4.setAttribute("x",bbox.width - 1);
+                        }
+                        
+                    
+
                         textBoxArray.push(g);
                         makeDraggable(svg);
                     }
@@ -2417,7 +2424,7 @@
                 // if the degree value is over 360 just subtract 360 because the math is easier
                 if(northDegree>360){northDegree-=360;}
                 if(sunDegree>360){sunDegree-=360;}
-                if(eyeDegree>360){eyeDegree-=360;}
+                if(observerDegree>360){observerDegree-=360;}
                 // set the scale bar corners to the correct orientation
                 setScaleboxCorners(northDegree, sunDegree);
             }

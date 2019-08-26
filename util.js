@@ -180,6 +180,16 @@ module.exports = {
 
     /**
      * 
+     * @param {string} cubeName name of users cube 
+     * @param {number} userNum the number given to the user by the server
+     */
+    getRawCube: function(cubeName, userNum){
+        return cubeName.split("u-" + userNum)[1]; 
+    },
+
+
+    /**
+     * 
      * @param {String} cookieval this variable will be the cookie value of the user
      * @returns {String} the string path to the base image file
      * 
