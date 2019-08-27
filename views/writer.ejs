@@ -17,7 +17,7 @@
     </head>
     <style>
             .metadata:hover{
-                cursor:not-allowed;
+                cursor:copy;
             }
     </style>
     <body>
@@ -86,6 +86,8 @@
                     <label for="test">
                         <h3 class="display-5 float-center alert alert-secondary">Usable Tags</h2>
                     </label>
+                    <input id="filterInput" class="form-control" type="text" placeholder="Filter Tags" style="background-color: rgba(255,255,255);">
+                    <br/>
                     <textarea readonly id="test" class="form-control bg-white text-dark"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
                     <button id="button-more-tags" class="btn btn-md btn-secondary" onclick="showMoreTags()">Show Important Tags</button>
@@ -129,18 +131,19 @@
         <script type="text/javascript">
             var loader = document.getElementById('loading');
 
-
+            
             // set the template information 
             function setOutput() {
                 let getTemplate = document.getElementById("template-text").value;
                 document.getElementById("template-text-output").innerHTML = getTemplate;
+                output();
             }
             
             // Gets important keys and values
             function getMetadata() {
                 var metaDataString = document.getElementById("metadata-text").value;
                 var metaDataArea = document.getElementById("metadataTagArea");
-                
+                metaDataArea.value = "";
                 var jsonData = JSON.parse(metaDataString);
                 
                 //'StartTime': '1997-10-20T10:58:37.46'
@@ -157,6 +160,7 @@
             function getAllTags() {
                 var metaData = document.getElementById("passedTXT").value;
                 var metaDataArea = document.getElementById("allTagArea");
+                metaDataArea.value = "";
                 metaData = JSON.parse(metaData);
                 for (key in metaData) {
                     let str = keyToTag(key) + ": " + metaData[key].toString().trim() + "\n";
@@ -259,6 +263,10 @@
                     document.getElementById("button-more-tags").innerHTML = val;
                     textArea.value = importantTags.value;
                 }
+
+                if(document.getElementById("filterInput").value !== ""){
+                    filterTags();
+                }
             }
 
             // functions to control the loading gif visibility  
@@ -268,6 +276,41 @@
 
             function loaderActivate(){
                 loader.style.visibility = 'visible';
+            }
+
+
+            $("#template-text").keyup(function(){
+                
+                setOutput();
+            });
+
+
+            $("#filterInput").keyup(function(){
+                filterTags();
+            });
+
+            function filterTags(){
+                let filterValue = document.getElementById("filterInput").value;
+                let dataTagField = (document.getElementById("button-more-tags").innerHTML === "Show All Tags")
+                                     ? document.getElementById("metadataTagArea").value:document.getElementById("allTagArea").value;
+
+            
+                let dataLines = dataTagField.split("\n");
+
+                if(filterValue !== "" && filterValue.length > 2){
+                    var filteredArray = [];
+                    
+
+                    for(line in dataLines){
+                        if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1){filteredArray.push(dataLines[line]);}
+                    }
+
+                    // set the new field
+                    document.getElementById("test").value = filteredArray.join("\n");
+                    
+                }else{
+                    document.getElementById("test").value = dataTagField;
+                }
             }
 
 
@@ -284,7 +327,7 @@
             getAllTags();
             showMoreTags();
             
-            setInterval(output, 1000);
+            //setInterval(output, 1000);
         </script>
     </body>
 </html>
