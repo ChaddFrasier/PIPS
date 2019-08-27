@@ -128,8 +128,33 @@ app.get('/', function(request, response){
     // query for alert code
     let code = request.query.alertCode;
 
-
     // render the index page w/ proper code
+    switch(code){
+        case "1":
+            response.status(415);
+            break;
+        case "2":
+            response.status(415);
+            break;
+        case "3":
+            response.status(412);
+            break;
+        case "4":
+            response.status(412);
+            break;
+        case "5":
+            response.status(500);
+            break;
+        case "6":
+            response.status(510);
+            break;
+        case "7":
+            response.status(400);
+            break;
+        default:
+            response.status(200);
+                
+    }   
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
     
 });
@@ -168,7 +193,7 @@ app.get('/upload',function(request,response){
 
     if(userid === undefined){
         // send response w/ all variables
-        response.redirect('/?alertCode=4');
+        response.redirect('/?alertCode=7');
 
     }else{
         //retrieve the last found file for the user if it is there
@@ -189,9 +214,7 @@ app.get('/upload',function(request,response){
                     outputName: userObject.name.replace('.cub','_PIPS_Caption.txt')
                 });
         }else{
-            console.log("UnRecognized GET Request from user " + userid);
-
-            response.redirect("/?alertCode=7");
+            response.redirect("/?alertCode=4");
         }
 
 
@@ -446,8 +469,8 @@ app.post('/upload', async function(request, response){
     }catch(err){
         console.log('FATAL ERROR ON SERVER UPLOAD: ');
         console.log(err);
-        // alert 4 which should never happen in a successful run
-        response.redirect('/?alertCode=4');
+        // alert 5 which should never happen in a successful run
+        response.redirect('/?alertCode=5');
         // end response
         response.end();
     }
@@ -473,12 +496,12 @@ app.post('/csv', function(request,response){
                 console.log('file was not sent successfully');
             }else{
                 // file sent
+                response.status(200);
                 response.end();
             }
         });
     }else{
-        console.log("Failed to find cube object");
-        response.redirect("/?alertCode=7");
+        response.redirect("/?alertCode=4");
     }
     
 });
@@ -495,10 +518,9 @@ app.get('/csv', function(request, response){
 
     if(userId === undefined){
         // send response w/ all variables
-        response.redirect('/?alertCode=4');
+        response.redirect('/?alertCode=7');
 
     }else{
-        // TODO: search for the csv that matches the userid instance
         // return the index if not found
         console.log('cookie found: its value is: ' + userId);
         let userObject = util.getObjectFromArray(userId,cubeArray);
@@ -509,12 +531,13 @@ app.get('/csv', function(request, response){
                     console.log('file was not sent successfully');
                 }else{
                     // file sent
+                    response.status(200);
                     response.end();
                 }
             });
         }else{
             console.log("user doesnt have data on the server");
-            response.redirect('/?alertCode=7');
+            response.redirect('/?alertCode=4');
         }
     }
 });
@@ -539,12 +562,12 @@ app.post('/imageDownload', function(request,response){
                 console.log('file was not sent successfully');
             }else{
                 // file sent
+                response.status(200);
                 response.end();
             }
         });
     }else{
-        console.log("User instance was not found on server");
-        response.redirect("/?alertCode=7");
+        response.redirect("/?alertCode=4");
         response.end();
     }
     
@@ -561,7 +584,7 @@ app.get('/imageDownload', function(request, response){
 
     if(uid === undefined){
         // send response w/ all variables
-        response.redirect('/?alertCode=4');
+        response.redirect('/?alertCode=7');
     }else{
         let cubeObj = util.getObjectFromArray(uid, cubeArray);
         if(typeof(cubeObj) === "object"){
@@ -571,12 +594,13 @@ app.get('/imageDownload', function(request, response){
                     console.log('file was not sent successfully');
                 }else{
                     // file sent
+                    response.status(200);
                     response.end();
                 }
             });
         }else{
             console.log("User instance was not found on server");
-            response.redirect("/?alertCode=7");
+            response.redirect("/?alertCode=4");
         }
     }
 });
@@ -594,7 +618,7 @@ app.get('/showImage', function(request, response){
 
     if(userid === undefined){
         // send response w/ all variables
-        response.redirect('/?alertCode=4');
+        response.redirect('/?alertCode=7');
 
     }else{
         console.log('cookie found: its value is: ' + userid);
@@ -606,7 +630,7 @@ app.get('/showImage', function(request, response){
             // get image name
             let image = util.getimagename(userObject.name, 'png');
             imagepath = 'images/' + image;
-
+            var rawCube = util.getRawCube(userObject.name,userObject.userNum);
 
             var w,
                 h;
@@ -710,7 +734,7 @@ app.get('/showImage', function(request, response){
             });
 
         }else{
-            response.redirect("/?alertCode=7");
+            response.redirect("/?alertCode=4");
             response.end();
         }
     }
@@ -758,7 +782,7 @@ app.post('/showImage', function(request, response){
     }
 
    if(imagepath === 'none'){
-       response.redirect("/?alertCode=1");
+       response.redirect("/?alertCode=4");
    }
     var w,
         h;
@@ -883,9 +907,7 @@ app.get('/crop',async function(request, response){
     if(uid !== undefined){
         var baseImg = util.findImageLocation(cubeObj.name.replace('.cub','.png'));
     }else if(currentImage === undefined || !uid){
-        // TODO: must redirexct and end response
-        console.log('No cookie has been found');
-        response.redirect("/?alertCode=7");
+        response.redirect("/?alertCode=4");
         response.end();
     }
     var newImage;
@@ -1038,9 +1060,23 @@ app.post('/crop', async function(request,response){
             if(isWindows){newImage = newImage.replace("\\","/");}
             response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
         });
-
     }
 });
+
+
+
+/**
+ * '/*' catch all unknown routes
+ * 
+ * This is a 404 http catch all
+ */
+app.get("*",function(request, response){
+    
+    // render a 404 error in the header and send the 404 page
+    response.status(400).send("<html><h1>THIS PATH IS NOT KNOWN SILLY BILLY</h1></html>");
+});
+
+
 
 /* activate the server */
 
