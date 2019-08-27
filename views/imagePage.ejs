@@ -50,8 +50,8 @@
             maxNorth = 1.219513,
             minSun = .15625,
             maxSun = 1.5625,
-            minEye = .172415,
-            maxEye = 1.72415,
+            minEye = .52,
+            maxEye = 5.2,
             maxText = 26,
             minText = 2.6,
             iconMin,
@@ -296,6 +296,8 @@
             // reset growing factor if needed
             if( elementOver && elementOver.parentElement.classList.contains("textbox")){
                 growingFactor *= 10;
+            }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
+                growingFactor *=2.5;
             }
             
             // if the selectedElement is non false then check if its an outline
@@ -316,8 +318,6 @@
                 startH = bbox.height * currentScale;
                 startW = bbox.width * currentScale;
 
-                console.log(startH);
-                console.log(startW);
                 // first make sure there are no other flags active and
                 // either the top right element is moused over or the top right is being moved
                 if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
@@ -723,39 +723,39 @@
                 + '<rect class=" resize bottom-right" x="275" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
                 + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />';
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.172415)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
-                + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  d="M 101.5 0 L 75 80 L 125 80 L 98.5 0" stroke="black" fill="white"/>'
-                + '<ellipse id= "eyeIconOuter"  cx="100" cy="80" rx="50" ry="30"  stroke="white" fill="black" style="border:0;"></ellipse>'
-                + '<ellipse id= "eyeIconCenter" rx="25" ry="25" cy="80" cx="100" stroke-width="3" fill="white" stroke="black"  style="border:0;">'
-                + '</ellipse><circle id= "eyeIconPupel"  r="10"cy="80" cx="100" stroke-width="4" stroke="white" fill="black"  style="border:0;"></circle>'
-                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="65" height="75" fill="red"/>'
-                + '<rect x="135" y="0" class="resize top-right" style="visibility: hidden;"width="47" height="75" fill="blue"/>'
-                + '<rect x="135" y="85" class="resize bottom-right" style="visibility: hidden;"width="47" height="40" fill="green"/>'
-                + '<rect x="0" y="85" class="resize bottom-left" style="visibility: hidden;"width="65" height="40" fill="yellow"/></g>';
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.52)" stroke-width="3" style="border:0; padding:0; pointer-events:visible;">'
+                + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  stroke-width="2" d="M 76.5 0 L 55 21.6 L 73.5 21.6 L 73.5 65 L78.5 65 L 78.5 21.6  L 95 21.6 L 74.5 0" stroke="white" fill="black"/>'
+                + '<ellipse id= "eyeIconOuter"  cx="75" cy="55" rx="37" ry="25"  stroke="white" fill="black" style="border:0;"></ellipse>'
+                + '<ellipse id= "eyeIconCenter" rx="18" ry="20" cy="55" cx="75" stroke-width="3" fill="white" stroke="black"  style="border:0;">'
+                + '</ellipse><circle id= "eyeIconPupel"  r="7"cy="55" cx="75" stroke-width="4" stroke="white" fill="black"  style="border:0;"></circle>'
+                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="55" height="50" fill="red"/>'
+                + '<rect x="88" y="0" class="resize top-right" style="visibility: hidden;"width="47" height="45" fill="blue"/>'
+                + '<rect x="88" y="67" class="resize bottom-right" style="visibility:hidden;"width="47" height="40" fill="green"/>'
+                + '<rect x="1" y="65" class="resize bottom-left" style="visibility: hidden;"width="55" height="40" fill="yellow"/></g>';
             
             var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="10" style="border:0; padding:0; pointer-events:all;">'
                 + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;"></rect>'
                 + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white" fill="black" ></rect>'
-                + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>'
                 + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>'
-                + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="50"/>'
 
                 + '<path id="scalebarVert20th" d="M 550 200 L 550 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert30th" d="M 750 200 L 750 500"  stroke="white" stroke-width="20"/>'
-                + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="50"/>'
 
                 + '<path id="scalebarVert40th" d="M 950 200 L 950 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert50th" d="M 1150 200 L 1150 500"  stroke="white" stroke-width="20"/>'
-                + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="50"/>'
 
                 + '<path id="scalebarVert60th" d="M 1350 200 L 1350 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert70th" d="M 1550 200 L 1550 500"  stroke="white" stroke-width="20"/>'
-                + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="50"/>'
 
                 + '<path id="scalebarVert80th" d="M 1750 200 L 1750 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
-                + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="40"/>'
+                + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
 
                 + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
                 + '<text id="scalebar1" x="50" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
@@ -1743,7 +1743,8 @@
                         rect4.setAttribute("class","resize bottom-right");
                         
 
-                        text.style.pointerEvents = "visible";
+                        
+                        g.style.pointerEvents = "visible"
                         text.innerHTML = textboxVal;
                         // append the scaleing corners
                         g.appendChild(text);
@@ -1796,6 +1797,7 @@
                 // everytime  the check boxes is changed switch the places of the fill and stroke
                 $("#textColorPicker").on("change",function(){
                     userTextColor = document.getElementById("textColorPicker").value;
+
                 });
         
 
@@ -1811,6 +1813,20 @@
                 });
                 // declare the drawing flag
                 var drawFlag = false;
+
+
+                // removes a line the user just drew by using Escape w/o resetting the button
+                $(document).keyup(function(event){
+                    // when escape is clicked with the drawFlag true
+                    if(event.keyCode === 27 && drawFlag){
+                        if(lineArr.length > 0 && clickArray.length > 1){
+                            lineArr.pop().remove();
+                            clickArray = [];
+                        }
+                    }
+                });
+
+
 
                 // when the mouse clicks the draw button
                 $("#pencilIconFlag").on('mousedown',function(){
@@ -1844,8 +1860,6 @@
                                 }
                             }
                         }
-
-
                     }
                     else{
                         svg.className.baseVal = "image-image float-center draw";
@@ -1854,7 +1868,7 @@
 
 
                         let svgElements = svg.childNodes;
-                        
+
                         // loop through all children and children of the children and set the pointer 
                         // events to none so the draw function does not get interfiered with
                         for(index in svgElements){
@@ -2546,7 +2560,7 @@
                                 
                                 tmp = tmp.replace(")"," ").trim();
                                 tmp = degree;
-                                transformArray[index] = "rotate("+ tmp +",100,80)";
+                                transformArray[index] = "rotate("+ tmp +",75,55)";
                                 
                                 icon.setAttribute("transform", transformArray.join(" "));
                                 return;
