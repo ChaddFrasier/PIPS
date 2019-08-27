@@ -50,8 +50,8 @@
             maxNorth = 1.219513,
             minSun = .15625,
             maxSun = 1.5625,
-            minEye = .15625,
-            maxEye = 1.5625,
+            minEye = .172415,
+            maxEye = 1.72415,
             maxText = 26,
             minText = 2.6,
             iconMin,
@@ -168,7 +168,6 @@
                     let scaleFactor = scale.matrix.a;
                     bbox = selectedElement.getBBox();
 
-
                     // if no rotate has occured
                     if(rotateVal ===0 || rotateVal === 360 ){
                         // set the new boundry values based on the view box and the width/height of the icons
@@ -272,6 +271,8 @@
                             maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);    
                         }
                     }
+                    console.log("BOUNDING DIMENSIONS ARE FROM: x" + minX + " to " + maxX);
+                    console.log("AND Y: " + minY + " to " + maxY);
                 }
             }
         }
@@ -315,7 +316,8 @@
                 startH = bbox.height * currentScale;
                 startW = bbox.width * currentScale;
 
-                
+                console.log(startH);
+                console.log(startW);
                 // first make sure there are no other flags active and
                 // either the top right element is moused over or the top right is being moved
                 if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
@@ -701,9 +703,7 @@
                     +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
                     +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
                     +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
-            
-            var arrow = '<path id="arrow" x="0" y="0" d="M 150 150 L 150 300 L 150 0 L 300 150 L 150 0 L 0 150" stroke-width="10" stroke="blue"  style="border: 5px solid green;" fill="none"/>'  
-
+        
           
             var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
                 +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
@@ -723,17 +723,18 @@
                 + '<rect class=" resize bottom-right" x="275" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
                 + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />';
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.15625)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
-                + '<ellipse id= "eyeIconOuter"  cx="150" cy="100" rx="150" ry="100" stroke-width="10" stroke="white" fill="black" style="border:0;"></ellipse>'
-                + '<circle id= "eyeIconCenter"  r="80"cy="100" cx="150" fill="white" stroke="black"  style="border:0;">'
-                + '</circle><circle id= "eyeIconPupel"  r="30"cy="100" cx="150" stroke="white" fill="black"  style="border:0;"></circle>'
-                + '<rect x="0" y="-10" class="resize top-left" style="visibility: hidden;"width="100" height="80" fill="red"/>'
-                + '<rect x="220" y="-10" class="resize top-right" style="visibility: hidden;"width="100" height="80" fill="blue"/>'
-                + '<rect x="220" y="120" class="resize bottom-right" style="visibility: hidden;"width="100" height="100" fill="green"/>'
-                + '<rect x="0" y="120" class="resize bottom-left" style="visibility: hidden;"width="95" height="100" fill="yellow"/></g>';
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.172415)" stroke-width="5" style="border:0; padding:0; pointer-events:visible;">'
+                + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  d="M 101.5 0 L 75 80 L 125 80 L 98.5 0" stroke="black" fill="white"/>'
+                + '<ellipse id= "eyeIconOuter"  cx="100" cy="80" rx="50" ry="30"  stroke="white" fill="black" style="border:0;"></ellipse>'
+                + '<ellipse id= "eyeIconCenter" rx="25" ry="25" cy="80" cx="100" stroke-width="3" fill="white" stroke="black"  style="border:0;">'
+                + '</ellipse><circle id= "eyeIconPupel"  r="10"cy="80" cx="100" stroke-width="4" stroke="white" fill="black"  style="border:0;"></circle>'
+                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="65" height="75" fill="red"/>'
+                + '<rect x="135" y="0" class="resize top-right" style="visibility: hidden;"width="47" height="75" fill="blue"/>'
+                + '<rect x="135" y="85" class="resize bottom-right" style="visibility: hidden;"width="47" height="40" fill="green"/>'
+                + '<rect x="0" y="85" class="resize bottom-left" style="visibility: hidden;"width="65" height="40" fill="yellow"/></g>';
             
             var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="10" style="border:0; padding:0; pointer-events:all;">'
-                + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;" ></rect>'
+                + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;"></rect>'
                 + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white" fill="black" ></rect>'
                 + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="40"/>'
                 + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
@@ -771,8 +772,8 @@
 
             // dynamically add the elements to export better 
             svg.insertAdjacentHTML("beforeend",sunObjectString);
-            svg.insertAdjacentHTML("beforeend",arrow);
-            var arrowImage = document.getElementById("arrow");
+            
+           
             var sunImage = document.getElementById("sunPosition");
             svg.insertAdjacentHTML("beforeend",northObjectString);
             var northImage = document.getElementById("northPosition");
@@ -780,6 +781,7 @@
             var outlineBox = document.getElementById('cropOutline');
             svg.insertAdjacentHTML("beforeend",eyeObjectString);
             var eyeImage = document.getElementById('eyePosition');
+            var eyeArrow = document.getElementById("eyeArrow");
             svg.insertAdjacentHTML("beforeend",scaleBarObject);
             var scaleBarIcon = document.getElementById('scalebarPosition');
             
@@ -836,7 +838,7 @@
             outlineBox.remove();
             eyeImage.remove();
             scaleBarIcon.remove();
-            arrowImage.remove();
+            
 
 
             // set defaults
@@ -1979,6 +1981,7 @@
                             outlineBox.style.visibility = 'hidden';
                             
                             svg.appendChild(eyeImage);
+                            setIconAngle(eyeArrow, observerDegree);
                             eyeImage.style.visibility = 'visible'
                             document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button");
                             eyeFlag = false;
@@ -2000,7 +2003,7 @@
                             document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                             sunFlag = false;
                         
-                            arrowImage.remove();
+                            
 
                            
                                 
@@ -2021,7 +2024,7 @@
                             setIconAngle(sunImage, sunDegree);
                             makeDraggable(svg);  
                             
-                            //sunImage.appendChild(arrowImage);
+                            
                             
                         }
                         
@@ -2032,26 +2035,7 @@
 
 
 
-                function drawArrow(icon, rotationVal){
-                    let transString = icon.getAttribute("transform").split(" ")[0];
-                    let scaleString = icon.getAttribute("transform").split(" ")[icon.getAttribute("transform").split(" ").length -1];
-                    
-
-                    var x = transString.split(",")[0].replace("translate("," "),
-                        y = transString.split(",")[1].replace(")"," "),
-                        scale = scaleString.split("scale(")[1].replace(")"," ");
-
-                    if(icon.id.indexOf('sun') > -1){
-                       
-                        arrowImage.style.transformOrigin = String(Number(x) + " " + Number(y) - (icon.getBBox().height * scale/2));
-                        
-                        arrowImage.setAttribute("transform","translate(" + String(Number(x) - (icon.getBBox().width * scale/2)) + " " + String(Number(y) - (icon.getBBox().height * scale/2)) 
-                        + ") rotate("+ 45 + ")"); 
-                
-                    }else{
-                        // draw on the eye
-                    }
-                }
+               
 
 
 
@@ -2550,19 +2534,42 @@
                     let transformVal = icon.getAttribute("transform");
                     let transformArray = transformVal.split(" ");
 
-                    for(index in transformArray){
-                        if(transformArray[index].indexOf("rotate") > -1){
-                            var tmp = transformArray[index].split("rotate(")[1];
-                            
-                            tmp = tmp.replace(")"," ").trim();
-                            tmp = degree;
-                            transformArray[index] = "rotate("+ tmp +")";
-                            
-                            icon.setAttribute("transform", transformArray.join(" "));
-                            return;
-                        }
+                    let offsetX = 0,
+                        offsetY = 0;
 
+                    if(icon.id.indexOf('eye') > -1){
+                        console.log('transform of eye is: '+ icon.getAttribute("transform"));
+    
+                        for(index in transformArray){
+                            if(transformArray[index].indexOf("rotate") > -1){
+                                var tmp = transformArray[index].split("rotate(")[1];
+                                
+                                tmp = tmp.replace(")"," ").trim();
+                                tmp = degree;
+                                transformArray[index] = "rotate("+ tmp +",100,80)";
+                                
+                                icon.setAttribute("transform", transformArray.join(" "));
+                                return;
+                            }
+                        }
                     }
+                    else{
+                        for(index in transformArray){
+                            
+                            if(transformArray[index].indexOf("rotate") > -1){
+                                var tmp = transformArray[index].split("rotate(")[1];
+                                
+                                tmp = tmp.replace(")"," ").trim();
+                                tmp = degree;
+                                transformArray[index] = "rotate("+ tmp +")";
+                                
+                                icon.setAttribute("transform", transformArray.join(" "));
+                                return;
+                            }
+
+                        }
+                    }
+                    
 
                     // adds the new rotate() string in the exact same order as it appeared before to preserve the dragging function
                     let scaleStr = transformArray[transformArray.length -1];
