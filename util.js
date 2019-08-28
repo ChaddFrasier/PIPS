@@ -10,7 +10,7 @@
  * 
  * @see {server.js} Read the header before editing
  * 
- * @todo refactor and clean unused variables in functions
+ * @todo file loging for isis calls
  */
 
 
@@ -102,7 +102,6 @@ module.exports = {
     },
 
     /**
-     * @todo return a value for the error
      * 
      * @param {string} resStr the resolution of the image in meters/pixel 
      * @param {number} w width of the image to be displayed in pixels
@@ -117,6 +116,7 @@ module.exports = {
             return resFloat * w;
         }else{
             console.log("Could not parse float from given resString");
+            return -1;
         }
     },
 
@@ -460,7 +460,7 @@ module.exports = {
 };
 
 
-// local functions
+// -------------------------------------- local functions --------------------------------------------------------------------
 /**
  * 
  * @param {string} testValue  value to check if it a cube hearder keyword
@@ -635,7 +635,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
 
         isisSpawn.stdout.on('data', function(data){
-            console.log(isisCall + 'stdout: ' + data.toString());
+            console.log(isisCall + ' stdout: ' + data.toString());
         });
 
 
@@ -673,10 +673,8 @@ var endTag = function(nameString){
 
 
 /**
- * @todo refactor unused variables
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
- * @param {string} cubeName just the name of the cube for getting the image output name more easily.
  * 
  * 
  * @returns {Promise}
@@ -686,7 +684,7 @@ var endTag = function(nameString){
  * 
  * @description this function reads a file line by line parseing into a JSON format.
  */
-var processFile = function(inputFile, cubeName){
+var processFile = function(inputFile){
     return new Promise(function(resolve){
         // execute the isis2std function
         // open the fs with necessary imports for streaming file data

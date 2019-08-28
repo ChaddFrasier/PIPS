@@ -2,12 +2,14 @@
  * @author Chadd Frasier
  * 
  * @class ISIS3 Cubes 
+ * @alias Cube
  * 
- * Last Update: 08/26/19
+ * @update 08/26/19
  * 
  * @constructor cubeName, userId
  * 
- * @description this will make PIPS much easier to manage with the help of client side cookies
+ * @classdesc this will make PIPS much easier to manage with the help of client side cookies
+ *              This class is basically just a data structure with gets and sets
  */
 module.exports = class Cube{
     /**

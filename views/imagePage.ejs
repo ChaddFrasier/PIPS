@@ -1775,7 +1775,6 @@
                 var textBoxArray = [];
 
                 // when the text box is clicked
-                // TODO: Needs to be redone for sizing 
                 $("#textBtn").on("mousedown",function(){
                     // prompt for text box contents
                     var textboxVal = prompt("What Should It Say?","");
@@ -2465,8 +2464,6 @@
                 sunDegree = parseFloat(metadataString['SubSolarAzimuth'])+ 90;
                 observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
                 
-                
-                // TODO: generate an arrow in the proper direction in relation to the degree of the eye angles
                 if(isNaN(northDegree)){
                     // is able the button if the degree was not found
                     document.getElementById("north-radio").checked = false;

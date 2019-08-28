@@ -6,7 +6,7 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 2.6.3
+ * @version 2.7.0
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * @since 05/31/19
@@ -14,6 +14,8 @@
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that
+ * @todo 9 have a POST '/pow' link that calculates data and creates an image based on preset defaults and a data file for input
+ * @todo 10 '/pow will need to set the log flag in the user instance
  * 
  * 
  * 
@@ -701,7 +703,7 @@ app.get('/showImage', function(request, response){
                     console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
                     // if the imageWidth is non-false
-                    if(imageMeterWidth){
+                    if(imageMeterWidth > -1){
                         // get log base 10 of the image width (dividing by 2 because there is two sides to the scalebar)
                         let x = Math.log10(imageMeterWidth/2);
                         // get the whole value of the base
@@ -858,7 +860,7 @@ app.post('/showImage', function(request, response){
 
             console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
-            if(imageMeterWidth){
+            if(imageMeterWidth > -1){
                 // same as above for calculating scale bar
                 let x = Math.log10(imageMeterWidth/2);
                 let a = Math.floor(x);
