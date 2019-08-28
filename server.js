@@ -164,7 +164,7 @@ app.get('/', function(request, response){
     // query for alert code
     let code = request.query.alertCode;
 
-    // render the index page w/ proper code
+    // set the http status for official server use
     switch(code){
         case "1":
             response.status(415);
@@ -190,7 +190,8 @@ app.get('/', function(request, response){
         default:
             response.status(200);
                 
-    }   
+    }  
+    // render the index page w/ proper code 
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
     
 });
