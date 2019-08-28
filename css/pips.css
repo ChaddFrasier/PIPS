@@ -2,6 +2,7 @@ body,html{
     background-image: url('../images/webAppBackground.jpg');
     background-repeat: round;
     backface-visibility: visible;
+    background-size: contain; 
     width: 100%;
 }
 .title{

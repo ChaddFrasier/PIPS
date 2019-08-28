@@ -22,17 +22,29 @@
     </style>
     <body>
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <div id="loading" class="float-md-right text-center lead" style="visibility:visible">
+                <img src="../images/loading.gif" class='float-center;' height="10%" weight="auto"/><br>
+                <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
+            </div>
         
             <div class="container" style="height: 15rem; width: 100%; padding: 0; border: 0 solid red;"> 
-                <div class="jumbotron text-center" style="padding: 2rem;">
-                    <h1 class="display-4">Upload Successful</h1>
+                <div class="jumbotron text-center" style="height: 85%; padding: 2rem; background-color: lightgray;">
+                    <h1 class="display-5" style="margin: 0;">Upload Successful</h1>
                     <p class="lead">Edit in the bottom box using tags in the middle box</p>
-                    <a class="btn btn-primary btn-lg" href="/" role="button">Upload New Cube File</a>
+                    <a class="btn btn-secondary btn-lg float-left" href="/" role="button">Upload New File</a>
+
+                    <form method="POST" action="/showImage" class="lg-form text-center float-right" style="margin: 0;">
+                        <div class="form-group">
+                            <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
+                            <input type="submit" value="Display Image" class="btn btn-primary btn-lg"
+                            onclick="loaderActivate()" />
+                        </div>
+                    </form>
                 </div>
             </div>
 
-            <div class="container float-center" style="width: 100rem; border: 0 solid blue;">
-                    <div id="template-output" class="text-center form-group metadata">
+            <div class="container float-center" style="width: 100rem; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;">
+                    <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
                             <label for="template-text-output">
                                 <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
                             </label>
@@ -40,7 +52,7 @@
                                 style="resize: vertical; font-size: 22px;" rows="7"></textarea>
                                 <br/>
         
-                            <form class="lg-form text-center float-right">
+                            <form class="lg-form text-center float-right" style="margin: 0;">
                                 <div class="form-group">
                                     <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
                                         Caption</a>
@@ -50,6 +62,7 @@
 
                 <br/>
                 <br/>
+                <!-- Invisible Boxes -->
                 <div id="metadata" style = "display: none;" class="text-center green-border-focus">
                     <label for="metadata-text">
                         <h2>Metadata Output DICTSTRING </h2>
@@ -81,19 +94,24 @@
                     <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
                         style="resize: vertical; font-size: 22px;"></textarea>
                 </div>
+                <!-- End Invisible Boxes -->
+
                 <br/>
-                <div id="test-metadata" class="text-center form-group">
+                <!-- Active Tag Box -->
+                <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
                     <label for="test">
-                        <h3 class="display-5 float-center alert alert-secondary">Usable Tags</h2>
+                        <h3 class="display-5 alert alert-secondary">Usable Tags</h2>
                     </label>
-                    <input id="filterInput" class="form-control" type="text" placeholder="Filter Tags" style="background-color: rgba(255,255,255);">
                     <br/>
-                    <textarea readonly id="test" class="form-control bg-white text-dark"
+                    <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Filter Tags" 
+                    style="background-color: rgba(255,255,255); color:black; text-align:center; margin: 0; margin-bottom: 1rem;">
+                    <br/>
+                    <textarea readonly id="test" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                    <button id="button-more-tags" class="btn btn-md btn-secondary" onclick="showMoreTags()">Show Important Tags</button>
-                    <br/>
-                    <form action="/csv" method='POST' class="lg-form text-center float-right">
-                        <div class="lg-form text-center">
+                    <button id="button-more-tags" class="btn btn-md btn-secondary float-left" style="margin: 0; margin-top:1rem;" onclick="showMoreTags()">Show Important Tags</button>
+                    
+                    <form action="/csv" method='POST' class="lg-form text-center float-right" style="margin: 0;  margin-top:1rem;">
+                        <div class="lg-form text-center" style="margin: 0;">
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
                             <input type="submit" value="Save Metadata CSV" class="btn btn-primary btn-lg" />
@@ -102,7 +120,8 @@
                 </div>
                 <br/>
                 <br/>
-                <div id="template" class="text-center form-group" style="padding-top:.5rem;">
+                <!-- Editing Box-->
+                <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
                         <label for="template-text">
                             <h3 class="display-5 alert alert-secondary">Edit Text</h2>
                         </label>
@@ -110,24 +129,8 @@
                             style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
                     </div>
             </div>
-            <br/>
-            <br/>
-            <br/>
-            <form method="POST" action="/showImage" class="lg-form text-center">
-                <div class="form-group">
-                    <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                    <input type="submit" value="Display Image" class="btn btn-primary btn-lg"
-                    onclick="loaderActivate()" />
-                </div>
-            </form>
-            <br/>
-            <div id="loading" class="float-md-center text-center lead" style="visibility:visible">
-                <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br>Loading
-            </div>
+            
         
-
-        <br/>
-        <br/>
         <script type="text/javascript">
             var loader = document.getElementById('loading');
 
@@ -174,7 +177,7 @@
                 return tag;
             }
             // punctuation to be ignored
-            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';'];
+            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'"];
 
             // boolean value that tells if there is puctuation in the key 
             function removePunctuation(key){
@@ -184,6 +187,41 @@
                     }
                 }
                 return false;
+            }
+
+            // breaks string into punctuation and exchnages data with key then rejoins all punctuation in order
+            function exchangeData(keyString){
+                let Farr =[],
+                    Barr = [],
+                    key;
+                for(let i = 0; i<keyString.length; i++){
+                    if(unwantedPunc.includes(keyString[i])){
+                        Farr.push(keyString[i]);
+                    }else
+                    {
+                        break;
+                    }
+                }
+                for(let i = keyString.length-1; i>0; i++){
+                    if(unwantedPunc.includes(keyString[i])){
+                        Barr.push(keyString[i]);
+                    }else
+                    {
+                        break;
+                    }
+                }
+
+                key = keyString.substring(Farr.length,keyString.length - Barr.length);
+                let val = getMetadataVal(key);
+                if(key !== val){
+                    // join the new value with the arrays and return
+                    return Farr.join("") + val + Barr.join("");
+                }
+                else{
+                    return keyString;
+                }
+
+
             }
 
             // Return Metadata Val from Key
@@ -204,12 +242,7 @@
                     // if the key has puncuation in it
                     else if(removePunctuation(key)){
                         // remove the punctuation from the ends and add it back after the data is added
-                        if(key.substring(0,key.length-1) === datakey){
-                            return allMetaData[datakey] + key[key.length-1];
-                        }
-                        else if(key.substring(1,key.length) === datakey){
-                            return  key[0]+ allMetaData[datakey];
-                        }
+                        return exchangeData(key);
                     }
                 }
                 return key;
