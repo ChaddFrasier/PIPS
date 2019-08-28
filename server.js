@@ -6,7 +6,7 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 2.7.0
+ * @version 3.7.0
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * @since 05/31/19

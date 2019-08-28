@@ -4,7 +4,7 @@
  * @author Chadd Frasier
  * @since 06/03/19
  * @update 08/23/19
- * @version 2.4.0
+ * @version 2.5.0
  * @fileoverview 
  *      This is the utility file for The Planetary Image Caption Writer  
  * 
