@@ -663,8 +663,6 @@ app.get('/showImage', function(request, response){
 
                     console.log(imageMeterWidth + ' in meters\n');
 
-                    
-
                     console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
                     if(imageMeterWidth){
@@ -1073,7 +1071,7 @@ app.post('/crop', async function(request,response){
 app.get("*",function(request, response){
     
     // render a 404 error in the header and send the 404 page
-    response.status(400).send("<html><h1>THIS PATH IS NOT KNOWN SILLY BILLY</h1></html>");
+    response.status(404).render("404.ejs");
 });
 
 
