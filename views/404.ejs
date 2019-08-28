@@ -15,37 +15,24 @@
     </head>
 
 <style>
-img.source-image {
-	position: absolute;
-	top: 0;
-	left: 0;
-}
+
 body{
     overflow: hidden;
+    background: no-repeat;
+    background-image: url('./images/404bg.jpg');
+    background-size: cover;
 }
 </style>
 
-    <script type="text/javascript">
-        $(document).ready(function() { 
-            var $winwidth = $(window).width();
-            $("img.source-image").attr({
-                width: $winwidth
-            });
-            $(window).bind("resize", function(){ 
-                var $winwidth = $(window).width();
-                $("img.source-image").attr({
-                    width: $winwidth
-                });
-             });
-        }); 
-    </script>
+    
     
     
     <body>
-        <img class="source-image" src="../images/404bg.jpg" alt="" />
         <div class="float-center text-center" style="margin-top: 10%;">
             <a class="btn btn-primary btn-lg" href="/" role="button"> Return Home</a>
         </div>
+        
+        
         
     </body>
 </html>
