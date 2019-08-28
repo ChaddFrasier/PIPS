@@ -3,12 +3,14 @@
  * @alias server
  * @run node server 
  * 
- * @author Chadd Frasier
- * @version 2.6.1
+ * @author Chadd Frasier 
+ *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
+ * 
+ * @version 2.6.3
  * @description This is the driver for the Caption Writer server by USGS.
  * 
- * Date Created: 05/31/19
- * Last Modified: 08/23/19
+ * @since 05/31/19
+ * @updated 08/23/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that
@@ -18,29 +20,63 @@
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
  * @requires ./js/cubeObj.js
  * 
- * Note: This server is only capable of running on a linux or mac operating systems
+ * Note: This server is only capable of running on a linux or mac operating systems due to ISIS3 
  */
 
  /** READ ME BEFORE EDITING
-  * @fileoverview   08/23/19 
+  * --------------------------------------------------------------------------------------------------------------------------
+  * @summary  08/28/19
   * 
   *     Uploads can be in .cub or .tif and the server now has more user friendly acceptance of dimensions by auto 
-  * generating the size of the other dimensions when not given ( if given a height OR a width and the other box is left blank). 
-  * Or the user can specify exact output sizes of the figures (width AND height).
+  * generating the size of the other dimensions when not given 
+  * 
+  * Ex: if given a height OR a width and the other box is left blank, 
+  *     the server calculated the other dimension preserving aspect ratio
+  * 
+  * Or the user can specify an exact output size of the figures (width AND height).
   * The user can now add icons with the proper roatation and invert any of the icons' color. Scalebars are working and 
   * will be disabled if its not possible to calculate. Icons are disabled when the data cannot be found.
-  * Icons,Text, and Outline Boxes all can be scaled using the corners of the icon by clicking when indicated 
-  * and dragging the mouse in the directions of the pointer.
+  * Icons, Text, and Outline Boxes all can be scaled using the corners of the icon by clicking when indicated 
+  * and dragging the mouse in the directions of the mouse pointer.
   * 
-  *     Annotation and outline boxes have been added, the user can select a color for the text and
-  * boxes as well as the pencil tool. Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
-  * not shrinks the image down. 
+  *     The pencil tool now allows the user to hit the escape key to undo a misplaced point on the pencil tool.
+  * The pencil works off of a two click system right now and this make be changed to a drag later if the users would
+  * prefer that method instead. 
+  * 
+  *     Sizes of UI are more friendly toward smaller screens. Changes include tighter spaceing on the writer page,
+  * and better button placements. The user no longer has to scroll down to move to the photo editing page. The UI 
+  * on the writer page now has a filter tags function where the user can type a 3 or more character string into the filter bar 
+  * and results that contain that string will be displayed in the tag section.
+  *  
+  * 
+  *     Annotation and outline boxes have been added, the user can select a color for the text, outline
+  * boxes, and pencil tool independent of one another. 
+  * 
+  *     Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
+  * not shrinks the image down and it will update the padding on any change of the value in the textbox. 
   * 
   *     A new id system has been created to allow users to keep a 23 character id for a month before losing it.
   * this helps testing and prevents users from having identical ids when the server restarts unexpectedly. 
   * 
-  *     Exporting is working perfectly now and can be saved as either png,jpeg,jpg (at any size), or svg (when the data is not too large).
-  * SVGs are in standard format and can be opened and edited with Gimp.
+  *     Exporting is working perfectly now and can be saved as either png,jpeg,jpg (at any size),
+  * or svg (when the data is not too large). SVGs are in standard format and can be opened and edited 
+  * with Gimp as long as the files are not too large to parse safely.
+  * 
+  * --------------------------------------------------------------------------------------------------------------------------
+  * 
+  * Last Notes for Coders
+  * ---------------------
+  * 
+  *     Comment your code and include an 'author' tag for any functions you write to the server. 
+  * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
+  * functions on the server js files (not on the webpages).
+  *  
+  *     DO NOT remove functions if your version does not use them. Let the repository managers do that
+  * during merging.(This is to prevent conflicts with any major branch changes.)
+  * 
+  *     Lastly, this server is built to simplify the figure creation process not to replace photo editing software so keep
+  * that in mind when adding yor owm code.
+  * 
   * 
 */
 
@@ -651,25 +687,32 @@ app.get('/showImage', function(request, response){
                     userObject.userDim = [userObject.userDim[0],h*factor];
                 
                 }
-
-
                 var userDim = userObject.userDim;
                 let resolution = util.getPixelResolution(userObject);
 
-                console.log(resolution + " is the res");
                 // calculate image width in meters
                 if(resolution !== -1){
+                    // calculate the image width in meters using the px width and the meters/px value
                     var imageMeterWidth = util.calculateWidth(resolution, w);
 
                     console.log(imageMeterWidth + ' in meters\n');
 
                     console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
+                    // if the imageWidth is non-false
                     if(imageMeterWidth){
+                        // get log base 10 of the image width (dividing by 2 because there is two sides to the scalebar)
                         let x = Math.log10(imageMeterWidth/2);
+                        // get the whole value of the base
                         let a = Math.floor(x);
+                        // get the decimal half of the base
                         let b = x - a;
 
+                        // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                        // check if 35% or greater, set base 2
+                        // if the value is very close to a whole base on the low side set base to 5 and decrement the 10 base
+                        // (this is to keep text from leaving image)
+                        // default to 1
                         if(b >= 0.75){
                             b = 5;
                         }else if(b >= 0.35){
@@ -681,11 +724,12 @@ app.get('/showImage', function(request, response){
                             b = 1;
                         }
 
+                        // get the width that the scalebar will display on both halves
                         var scalebarMeters = b*Math.pow(10,a);
 
                         var scalebarLength,
                             scalebarUnits="";
-                        // if the length is less than 1KM return length in meters
+                        // if the length is less than 1KM return length in meters else return legth in km
                         if(imageMeterWidth/1000 < 1){
                             console.log(scalebarMeters + " would be the legth in meters that the scalebar represents\n");
                             scalebarLength = scalebarMeters;
@@ -814,12 +858,16 @@ app.post('/showImage', function(request, response){
             console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
             if(imageMeterWidth){
+                // same as above for calculating scale bar
                 let x = Math.log10(imageMeterWidth/2);
                 let a = Math.floor(x);
                 let b = x - a;
 
-                console.log("b is = " + b);
-
+                // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                // check if 35% or greater, set base 2
+                // if the value is very close to a whole base on the low side set base to 5 and decrement the 10 base
+                // (this is to keep text from leaving image)
+                // default to 1
                 if(b >= 0.75){
                     b = 5;
                 }else if(b >= 0.35){

@@ -15,11 +15,7 @@
 
         
     </head>
-    <style>
-            .metadata:hover{
-                cursor:copy;
-            }
-    </style>
+
     <body>
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="loading" class="float-md-right text-center lead" style="visibility:visible">
@@ -194,6 +190,7 @@
                 let Farr =[],
                     Barr = [],
                     key;
+                // parse front to back until non-punctuation value is found then stop
                 for(let i = 0; i<keyString.length; i++){
                     if(unwantedPunc.includes(keyString[i])){
                         Farr.push(keyString[i]);
@@ -202,6 +199,7 @@
                         break;
                     }
                 }
+                // parse back to front until non-punctuation value is found then stop
                 for(let i = keyString.length-1; i>0; i++){
                     if(unwantedPunc.includes(keyString[i])){
                         Barr.push(keyString[i]);
@@ -210,14 +208,18 @@
                         break;
                     }
                 }
-
+                // use the length of the arrays to substring out the key value
                 key = keyString.substring(Farr.length,keyString.length - Barr.length);
+                // get the actual value
                 let val = getMetadataVal(key);
+
+                // if the key is the same as val then it isn't a data value
                 if(key !== val){
-                    // join the new value with the arrays and return
+                    // join arrays and add the new data value in between
                     return Farr.join("") + val + Barr.join("");
                 }
                 else{
+                    // just return the string
                     return keyString;
                 }
 
@@ -311,37 +313,42 @@
                 loader.style.visibility = 'visible';
             }
 
-
+            // whenever the user clicks in the template section
             $("#template-text").keyup(function(){
-                
                 setOutput();
             });
 
-
+            // whenever the fitering section is interacted with
             $("#filterInput").keyup(function(){
                 filterTags();
             });
 
+            // this function takes the input of the filter and matches all tags that contain the string
             function filterTags(){
                 let filterValue = document.getElementById("filterInput").value;
                 let dataTagField = (document.getElementById("button-more-tags").innerHTML === "Show All Tags")
                                      ? document.getElementById("metadataTagArea").value:document.getElementById("allTagArea").value;
 
-            
+                // all lines of the visible tag section
                 let dataLines = dataTagField.split("\n");
 
+                // mak sure the filterValue is not 0 and the length of the string is at least 3 characters long
                 if(filterValue !== "" && filterValue.length > 2){
                     var filteredArray = [];
                     
-
+                    // for every line that contains the filtering string push the line into an array
                     for(line in dataLines){
-                        if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1){filteredArray.push(dataLines[line]);}
+                        if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
+                        {
+                            filteredArray.push(dataLines[line]);
+                        }
                     }
 
-                    // set the new field
+                    // set the tag field to he new filtered array
                     document.getElementById("test").value = filteredArray.join("\n");
                     
                 }else{
+                    // if not filtering the data just set the data to the default
                     document.getElementById("test").value = dataTagField;
                 }
             }

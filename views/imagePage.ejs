@@ -14,15 +14,7 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     </head>
-<!--  FOR TESTING WILL MOVE TO CSS FILE LATER -->
-    <style>
-        .textbox{
-            font: bold Courier serif;
-            visibility: visible;
-            letter-spacing: 3px
-        }
-    </style>
-<!--============================================= -->
+
 <script type="text/javascript">
     // function to create a draggable field from svg element
     function makeDraggable(event) {
@@ -635,7 +627,7 @@
                             <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
                         </li>
-                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ff0000"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
+                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
                         <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button>
                             <label for="scaleCheckbox" style="top: 20rem">Toggle Color</label>
                             <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38.5rem; left: 16rem;"></li>
@@ -647,7 +639,7 @@
                             <h2 class="text-left">Pad Image</h2>
                             <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
                                     <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
-                                    <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem"><button  style="left: 15rem; top: 0rem;" class="btn btn-secondary btn-md" id="resetPaddingBtn"> Reset </button> </div>
+                                    <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem"><button  style="left: 15rem; top: 0rem;" class="btn btn-dark btn-md" id="resetPaddingBtn"> Reset </button> </div>
                             </div>
                         
                             <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
@@ -693,7 +685,7 @@
 
         <script type="text/javascript">
 
-            // string version of off the icons so they can be added dynamicly with a single function call 
+            // string version of the icons so they can be added dynamically with a single function call 
            
             var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0; padding:0; pointer-events:visible;"> '
                     +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
@@ -1178,21 +1170,61 @@
                     
                 }
 
+                var padBottom = false,
+                    padTop = false,
+                    padLeft = false,
+                    padRight = false;
+
+                var bottomBtn = document.getElementById("bottomPaddingBtn"),
+                    topBtn = document.getElementById("topPaddingBtn"),
+                    rightBtn = document.getElementById("rightPaddingBtn"),
+                    leftBtn = document.getElementById("leftPaddingBtn");
+
+
                 // jquery to detect a click on the padding buttons just call set function 
                 // with either 0 or the padding input val and tell function where to place the padding 
                 $("#bottomPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'bottom');
+                        padBottom = true;
+                        padLeft = false, padRight = false, padTop = false;
+
+                        bottomBtn.className = 'btn btn-light btn-md disabled';
+
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        rightBtn.className = 'btn btn-secondary btn-md';
+                        topBtn.className = 'btn btn-secondary btn-md';
+
                     }else{
-                        setImagePadding(parseInt(0),"none");   
+                        setImagePadding(parseInt(0),"none"); 
+                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        rightBtn.className = 'btn btn-secondary btn-md';
+                        topBtn.className = 'btn btn-secondary btn-md';
+                        padBottom = false;  
                     }
                 });
 
                 $("#topPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'top');
+                        padTop = true;
+
+                        padLeft = false, padRight = false, padBottom = false;
+                        
+                        topBtn.className = 'btn btn-light btn-md disabled';
+
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        rightBtn.className = 'btn btn-secondary btn-md';
+                        bottomBtn.className = 'btn btn-secondary btn-md';
                     }else{
-                        setImagePadding(parseInt(0),"none");   
+                        setImagePadding(parseInt(0),"none"); 
+                        topBtn.className = 'btn btn-secondary btn-md';
+
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        rightBtn.className = 'btn btn-secondary btn-md';
+                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        padTop = false;  
                     }
                 });
 
@@ -1200,8 +1232,25 @@
                    
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'right');
+                        padRight = true;
+                        
+                        padLeft = false,
+                        padBottom = false,
+                        padTop = false;
+
+                        rightBtn.className = 'btn btn-light btn-md disabled';
+
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        topBtn.className = 'btn btn-secondary btn-md';
                     }else{
-                        setImagePadding(parseInt(0),"none");   
+                        setImagePadding(parseInt(0),"none"); 
+                        rightBtn.className = 'btn btn-secondary btn-md'; 
+
+                        leftBtn.className = 'btn btn-secondary btn-md';
+                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        topBtn.className = 'btn btn-secondary btn-md';
+                        padRight = false; 
                     } 
                });
 
@@ -1209,8 +1258,23 @@
                    
                    if(!isNaN(parseInt(paddingBoxInput.value))){
                        setImagePadding(parseInt(paddingBoxInput.value),'left');
+                       padLeft = true;
+                       padBottom = false,
+                       padRight=false, 
+                       padTop = false;
+                       
+                       leftBtn.className = 'btn btn-light btn-md disabled';
+                       
+                       bottomBtn.className = 'btn btn-secondary btn-md';
+                       rightBtn.className = 'btn btn-secondary btn-md';
+                       topBtn.className = 'btn btn-secondary btn-md';
                    }else{
-                       setImagePadding(parseInt(0),"none");   
+                       setImagePadding(parseInt(0),"none"); 
+                       leftBtn.className = 'btn btn-secondary btn-md'; 
+                       bottomBtn.className = 'btn btn-secondary btn-md';
+                       rightBtn.className = 'btn btn-secondary btn-md';
+                       topBtn.className = 'btn btn-secondary btn-md';
+                       padLeft = false; 
                    } 
               });
 
@@ -1219,8 +1283,40 @@
                     setImagePadding(parseInt(0),"none"); 
                     paddingBoxInput.value = "";  
                     
+                    padBottom = false, padLeft = false, padRight = false, padTop = false;
+                    
+                    bottomBtn.className = 'btn btn-secondary btn-md';
+                    leftBtn.className = 'btn btn-secondary btn-md';
+                    rightBtn.className = 'btn btn-secondary btn-md';
+                    topBtn.className = 'btn btn-secondary btn-md';
+                    
                 });
-/* 
+
+
+                // chnages the padding whenever padding has been applied and the box chnages values
+                $("#paddingInput").keyup(function(){
+                    if(!isNaN(parseInt(this.value))){
+                        if(padBottom){
+                            setImagePadding(parseInt(this.value),'bottom');
+                        }
+                        else if(padRight){
+                            setImagePadding(parseInt(this.value),'right');
+                        }
+                        else if(padLeft){
+                            setImagePadding(parseInt(this.value),'left');
+                        }
+                        else if(padTop){
+                            setImagePadding(parseInt(this.value),'top');
+                        }
+
+                        console.log(parseInt(this.value));
+                    }else{
+                        setImagePadding(parseInt(0),"none");
+                    }
+                });
+
+
+                /* 
                 // when the image registers a click
                 $("image").on("click", function(event) {
                     event.preventDefault();
@@ -1405,7 +1501,7 @@
                         if(userLineColor){
                             line.style.stroke = userLineColor;
                         }else{
-                            line.style.stroke = "red";
+                            line.style.stroke = "white";
                         }
                         
                         line.style.strokeWidth = 4;
@@ -1781,19 +1877,6 @@
                 });
 
 
-                // count s the I characters
-                function countI(str){
-                    var count = 0;
-                    for(char in str){
-                        
-                        if(str[char] === "I"){
-                            count++;
-                        }
-                    }
-                    return count;
-                }
-
-
                 // everytime  the check boxes is changed switch the places of the fill and stroke
                 $("#textColorPicker").on("change",function(){
                     userTextColor = document.getElementById("textColorPicker").value;
@@ -2016,11 +2099,6 @@
                             sunImage.remove();
                             document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
                             sunFlag = false;
-                        
-                            
-
-                           
-                                
                         }
                         
                         if(sunFlag){
@@ -2037,20 +2115,12 @@
                             
                             setIconAngle(sunImage, sunDegree);
                             makeDraggable(svg);  
-                            
-                            
-                            
                         }
                         
                         clickArray = [];
                     }
                     
                 });
-
-
-
-               
-
 
 
 /* 
@@ -2551,6 +2621,7 @@
                     let offsetX = 0,
                         offsetY = 0;
 
+                    // rotate the arrow around the center point of the eye
                     if(icon.id.indexOf('eye') > -1){
                         console.log('transform of eye is: '+ icon.getAttribute("transform"));
     
@@ -2598,7 +2669,6 @@
                     icon.setAttribute("transform", transformArray.join(" "));
                     
                 }
-
             }
         </script>
     </body>

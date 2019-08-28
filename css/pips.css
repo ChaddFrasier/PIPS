@@ -29,6 +29,14 @@ p{
     padding: 0;
 }
 
+.metadata:hover{
+    cursor:copy;
+}
+.textbox{
+    font: bold Courier serif;
+    visibility: visible;
+    letter-spacing: 3px
+}
 input.largeBox{
     left: 13rem;
     top: 16.5rem;

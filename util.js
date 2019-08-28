@@ -1,12 +1,14 @@
 /**
  * Utility JS for Caption Writer
  * 
- * Author: Chadd Frasier
- * Date Created: 06/03/19
- * Date Last Modified: 08/23/19
- * Version: 2.4.0
- * Description: 
+ * @author Chadd Frasier
+ * @since 06/03/19
+ * @update 08/23/19
+ * @version 2.4.0
+ * @fileoverview 
  *      This is the utility file for The Planetary Image Caption Writer  
+ * 
+ * @see {server.js} Read the header before editing
  * 
  * @todo refactor and clean unused variables in functions
  */
@@ -28,7 +30,9 @@ module.exports = {
      * @param {string} returnPath path to return the values from ISIS3
      * @param {string} imagePath path where the image should be saved
      * 
-     * @function calls the isis commands using promises to ensure the processes are finished
+     * @returns {Promise}
+     * 
+     * @description calls the isis commands using promises to ensure the processes are finished
      */
     makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
         return new Promise(function(resolve,reject){
@@ -52,9 +56,11 @@ module.exports = {
     /**
      * 
      * @param {string} cubeName name of the cube to be analyzed
-     * @returns {JSON String} cube data from the pvl file
      * 
-     * @function takes the cube used and runs the pvl data extraction algorithm 
+     * @returns {Promise} cube data from the pvl file
+     * @returns {object} cubeObject data
+     * 
+     * @description takes the cube used and runs the pvl data extraction algorithm 
      */
     readPvltoStruct: function(cubeName) {
         return new Promise(function(resolve){
@@ -74,7 +80,10 @@ module.exports = {
     /**
      * 
      * @param {object} cubeObj the current cube object being manipulated
-     * @returns {number/string} returns the value of the pixel resolution values in the cube or -1 if not found
+     * 
+     * @returns {number|string} returns the value of the pixel resolution values in the cube or -1 if not found
+     * 
+     * @description extracts the values used to calculate the scale of the image 
      */
     getPixelResolution: function(cubeObj){
         let jsonData = JSON.parse(cubeObj.data);
@@ -93,10 +102,14 @@ module.exports = {
     },
 
     /**
+     * @todo return a value for the error
      * 
      * @param {string} resStr the resolution of the image in meters/pixel 
      * @param {number} w width of the image to be displayed in pixels
+     * 
      * @returns {number} the width of the image in meters
+     * 
+     * @description attempts to calculate the width of the iimage in pixels and catches failures
      */
     calculateWidth: function(resStr, w){
         let resFloat = parseFloat(resStr);
@@ -110,10 +123,11 @@ module.exports = {
 
     /**
      * 
-     * @param {number} lengthOfID 
+     * @param {number} lengthOfID the length of the output
+     * 
      * @returns {string} random id string of length given
      * 
-     * @function Produces a random user Id of the given length using [a-z,A-Z,0-9]
+     * @description Produces a random user Id of the given length using [a-z,A-Z,0-9]
      */
     createUserID: function(lengthOfID){
         // all available characters
@@ -141,7 +155,10 @@ module.exports = {
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
      * 
-     * @function converts tiff to cube for later processing 
+     * @returns {Promise}
+     * @returns {string} name of the cube that was converted
+     * 
+     * @description converts tiff to cube for later processing 
      */
     tiffToCube: function(tiffName) {
         return new Promise(function(resolve, reject){
@@ -182,6 +199,10 @@ module.exports = {
      * 
      * @param {string} cubeName name of users cube 
      * @param {number} userNum the number given to the user by the server
+     * 
+     * @returns {string} the name of the cube the user uploaded
+     * 
+     * @description removed the added u-# tag based on the users' instance number
      */
     getRawCube: function(cubeName, userNum){
         return cubeName.split("u-" + userNum)[1]; 
@@ -190,10 +211,11 @@ module.exports = {
 
     /**
      * 
-     * @param {String} cookieval this variable will be the cookie value of the user
-     * @returns {String} the string path to the base image file
+     * @param {string} cookieval this variable will be the cookie value of the user
      * 
-     * @function this function is used to create the path to the given cube file image in the images folder 
+     * @returns {string} the string path to the base image file
+     * 
+     * @description this function is used to create the path to the given cube file image in the images folder 
      */
     findImageLocation: function(cookieval){
         return path.join('images', cookieval.replace('.cub','.png'));
@@ -202,10 +224,11 @@ module.exports = {
 
     /**
      * 
-     * @param {Number Array} cropArray click location of the user 
-     * @returns {Number Array} the array of Numbers needed to crop the image using jimp js
+     * @param {number array} cropArray click location of the user 
      * 
-     * @function this function calculates the height and width of the new image and store the x,y coordinates (index 0 and 1)
+     * @returns {number array} the array of Numbers needed to crop the image using jimp js
+     * 
+     * @description this function calculates the height and width of the new image and store the x,y coordinates (index 0 and 1)
      * and the height and width of the crop for the jimp function (2 and 3)
      */
     calculateCrop: function(cropArray){
@@ -227,10 +250,11 @@ module.exports = {
     /**
      * 
      * @param {string} imageLink the path to the image that jimp is going to be cropping
-     * @param {Number Array} cropArray the array of the coordinate that jimp needs in order to crop the given image 
-     * @returns {String} the path to the newly created image
+     * @param {number array} cropArray the array of the coordinate that jimp needs in order to crop the given image 
      * 
-     * @function this function asyncrounously calls the crop function from jimp module and awaits for its response befor passing the string back
+     * @returns {string} the path to the newly created image
+     * 
+     * @description this function asyncrounously calls the crop function from jimp module and awaits for its response befor passing the string back
      */
     cropImage: async function(imageLink,cropArray){
         const cubeImage = await jimp.read(imageLink);
@@ -249,9 +273,10 @@ module.exports = {
     /**
      * 
      * @param {string} newImage path to the image to be analyzed
-     * @returns {Number Array} the width and height of the image as a Number array
      * 
-     * @function uses the jimp module to pull out the width and height of the image in pxls 
+     * @returns {number array} the width and height of the image as a Number array
+     * 
+     * @description uses the jimp module to pull out the width and height of the image in pxls 
      */
     getDimensions: async function(newImage){
         await jimp.read(newImage).then(function(img){
@@ -266,11 +291,12 @@ module.exports = {
 
     /**
      * 
-     * @param {Cube Object} cubeObj cube object to be added
+     * @param {object} cubeObj cube object to be added
      * @param {array} cubeArray array of cube objects.
-     * @returns {CubeObj Array} returns the new array with the value added for just the array if the valkue is already there
      * 
-     * @function  scans through the array and adds the element if it is not already there
+     * @returns {object array} returns the new array with the value added for just the array if the valkue is already there
+     * 
+     * @description  scans through the array and adds the element if it is not already there
      */
     addCubeToArray: function(cubeObj, cubeArray){
         // if the array is empty add object to array
@@ -296,13 +322,13 @@ module.exports = {
     /**
      * 
      * @param {string} userId user instance to be searched for
-     * @param {Cube array} cubeArray array to be searched
-     * 
-     * @function retrieves object that is being searched if it can; return 0 if array is empty , -1 if not found
+     * @param {object array} cubeArray array to be searched
      * 
      * @returns {number} 0 if array is empty
      * @returns {number} -1 if item not found
-     * @returns {Cube Object}Cube Object that matches findObj
+     * @returns {object}Cube Object that matches findObj
+     * 
+     * @description retrieves object that is being searched if it can; return 0 if array is empty , -1 if not found
      */
     getObjectFromArray: function(userId,cubeArray){
         // if the array is empty return 0
@@ -326,10 +352,11 @@ module.exports = {
 
     /**
      * 
-     * @param {JSON string} cubeData the stringify'ed version of the data to be converted
+     * @param {object string} cubeData the stringify'ed version of the data to be converted
+     * 
      * @returns {string} the csv data string
      * 
-     * @function converts data from JSON string to csv string
+     * @description converts data from JSON string to csv string
      */
     getCSV: function(cubeData){
         // parse the object for easy looping
@@ -347,9 +374,10 @@ module.exports = {
     /**
      * 
      * @param {string} cfgString the whole config file string
-     * @returns {String Array} the important data tags
      * 
-     * @function creates and returns an array of tags from the cfg file
+     * @returns {string array} the important data tags
+     * 
+     * @description creates and returns an array of tags from the cfg file
      */
     configServer: function(cfgString){
         // break the file data by newline
@@ -368,11 +396,12 @@ module.exports = {
 
     /**
      * 
-     * @param {JSON string} cubeFileData stringify'ed version of cube data
+     * @param {object string} cubeFileData stringify'ed version of cube data
      * @param {array} importantTagArr important tags array that need to be filled
-     * @returns {string} the JSON string of the important data tags
      * 
-     * @function takes important tag array and extracts data if it exists returns none otherwise 
+     * @returns {object string} the JSON string of the important data tags
+     * 
+     * @description takes important tag array and extracts data if it exists returns none otherwise 
      */
     importantData: function(cubeFileData, importantTagArr){
         // prepare json object
@@ -406,7 +435,7 @@ module.exports = {
      *
      * @returns {string} the name of the image to be saved based on cube
      * 
-     * @function  takes the file extension off of he cube file and makes it a png.
+     * @description  takes the file extension off of he cube file and makes it a png.
      */
     getimagename: function(cubeName, format){
         // get an array of peieces of the filename
@@ -419,7 +448,10 @@ module.exports = {
 
     /**
      * @param {string} the name of the string that is being parsed by the server
-     * @returns the image name with no time string query attached
+     * 
+     * @returns {string} the image name with no time string query attached
+     * 
+     * @description if there is a query string remove it and return jus the name otherwise returns the same string
      */
     parseQuery: function(imageName){
         try{return imageName.split('?')[0];}
@@ -432,9 +464,10 @@ module.exports = {
 /**
  * 
  * @param {string} testValue  value to check if it a cube hearder keyword
- * @returns {Boolean} 
  * 
- * @function tests if the value is a header for the isis data
+ * @returns {boolean} true if testValue is a header group word
+ * 
+ * @description tests if the value is a header for the isis data
  */
 var testHeader = function(testValue){
     // set the array of important tags
@@ -453,9 +486,10 @@ var testHeader = function(testValue){
  * 
  * @param {string} name  name of the current tag
  * @param {string} str string to add to the tag
+ * 
  * @returns {string} adds the new tag to the long string of tag values
  * 
- * @function combines tags to make keys for JSON object
+ * @description combines tags to make keys for JSON object
  */
 var combineName = function(name, str=undefined){
     // if str is not defined just return the name trimmed
@@ -474,9 +508,10 @@ var combineName = function(name, str=undefined){
 /**
  * 
  * @param {string} name current name to be shortened by 1 string
+ * 
  * @returns {string} the new name of the tags for data parsing
  * 
- * @function removes last added element
+ * @description removes last added element
  */
 var shortenName = function(name){
     // splits the name strig into an array a parts 
@@ -502,9 +537,10 @@ var shortenName = function(name){
  * @param {string} returnPath path to return file on server
  * @param {string} imagePath path to image on server
  *
- * @return {Number} error codes
+ * @returns {Promise}
+ * @return {number} error codes
  * 
- * @function this function runs all isis commands and populates an array of 
+ * @description this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
 var callIsis = function(cubeName, filepath, returnPath, imagePath){
@@ -538,11 +574,16 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
 
 /**
  * 
+ * @todo log to output file
+ * 
+ * 
  * @param {string} imagename name of the image
  * @param {string} filepath path to the cube file on the server
  * @param {string} imagePath path where image should be saved
  * 
- * @function calls the isis image conversion on the given cube
+ * @returns {Promise}
+ * 
+ * @description calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath){
     console.log('Running isis2std for image now');
@@ -576,12 +617,16 @@ var imageExtraction = function(imagename, filepath, imagePath){
 
 /**
  * 
+ * @todo log stdour stderr to log file
+ * 
  * @param {string} cubeName name of cube file to run on
  * @param {string} filepath path to the cube file
  * @param {string} returnPath path to the return pvl
  * @param {string} isisCall isis command that is going to be run
  * 
- * @function makes the exec call to run isis commands
+ * @returns {Promise}
+ * 
+ * @description makes the exec call to run isis commands
  */
 var makeIsisCall = function(filepath, returnPath, isisCall){
     return new Promise(function(resolve){
@@ -589,8 +634,6 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
        
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
 
-
-        // TODO: log the output to file if the instance has the log flag true
         isisSpawn.stdout.on('data', function(data){
             console.log(isisCall + 'stdout: ' + data.toString());
         });
@@ -612,9 +655,10 @@ var makeIsisCall = function(filepath, returnPath, isisCall){
 /**
  * 
  * @param {string} nameString tag to be checked for End keywords
- * @returns {Boolean} true or false
  * 
- * @function determines if the line is one of the End keywords
+ * @returns {boolean} if name string is end of an object or not
+ * 
+ * @description determines if the line is one of the End keywords
  */
 var endTag = function(nameString){
     let arr = ['End_Object','End_Group'];
@@ -629,13 +673,18 @@ var endTag = function(nameString){
 
 
 /**
+ * @todo refactor unused variables
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
  * @param {string} cubeName just the name of the cube for getting the image output name more easily.
- * @returns {JSON string}
+ * 
+ * 
+ * @returns {Promise}
+ * @returns {object string} JSON string of the data from pvl
+ * 
  * @requires fs, instream, outstream, and readline.
  * 
- * @function this function reads a file line by line parseing into a JSON format.
+ * @description this function reads a file line by line parseing into a JSON format.
  */
 var processFile = function(inputFile, cubeName){
     return new Promise(function(resolve){
@@ -726,7 +775,10 @@ var processFile = function(inputFile, cubeName){
 /**
  * 
  * @param {string} imageLink link to the image file
+ * 
  * @returns {string} string to new jimp/ path of the image 
+ * 
+ * @description created the url for the new jimp image
  */
 var newImageName = function(imageLink){
     let imagename = imageLink.split('/');
