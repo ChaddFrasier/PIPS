@@ -7,15 +7,42 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    
 
     <title>404</title>
     </head>
-    <style>
-        body{
-            background-image: url("../images/404bg.jpg");
-        }
-    </style>
+
+<style>
+img.source-image {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+body{
+    overflow: hidden;
+}
+</style>
+
+    <script type="text/javascript">
+        $(document).ready(function() { 
+            var $winwidth = $(window).width();
+            $("img.source-image").attr({
+                width: $winwidth
+            });
+            $(window).bind("resize", function(){ 
+                var $winwidth = $(window).width();
+                $("img.source-image").attr({
+                    width: $winwidth
+                });
+             });
+        }); 
+    </script>
+    
+    
     <body>
+        <img class="source-image" src="../images/404bg.jpg" alt="" />
         <div class="float-center text-center" style="margin-top: 10%;">
             <a class="btn btn-primary btn-lg" href="/" role="button"> Return Home</a>
         </div>
