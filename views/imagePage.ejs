@@ -44,8 +44,8 @@
             maxSun = 1.5625,
             minEye = .52,
             maxEye = 5.2,
-            maxText = 26,
-            minText = 2.6,
+            maxText = textSize*10,
+            minText = textSize,
             iconMin,
             outlineMin = .125,
             scale;
@@ -818,16 +818,23 @@
                 w = parseInt("<%=w%>"),
                 h = parseInt("<%=h%>"),
                 origW = parseInt("<%=origW%>"),
-                origH = parseInt("<%=origH%>");
+                origH = parseInt("<%=origH%>"),
+                textSize;
         
             // if the scale bar is not none
             if('<%=scalebarPx%>' !== 'none'){
                 // set the size based on how the image is drawn
                 if((w/origW) < (h/origH)){
-                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')'); 
+                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
+                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
+                    textSize = (scalePX/4000)* 21 * (w/origW);
 
                 }else{
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
+                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
+                    textSize = (scalePX/4000)* 21 * (h/origH);
+
+                    
                 }
                 
                 // if half the bar is less than 1 km then give it the decimal
@@ -842,6 +849,8 @@
             else{
                 // if the scalebarPx is none disable the button
                 document.getElementById("scaleBarButton").setAttribute("class","btn btn-secondary btn-lg button disabled"); 
+                // set deafult font size for text boxes note that this is a scale value not px size  (px = font size * textSize)
+                textSize = 2;
             }
             
 
@@ -1850,7 +1859,7 @@
                         text.style.fontSize = "15";
                         g.setAttribute("height",0);
                         g.setAttribute("width",0);
-                        g.setAttribute("transform","translate(50,50) rotate(0) scale(2.6)");
+                        g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize*2 + ")");
 
                         var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
                         rect.setAttribute("x",0);
@@ -2532,12 +2541,11 @@
             }
 
             var isMapProjected = <%=isMapProjected %>;
+ 
             // Gets Important Metadata from the "metadata-text" div
             function getMetadata(){
                 // get value string from hidden DOM element
                 var metadata = document.getElementById("metadata-text").innerHTML;
-
-                console.log(metadata);
 
                 // parse back into JSON
                 var metadataString = JSON.parse(metadata);
@@ -2548,13 +2556,14 @@
                 observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
                 
                 if(isNaN(northDegree)){
-                    // disable the button if the degree was not found
-
                     // check if it is map projected, if yes set north to 0 else
-
                     if(isMapProjected){
-
+                        let rotateOffset = parseFloat("<%=rotationOffset %>");
+                        if(!isNaN(rotateOffset)){
+                            northDegree = 0 + rotateOffset;
+                        }
                     }else{
+                        // disable the button if the degree was not found
                         document.getElementById("north-radio").checked = false;
                         document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
                     }
@@ -2587,7 +2596,6 @@
             getMetadata();
             
 
-            
             // this function figures out where to draw the scalebar corners to better fit the new icon orientation
             function setScaleboxCorners(northDegree, sunDegree){
                 // as long as northDegree is not NaN and not 0 we will need to adjust the boxes

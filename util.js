@@ -245,7 +245,15 @@ module.exports = {
      */
     getRotationOffset: function(isProjected, cubeData){
         if(isProjected){
-            // look for the rotation value
+            let data = JSON.parse(cubeData);
+            
+            for(key in data){
+                if(key.indexOf("MAP_PROJECTION_ROTATION") > -1){
+                    return parseFloat(data[key]);
+                }
+            }
+
+            return 0;
         }else{
             return 0;
         }
