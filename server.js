@@ -6,11 +6,11 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.0
+ * @version 3.7.1
  * @description This is the driver for the Caption Writer server by USGS.
  * 
  * @since 05/31/19
- * @updated 08/23/19
+ * @updated 08/28/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that
@@ -100,6 +100,7 @@ const Cube = require('./js/cubeObj.js');
 
 // start app env
 var app = express();
+
 // global instance array for cube objects
 var cubeArray = [];
 var numUsers = 0;
@@ -393,6 +394,9 @@ app.post('/upload', async function(request, response){
                 // reset the promises array
                 promises = [];
                 
+                // TODO: makeSysytem calls will need to read in the log flag from the user
+                //       in order to tell the function to log to a file or not
+                        // this is where i can test the loging functions also this is the functions that '/pow' will need to run
                 // make promise on the isis function calls
                 promises.push(util.makeSystemCalls(cubeObj.name,
                     path.join('.','uploads',cubeObj.name),
@@ -934,6 +938,14 @@ app.post('/showImage', function(request, response){
         }
     });
 });
+
+
+
+app.post("/pow",function(request, response){
+    // TODO:
+});
+
+
 
 
 /**

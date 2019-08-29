@@ -159,6 +159,8 @@ module.exports = {
      * @returns {string} name of the cube that was converted
      * 
      * @description converts tiff to cube for later processing 
+     * 
+     * @todo this will need a log to file flag
      */
     tiffToCube: function(tiffName) {
         return new Promise(function(resolve, reject){
@@ -618,6 +620,7 @@ var imageExtraction = function(imagename, filepath, imagePath){
 /**
  * 
  * @todo log stdour stderr to log file
+ * @todo this will need a log to file flag
  * 
  * @param {string} cubeName name of cube file to run on
  * @param {string} filepath path to the cube file
