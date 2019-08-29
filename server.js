@@ -7,7 +7,7 @@
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
  * @version 3.7.1
- * @description This is the driver for the Caption Writer server by USGS.
+ * @description This is the driver for the PIP Server by USGS.
  * 
  * @since 05/31/19
  * @updated 08/28/19

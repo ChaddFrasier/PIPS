@@ -1,12 +1,12 @@
 /**
- * Utility JS for Caption Writer
+ * Utility JS for PIPS
  * 
  * @author Chadd Frasier
  * @since 06/03/19
  * @update 08/23/19
  * @version 2.5.0
  * @fileoverview 
- *      This is the utility file for The Planetary Image Caption Writer  
+ *      This is the utility file for The Planetary Image Publication Server  
  * 
  * @see {server.js} Read the header before editing
  * 

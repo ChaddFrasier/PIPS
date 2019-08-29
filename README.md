@@ -1,6 +1,6 @@
 ![USGS](https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png)
 -------------------------------------------------------------------
-# PIPS: Planetary Image Processing Server
+# PIPS: Planetary Image Publication Server
 --------------------------------------------------------------------
 ### Introduction
 
