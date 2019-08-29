@@ -352,8 +352,10 @@ app.post('/upload', async function(request, response){
 
             
             //convert tiff to cube
+
+            /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
             if(isTiff){
-                promises.push(util.tiffToCube('uploads/' + cubeObj.name));
+                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag));
             }else{
                 console.log('cube file was uploaded');    
             }
@@ -398,11 +400,16 @@ app.post('/upload', async function(request, response){
                 //       in order to tell the function to log to a file or not
                         // this is where i can test the loging functions also this is the functions that '/pow' will need to run
                 // make promise on the isis function calls
+
+                /** ========Testing log system ========
+                 * 
+                 * setting last input of function to true (hard coded)
+                */
                 promises.push(util.makeSystemCalls(cubeObj.name,
                     path.join('.','uploads',cubeObj.name),
                     path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                     'images',
-                    cubeObj.logFlag));
+                    true));
                 
                 
                 // when isis is done read the pvl file

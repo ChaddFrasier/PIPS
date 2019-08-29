@@ -155,6 +155,7 @@ module.exports = {
     /**
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
+     * @param {boolean} logToFile true or false should the server log to a file
      * 
      * @returns {Promise}
      * @returns {string} name of the cube that was converted
@@ -163,7 +164,7 @@ module.exports = {
      * 
      * @todo this will need a log to file flag
      */
-    tiffToCube: function(tiffName) {
+    tiffToCube: function(tiffName, logToFile) {
         return new Promise(function(resolve, reject){
             // variables for proper isis call
             var isisCall = 'std2isis';
@@ -552,6 +553,11 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+
+        // TODO: test to see if the logfile for this cube already exists
+        if(logToFile){
+            createLogFile(cubeName);
+        }
         
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
@@ -573,6 +579,23 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
             reject();
         });
     });
+ }
+
+
+ /**
+  * 
+  * @param {string} cubeName 
+  * 
+  * @returns {string} the name of the log file
+  * 
+  * @description this function is meant to initialize a log file using the given cube name
+  */
+ var createLogFile = function(cubeName){
+
+    let logFileName = cubeName.replace(".cub",".log");
+
+     console.log("LOG FUNCTION GOT: " + logFileName);
+
  }
 
 
