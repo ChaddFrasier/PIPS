@@ -401,7 +401,8 @@ app.post('/upload', async function(request, response){
                 promises.push(util.makeSystemCalls(cubeObj.name,
                     path.join('.','uploads',cubeObj.name),
                     path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
-                    'images'));
+                    'images',
+                    cubeObj.logFlag));
                 
                 
                 // when isis is done read the pvl file

@@ -29,17 +29,18 @@ module.exports = {
      * @param {string} filepath the path to said file
      * @param {string} returnPath path to return the values from ISIS3
      * @param {string} imagePath path where the image should be saved
+     * @param {boolean} logToFile true or false should the server log to a file
      * 
      * @returns {Promise}
      * 
      * @description calls the isis commands using promises to ensure the processes are finished
      */
-    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
+    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath, logToFile) {
         return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
             // call the isis commands
-            promises.push(callIsis(cubeName, filepath, returnPath, imagePath));
+            promises.push(callIsis(cubeName, filepath, returnPath, imagePath,logToFile));
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
@@ -538,6 +539,7 @@ var shortenName = function(name){
  * @param {string} filepath path to the cube file on server
  * @param {string} returnPath path to return file on server
  * @param {string} imagePath path to image on server
+ * @param {boolean} logToFile true or false should the server log to a file
  *
  * @returns {Promise}
  * @return {number} error codes
@@ -545,7 +547,7 @@ var shortenName = function(name){
  * @description this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
-var callIsis = function(cubeName, filepath, returnPath, imagePath){
+var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
     return new Promise(function(resolve,reject){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
@@ -558,10 +560,10 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
             console.log(isisCalls[i] + 'Starting Now');
-            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i]));
+            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile));
         }
         // call and push image command
-        promises.push(imageExtraction(imagename,filepath,imagePath));                       
+        promises.push(imageExtraction(imagename,filepath,imagePath,logToFile));                       
 
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
@@ -582,12 +584,13 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @param {string} imagename name of the image
  * @param {string} filepath path to the cube file on the server
  * @param {string} imagePath path where image should be saved
+ * @param {boolean} logToFile true or false should the server log to a file
  * 
  * @returns {Promise}
  * 
  * @description calls the isis image conversion on the given cube
  */
-var imageExtraction = function(imagename, filepath, imagePath){
+var imageExtraction = function(imagename, filepath, imagePath, logToFile){
     console.log('Running isis2std for image now');
     return new Promise(function(resolve,reject){
         // execute the isis2std function
@@ -622,16 +625,16 @@ var imageExtraction = function(imagename, filepath, imagePath){
  * @todo log stdour stderr to log file
  * @todo this will need a log to file flag
  * 
- * @param {string} cubeName name of cube file to run on
  * @param {string} filepath path to the cube file
  * @param {string} returnPath path to the return pvl
  * @param {string} isisCall isis command that is going to be run
+ * @param {boolean} logToFile true or false should the server log to a file
  * 
  * @returns {Promise}
  * 
  * @description makes the exec call to run isis commands
  */
-var makeIsisCall = function(filepath, returnPath, isisCall){
+var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
     return new Promise(function(resolve){
         // execute the isis2std function
        
@@ -678,7 +681,6 @@ var endTag = function(nameString){
 /**
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
- * 
  * 
  * @returns {Promise}
  * @returns {object string} JSON string of the data from pvl
