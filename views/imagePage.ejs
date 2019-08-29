@@ -286,7 +286,7 @@
             let growingFactor = .02;
 
             // reset growing factor if needed
-            if( elementOver && elementOver.parentElement.classList.contains("textbox")){
+            if( elementOver && elementOver.parentElement && elementOver.parentElement.classList.contains("textbox")){
                 growingFactor *= 10;
             }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
                 growingFactor *=2.5;
@@ -580,7 +580,8 @@
         <div class="container">
             <div class="jumbotron text-center" >
                 <h2>Edit the Cube Image</h2> 
-                <h4 id="imageName"></h4>     
+                <h4 id="imageName"></h4>  
+                <h5><%=w%> X <%=h%> px</h5>   
                 </div>
             </div>
         </div>
@@ -600,69 +601,100 @@
         </svg>
 
         <!-- Button Interface-->
-        <div class="container float-left" style=" top: 9%; width: 25%; height: 5%; position: absolute; padding: 5%; margin-left: auto; left: auto; right: auto; border-right: 0%; margin-right: auto;">
+        <div class="container float-left" style=" top: 9%; width: 30%; height: 5%; position: absolute;
+                                                 padding: 5%; margin-left: auto; left: auto; right: auto;
+                                                 border-right: 0%; margin-right: auto;">
             <br/>
             <div class="image-controls">
                 <h2 class="text-right float-left" style="position: inherit; left: 7rem;">Tools</h2>
                 <br/>
                 <table style="width: 25rem; height:100%; table-layout:auto;">
                     <tr>
-                    <th colspan="2" class="text-left float-center">
-                        <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
-                        <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
-                        <li><button class="btn btn-secondary btn-lg" onclick="window.open('/upload','_self')">Back to Caption</button></li>
-                        <li><a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a></li>
-                        
-                        <li><img class="btn btn-primary btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img>
-                            <label for="northCheckbox">Toggle Color</label>
-                            <input class="form-check-input largeBox" type="checkbox" id="northCheckbox">
-                            
-                        </li>
-
-                        <li><img class="btn btn-primary btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img>
-                            <label for="sunCheckbox" style="top: 20rem">Toggle Color</label>
-                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem;">
-                        </li>
-                        <li><img class="btn btn-primary btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img>
-                            <label for="eyeCheckbox" style="top: 20rem">Toggle Color</label>
-                            <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem;">
-                        </li>
-                        <li><img class="btn btn-primary btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img><input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/>  <button class="btn btn-secondary btn-sm" id="undoLine">Undo Line</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button>
-                            <label for="scaleCheckbox" style="top: 20rem">Toggle Color</label>
-                            <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38.5rem; left: 16rem;"></li>
-                        <li><button class="btn btn-primary btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button><input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> <button class="btn btn-secondary btn-sm" id="undoBox">Undo Box</button></li>
-                        <li><button class="btn btn-primary btn-lg button" id="textBtn" style="width:7rem; color: black">Text Box</button>
-                            <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
-                            <button class="btn btn-secondary btn-sm" id="undoText">Undo Text</button></li>
-                        <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
-                            <h2 class="text-left">Pad Image</h2>
-                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
-                                    <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
-                                    <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem"><button  style="left: 15rem; top: 0rem;" class="btn btn-dark btn-md" id="resetPaddingBtn"> Reset </button> </div>
-                            </div>
-                        
-                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
-                                <div class="col" style="top:0; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="topPaddingBtn"> Top </button> </div>
-                                <div class="col" style="top:0rem; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="bottomPaddingBtn"> Bottom </button> </div>
-                            
-                                <div class="col"style="top:0rem;padding: 0; left: 0rem;"><button style="width: 4.5rem;" class="btn btn-secondary btn-md" id="leftPaddingBtn"> Left </button> </div>
-                                <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;"><button style="width: 4.5rem;"class="btn btn-secondary btn-md" id="rightPaddingBtn"> Right </button> </div>
+                        <th colspan="2" class="text-left float-center">
+                            <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
+                            <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
+                            <li>
+                                <button class="btn btn-primary btn-lg" onclick="window.open('/upload','_self')">Go Back</button>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a>
+                            </li>
+                            <li>
+                                <img class="btn btn-success btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img>
                                 
-                            </div>
-                        </li>
-                        <li>
-                            <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; border: 0px solid blue;">
-                                <div class="col" style="padding: 0; top: 0rem">
-                                <button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button>
-                            </div>
-                        </div>
-                        </li>
-                    </th>
-                </tr>
-            </table>
+                                <label id="northCheckboxLabel" for="northCheckbox" style="visibility: hidden">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden">
+                                
+                            </li>
+                            <li>
+                                <img class="btn btn-success btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img>
+                                <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem; visibility: hidden;">
+                            </li>
+                            <li>
+                                <img class="btn btn-success btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img>
+                                <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem; visibility: hidden;">
+                            </li>
+                            <li>
+                                <img class="btn btn-success btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img>
+                                
+                                <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
+                                <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">Undo</button>
+                            </li>
+                            <li>
+                                <button class="btn btn-success btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button>
+                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38.5rem; visibility: hidden;left: 16rem;">
+                            </li>
+                            <li>
+                                <button class="btn btn-success btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button>
+                                
+                                <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
+                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">Undo</button>
+                            </li>
+                            <li>
+                                <button class="btn btn-success btn-lg button" id="textBtn" style="width:7rem; color: black">Text Box</button>
+                                <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
+                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">Undo</button>
+                            </li>
+                            <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
+                                <h2 class="text-left">Pad Image</h2>
+                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
+                                        <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
+                                        <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem">
+                                            <button  style="left: 15rem; top: 0rem;" class="btn btn-danger btn-md" id="resetPaddingBtn"> Reset </button>
+                                        </div>
+                                </div>
+                            
+                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
+                                    <div class="col" style="top:0; padding: 0; left: 0rem;">
+                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="topPaddingBtn"> Top </button> 
+                                    </div>
+                                    <div class="col" style="top:0rem; padding: 0; left: 0rem;">
+                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="bottomPaddingBtn"> Bottom </button>
+                                    </div>
+                                
+                                    <div class="col"style="top:0rem;padding: 0; left: 0rem;">
+                                        <button style="width: 4.5rem;" class="btn btn-success btn-md" id="leftPaddingBtn"> Left </button> 
+                                    </div>
+                                    <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;">
+                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="rightPaddingBtn"> Right </button> 
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; border: 0px solid blue;">
+                                    <div class="col" style="padding: 0; top: 0rem">
+                                        <button class="btn btn-primary btn-lg" id="exportBtn"> Download Figure</button>
+                                    </div>
+                                </div>
+                            </li>
+                        </th>
+                    </tr>
+                </table>
+        </div>
     </div>
-</div>
         
 <br/>
         <!-- Hidden Tags for data parsing-->
@@ -792,7 +824,8 @@
             if('<%=scalebarPx%>' !== 'none'){
                 // set the size based on how the image is drawn
                 if((w/origW) < (h/origH)){
-                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
+                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')'); 
+
                 }else{
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
                 }
@@ -808,7 +841,7 @@
             }
             else{
                 // if the scalebarPx is none disable the button
-                document.getElementById("scaleBarButton").setAttribute("class",document.getElementById("scaleBarButton").getAttribute("class") + " disabled"); 
+                document.getElementById("scaleBarButton").setAttribute("class","btn btn-secondary btn-lg button disabled"); 
             }
             
 
@@ -940,20 +973,26 @@
             });
 
             // toggle scalebar by appending and removing it
-            $("#scaleBarButton").on("click",function(){
+            $("#scaleBarButton").on("mousedown",function(){
                 // if the scalebar btn is not disabled
                 if(!this.classList.contains("disabled")){
                     // if scalebar true then toggle the bar on
                     if(toggleScalebar){
                         // add bar and toggle the boolean
                         svg.appendChild(scaleBarIcon);
-                        document.getElementById("scaleBarButton").className = "btn btn-secondary btn-lg button";
+                        this.className = "btn btn-danger btn-lg button";
+
+                        document.getElementById("scaleCheckbox").style.visibility = "visible";
+                        document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
+
                         toggleScalebar = false;
                     }else{
                         // remove the bar and reset toggleValue
                         scaleBarIcon.remove();
                         toggleScalebar = true;
-                        document.getElementById("scaleBarButton").className = "btn btn-primary btn-lg button";
+                        this.className = "btn btn-success btn-lg button";
+                        document.getElementById("scaleCheckbox").style.visibility = "hidden";
+                        document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
                     }
                 }
             });
@@ -1189,18 +1228,18 @@
                         padBottom = true;
                         padLeft = false, padRight = false, padTop = false;
 
-                        bottomBtn.className = 'btn btn-light btn-md disabled';
+                        bottomBtn.className = 'btn btn-danger btn-md disabled';
 
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        rightBtn.className = 'btn btn-secondary btn-md';
-                        topBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        rightBtn.className = 'btn btn-success btn-md';
+                        topBtn.className = 'btn btn-success btn-md';
 
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        bottomBtn.className = 'btn btn-secondary btn-md';
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        rightBtn.className = 'btn btn-secondary btn-md';
-                        topBtn.className = 'btn btn-secondary btn-md';
+                        bottomBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        rightBtn.className = 'btn btn-success btn-md';
+                        topBtn.className = 'btn btn-success btn-md';
                         padBottom = false;  
                     }
                 });
@@ -1212,18 +1251,18 @@
 
                         padLeft = false, padRight = false, padBottom = false;
                         
-                        topBtn.className = 'btn btn-light btn-md disabled';
+                        topBtn.className = 'btn btn-danger btn-md disabled';
 
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        rightBtn.className = 'btn btn-secondary btn-md';
-                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        rightBtn.className = 'btn btn-success btn-md';
+                        bottomBtn.className = 'btn btn-success btn-md';
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        topBtn.className = 'btn btn-secondary btn-md';
+                        topBtn.className = 'btn btn-success btn-md';
 
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        rightBtn.className = 'btn btn-secondary btn-md';
-                        bottomBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        rightBtn.className = 'btn btn-success btn-md';
+                        bottomBtn.className = 'btn btn-success btn-md';
                         padTop = false;  
                     }
                 });
@@ -1238,18 +1277,18 @@
                         padBottom = false,
                         padTop = false;
 
-                        rightBtn.className = 'btn btn-light btn-md disabled';
+                        rightBtn.className = 'btn btn-danger btn-md disabled';
 
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        bottomBtn.className = 'btn btn-secondary btn-md';
-                        topBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        bottomBtn.className = 'btn btn-success btn-md';
+                        topBtn.className = 'btn btn-success btn-md';
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        rightBtn.className = 'btn btn-secondary btn-md'; 
+                        rightBtn.className = 'btn btn-success btn-md'; 
 
-                        leftBtn.className = 'btn btn-secondary btn-md';
-                        bottomBtn.className = 'btn btn-secondary btn-md';
-                        topBtn.className = 'btn btn-secondary btn-md';
+                        leftBtn.className = 'btn btn-success btn-md';
+                        bottomBtn.className = 'btn btn-success btn-md';
+                        topBtn.className = 'btn btn-success btn-md';
                         padRight = false; 
                     } 
                });
@@ -1263,17 +1302,17 @@
                        padRight=false, 
                        padTop = false;
                        
-                       leftBtn.className = 'btn btn-light btn-md disabled';
+                       leftBtn.className = 'btn btn-danger btn-md disabled';
                        
-                       bottomBtn.className = 'btn btn-secondary btn-md';
-                       rightBtn.className = 'btn btn-secondary btn-md';
-                       topBtn.className = 'btn btn-secondary btn-md';
+                       bottomBtn.className = 'btn btn-success btn-md';
+                       rightBtn.className = 'btn btn-success btn-md';
+                       topBtn.className = 'btn btn-success btn-md';
                    }else{
                        setImagePadding(parseInt(0),"none"); 
-                       leftBtn.className = 'btn btn-secondary btn-md'; 
-                       bottomBtn.className = 'btn btn-secondary btn-md';
-                       rightBtn.className = 'btn btn-secondary btn-md';
-                       topBtn.className = 'btn btn-secondary btn-md';
+                       leftBtn.className = 'btn btn-success btn-md'; 
+                       bottomBtn.className = 'btn btn-success btn-md';
+                       rightBtn.className = 'btn btn-success btn-md';
+                       topBtn.className = 'btn btn-success btn-md';
                        padLeft = false; 
                    } 
               });
@@ -1285,10 +1324,10 @@
                     
                     padBottom = false, padLeft = false, padRight = false, padTop = false;
                     
-                    bottomBtn.className = 'btn btn-secondary btn-md';
-                    leftBtn.className = 'btn btn-secondary btn-md';
-                    rightBtn.className = 'btn btn-secondary btn-md';
-                    topBtn.className = 'btn btn-secondary btn-md';
+                    bottomBtn.className = 'btn btn-success btn-md';
+                    leftBtn.className = 'btn btn-success btn-md';
+                    rightBtn.className = 'btn btn-success btn-md';
+                    topBtn.className = 'btn btn-success btn-md';
                     
                 });
 
@@ -1518,7 +1557,12 @@
                         clickArray = [];
                         drawFlag = false;
                         // reset the button color and allow for click detection again
-                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
+
+                        if(lineArr.length > 0){
+                            document.getElementById("undoLine").style.visibility = "visible";
+                        }
+
                         svg.className.baseVal = "image-image float-center";
 
                         
@@ -1769,6 +1813,12 @@
                     // push the object into the array for undoing
                     highlightBoxArray.push(g);
                     makeDraggable(svg);
+
+
+                    if(highlightBoxArray.length > 0){
+                        document.getElementById("undoBox").style.visibility = "visible";
+                    }
+
                 });
 
                 // array for removing text
@@ -1871,6 +1921,10 @@
                     
 
                         textBoxArray.push(g);
+                        if(textBoxArray.length > 0){
+                            document.getElementById("undoText").style.visibility = "visible";
+                        }
+
                         makeDraggable(svg);
                     }
                 });
@@ -1891,6 +1945,9 @@
                         textBoxArray.pop().remove();
                     }else{
                         alert("text has not been added");
+                    }
+                    if(textBoxArray.length === 0){
+                        document.getElementById("undoText").style.visibility = "hidden";
                     }
                 });
                 // declare the drawing flag
@@ -1916,7 +1973,7 @@
                         drawFlag = false;
                         // reset the interface 
                         svg.className.baseVal = "image-image float-center";
-                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
                         clickArray = [];
                         // remove half drawn lines
                         if(lineArr.length && clickArray > 1){
@@ -1946,7 +2003,7 @@
                     else{
                         svg.className.baseVal = "image-image float-center draw";
                         drawFlag = true;
-                        document.getElementById("pencilIconFlag").className = "btn btn-secondary btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
 
 
                         let svgElements = svg.childNodes;
@@ -1977,6 +2034,9 @@
                     }else{
                         alert("There are no boxes placed yet");
                     }
+                    if(highlightBoxArray.length === 0){
+                       document.getElementById("undoBox").style.visibility = "hidden";
+                    }
                 });
 
                 // removes any lines if they exists
@@ -1984,7 +2044,7 @@
                     if(lineArr.length > 0 && clickArray.length > 1){
                         lineArr.pop().remove();
                         svg.className.baseVal = "image-image float-center";
-                        document.getElementById("pencilIconFlag").className = "btn btn-primary btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
                         drawFlag = false;
                         clickArray = [];
                     }
@@ -1994,6 +2054,12 @@
                     else{
                         alert("No lines drawn");
                     }
+
+
+                    if(lineArr.length === 0){
+                        document.getElementById("undoLine").style.visibility = "hidden";
+                    }
+
                 });
 
                 // simply sets the color when the value is changed
@@ -2018,7 +2084,10 @@
                             northIconPlaced = !northIconPlaced;
                             northImage.remove();
                             northImage.style.visibility = 'hidden';
-                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-success btn-lg button");
+                            document.getElementById("northCheckbox").style.visibility = "hidden";
+                            document.getElementById("northCheckboxLabel").style.visibility = "hidden";
+                            
                             
                             northFlag = !northFlag;
                         }
@@ -2046,7 +2115,9 @@
                             makeDraggable(svg);
                             northIconPlaced = !northIconPlaced;
                             northFlag = false;
-                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                            document.getElementById("northCheckbox").style.visibility = "visible";
+                            document.getElementById("northCheckboxLabel").style.visibility = "visible";
                         }
                         
                         clickArray = [];
@@ -2065,7 +2136,9 @@
                             eyeImage.remove();
                             eyeImage.style.visibility = 'hidden';
                             eyeFlag = !eyeFlag;
-                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-success btn-lg button");
+                            document.getElementById("eyeCheckbox").style.visibility = "hidden";
+                            document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
                            
                         }
 
@@ -2079,7 +2152,9 @@
                             svg.appendChild(eyeImage);
                             setIconAngle(eyeArrow, observerDegree);
                             eyeImage.style.visibility = 'visible'
-                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                            document.getElementById("eyeCheckbox").style.visibility = "visible";
+                            document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
                             eyeFlag = false;
                             eyeIconPlaced = true;
                         }
@@ -2096,8 +2171,11 @@
                             sunIconPlaced = !sunIconPlaced;
                             sunImage.style.visibility = 'hidden';
                             sunImage.remove();
-                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button");
+                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-success btn-lg button");
                             sunFlag = false;
+                            document.getElementById("sunCheckbox").style.visibility = "hidden";
+                            document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
+
                         }
                         
                         if(sunFlag){
@@ -2110,7 +2188,9 @@
                             svg.appendChild(sunImage);
                             sunFlag = false;
                             sunIconPlaced = true;
-                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button");
+                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                            document.getElementById("sunCheckbox").style.visibility = "visible";
+                            document.getElementById("sunCheckboxLabel").style.visibility = "visible";
                             
                             setIconAngle(sunImage, sunDegree);
                             makeDraggable(svg);  
@@ -2451,11 +2531,14 @@
                 }
             }
 
-
+            var isMapProjected = <%=isMapProjected %>;
             // Gets Important Metadata from the "metadata-text" div
             function getMetadata(){
                 // get value string from hidden DOM element
                 var metadata = document.getElementById("metadata-text").innerHTML;
+
+                console.log(metadata);
+
                 // parse back into JSON
                 var metadataString = JSON.parse(metadata);
                 
@@ -2465,24 +2548,30 @@
                 observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
                 
                 if(isNaN(northDegree)){
-                    // is able the button if the degree was not found
-                    document.getElementById("north-radio").checked = false;
-                    document.getElementById('northIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
-                    
+                    // disable the button if the degree was not found
+
+                    // check if it is map projected, if yes set north to 0 else
+
+                    if(isMapProjected){
+
+                    }else{
+                        document.getElementById("north-radio").checked = false;
+                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
+                    }
                 }else{
                     setLegendAngle("northImg", "northDeg", northDegree);
                 }
 
                 if(isNaN(sunDegree)){
-                    // is able the button if the degree was not found
+                    // disable the button if the degree was not found
                     document.getElementById("sun-radio").checked = false;
-                    document.getElementById('sunIconFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
+                    document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
                 }
 
                 if(isNaN(observerDegree)){
-                    // is able the button if the degree was not found
+                    // disable the button if the degree was not found
                     document.getElementById("obs-radio").checked = false;
-                    document.getElementById('eyeFlag').setAttribute('class',"btn btn-primary btn-lg button disabled");
+                    document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
                 }
 
 

@@ -34,32 +34,32 @@
         <hr class="my-9">
         <div class="title text-center" style="width: auto;">
             <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">You can upload .cub file and .tpl file </p>
-                <a class="btn btn-secondary btn-lg" style= "border-color: black; color: white;" role="button" onclick="alert('1. Upload a .cub or a .tif file\n\n2. Input the desired output size of the figure\nor leave blank for Raw Image size')">Help</a>
-                <a class="btn btn-secondary btn-lg" href= '/tpl'
+                <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="alert('1. Upload a .cub or a .tif file\n\n2. Input the desired output size of the figure\nor leave blank for Raw Image size')">Help</a>
+                <a class="btn btn-primary btn-lg" href= '/tpl'
                     role="button">What is a TPL file?</a>
         </div>
         <br/>
         <div class="container">
-            <form class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
-                <div class="btn btn-primary btn-lg form-group" style=" width: 25rem;display: inline-block;">
+            <form name="uploadForm" class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
+                <div class="btn btn-dark btn-lg form-group" style=" width: 25rem;display: inline-block;">
                     <label for="cubUpload" style="font-size: x-large;">Choose an ISIS Cube File</label>
                     <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"type="file" class="form-control-file" />
 
                     <div class="form-group float-center" style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;">
-                            <input class="form-control form-control-sm text-center" type="text" id="widthInput" name="desiredWidth" placeholder="Output Width (Px)"/>
-                            <input class="form-control form-control-sm text-center" type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (Px)"/>
+                            <input class="form-control form-control-sm text-center" type="text" id="widthInput" name="desiredWidth" placeholder="Output Width (Px)" />
+                            <input class="form-control form-control-sm text-center" type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (Px)" />
                     </div>
                 </div>
 
                 
                 <br/>
                 <hr class="style5">
-                <div class="btn btn-primary btn-lg form-group">
+                <div class="btn btn-dark btn-lg form-group">
                     <label for="tplUpload" style="font-size: larger">Choose a Template File</label>
                     <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
                 </div>
                 <br/>
-                <input type="submit" class="btn btn-secondary btn-lg" name="SubmitCube" value="Upload" 
+                <input type="button" class="btn btn-primary btn-lg" name="SubmitCube" value="Upload" 
                     style="width: 10rem;" onclick="loaderActivate()" />
             </form>
         </div>
@@ -171,7 +171,30 @@
                 loader.style.visibility = 'hidden';    
             }
             function loaderActivate(){
-                loader.style.visibility = 'visible';
+    
+                if(document.uploadForm.onsubmit && !document.uploadForm.onsubmit())
+                {
+                    return;
+                }
+                else{
+
+                    if(heightInputBox.value === "" && widthInputBox.value === ""){
+                        // generate a good height based on client size
+                        console.log("must create size using ckient");
+
+                        // 300dpi at 3 inches (300px/in)
+                        heightInputBox.value = 900;
+                        widthInputBox.value = 900;
+                        loader.style.visibility = 'visible';
+                        document.uploadForm.submit();
+
+                    }else{
+                        loader.style.visibility = 'visible';
+                        document.uploadForm.submit();
+                    }
+                    
+                }
+
             }
 
             
