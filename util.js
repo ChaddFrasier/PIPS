@@ -175,23 +175,23 @@ module.exports = {
             var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
 
             std2isis.stdout.on('data', function(data){
-                console.log('stdout: ' + data.toString());
+                console.log('stdout: ' + data.toString() + "\n");
             });
 
 
             std2isis.stderr.on('data', function(data){
-                console.log(isisCall + ' Error: ' + data.toString());
+                console.log(isisCall + ' Error: ' + data.toString() + "\n");
             });
 
             std2isis.on('exit',function(code){
-                console.log(isisCall + ' Exited with code: ' + code);
+                console.log(isisCall + ' Exited with code: ' + code + "\n");
 
                 if(code === 0){
-                    console.log('std2isis finised successfully');
+                    console.log('std2isis finised successfully \n');
                     resolve(cubeName);
                 }
                 else{
-                    reject(isisCall + 'Error: ' + code.toString());
+                    reject(isisCall + 'Error: ' + code.toString() + "\n");
                 }
                 
             });
@@ -210,6 +210,45 @@ module.exports = {
      */
     getRawCube: function(cubeName, userNum){
         return cubeName.split("u-" + userNum)[1]; 
+    },
+
+
+    /**
+     * 
+     * @param {string} cubeData a string version of the raw cube data
+     * 
+     * @returns {boolean} true if the cube is map projected, false if not
+     * 
+     * @description looks for map projection group or Mapping group
+     */
+    isMapProjected: function(cubeData){
+        var data = JSON.parse(cubeData);
+
+        for(key in data){
+            if(key === "IMAGE_MAP_PROJECTION" || key.indexOf("Mapping") > -1){
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+
+    /**
+     * 
+     * @param {boolean} isProjected if the image is map projected 
+     * @param {string} cubeData stringified cube data to parse if needed 
+     * 
+     * @returns {number} the rotation value if projected is true or 0 if false
+     * 
+     * @description this function is to find the offset of the north arrow depending on if the image is rotated or not
+     */
+    getRotationOffset: function(isProjected, cubeData){
+        if(isProjected){
+            // look for the rotation value
+        }else{
+            return 0;
+        }
     },
 
 
@@ -565,7 +604,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
         // run the isis commands
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
-            console.log(isisCalls[i] + 'Starting Now');
+            console.log(isisCalls[i] + ' Starting Now\n');
             promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile));
         }
         // call and push image command
@@ -614,7 +653,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
  * @description calls the isis image conversion on the given cube
  */
 var imageExtraction = function(imagename, filepath, imagePath, logToFile){
-    console.log('Running isis2std for image now');
+    console.log('Running isis2std for image now \n');
     return new Promise(function(resolve,reject){
         // execute the isis2std function
         
@@ -622,7 +661,7 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile){
 
 
         isis2std.stdout.on('data', function(data){
-            console.log('isis2std stdout: ' + data.toString());
+            console.log('isis2std stdout: ' + data.toString() + "\n");
         });
 
 
@@ -631,11 +670,11 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile){
         });
 
         isis2std.on('exit',function(code){
-            console.log('isis2std Exited with code: ' + code);
+            console.log('isis2std Exited with code: ' + code + "\n");
             if(code === 0){
                 resolve();
             }else{
-                reject('isis2std Error: ' + code.toString);
+                reject('isis2std Error: ' + code.toString + "\n");
             }
         });
         
@@ -664,16 +703,16 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
 
         isisSpawn.stdout.on('data', function(data){
-            console.log(isisCall + ' stdout: ' + data.toString());
+            console.log(isisCall + ' stdout: ' + data.toString() + "\n");
         });
 
 
         isisSpawn.stderr.on('data', function(data){
-            console.log(isisCall + ' Error: ' + data.toString());
+            console.log(isisCall + ' Error: ' + data.toString() + "\n");
         });
 
         isisSpawn.on('exit',function(code){
-            console.log(isisCall + ' Exited with code: ' + code);    
+            console.log(isisCall + ' Exited with code: ' + code + "\n");    
             resolve();
         });
         

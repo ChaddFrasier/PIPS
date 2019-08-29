@@ -396,9 +396,7 @@ app.post('/upload', async function(request, response){
                 // reset the promises array
                 promises = [];
                 
-                // TODO: makeSysytem calls will need to read in the log flag from the user
-                //       in order to tell the function to log to a file or not
-                        // this is where i can test the loging functions also this is the functions that '/pow' will need to run
+                // TODO: this is where i can test the loging functions also this is the functions that '/pow' will need to run
                 // make promise on the isis function calls
 
                 /** ========Testing log system ========
@@ -409,7 +407,7 @@ app.post('/upload', async function(request, response){
                     path.join('.','uploads',cubeObj.name),
                     path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                     'images',
-                    true));
+                    cubeObj.logFlag));
                 
                 
                 // when isis is done read the pvl file
@@ -704,6 +702,9 @@ app.get('/showImage', function(request, response){
                 }
                 var userDim = userObject.userDim;
                 let resolution = util.getPixelResolution(userObject);
+                var isMapProjected = util.isMapProjected(userObject.data),
+                    rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+                
 
                 // calculate image width in meters
                 if(resolution !== -1){
@@ -764,11 +765,11 @@ app.get('/showImage', function(request, response){
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                                origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset ,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }else{
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                                w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset ,w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }
 
                     }else{
@@ -780,11 +781,11 @@ app.get('/showImage', function(request, response){
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                            origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                           rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
                     }else{
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                            w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                           rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
                     }
 
                 }
@@ -798,6 +799,7 @@ app.get('/showImage', function(request, response){
 });
 
 /**
+ * @todo chnage this link to something not so low down
  * POST '/showImage'
  * 
  * renders the image page with needed data
@@ -863,6 +865,10 @@ app.post('/showImage', function(request, response){
 
         var userDim = userObject.userDim;
         var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+        var isMapProjected = util.isMapProjected(userObject.data),
+            rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+
+        
 
         // calculate image width in meters
         if(resolution !== -1){
@@ -918,11 +924,11 @@ app.post('/showImage', function(request, response){
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                        origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube, isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }else{
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                        w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,  w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }
 
 
@@ -936,11 +942,11 @@ app.post('/showImage', function(request, response){
             // render image page with needed data
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
             if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                    origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                    rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
             }else{
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                    w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                    rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
             }
 
         }
