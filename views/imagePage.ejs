@@ -582,23 +582,39 @@
                 <h2>Edit the Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> X <%=h%> px</h5>   
-                </div>
+                <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
             </div>
         </div>
+        
 
         <!-- Loading GIF-->
         <div id="loading" class="float-md-right lead" style="visibility:visible">
             <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br/>Loading
         </div>
         
+        <div class="help-box-right" id="help-box" style="visibility: hidden;">
+                <button class="float-right helpBtn" id="hideBtn" 
+                style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+                    <div class="container title" style="background: whitesmoke; ">Help</div>
+                    <div class="row lead"> 1. Add Icons using the buttons</div>
+                    <br/>
+                    <div class="row lead"> 2. drag icons around with mouse and scale with the corners of the icon</div>
+                    <br/>
+                    <div class="row lead"> 3. Draw lines with the pencil and undo with the escape key</div>
+                    <br/>
+                    <div class="row lead"> 4. Add padding by typing a pixel amount and clicking a location button </div>
+            </div>
 
-        <!-- ---------------------Editor Box--------------------------------------------- -->
+
+        <!-----------------------Editor Box----------------------------------------------->
         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
         class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
             
         </svg>
+
+        
 
         <!-- Button Interface-->
         <div class="container float-left" style=" top: 9%; width: 30%; height: 5%; position: absolute;
@@ -614,7 +630,7 @@
                             <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                             <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                             <li>
-                                <button class="btn btn-primary btn-lg" onclick="window.open('/upload','_self')">Go Back</button>
+                                <button class="btn btn-primary btn-lg" onclick="window.open('/captionWriter','_self')">Go Back</button>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a>
@@ -2209,6 +2225,17 @@
                     }
                     
                 });
+
+
+
+                $("#hideBtn").on("mousedown", function(){
+                    document.getElementById("help-box").style.visibility = "hidden";
+                });
+
+                $("#helpBtn").on("mousedown", function(){
+                    document.getElementById("help-box").style.visibility = "visible";
+                });
+
 
 
 /* 

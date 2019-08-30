@@ -34,13 +34,24 @@
         <hr class="my-9">
         <div class="title text-center" style="width: auto;">
             <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">You can upload .cub file and .tpl file </p>
-                <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="alert('1. Upload a .cub or a .tif file\n\n2. Input the desired output size of the figure\nor leave blank for Raw Image size')">Help</a>
+                <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="showHelp()">Help</a>
                 <a class="btn btn-primary btn-lg" href= '/tpl'
                     role="button">What is a TPL file?</a>
         </div>
         <br/>
-        <div class="container">
-            <form name="uploadForm" class="text-center" action="/upload" method="POST" enctype="multipart/form-data">
+
+        <div id="help-box" class="help-box float-left" style="visibility: hidden">
+            <div class="container title" style="background: whitesmoke; ">Help</div>
+            <div class="row lead"> 1. Select a cube file you would like to use in your figure</div>
+            <br/>
+            <div class="row lead"> 2. Input your desired output dimensions in pixels or leave<br> it blank to default to 300dpi at 3 inches </div>
+            <br/>
+            <div class="row lead"> 3. Select a template file to use or leave it blank to start<br> with a server preset </div>
+            <br/>
+            <div class="row lead"> 4. Hit Upload </div>
+        </div>
+        <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
+            <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" enctype="multipart/form-data">
                 <div class="btn btn-dark btn-lg form-group" style=" width: 25rem;display: inline-block;">
                     <label for="cubUpload" style="font-size: x-large;">Choose an ISIS Cube File</label>
                     <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"type="file" class="form-control-file" />
@@ -197,7 +208,11 @@
 
             }
 
-            
+            function showHelp(){
+                document.getElementById("help-box").style.visibility = "visible";
+            }
+
+
             // contantly chekc the input boxes just in case they are too big to render on the users screen
             function checkInput(){
                 let width = widthInputBox.value;

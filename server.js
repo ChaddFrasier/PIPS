@@ -219,14 +219,14 @@ app.get('/tpl',function(request, response){
 
 
 /**
- * GET '/upload'
+ * GET '/captionWriter'
  * 
- * this occurs when a user types the '/upload'
+ * this occurs when a user types the '/captionWriter'
  * matches the last cube instance and returns that data
  * 
  * USER MUST POST TO UPLOAD A NEW FILE
  */
-app.get('/upload',function(request,response){
+app.get('/captionWriter',function(request,response){
     console.log(request.path);
 
     var userid = request.cookies['userId'];
@@ -262,11 +262,11 @@ app.get('/upload',function(request,response){
 });
 
 /**
- * POST '/upload'
+ * POST '/captionWriter'
  * 
  * allows file upload and data extraction to take place when upload button is activated
  */
-app.post('/upload', async function(request, response){
+app.post('/captionWriter', async function(request, response){
     console.log(request.path);
 
     // prepare the variables for response to user
@@ -656,11 +656,11 @@ app.get('/imageDownload', function(request, response){
 
 
 /**
- * GET '/showImage'
+ * GET '/imageEditor'
  * 
  * renders the image data from the users latest upload
  */
-app.get('/showImage', function(request, response){
+app.get('/imageEditor', function(request, response){
     console.log(request.path);
 
     var userid= request.cookies['userId'];
@@ -800,11 +800,11 @@ app.get('/showImage', function(request, response){
 
 /**
  * @todo chnage this link to something not so low down
- * POST '/showImage'
+ * POST '/imageEditor'
  * 
  * renders the image page with needed data
  */
-app.post('/showImage', function(request, response){
+app.post('/imageEditor', function(request, response){
     console.log(request.path);
 
     // prepare variables 
