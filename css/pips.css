@@ -85,7 +85,7 @@ image:hover {
     align-content: left;
     padding-right:auto;
     left: 0rem;
-    top: 0rem;
+    top: 4rem;
     padding-left: 0%;            
 }
 
@@ -136,6 +136,7 @@ svg{
 }
 
 .help-box{
+    position: absolute;
     float: left;
     margin: 0;
     margin-left: 3%;
@@ -154,7 +155,7 @@ svg{
     float: right;
     position: absolute;
     right: 5%;
-    top: 10%;
+    top: 20%;
     margin: 0;
     margin-left: auto;
     margin-right: 1%;
@@ -170,7 +171,7 @@ svg{
 }
 
 .small-text{
-    font-size: 65%;
+    font-size: 75%;
 }
 
 

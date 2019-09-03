@@ -16,20 +16,17 @@
     </head>
 
     <body>  
-        <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="loading" class="float-md-right lead" style="visibility:hidden">
                 <img src="../images/loading.gif" class='float-md-left;' height="10%" weight="auto"/><br>
                 <h3 style="text-align: left; margin-left: 2rem;">Loading</h3>
         </div>
         <br/>
        
-            <div class="text-center" style="border: 0px solid black; padding:25%; padding-top: 0; padding-bottom: 0;">
-                <h1 class="display-3" style="border: 0px solid blue;">Planetary Image Publication Server</h1> 
+            <div class="text-center" style="border: 0px solid black; padding:20%; padding-top: 0; padding-bottom: 0;">
+                <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1> 
                 <h4 class="display-5">Powered by ISIS3</h4>
             </div>
-           
-     
-        <br/>
         <br/>
         <hr class="my-9">
         <div class="title text-center" style="width: auto;">
@@ -40,13 +37,17 @@
         </div>
         <br/>
 
-        <div id="help-box" class="help-box float-left" style="visibility: hidden">
+        <div id="help-box" class="help-box float-left" style="visibility: hidden; width:20%;">
             <div class="container title" style="background: whitesmoke; ">Help</div>
             <div class="row lead"> 1. Select a cube file you would like to use in your figure</div>
             <br/>
-            <div class="row lead"> 2. Input your desired output dimensions in pixels or leave<br> it blank to default to 300dpi at 3 inches </div>
+            <div class="row lead"> 2. Input your desired output dimensions in pixels 
+                <p class="small-text"> (leave both boxes blank to default to 300dpi at 3 inches)</p>
+            </div>
             <br/>
-            <div class="row lead"> 3. Select a template file to use or leave it blank to start<br> with a server preset </div>
+            <div class="row lead"> 3. Select a template file to use 
+                    <p class="small-text"> (leave it blank to start with a server preset)</p>
+                </div>
             <br/>
             <div class="row lead"> 4. Hit Upload </div>
         </div>
@@ -75,32 +76,32 @@
             </form>
         </div>
 
-        <div id="info-alert" style= "visibility:hidden" class = "alert alert-info text-center alertBoxes">
+        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 45%;" class = "alert alert-warning text-center alertBoxes">
             <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Upload a .cub file
         </div>
         
-        <div id="fail-alert" style= "visibility:hidden" class = "alert alert-primary text-center">
+        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%;" class = "alert alert-primary text-center">
             <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
-            Must start with upload
+            Previous User has no server data. Start with Upload.
         </div>
-        <div id="fail-image" style= "visibility:hidden" class = "alert alert-primary text-center">
+        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 66%;" class = "alert alert-danger text-center">
             <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
-            Failed to create image from upload
+            Failed to create image from Upload.
         </div>
-        <div id="fail-upload" style= "visibility:hidden" class = "alert alert-primary text-center">
+        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 73%;" class = "alert alert-danger text-center">
             <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
-            Failed to Upload
+            Failed to Upload.
         </div>
-        <div id="tplAlert" style= 'visibility:hidden' class = "alert alert-warning text-center" role="alert">
+        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 52%;' class = "alert alert-warning text-center" role="alert">
             <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
             &times;
             </button>
@@ -108,12 +109,12 @@
             Template must be (.tpl) or left blank.
         </div>
 
-        <div id="server-timeout" style= 'visibility:hidden' class = "alert alert-dark text-center" role="alert">
+        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 80%;' class = "alert alert-primary text-center" role="alert">
                 <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
                 </button>
                         
-                Known User Please Upload a Cube to begin
+                Unknown User: Please Upload a Cube to Begin.
             </div>
 
         <script type="text/javascript">
@@ -219,11 +220,11 @@
                 // alert of the are too large
                 // the flag is used to only alert the user 1 time
                 if(!alerted){
-                    if(width >= window.screen.width-window.screen.width*.2){
+                    if(width >= window.screen.width-window.screen.width*.5 && width !== "900"){
                         alert("Warning: The selected width is too larger \n     Continuing will cause redering issues");
                         alerted = true;
                     }
-                    else if(height >= window.screen.height-window.screen.height*.2){
+                    else if(height >= window.screen.height-window.screen.height*.5 && height !== "900"){
                         alert("Warning: The selected height is too larger \n    Continuing will cause redering issues");
                         alerted = true;
                     }

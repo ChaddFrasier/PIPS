@@ -351,6 +351,35 @@ app.post('/captionWriter', async function(request, response){
             });
 
             
+            // template file section
+            try{
+                // regexp for verifying tpl file
+                if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
+                    // get file object
+                    let tplFile = request.files.templateFile;
+
+                    // save to server
+                    tplFile.mv('./tpl/'+tplFile.name, function(err){
+                        // report any errors
+                        if(err){
+                            return response.status(500).send(err);
+                        }
+                    });
+                    // set output for template
+                    templateText = tplFile.data.toString();
+                }
+                else{
+                    console.log('Wrong file type for template');
+                    // send the alert code and redirect
+                    response.redirect('/?alertCode=2');
+                    // end response
+                    return response.end();
+                }
+            }catch(err){
+                // tpl is null set default
+                templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+            }
+            
             //convert tiff to cube
 
             /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
@@ -435,36 +464,6 @@ app.post('/captionWriter', async function(request, response){
                         // save the important data values to object using setter
                         cubeObj.impData = JSON.parse(impDataString);
                         
-
-                        // template file section
-                        try{
-                            // regexp for verifying tpl file
-                            if(/^.*\.(tpl)$/gm.test(request.files.templateFile.name)){
-                                // get file object
-                                let tplFile = request.files.templateFile;
-
-                                // save to server
-                                tplFile.mv('./tpl/'+tplFile.name, function(err){
-                                    // report any errors
-                                    if(err){
-                                        return response.status(500).send(err);
-                                    }
-                                });
-                                // set output for template
-                                templateText = tplFile.data.toString();
-                            }
-                            else{
-                                console.log('Wrong file type for template');
-                                // send the alert code and redirect
-                                response.redirect('/?alertCode=2');
-                                // end response
-                                response.end();
-                            }
-                        }catch(err){
-                            // tpl is null set default
-                            templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
-                        }
-
                         // get the csv string
                         let csv = util.getCSV(cubeObj.data);
 
