@@ -97,7 +97,11 @@
             }
 
             // get the bounding box of the group element
-            bbox = selectedElement.getBBox();
+            try{
+                bbox = selectedElement.getBBox();
+            }catch(err){
+                return;
+            }
             // Make sure the first transform on the element is a translate transform
             var transforms = selectedElement.transform.baseVal;
 
@@ -577,47 +581,58 @@
     <body>
         <!-- Page Header Block-->
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%">
+            <!-- Loading GIF-->
+            <div id="loading" class="float-right lead" style="visibility:visible">
+                <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br/>Loading
+            </div>
         <div class="container">
             <div class="jumbotron text-center" >
                 <h2>Edit the Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> X <%=h%> px</h5>   
-                <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
+                <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
             </div>
         </div>
         
-
-        <!-- Loading GIF-->
-        <div id="loading" class="float-md-right lead" style="visibility:visible">
-            <img src="../images/loading.gif" class='float-center;' height="125px" weight="135px"/><br/>Loading
-        </div>
-        
-        <div class="help-box-right" id="help-box" style="visibility: hidden;">
-                <button class="float-right helpBtn" id="hideBtn" 
-                style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                    <div class="container title" style="background: whitesmoke; ">Help</div>
-                    <div class="row lead"> 1. Add Icons using the buttons</div>
-                    <br/>
-                    <div class="row lead"> 2. drag icons around with mouse and scale with the corners of the icon</div>
-                    <br/>
-                    <div class="row lead"> 3. Draw lines with the pencil and undo with the escape key</div>
-                    <br/>
-                    <div class="row lead"> 4. Add padding by typing a pixel amount and clicking a location button </div>
-            </div>
-
-
         <!-----------------------Editor Box----------------------------------------------->
         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
-        class="image-image float-center" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
+        class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
             
         </svg>
 
-        
+        <!--------------------------- Help Box ------------------------->
+        <div class="help-box-right" id="help-box" style="visibility: hidden;">
+            <button class="float-right helpBtn" id="hideBtn" 
+            style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+                <div class="container title" style="background: whitesmoke; ">Help</div>
+                <div class="row lead"> 1. Add Icons with the corresponding buttons.
+                    <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
+                    <p class="small-text">(Remove any icon by clicking the red button)</p>
+                </div>
+                <br/>
+                <div class="row lead"> 2. Drag icons around the image with the mouse</div>
+                <br/>
+                <div class="row lead"> 3. Scale all icons and text with the corners of the object</div>
+                <br/>
+                <div class="row lead"> 4. Draw lines using the Pencil Tool.  
+                    <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.)</p> 
+                </div>
+                <div class="row lead"> 5. Use the color pickers to change the color of the adjacent object.  
+                        <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
+                </div>
+                <div class="row lead"> 6. Add text to the image by clicking on the text box button and typing your text. 
+                        <p class="small-text">(Undo a text element by clicking the red button.)</p>  
+                </div>
+
+                <div class="row lead"> 7. Padding can be added to the image by typing the amount 
+                    of pixels you want to add, and then selecting a location.  
+                </div>
+        </div>
 
         <!-- Button Interface-->
-        <div class="container float-left" style=" top: 9%; width: 30%; height: 5%; position: absolute;
+        <div class="container float-left" style=" top: 9%; width: 20%; height: 5%; position: absolute;
                                                  padding: 5%; margin-left: auto; left: auto; right: auto;
                                                  border-right: 0%; margin-right: auto;">
             <br/>
@@ -659,18 +674,45 @@
                                 <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">Undo</button>
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="scaleBarButton" style="width:7rem; color: black">Scalebar</button>
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38.5rem; visibility: hidden;left: 16rem;">
+                                <button class="btn btn-success btn-lg button" id="scaleBarButton" style="width:7rem; color: black">
+                                    <svg viewBox= "0 0 25 4">
+                                        <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width="5" stroke="white" fill="black" ></rect>
+                                        <path id="scalebarLine" d="M 12.5 2 L 25 2"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert" d="M 12.5 0 L 12.5 4"  stroke="black" stroke-width="1"/>
+                                        <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
+                                        <path id="scalebarLine10th" d="M 0 2 L 2.5 2"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert30th" d="M 5 0 L 5 4"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine30th" d="M 2.5 2 L 5 2"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert50th" d="M 10 0 L 10 4"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine50th" d="M 7.5 2 L 10 2"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine70th" d="M 5 2 L 7.5 2"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine90th" d="M 10 2 L 12.5 2"  stroke="black" stroke-width=".75"/>
+                                    
+                                    </svg>
+                                </button>
+                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="top: 18rem; visibility: hidden;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38rem; visibility: hidden;left: 16rem;">
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="outlineBtn" style="width:8rem; color: black">Outline Box</button>
+                                <button class="btn btn-success btn-lg button" id="outlineBtn" style="width:8rem; color: black">
+                                <svg viewBox="0 0 5 2.5">
+                                    <rect x="0" y="0" width="5" height="2.5" stroke="white" stroke-width=".5" fill="transparent"></rect>
+
+                                </svg>
+                                </button>
                                 
                                 <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">Undo</button>
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="textBtn" style="width:7rem; color: black">Text Box</button>
+                                <button class="btn btn-success btn-lg button" id="textBtn" style="width:7rem; color: black">
+                                <svg viewBox="0 0 25 15">
+                                    <rect x="0" y="2.5" width="25" height="10"stroke="white" stroke-width="1.5"fill="transparent"></rect>
+                                    <text x="3" y="11" font-size="11">Aa</text>
+                                </svg>
+                                </button>
                                 <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">Undo</button>
                             </li>
@@ -1357,6 +1399,7 @@
                 });
 
 
+                var warned = false;
                 // chnages the padding whenever padding has been applied and the box chnages values
                 $("#paddingInput").keyup(function(){
                     if(!isNaN(parseInt(this.value))){
@@ -1375,6 +1418,10 @@
 
                         console.log(parseInt(this.value));
                     }else{
+                        if(this.value !== "" && !warned){
+                            alert("Only Accepts Whole Numbers");
+                            warned = true;
+                        }
                         setImagePadding(parseInt(0),"none");
                     }
                 });

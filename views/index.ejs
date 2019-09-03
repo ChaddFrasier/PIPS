@@ -34,7 +34,7 @@
         <hr class="my-9">
         <div class="title text-center" style="width: auto;">
             <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">You can upload .cub file and .tpl file </p>
-                <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="showHelp()">Help</a>
+                <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="showHelp(this)">Help</a>
                 <a class="btn btn-primary btn-lg" href= '/tpl'
                     role="button">What is a TPL file?</a>
         </div>
@@ -190,9 +190,6 @@
                 else{
 
                     if(heightInputBox.value === "" && widthInputBox.value === ""){
-                        // generate a good height based on client size
-                        console.log("must create size using ckient");
-
                         // 300dpi at 3 inches (300px/in)
                         heightInputBox.value = 900;
                         widthInputBox.value = 900;
@@ -208,8 +205,9 @@
 
             }
 
-            function showHelp(){
+            function showHelp(btn){
                 document.getElementById("help-box").style.visibility = "visible";
+                btn.className = btn.className.replace("btn-primary","btn-secondary");
             }
 
 
