@@ -1,12 +1,12 @@
 /**
- * Utility JS for Caption Writer
+ * Utility JS for PIPS
  * 
  * @author Chadd Frasier
  * @since 06/03/19
  * @update 08/23/19
  * @version 2.5.0
  * @fileoverview 
- *      This is the utility file for The Planetary Image Caption Writer  
+ *      This is the utility file for The Planetary Image Publication Server  
  * 
  * @see {server.js} Read the header before editing
  * 
@@ -29,17 +29,18 @@ module.exports = {
      * @param {string} filepath the path to said file
      * @param {string} returnPath path to return the values from ISIS3
      * @param {string} imagePath path where the image should be saved
+     * @param {boolean} logToFile true or false should the server log to a file
      * 
      * @returns {Promise}
      * 
      * @description calls the isis commands using promises to ensure the processes are finished
      */
-    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath) {
+    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath, logToFile) {
         return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
             // call the isis commands
-            promises.push(callIsis(cubeName, filepath, returnPath, imagePath));
+            promises.push(callIsis(cubeName, filepath, returnPath, imagePath,logToFile));
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
@@ -154,13 +155,16 @@ module.exports = {
     /**
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
+     * @param {boolean} logToFile true or false should the server log to a file
      * 
      * @returns {Promise}
      * @returns {string} name of the cube that was converted
      * 
      * @description converts tiff to cube for later processing 
+     * 
+     * @todo this will need a log to file flag
      */
-    tiffToCube: function(tiffName) {
+    tiffToCube: function(tiffName, logToFile) {
         return new Promise(function(resolve, reject){
             // variables for proper isis call
             var isisCall = 'std2isis';
@@ -171,23 +175,23 @@ module.exports = {
             var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
 
             std2isis.stdout.on('data', function(data){
-                console.log('stdout: ' + data.toString());
+                console.log('stdout: ' + data.toString() + "\n");
             });
 
 
             std2isis.stderr.on('data', function(data){
-                console.log(isisCall + ' Error: ' + data.toString());
+                console.log(isisCall + ' Error: ' + data.toString() + "\n");
             });
 
             std2isis.on('exit',function(code){
-                console.log(isisCall + ' Exited with code: ' + code);
+                console.log(isisCall + ' Exited with code: ' + code + "\n");
 
                 if(code === 0){
-                    console.log('std2isis finised successfully');
+                    console.log('std2isis finised successfully \n');
                     resolve(cubeName);
                 }
                 else{
-                    reject(isisCall + 'Error: ' + code.toString());
+                    reject(isisCall + 'Error: ' + code.toString() + "\n");
                 }
                 
             });
@@ -206,6 +210,53 @@ module.exports = {
      */
     getRawCube: function(cubeName, userNum){
         return cubeName.split("u-" + userNum)[1]; 
+    },
+
+
+    /**
+     * 
+     * @param {string} cubeData a string version of the raw cube data
+     * 
+     * @returns {boolean} true if the cube is map projected, false if not
+     * 
+     * @description looks for map projection group or Mapping group
+     */
+    isMapProjected: function(cubeData){
+        var data = JSON.parse(cubeData);
+
+        for(key in data){
+            if(key === "IMAGE_MAP_PROJECTION" || key.indexOf("Mapping") > -1){
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+
+    /**
+     * 
+     * @param {boolean} isProjected if the image is map projected 
+     * @param {string} cubeData stringified cube data to parse if needed 
+     * 
+     * @returns {number} the rotation value if projected is true or 0 if false
+     * 
+     * @description this function is to find the offset of the north arrow depending on if the image is rotated or not
+     */
+    getRotationOffset: function(isProjected, cubeData){
+        if(isProjected){
+            let data = JSON.parse(cubeData);
+            
+            for(key in data){
+                if(key.indexOf("MAP_PROJECTION_ROTATION") > -1){
+                    return parseFloat(data[key]);
+                }
+            }
+
+            return 0;
+        }else{
+            return 0;
+        }
     },
 
 
@@ -536,6 +587,7 @@ var shortenName = function(name){
  * @param {string} filepath path to the cube file on server
  * @param {string} returnPath path to return file on server
  * @param {string} imagePath path to image on server
+ * @param {boolean} logToFile true or false should the server log to a file
  *
  * @returns {Promise}
  * @return {number} error codes
@@ -543,11 +595,16 @@ var shortenName = function(name){
  * @description this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
-var callIsis = function(cubeName, filepath, returnPath, imagePath){
+var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
     return new Promise(function(resolve,reject){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
+
+        // TODO: test to see if the logfile for this cube already exists
+        if(logToFile){
+            createLogFile(cubeName);
+        }
         
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
@@ -555,11 +612,11 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
         // run the isis commands
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
-            console.log(isisCalls[i] + 'Starting Now');
-            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i]));
+            console.log(isisCalls[i] + ' Starting Now\n');
+            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile));
         }
         // call and push image command
-        promises.push(imageExtraction(imagename,filepath,imagePath));                       
+        promises.push(imageExtraction(imagename,filepath,imagePath,logToFile));                       
 
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
@@ -572,6 +629,23 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  }
 
 
+ /**
+  * 
+  * @param {string} cubeName 
+  * 
+  * @returns {string} the name of the log file
+  * 
+  * @description this function is meant to initialize a log file using the given cube name
+  */
+ var createLogFile = function(cubeName){
+
+    let logFileName = cubeName.replace(".cub",".log");
+
+     console.log("LOG FUNCTION GOT: " + logFileName);
+
+ }
+
+
 /**
  * 
  * @todo log to output file
@@ -580,13 +654,14 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath){
  * @param {string} imagename name of the image
  * @param {string} filepath path to the cube file on the server
  * @param {string} imagePath path where image should be saved
+ * @param {boolean} logToFile true or false should the server log to a file
  * 
  * @returns {Promise}
  * 
  * @description calls the isis image conversion on the given cube
  */
-var imageExtraction = function(imagename, filepath, imagePath){
-    console.log('Running isis2std for image now');
+var imageExtraction = function(imagename, filepath, imagePath, logToFile){
+    console.log('Running isis2std for image now \n');
     return new Promise(function(resolve,reject){
         // execute the isis2std function
         
@@ -594,7 +669,7 @@ var imageExtraction = function(imagename, filepath, imagePath){
 
 
         isis2std.stdout.on('data', function(data){
-            console.log('isis2std stdout: ' + data.toString());
+            console.log('isis2std stdout: ' + data.toString() + "\n");
         });
 
 
@@ -603,11 +678,11 @@ var imageExtraction = function(imagename, filepath, imagePath){
         });
 
         isis2std.on('exit',function(code){
-            console.log('isis2std Exited with code: ' + code);
+            console.log('isis2std Exited with code: ' + code + "\n");
             if(code === 0){
                 resolve();
             }else{
-                reject('isis2std Error: ' + code.toString);
+                reject('isis2std Error: ' + code.toString + "\n");
             }
         });
         
@@ -618,33 +693,34 @@ var imageExtraction = function(imagename, filepath, imagePath){
 /**
  * 
  * @todo log stdour stderr to log file
+ * @todo this will need a log to file flag
  * 
- * @param {string} cubeName name of cube file to run on
  * @param {string} filepath path to the cube file
  * @param {string} returnPath path to the return pvl
  * @param {string} isisCall isis command that is going to be run
+ * @param {boolean} logToFile true or false should the server log to a file
  * 
  * @returns {Promise}
  * 
  * @description makes the exec call to run isis commands
  */
-var makeIsisCall = function(filepath, returnPath, isisCall){
+var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
     return new Promise(function(resolve){
         // execute the isis2std function
        
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
 
         isisSpawn.stdout.on('data', function(data){
-            console.log(isisCall + ' stdout: ' + data.toString());
+            console.log(isisCall + ' stdout: ' + data.toString() + "\n");
         });
 
 
         isisSpawn.stderr.on('data', function(data){
-            console.log(isisCall + ' Error: ' + data.toString());
+            console.log(isisCall + ' Error: ' + data.toString() + "\n");
         });
 
         isisSpawn.on('exit',function(code){
-            console.log(isisCall + ' Exited with code: ' + code);    
+            console.log(isisCall + ' Exited with code: ' + code + "\n");    
             resolve();
         });
         
@@ -675,7 +751,6 @@ var endTag = function(nameString){
 /**
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
- * 
  * 
  * @returns {Promise}
  * @returns {object string} JSON string of the data from pvl

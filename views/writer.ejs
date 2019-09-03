@@ -15,7 +15,6 @@
 
         
     </head>
-
     <body>
         <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" style="margin: 0%; padding: 0%"><br>
         <div id="loading" class="float-md-right text-center lead" style="visibility:visible">
@@ -23,13 +22,14 @@
                 <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
         
-            <div class="container" style="height: 15rem; width: 100%; padding: 0; border: 0 solid red;"> 
+            <div class="container" style="height: 15rem; width: 75%; padding: 0; border: 0 solid red;"> 
                 <div class="jumbotron text-center" style="height: 85%; padding: 2rem; background-color: lightgray;">
-                    <h1 class="display-5" style="margin: 0;">Upload Successful</h1>
+                    <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
+                    <h1 class="display-5" style="margin: 0; float: center;">Upload Successful</h1>
                     <p class="lead">Edit in the bottom box using tags in the middle box</p>
-                    <a class="btn btn-secondary btn-lg float-left" href="/" role="button">Upload New File</a>
+                    <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New File</a>
 
-                    <form method="POST" action="/showImage" class="lg-form text-center float-right" style="margin: 0;">
+                    <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
                         <div class="form-group">
                             <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
                             <input type="submit" value="Display Image" class="btn btn-primary btn-lg"
@@ -39,22 +39,36 @@
                 </div>
             </div>
 
-            <div class="container float-center" style="width: 100rem; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;">
-                    <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
-                            <label for="template-text-output">
-                                <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
-                            </label>
-                            <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
-                                style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                                <br/>
-        
-                            <form class="lg-form text-center float-right" style="margin: 0;">
-                                <div class="form-group">
-                                    <a class="btn btn-primary text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
-                                        Caption</a>
-                                </div>
-                            </form>
+            <div class="help-box" id="help-box" style="visibility: hidden;">
+                <button class="float-right helpBtn" id="hideBtn" 
+                style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+                    <div class="container title" style="background: whitesmoke; ">Help</div>
+                    <div class="row lead"> 1. Type your caption in the bottom box</div>
+                    <br/>
+                    <div class="row lead"> 2. copy / paste tags from the middle </div>
+                    <br/>
+                    <div class="row lead"> 3. Let the caption get the data for you </div>
+                    <br/>
+                    <div class="row lead"> 4. Use the tag search bar to filter the current tags </div>
+            </div>
+
+            <div class="container float-center" style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
+                
+                <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
+                    <label for="template-text-output">
+                        <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
+                    </label>
+                    <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
+                        style="resize: vertical; font-size: 22px;" rows="7"></textarea>
+                        <br/>
+
+                    <form class="lg-form text-center float-right" style="margin: 0;">
+                        <div class="form-group">
+                            <a class="btn btn-success text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
+                                Caption</a>
                         </div>
+                    </form>
+                </div>
 
                 <br/>
                 <br/>
@@ -95,22 +109,25 @@
                 <br/>
                 <!-- Active Tag Box -->
                 <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
-                    <label for="test">
-                        <h3 class="display-5 alert alert-secondary">Usable Tags</h2>
+                    <label for="test" class="float-center" style="margin: 0;">
+                        <h3 class="display-5 alert alert-secondary" style="margin: inherit;">Usable Tags</h2>
                     </label>
                     <br/>
-                    <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Filter Tags" 
-                    style="background-color: rgba(255,255,255); color:black; text-align:center; margin: 0; margin-bottom: 1rem;">
+                    <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
+                        <label for="filterInput"><h4>Search for keywords</h4></label><br/>
+                        <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
+                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;">
+                    </div>
                     <br/>
                     <textarea readonly id="test" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                    <button id="button-more-tags" class="btn btn-md btn-secondary float-left" style="margin: 0; margin-top:1rem;" onclick="showMoreTags()">Show Important Tags</button>
+                    <button id="button-more-tags" class="btn btn-md btn-success float-left" style="margin: 0; margin-top:1rem;" onclick="showMoreTags()">Show Important Tags</button>
                     
                     <form action="/csv" method='POST' class="lg-form text-center float-right" style="margin: 0;  margin-top:1rem;">
                         <div class="lg-form text-center" style="margin: 0;">
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                            <input type="submit" value="Save Metadata CSV" class="btn btn-primary btn-lg" />
+                            <input type="submit" value="Save Metadata CSV" class="btn btn-success btn-lg" />
                         </div>
                     </form>
                 </div>
@@ -352,6 +369,22 @@
                     document.getElementById("test").value = dataTagField;
                 }
             }
+
+
+
+
+            $("#helpBtn").on("mousedown",function(){
+                // show the help box
+                document.getElementById("help-box").style.visibility = "visible";
+            });
+
+  
+            $("#hideBtn").on("mousedown",function(){
+                // hide the help box
+                document.getElementById("help-box").style.visibility = "hidden";
+            });
+
+            
 
 
             // make sure the loader is invisible on pageshow

@@ -6,11 +6,11 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.0
- * @description This is the driver for the Caption Writer server by USGS.
+ * @version 3.7.1
+ * @description This is the driver for the PIP Server by USGS.
  * 
  * @since 05/31/19
- * @updated 08/23/19
+ * @updated 08/28/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that
@@ -100,6 +100,7 @@ const Cube = require('./js/cubeObj.js');
 
 // start app env
 var app = express();
+
 // global instance array for cube objects
 var cubeArray = [];
 var numUsers = 0;
@@ -218,14 +219,14 @@ app.get('/tpl',function(request, response){
 
 
 /**
- * GET '/upload'
+ * GET '/captionWriter'
  * 
- * this occurs when a user types the '/upload'
+ * this occurs when a user types the '/captionWriter'
  * matches the last cube instance and returns that data
  * 
  * USER MUST POST TO UPLOAD A NEW FILE
  */
-app.get('/upload',function(request,response){
+app.get('/captionWriter',function(request,response){
     console.log(request.path);
 
     var userid = request.cookies['userId'];
@@ -261,11 +262,11 @@ app.get('/upload',function(request,response){
 });
 
 /**
- * POST '/upload'
+ * POST '/captionWriter'
  * 
  * allows file upload and data extraction to take place when upload button is activated
  */
-app.post('/upload', async function(request, response){
+app.post('/captionWriter', async function(request, response){
     console.log(request.path);
 
     // prepare the variables for response to user
@@ -351,8 +352,10 @@ app.post('/upload', async function(request, response){
 
             
             //convert tiff to cube
+
+            /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
             if(isTiff){
-                promises.push(util.tiffToCube('uploads/' + cubeObj.name));
+                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag));
             }else{
                 console.log('cube file was uploaded');    
             }
@@ -393,11 +396,18 @@ app.post('/upload', async function(request, response){
                 // reset the promises array
                 promises = [];
                 
+                // TODO: this is where i can test the loging functions also this is the functions that '/pow' will need to run
                 // make promise on the isis function calls
+
+                /** ========Testing log system ========
+                 * 
+                 * setting last input of function to true (hard coded)
+                */
                 promises.push(util.makeSystemCalls(cubeObj.name,
                     path.join('.','uploads',cubeObj.name),
                     path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
-                    'images'));
+                    'images',
+                    cubeObj.logFlag));
                 
                 
                 // when isis is done read the pvl file
@@ -646,11 +656,11 @@ app.get('/imageDownload', function(request, response){
 
 
 /**
- * GET '/showImage'
+ * GET '/imageEditor'
  * 
  * renders the image data from the users latest upload
  */
-app.get('/showImage', function(request, response){
+app.get('/imageEditor', function(request, response){
     console.log(request.path);
 
     var userid= request.cookies['userId'];
@@ -692,6 +702,9 @@ app.get('/showImage', function(request, response){
                 }
                 var userDim = userObject.userDim;
                 let resolution = util.getPixelResolution(userObject);
+                var isMapProjected = util.isMapProjected(userObject.data),
+                    rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+                
 
                 // calculate image width in meters
                 if(resolution !== -1){
@@ -752,11 +765,11 @@ app.get('/showImage', function(request, response){
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                                origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset ,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }else{
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                                w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset ,w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                         }
 
                     }else{
@@ -768,11 +781,11 @@ app.get('/showImage', function(request, response){
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                            origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                           rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
                     }else{
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                            w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
+                           rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
                     }
 
                 }
@@ -786,11 +799,12 @@ app.get('/showImage', function(request, response){
 });
 
 /**
- * POST '/showImage'
+ * @todo chnage this link to something not so low down
+ * POST '/imageEditor'
  * 
  * renders the image page with needed data
  */
-app.post('/showImage', function(request, response){
+app.post('/imageEditor', function(request, response){
     console.log(request.path);
 
     // prepare variables 
@@ -851,6 +865,10 @@ app.post('/showImage', function(request, response){
 
         var userDim = userObject.userDim;
         var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+        var isMapProjected = util.isMapProjected(userObject.data),
+            rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+
+        
 
         // calculate image width in meters
         if(resolution !== -1){
@@ -906,11 +924,11 @@ app.post('/showImage', function(request, response){
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,
-                        origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube, isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }else{
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                        w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,  w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
                 }
 
 
@@ -924,16 +942,24 @@ app.post('/showImage', function(request, response){
             // render image page with needed data
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
             if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                    origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                    rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
             }else{
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,
-                    w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
+                    rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
             }
 
         }
     });
 });
+
+
+
+app.post("/pow",function(request, response){
+    // TODO:
+});
+
+
 
 
 /**

@@ -1,7 +1,7 @@
 {
-  "name": "captionwriter",
-  "version": "1.0.0",
-  "description": "Planetary Image CVaption Writer w/ ISIS3",
+  "name": "pips",
+  "version": "3.7.1",
+  "description": "Planetary Image Publication Server w/ ISIS3",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,15 +17,12 @@
   },
   "homepage": "https://github.com/ChaddFrasier/Orion_Writer#readme",
   "dependencies": {
-    "alert-node": "^1.2.5",
     "bluebird": "^3.5.5",
     "cookie-parser": "^1.4.4",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.4",
     "fs": "0.0.1-security",
-    "i": "^0.3.6",
-    "jimp": "^0.6.4",
-    "line-reader": "^0.4.0"
+    "jimp": "^0.6.4"
   }
 }
