@@ -39,17 +39,18 @@
 
         <div id="help-box" class="help-box float-left" style="visibility: hidden; width:20%;">
             <div class="container title" style="background: whitesmoke; ">Help</div>
-            <div class="row lead"> 1. Select a cube file you would like to use in your figure</div>
+            <div class="row lead"> 1. Select the cube file you would like to use in your figure.</div>
             <br/>
-            <div class="row lead"> 2. Input your desired output dimensions in pixels 
-                <p class="small-text"> (leave both boxes blank to default to 300dpi at 3 inches)</p>
+            <div class="row lead"> 2. Input your desired output dimensions (W&times;H)in pixels. 
+                Input Width or Height to have the other dimension calculated for you. (W&times;_) or (_&times;H)<br/>
+                <p class="small-text"> (Leave both boxes blank to default to 300dpi at 3 inches)</p>
             </div>
             <br/>
-            <div class="row lead"> 3. Select a template file to use 
+            <div class="row lead"> 3. Select a template file to use. <br/>
                     <p class="small-text"> (leave it blank to start with a server preset)</p>
                 </div>
             <br/>
-            <div class="row lead"> 4. Hit Upload </div>
+            <div class="row lead"> 4. Click Upload </div>
         </div>
         <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
             <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" enctype="multipart/form-data">

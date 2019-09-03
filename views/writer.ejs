@@ -32,7 +32,7 @@
                     <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
                         <div class="form-group">
                             <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                            <input type="submit" value="Display Image" class="btn btn-primary btn-lg"
+                            <input type="submit" value="Edit Image" class="btn btn-primary btn-lg"
                             onclick="loaderActivate()" />
                         </div>
                     </form>
@@ -45,11 +45,14 @@
                     <div class="container title" style="background: whitesmoke; ">Help</div>
                     <div class="row lead"> 1. Type your caption in the bottom box</div>
                     <br/>
-                    <div class="row lead"> 2. copy / paste tags from the middle box </div>
+                    <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
                     <br/>
-                    <div class="row lead"> 3. Export the text you created or export the data as a csv </div>
+                    <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags 
+                        <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
+                    </div>
                     <br/>
-                    <div class="row lead"> 4. Use the tag search bar to filter the current tags </div>
+                    <div class="row lead"> 4. Export the text you created or export the data as a csv </div>
+                    
             </div>
 
             <div class="container float-center" style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 

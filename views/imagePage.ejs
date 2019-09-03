@@ -589,7 +589,7 @@
             <div class="jumbotron text-center" >
                 <h2>Edit the Cube Image</h2> 
                 <h4 id="imageName"></h4>  
-                <h5><%=w%> X <%=h%> px</h5>   
+                <h5><%=w%> &times; <%=h%> px</h5>   
                 <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
             </div>
         </div>
@@ -607,29 +607,35 @@
             <button class="float-right helpBtn" id="hideBtn" 
             style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke; ">Help</div>
-                <div class="row lead"> 1. Add Icons with the corresponding buttons.
+                <div class="row lead">1. Add Icons with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
-                    <p class="small-text">(Remove any icon by clicking the red button)</p>
+                    <p class="small-text">(Remove any icon by clicking the same button)</p>
                 </div>
                 <br/>
-                <div class="row lead"> 2. Drag icons around the image with the mouse</div>
+                <div class="row lead">2. Drag icons around the image with the mouse</div>
                 <br/>
-                <div class="row lead"> 3. Scale all icons and text with the corners of the object</div>
+                <div class="row lead"> 3. Scale all icons and text by mousing over the corners of the object</div>
                 <br/>
                 <div class="row lead"> 4. Draw lines using the Pencil Tool.  
-                    <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.)</p> 
+                    <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.
+                         Use Esc key to remove the head after the first click)</p> 
                 </div>
                 <div class="row lead"> 5. Use the color pickers to change the color of the adjacent object.  
                         <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
                 </div>
+                <br/>
                 <div class="row lead"> 6. Add text to the image by clicking on the text box button and typing your text. 
                         <p class="small-text">(Undo a text element by clicking the red button.)</p>  
                 </div>
-
+                <br/>
                 <div class="row lead"> 7. Padding can be added to the image by typing the amount 
                     of pixels you want to add, and then selecting a location.  
                 </div>
-        </div>
+                <br/>
+                <div class="row lead"> 8. Click the 'Export Figure' button to save the new figure as an accepted format  
+                       <p class="small-text">(Accepted Formats: png, svg, jpeg, or jpg)</p>
+                </div>
+            </div>
 
         <!-- Button Interface-->
         <div class="container float-left" style=" top: 9%; width: 20%; height: 5%; position: absolute;

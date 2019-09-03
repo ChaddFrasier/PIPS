@@ -149,13 +149,15 @@ svg{
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
     width: 15%;
+    height: 50%;
+    overflow-y: auto;
 }
 
 .help-box-right{
     float: right;
     position: absolute;
     right: 5%;
-    top: 20%;
+    top: 30%;
     margin: 0;
     margin-left: auto;
     margin-right: 1%;
@@ -168,6 +170,8 @@ svg{
     font-family: 'Times New Roman', Times, serif;
     font-size: 12px;
     width: 15%;
+    height: 50%;
+    overflow-y: auto;
 }
 
 .small-text{
