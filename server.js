@@ -500,7 +500,6 @@ app.post('/captionWriter', async function(request, response){
                     }                    
                 });          
             }).catch(function(err){
-                console.log(err);
                 if(err === -1){
                     // alert 8 because isis is not on
                     response.redirect('/?alertCode=8');
@@ -517,8 +516,6 @@ app.post('/captionWriter', async function(request, response){
         }
         else{
             // wrong file type uploaded
-            console.log('wrong file type uploaded for cube section');
-            console.log('file name is: ' + request.files.uploadFile.name);
             // redirect with alert code
             response.redirect('/?alertCode=1');
             // end response
@@ -773,8 +770,6 @@ app.get('/imageEditor', function(request, response){
                         console.log("Image Width in Meters Failed to Calculate");
                     }
                 }else{
-                    console.log("Scalebar could not be generated from present data");
-
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -927,8 +922,6 @@ app.post('/imageEditor', function(request, response){
                 console.log("Image Width in Meters Failed to Calculate");
             }
         }else{
-            console.log("Scalebar could not be generated from present data");
-
             // render image page with needed data
             if(isWindows){ imagepath = imagepath.replace("\\","/");}
             if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -990,7 +983,6 @@ app.get('/crop',async function(request, response){
         // get new Image b/c we know its a default
         newImage = util.findImageLocation(cubeObj.name);
 
-        console.log("undo to : " + newImage);
         // render with variables
         var w;
         var h;
@@ -1057,7 +1049,6 @@ app.get('/crop',async function(request, response){
         }
     }
     else{
-        console.log('should never run but is a catch all');
         var w;
         var h;
         jimp.read(cubeObj.name).then(function(img){

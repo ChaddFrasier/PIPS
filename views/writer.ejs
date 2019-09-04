@@ -12,48 +12,50 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
-
-        
     </head>
     <body>
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%">
+        <br>
         <div id="loading" class="float-md-right text-center lead" style="visibility:visible">
-                <img src="../images/loading.gif" class='float-center;' height="10%" weight="auto"/><br>
-                <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
-            </div>
+            <img src="../images/loading.gif" class='float-center;' height="10%" weight="auto"/>
+            <br>
+            <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
+        </div>
         
-            <div class="container" style="height: 15rem; width: 75%; padding: 0; border: 0 solid red;"> 
-                <div class="jumbotron text-center" style="height: 85%; padding: 2rem; background-color: lightgray;">
-                    <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
-                    <h1 class="display-5" style="margin: 0; float: center;">Upload Successful</h1>
-                    <p class="lead">Edit in the bottom box using tags in the middle box</p>
-                    <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New File</a>
+        <div class="container" style="height: 15rem; width: 75%; padding: 0; border: 0 solid red;"> 
+            <div class="jumbotron text-center" style="height: 85%; padding: 2rem; background-color: lightgray;">
+                <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
+                <h1 class="display-5" style="margin: 0; float: center;">Upload Successful</h1>
+                <p class="lead">Edit in the bottom box using tags in the middle box</p>
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button">Upload New File</a>
 
-                    <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
-                        <div class="form-group">
-                            <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                            <input type="submit" value="Edit Image" class="btn btn-primary btn-lg"
-                            onclick="loaderActivate()" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-            <div class="help-box" id="help-box" style="visibility: hidden;">
-                <button class="float-right helpBtn" id="hideBtn" 
-                style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                    <div class="container title" style="background: whitesmoke; ">Help</div>
-                    <div class="row lead"> 1. Type your caption in the bottom box</div>
-                    <br/>
-                    <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
-                    <br/>
-                    <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags 
-                        <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
+                <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
+                    <div class="form-group">
+                        <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
+                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg"
+                        onclick="loaderActivate()" />
                     </div>
-                    <br/>
-                    <div class="row lead"> 4. Export the text you created or export the data as a csv </div>
-                    
+                </form>
             </div>
+        </div>
+
+        <div class="help-box" id="help-box" style="visibility: hidden;">
+            <button class="float-right helpBtn" id="hideBtn" 
+            style="width: auto; height:auto; border-radius: 5px; 
+            background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+            background-color: rgba(39, 109, 200); color: darkred;">&times;
+            </button>
+            <div class="container title" style="background: whitesmoke; ">Help</div>
+            <div class="row lead"> 1. Type your caption in the bottom box</div>
+            <br/>
+            <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
+            <br/>
+            <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags 
+                <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
+            </div>
+            <br/>
+            <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
+        </div>
 
             <div class="container float-center" style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
                 
@@ -81,7 +83,8 @@
                         <h2>Metadata Output DICTSTRING </h2>
                     </label>
                     <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;"><%= dictionaryString %></textarea>
+                        style="resize: vertical; font-size: 22px;"><%= dictionaryString %>
+                    </textarea>
                 </div>
                 
                 <div id="tags"  style = "display: none;" class="text-center green-border-focus">
@@ -138,19 +141,18 @@
                 <br/>
                 <!-- Editing Box-->
                 <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
-                        <label for="template-text">
-                            <h3 class="display-5 alert alert-secondary">Edit Text</h2>
-                        </label>
-                        <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                            style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
-                    </div>
+                    <label for="template-text">
+                        <h3 class="display-5 alert alert-secondary">Edit Text</h2>
+                    </label>
+                    <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
+                        style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
+                </div>
             </div>
             
         
         <script type="text/javascript">
             var loader = document.getElementById('loading');
 
-            
             // set the template information 
             function setOutput() {
                 let getTemplate = document.getElementById("template-text").value;
@@ -374,8 +376,6 @@
             }
 
 
-
-
             $("#helpBtn").on("mousedown",function(){
                 // show the help box
                 document.getElementById("help-box").style.visibility = "visible";
@@ -386,9 +386,6 @@
                 // hide the help box
                 document.getElementById("help-box").style.visibility = "hidden";
             });
-
-            
-
 
             // make sure the loader is invisible on pageshow
             $(window).bind('pageshow',function(event){

@@ -45,14 +45,14 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
-                console.log('isis calls finished successfully');
+                console.log('isis calls finished successfully\n');
                 resolve();
             }).catch(function(code){
                 if(code === -1){
-                    console.log("ISIS IS NOT RUNNING");
+                    console.log("ISIS IS NOT RUNNING\n");
                     reject(-1);
                 }else{
-                    console.log('image extraction failed to create image');
+                    console.log('image extraction failed to create image\n');
                     reject();
                 }
 
@@ -125,7 +125,6 @@ module.exports = {
         if(resFloat){
             return resFloat * w;
         }else{
-            console.log("Could not parse float from given resString");
             return -1;
         }
     },
@@ -207,7 +206,7 @@ module.exports = {
             });
 
             std2isis.on("error",function(err){
-                console.log("std2isis Failed: -1");
+                console.log("std2isis Failed: -1\n");
                 reject(-1);
             });
         });
@@ -295,8 +294,6 @@ module.exports = {
      * and the height and width of the crop for the jimp function (2 and 3)
      */
     calculateCrop: function(cropArray){
-        console.log(cropArray.toString());
-
         let start_x = Number(cropArray[0]);
         let start_y = Number(cropArray[1]);
 
@@ -694,7 +691,7 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile){
 
 
         isis2std.stderr.on('data', function(data){
-            console.log('isis2std Error: ' + data.toString());
+            console.log('isis2std Error: ' + data.toString() + "\n");
         });
 
         isis2std.on('exit',function(code){
@@ -750,7 +747,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
 
 
         isisSpawn.on('error',function(code){
-            console.log(isisCall + " Failed: -1");
+            console.log(isisCall + " Failed: -1\n");
             reject(-1);
         });
         
@@ -825,11 +822,12 @@ var processFile = function(inputFile){
                 if(endTag(line.trim())){
                     // shorten if true
                     tagName = shortenName(tagName);
-                    //console.log('new tag is: ' + tagName);
+                    
                 }
                 // if comment ignore
                 else if(line.trim().indexOf('/*') > -1 || line.trim() == ""){
-                    //console.log('comment says: ' + line.trim());
+                    // this is a comment line in the file
+                    // ignore for now maybe do something later
                 }
                 else{
                     // `variable = data object` line
@@ -842,8 +840,6 @@ var processFile = function(inputFile){
                         tagName = combineName(tagName, tmpTag);
                         
                         // set data
-                        //console.log(tagName +  '=' + val)
-
                         cubeData[tagName] = val;
                         // set last seen var
                         lastTag = tagName;
@@ -869,7 +865,6 @@ var processFile = function(inputFile){
             for(key in cubeData){
                 cubeData[key] = cubeData[key].replace(/\"/g,"").replace(/\n/g,"");
             }
-            //console.log(JSON.stringify(cubeData));
             resolve(JSON.stringify(cubeData));
         });    
     });
