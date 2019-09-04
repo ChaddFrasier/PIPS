@@ -208,15 +208,9 @@ app.get('/', function(request, response){
  * Renders the basic page with the description file
  */ 
 app.get('/tpl',function(request, response){
-    // read and send the data in the form of ejs file
-    fs.readFile('./tpl/description.tpl', function read(err, data) {
-        if (err) {
-            // throw the error if needed
-            throw err;
-        }
-        // render the data
-        response.render('tpl.ejs', {tplData:data});
-    });
+    // render the data
+    response.render('tpl.ejs');
+    
 });
 
 

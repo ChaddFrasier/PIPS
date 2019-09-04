@@ -17,55 +17,46 @@
     <body>
         <div class="jumbotron jumbotron-fluid text-center" style="padding: 1%;">
             <h1 class="display-6"> Template Files</h1>
-            <p class="lead">.tpl is a special text file for this server.</p>
+            <p class="lead">(.tpl files)</p>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="/"
                     role="button">Back</a>
             </p>
         </div>
 
-
-        <div id="tplRaw" style="display: none"><%= tplData %></div>
-
         <div class="jumbotron-fluid jumbotron text-center" style="background-color: lightgray;">
             <h2>Template Files (.tpl)</h2>
-            <div class="lead jumbotron" id="textbox"></div> 
+            <div class="row">
+                <div class="col-2"></div>
+                <div class=" col-8 lead jumbotron float-center" id="textbox">
+                    A template for the PIP Server is a simple text file that has
+                    data names from ISIS mixed inbetween the actual figure description. They use the name of the ISIS data 
+                    those data names then get processed and exchanged with the data if they are found. 
+                    The purpose of this is to allow users to reuse captions for multiple figures and this allows users to
+                    use ISIS data in figure captions much faster than before. 
+                </div>
+            </div>
+            <div class="row">
+                <div class=" col-4 lead jumbotron float-center" id="textbox">
+                    This image of the <b class="font-weight-bold">TargetName</b> was taken with the <b class="font-weight-bold">INSTRUMENT_NAME</b> 
+                    on <b class="font-weight-bold">StartTime</b>.
+                    This image shows a scale of <b class="font-weight-bold">IsisCube.Mapping.PixelResolution</b> and was taken 
+                    at an altitude of <b class="font-weight-bold">GroundPoint.SpacecraftAltitude</b> above the surface of the surface.
+                </div> 
+                <div class="col-4">
+                    <svg viewBox = "0 0 650 175"width="100%" height="100%" style="border:4px black solid">
+                        <path d="M 150 55 L 150 105 L 350 105 L 350 155 L 500 80 L 350 5 L 350 55" stroke="black" stroke-width="5" />
+                        <text x="525" y="90" font-size="35">Data</text>
+                        <text x="0" y="90" font-size="35">Template</text>
+                    </svg>
+                </div>
+                <div class=" col-4 lead jumbotron float-center" id="textbox">
+                        This image of the <b class="font-weight-bold">MOON</b> was taken with the
+                         <b class="font-weight-bold">LUNAR RECONNAISSANCE ORBITER CAMERA</b> on <b class="font-weight-bold">2018-12-09T01:23:44.494</b>.
+                        This image shows a scale of <b class="font-weight-bold">0.80618609186356 &lt;meters/pixel&gt;</b> and was taken 
+                        at an altitude of <b class="font-weight-bold">53.787952344855 &lt;km&gt;</b> above the surface of the surface.
+                </div> 
+            </div>
         </div>
     </body>
-    <script type="text/javascript">
-    // script to read the template help raw text and turns it into html DOM elements
-        var tplData = document.getElementById("tplRaw").innerHTML;
-        var textbox = document.getElementById("textbox");
-        let tmpArr = tplData.split('\n');
-
-        function setOutput(array){
-            // loop over the remaining array
-            for(index in array){
-                if(array[index] === ''){
-                    // create a break
-                    let br = document.createElement("br");
-                    textbox.appendChild(br);
-                }
-                else{
-                    let h4 = document.createElement("h5");
-                    // look for <u> tags
-                    if(array[index].indexOf("&lt;u&gt;") !== -1){
-                        let tmp = array[index].split("&lt;u&gt;")[1];
-                        let u = document.createElement("u");
-                        u.innerHTML = tmp;
-                        h4.appendChild(u);
-                        textbox.appendChild(h4);
-
-                    }else{
-                        h4.innerHTML = array[index];
-                        textbox.appendChild(h4);
-                    }
-                }
-            }
-        }
-        // make the call
-        setOutput(tmpArr);
-    </script>
-
-
 </html>
