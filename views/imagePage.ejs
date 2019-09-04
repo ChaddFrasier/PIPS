@@ -556,6 +556,8 @@
                     }
                     else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
                         return minText;
+                    } else{
+                        return .05;
                     }
                 }
                 else{
@@ -570,6 +572,8 @@
                     }
                     else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
                         return maxText;
+                    }else{
+                        return 2;
                     }
                 }
             }
@@ -606,7 +610,7 @@
         <div class="help-box-right" id="help-box" style="visibility: hidden;">
             <button class="float-right helpBtn" id="hideBtn" 
             style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                <div class="container title" style="background: whitesmoke; ">Help</div>
+                <div class="container title" style="background: whitesmoke;font-size: 2rem;">Help</div>
                 <div class="row lead">1. Add Icons with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
                     <p class="small-text">(Remove any icon by clicking the same button)</p>
@@ -651,7 +655,7 @@
                             <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                             <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                             <li>
-                                <button class="btn btn-primary btn-lg" onclick="window.open('/captionWriter','_self')">Go Back</button>
+                                <button class="btn btn-primary btn-lg" onclick="captionHandler()">View Caption</button>
                             </li>
                             <li>
                                 <a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a>
@@ -777,6 +781,21 @@
             </div>
             <!-- Canvas for extracting inline svg-->
             <canvas id="canvas" width="<%=w%>" height="<%=h%>" style="display:none; border: 5px solid black; fill: black;" ></canvas>
+
+
+        <script type="text/javascript">
+        // preserves the data on the writer page if it was the last seen page before the image editor
+        function captionHandler(){
+            // if the last window seen was captionWriter then go back to preserve changes
+            if(document.referrer.indexOf("/captionWriter") > -1){
+                window.history.back();
+            }else{
+                // else reload the page
+                window.open('/captionWriter','_self');
+            }
+         }
+        </script>
+
 
 
         <script type="text/javascript">
