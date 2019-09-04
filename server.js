@@ -93,7 +93,6 @@ const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const {performance} = require('perf_hooks');
 
-
 // include custom utility functions
 const util = require('./util.js');
 const Cube = require('./js/cubeObj.js');
@@ -148,7 +147,7 @@ try{
     }
 }
 catch(err){
-    console.log('file error occured: ' + err);
+    console.log('File Error Occured: ' + err);
 }
 
 // read the config file to get only important tags for webpage
@@ -189,6 +188,9 @@ app.get('/', function(request, response){
             break;
         case "7":
             response.status(400);
+            break;
+        case "8":
+            response.status(500);
             break;
         default:
             response.status(200);
@@ -237,9 +239,7 @@ app.get('/captionWriter',function(request,response){
 
     }else{
         //retrieve the last found file for the user if it is there
-        // otherwise rensder index with an alert that the session timed out and they should upload again
-        console.log('cookie found: its value is: ' + userid);
-
+        // otherwise render index with an alert that the session timed out and they should upload again
         var userObject = util.getObjectFromArray(userid, cubeArray);
 
         // if the user Obj is not an error code
@@ -281,7 +281,6 @@ app.post('/captionWriter', async function(request, response){
     try{
         if(request.files === null ){
             // if no files uploaded
-            console.log('User Error Upload a Cube File to begin');
             // redirect the user & alert they need a .cub
             response.redirect('/?alertCode=3');
             // end the response
@@ -333,7 +332,6 @@ app.post('/captionWriter', async function(request, response){
                 // User id is found but not in the currnt server instances
                 // create a new instance for this user
                 if(cubeObj === undefined){
-                    console.log('Old User was found');
                     var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
                     cubeObj.userNum = numUsers++;
                 }
@@ -369,7 +367,6 @@ app.post('/captionWriter', async function(request, response){
                     templateText = tplFile.data.toString();
                 }
                 else{
-                    console.log('Wrong file type for template');
                     // send the alert code and redirect
                     response.redirect('/?alertCode=2');
                     // end response
@@ -385,9 +382,8 @@ app.post('/captionWriter', async function(request, response){
             /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
             if(isTiff){
                 promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag));
-            }else{
-                console.log('cube file was uploaded');    
             }
+
             // if the desired width and height are both given set that to be the user dimensions 
             if(Number(request.body.desiredWidth) > 50 || Number(request.body.desiredHeight)> 50){
 
@@ -401,7 +397,6 @@ app.post('/captionWriter', async function(request, response){
                     cubeObj.userDim = [-1,Number(request.body.desiredHeight)];
                 }
                 else{
-                    console.log("default");
                     cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
                 }
 
@@ -441,7 +436,6 @@ app.post('/captionWriter', async function(request, response){
                 
                 // when isis is done read the pvl file
                 Promise.all(promises).then(function(){
-                    console.log('server heard back from ISIS, starting pvl data extraction');
                     //reset promises array
                     promises = [];
 
@@ -490,18 +484,34 @@ app.post('/captionWriter', async function(request, response){
                         response.write('<html>PROGRAMMING SYNC ERROR</html>');
                         response.end();
                     });
-                }).catch(function(){
-                    // alert 6 which happens when isis failed to create an image form the cube
-                    response.redirect('/?alertCode=6');
-                    // end response
-                    response.end();
+                }).catch(function(errcode){
+
+
+                    if(errcode === -1){
+                        // alert 8 which happens when the server is no configured properly (ISIS is not running)
+                        response.redirect('/?alertCode=8');
+                        // end response
+                        response.end();
+                    }else{
+                        // alert 6 which happens when isis failed to create an image form the cube
+                        response.redirect('/?alertCode=6');
+                        // end response
+                        response.end();
+                    }                    
                 });          
             }).catch(function(err){
                 console.log(err);
-                // alert 5 which happens when isis fails to convert a tif
-                response.redirect('/?alertCode=5');
-                // end response
-                response.end();
+                if(err === -1){
+                    // alert 8 because isis is not on
+                    response.redirect('/?alertCode=8');
+                    // end response
+                    response.end();
+                }else{
+                    // alert 5 which happens when isis fails to convert a tif
+                    response.redirect('/?alertCode=5');
+                    // end response
+                    response.end();
+                }
 
             });
         }
@@ -570,7 +580,6 @@ app.get('/csv', function(request, response){
 
     }else{
         // return the index if not found
-        console.log('cookie found: its value is: ' + userId);
         let userObject = util.getObjectFromArray(userId,cubeArray);
 
         if(typeof(userObject)!=="number"){
@@ -584,7 +593,6 @@ app.get('/csv', function(request, response){
                 }
             });
         }else{
-            console.log("user doesnt have data on the server");
             response.redirect('/?alertCode=4');
         }
     }
@@ -647,7 +655,6 @@ app.get('/imageDownload', function(request, response){
                 }
             });
         }else{
-            console.log("User instance was not found on server");
             response.redirect("/?alertCode=4");
         }
     }
@@ -669,8 +676,6 @@ app.get('/imageEditor', function(request, response){
         response.redirect('/?alertCode=7');
 
     }else{
-        console.log('cookie found: its value is: ' + userid);
-
         let userObject = util.getObjectFromArray(userid,cubeArray),
             data = userObject.impData;
 
@@ -710,10 +715,6 @@ app.get('/imageEditor', function(request, response){
                     // calculate the image width in meters using the px width and the meters/px value
                     var imageMeterWidth = util.calculateWidth(resolution, w);
 
-                    console.log(imageMeterWidth + ' in meters\n');
-
-                    console.log(imageMeterWidth/1000 + ' in Kilometers\n');
-
                     // if the imageWidth is non-false
                     if(imageMeterWidth > -1){
                         // get log base 10 of the image width (dividing by 2 because there is two sides to the scalebar)
@@ -746,15 +747,12 @@ app.get('/imageEditor', function(request, response){
                             scalebarUnits="";
                         // if the length is less than 1KM return length in meters else return legth in km
                         if(imageMeterWidth/1000 < 1){
-                            console.log(scalebarMeters + " would be the legth in meters that the scalebar represents\n");
                             scalebarLength = scalebarMeters;
                             var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
                             console.log(scalebarLength + " m");
                             scalebarUnits = "m";
                         }
                         else{
-                            console.log(scalebarMeters/1000 + " would be the legth in km that the scalebar represents\n");
-                            
                             scalebarLength = scalebarMeters/1000;
                             var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                             console.log(scalebarLength + " km");
@@ -821,10 +819,8 @@ app.post('/imageEditor', function(request, response){
         let image = util.getimagename(userObject.name, 'png');
         imagepath = 'images/' + image;
 
-    
         // if the data val is an error code then fail
         if(userObject < 1){
-            console.log('Object Search Failed');
             data = 'NONE';
         }else{
            
@@ -841,11 +837,12 @@ app.post('/imageEditor', function(request, response){
 
    if(imagepath === 'none'){
        response.redirect("/?alertCode=4");
+       return response.end();
    }
     var w,
         h;
 
-    // get the hight and width of the image and render the page with all needed variables
+    // get the height and width of the image and render the page with all needed variables
     jimp.read(imagepath).then(function(img){
         w = img.bitmap.width;
         h = img.bitmap.height;
@@ -872,10 +869,6 @@ app.post('/imageEditor', function(request, response){
         // calculate image width in meters
         if(resolution !== -1){
             var imageMeterWidth = util.calculateWidth(resolution, w);
-
-            console.log(imageMeterWidth + ' in meters\n');
-
-            console.log(imageMeterWidth/1000 + ' in Kilometers\n');
 
             if(imageMeterWidth > -1){
                 // same as above for calculating scale bar
@@ -905,14 +898,12 @@ app.post('/imageEditor', function(request, response){
                     scalebarUnits="";
                 // if the length is less than 1KM return length in meters
                 if(imageMeterWidth/1000 < 1){
-                    console.log(scalebarMeters + " would be the legth in meters that the scalebar represents\n");
                     scalebarLength = scalebarMeters;
                     var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
                     console.log(scalebarLength + " m");
                     scalebarUnits = "m";
                 }
                 else{
-                    console.log(scalebarMeters/1000 + " would be the legth in km that the scalebar represents\n");
                     
                     scalebarLength = scalebarMeters/1000;
                     var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));

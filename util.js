@@ -3,8 +3,8 @@
  * 
  * @author Chadd Frasier
  * @since 06/03/19
- * @update 08/23/19
- * @version 2.5.0
+ * @update 09/03/19
+ * @version 2.5.1
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
  * 
@@ -23,6 +23,7 @@ var Promises = require('bluebird');
 
 // exportable functions
 module.exports = {
+
     /**
      * 
      * @param {string} cubeName name of the file for analysis
@@ -44,11 +45,17 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
-                console.log('isis calls finished');
+                console.log('isis calls finished successfully');
                 resolve();
-            }).catch(function(){
-                console.log('image extraction failed to create image');
-                reject();
+            }).catch(function(code){
+                if(code === -1){
+                    console.log("ISIS IS NOT RUNNING");
+                    reject(-1);
+                }else{
+                    console.log('image extraction failed to create image');
+                    reject();
+                }
+
             });
         });
     },
@@ -78,6 +85,7 @@ module.exports = {
         });
     },
 
+
     /**
      * 
      * @param {object} cubeObj the current cube object being manipulated
@@ -101,6 +109,7 @@ module.exports = {
             return -1;
         }
     },
+
 
     /**
      * 
@@ -151,8 +160,9 @@ module.exports = {
     },
 
 
-
     /**
+     * 
+     * @todo log to file if needed else log to console
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
      * @param {boolean} logToFile true or false should the server log to a file
@@ -195,6 +205,11 @@ module.exports = {
                 }
                 
             });
+
+            std2isis.on("error",function(err){
+                console.log("std2isis Failed: -1");
+                reject(-1);
+            });
         });
     },
     
@@ -229,7 +244,6 @@ module.exports = {
                 return true;
             }
         }
-
         return false;
     },
 
@@ -252,11 +266,9 @@ module.exports = {
                     return parseFloat(data[key]);
                 }
             }
-
-            return 0;
-        }else{
-            return 0;
         }
+
+        return 0;
     },
 
 
@@ -321,6 +333,7 @@ module.exports = {
         return returnImage;
     },
 
+
     /**
      * 
      * @param {string} newImage path to the image to be analyzed
@@ -339,6 +352,7 @@ module.exports = {
             return [w,h];
         });
     },
+
 
     /**
      * 
@@ -400,7 +414,6 @@ module.exports = {
     },
 
 
-
     /**
      * 
      * @param {object string} cubeData the stringify'ed version of the data to be converted
@@ -421,6 +434,7 @@ module.exports = {
         // return the string
         return csvString;
     },
+
 
     /**
      * 
@@ -444,6 +458,7 @@ module.exports = {
         }
         return importantTags;
     },
+
 
     /**
      * 
@@ -479,6 +494,7 @@ module.exports = {
         return JSON.stringify(impJSON);
     },
 
+
     /**
      * 
      * @param {string} cubeName name of the cube file
@@ -497,6 +513,7 @@ module.exports = {
         return namearr.join('.');
     },
 
+
     /**
      * @param {string} the name of the string that is being parsed by the server
      * 
@@ -509,7 +526,6 @@ module.exports = {
         catch(err){return imageName;}
     }
 };
-
 
 // -------------------------------------- local functions --------------------------------------------------------------------
 /**
@@ -621,29 +637,33 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
         // this block will pass and run when all isis commands are finished
         Promise.all(promises).then(function(){
             resolve();
-        }).catch(function(){
-            console.log('image rejection caught');
-            reject();
+        }).catch(function(code){
+            if(code === -1){
+                reject(code);
+            }else{
+                reject();
+            }
+
         });
     });
- }
+}
 
 
- /**
-  * 
-  * @param {string} cubeName 
-  * 
-  * @returns {string} the name of the log file
-  * 
-  * @description this function is meant to initialize a log file using the given cube name
-  */
- var createLogFile = function(cubeName){
+/**
+ *  
+ * @param {string} cubeName 
+ * 
+ * @returns {string} the name of the log file
+ * 
+ * @description this function is meant to initialize a log file using the given cube name
+ */
+var createLogFile = function(cubeName){
 
     let logFileName = cubeName.replace(".cub",".log");
 
      console.log("LOG FUNCTION GOT: " + logFileName);
 
- }
+}
 
 
 /**
@@ -685,6 +705,10 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile){
                 reject('isis2std Error: ' + code.toString + "\n");
             }
         });
+
+        isis2std.on("error",function(err){
+            reject(-1);
+        });
         
     });
 }
@@ -705,11 +729,11 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile){
  * @description makes the exec call to run isis commands
  */
 var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
-    return new Promise(function(resolve){
+    return new Promise(function(resolve,reject){
         // execute the isis2std function
-       
+        
         var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
-
+        
         isisSpawn.stdout.on('data', function(data){
             console.log(isisCall + ' stdout: ' + data.toString() + "\n");
         });
@@ -722,6 +746,12 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile){
         isisSpawn.on('exit',function(code){
             console.log(isisCall + ' Exited with code: ' + code + "\n");    
             resolve();
+        });
+
+
+        isisSpawn.on('error',function(code){
+            console.log(isisCall + " Failed: -1");
+            reject(-1);
         });
         
     });

@@ -77,32 +77,32 @@
             </form>
         </div>
 
-        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 45%;" class = "alert alert-warning text-center alertBoxes">
+        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 50%;" class = "alert alert-warning text-center alertBoxes">
             <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Upload a .cub file
         </div>
         
-        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%;" class = "alert alert-primary text-center">
+        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%; right: 0%;" class = "alert alert-primary text-center">
             <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Previous User has no server data. Start with Upload.
         </div>
-        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 66%;" class = "alert alert-danger text-center">
+        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 65%;" class = "alert alert-danger text-center">
             <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Failed to create image from Upload.
         </div>
-        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 73%;" class = "alert alert-danger text-center">
+        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 58%;" class = "alert alert-danger text-center">
             <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Failed to Upload.
         </div>
-        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 52%;' class = "alert alert-warning text-center" role="alert">
+        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 75%;' class = "alert alert-warning text-center" role="alert">
             <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
             &times;
             </button>
@@ -110,13 +110,21 @@
             Template must be (.tpl) or left blank.
         </div>
 
-        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 80%;' class = "alert alert-primary text-center" role="alert">
+        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 75%; right: 0%;' class = "alert alert-primary text-center" role="alert">
                 <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
                 </button>
                         
                 Unknown User: Please Upload a Cube to Begin.
             </div>
+
+        <div id="server-isis" style= 'visibility:hidden;position:absolute; top: 8%; right: 0%;' class = "alert alert-dark text-center" role="alert">
+            <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
+            &times;
+            </button>
+                    
+            Server Error: ISIS3 is not running.
+        </div>
 
         <script type="text/javascript">
             // get needed DOM element
@@ -135,7 +143,8 @@
                 failureBox = 'fail-alert',
                 uploadFail = 'fail-upload',
                 imageFail = 'fail-image',
-                timeOut = "server-timeout";
+                timeOut = "server-timeout",
+                isisRun = "server-isis";
 
             // parse the url and flag the appropriate error messages
             function fixLoader(){
@@ -161,6 +170,10 @@
                 }
                 else if(<%= alertCode %> == 7){
                     var alert = document.getElementById(timeOut);
+                    alert.style.visibility = 'visible';
+                }
+                else if(<%= alertCode %> == 8){
+                    var alert = document.getElementById(isisRun);
                     alert.style.visibility = 'visible';
                 }
                 else if(<%= alertCode %> != 0){
