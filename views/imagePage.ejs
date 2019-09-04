@@ -591,15 +591,15 @@
                 <br>
                 <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
-        <div class="container">
-            <div class="jumbotron text-center" >
-                <h2>Edit the Cube Image</h2> 
+        <div class="container" style="background: #e7c492; height: 12rem; padding: 2rem;">
+            <div class="jumbotron text-center" style="background: #f3d6b0; height:7rem; padding: 0;">
+                <h2>Edit Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> &times; <%=h%> px</h5>   
                 <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
             </div>
         </div>
-        
+        <br/>
         <!-----------------------Editor Box----------------------------------------------->
         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
         class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
@@ -663,30 +663,30 @@
                                 <a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a>
                             </li>
                             <li>
-                                <img class="btn btn-success btn-lg button" id="northIconFlag" style="width:4.5rem;"src="/images/north.png"></img>
+                                <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png" ></img>
                                 
                                 <label id="northCheckboxLabel" for="northCheckbox" style="visibility: hidden">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden">
+                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:13rem; left: 14rem;">
                                 
                             </li>
                             <li>
-                                <img class="btn btn-success btn-lg button" id="sunIconFlag" style="width:4.5rem;" src="/images/sun_symbol.png"></img>
+                                <img class="btn btn-lg button" id="sunIconFlag"src="/images/sun_symbol.png"></img>
                                 <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 22.5rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 18rem; left: 14rem; visibility: hidden;">
                             </li>
                             <li>
-                                <img class="btn btn-success btn-lg button" id="eyeFlag" style="width:4.5rem;" src="/images/eye_symbol.png"></img>
+                                <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
                                 <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 28rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 22.5rem; left: 14rem; visibility: hidden;">
                             </li>
                             <li>
-                                <img class="btn btn-success btn-lg button" id="pencilIconFlag" style="width:4.5rem;"src="/images/pencil.png"></img>
+                                <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
                                 
                                 <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
                                 <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">Undo</button>
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
+                                <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
                                     <svg viewBox= "0 0 25 4">
                                         <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" stroke="black" fill="white" ></rect>
                                         <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
@@ -704,11 +704,11 @@
                                     
                                     </svg>
                                 </button>
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="top: 0; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 38rem; visibility: hidden;left: 16rem;">
+                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="visibility: hidden;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 31rem; left: 18.5rem; visibility: hidden;">
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
+                                <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
                                 <svg viewBox="0 0 2 1.5">
                                     <rect x="0" y="0" width="2" height="1.5" stroke="white" stroke-width=".5" fill="transparent"></rect>
 
@@ -719,7 +719,7 @@
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">Undo</button>
                             </li>
                             <li>
-                                <button class="btn btn-success btn-lg button" id="textBtn" style="width:6rem; color: black">
+                                <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
                                 <svg viewBox="0 0 20 8">
                                     <rect x="0" y="0" width="20" height="8"stroke="white" stroke-width="1"fill="transparent"></rect>
                                     <text x="3" y="7" font-size="9">Aa</text>
@@ -739,17 +739,17 @@
                             
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
                                     <div class="col" style="top:0; padding: 0; left: 0rem;">
-                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="topPaddingBtn"> Top </button> 
+                                        <button class="btn button btn-md" id="topPaddingBtn"> Top </button> 
                                     </div>
                                     <div class="col" style="top:0rem; padding: 0; left: 0rem;">
-                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="bottomPaddingBtn"> Bottom </button>
+                                        <button class="btn button btn-md" id="bottomPaddingBtn"> Bottom </button>
                                     </div>
                                 
                                     <div class="col"style="top:0rem;padding: 0; left: 0rem;">
-                                        <button style="width: 4.5rem;" class="btn btn-success btn-md" id="leftPaddingBtn"> Left </button> 
+                                        <button class="btn button btn-md" id="leftPaddingBtn"> Left </button> 
                                     </div>
                                     <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;">
-                                        <button style="width: 4.5rem;"class="btn btn-success btn-md" id="rightPaddingBtn"> Right </button> 
+                                        <button class="btn button btn-md" id="rightPaddingBtn"> Right </button> 
                                     </div>
                                 </div>
                             </li>
@@ -1084,7 +1084,7 @@
                         // remove the bar and reset toggleValue
                         scaleBarIcon.remove();
                         toggleScalebar = true;
-                        this.className = "btn btn-success btn-lg button";
+                        this.className = "btn btn-lg button";
                         document.getElementById("scaleCheckbox").style.visibility = "hidden";
                         document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
                     }
@@ -1322,18 +1322,18 @@
                         padBottom = true;
                         padLeft = false, padRight = false, padTop = false;
 
-                        bottomBtn.className = 'btn btn-danger btn-md disabled';
+                        bottomBtn.className = 'btn btn-danger button btn-md disabled';
 
-                        leftBtn.className = 'btn btn-success btn-md';
-                        rightBtn.className = 'btn btn-success btn-md';
-                        topBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
 
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        bottomBtn.className = 'btn btn-success btn-md';
-                        leftBtn.className = 'btn btn-success btn-md';
-                        rightBtn.className = 'btn btn-success btn-md';
-                        topBtn.className = 'btn btn-success btn-md';
+                        bottomBtn.className = 'btn button btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
                         padBottom = false;  
                     }
                 });
@@ -1345,18 +1345,18 @@
 
                         padLeft = false, padRight = false, padBottom = false;
                         
-                        topBtn.className = 'btn btn-danger btn-md disabled';
+                        topBtn.className = 'btn btn-danger button btn-md disabled';
 
-                        leftBtn.className = 'btn btn-success btn-md';
-                        rightBtn.className = 'btn btn-success btn-md';
-                        bottomBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        bottomBtn.className = 'btn button btn-md';
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        topBtn.className = 'btn btn-success btn-md';
+                        topBtn.className = 'btn button btn-md';
 
-                        leftBtn.className = 'btn btn-success btn-md';
-                        rightBtn.className = 'btn btn-success btn-md';
-                        bottomBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        bottomBtn.className = 'btn button btn-md';
                         padTop = false;  
                     }
                 });
@@ -1371,18 +1371,18 @@
                         padBottom = false,
                         padTop = false;
 
-                        rightBtn.className = 'btn btn-danger btn-md disabled';
+                        rightBtn.className = 'btn btn-danger button btn-md disabled';
 
-                        leftBtn.className = 'btn btn-success btn-md';
-                        bottomBtn.className = 'btn btn-success btn-md';
-                        topBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        bottomBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
                     }else{
                         setImagePadding(parseInt(0),"none"); 
-                        rightBtn.className = 'btn btn-success btn-md'; 
+                        rightBtn.className = 'btn button btn-md'; 
 
-                        leftBtn.className = 'btn btn-success btn-md';
-                        bottomBtn.className = 'btn btn-success btn-md';
-                        topBtn.className = 'btn btn-success btn-md';
+                        leftBtn.className = 'btn button btn-md';
+                        bottomBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
                         padRight = false; 
                     } 
                });
@@ -1396,17 +1396,17 @@
                        padRight=false, 
                        padTop = false;
                        
-                       leftBtn.className = 'btn btn-danger btn-md disabled';
+                       leftBtn.className = 'btn btn-danger button btn-md disabled';
                        
-                       bottomBtn.className = 'btn btn-success btn-md';
-                       rightBtn.className = 'btn btn-success btn-md';
-                       topBtn.className = 'btn btn-success btn-md';
+                       bottomBtn.className = 'btn button btn-md';
+                       rightBtn.className = 'btn button btn-md';
+                       topBtn.className = 'btn button btn-md';
                    }else{
                        setImagePadding(parseInt(0),"none"); 
-                       leftBtn.className = 'btn btn-success btn-md'; 
-                       bottomBtn.className = 'btn btn-success btn-md';
-                       rightBtn.className = 'btn btn-success btn-md';
-                       topBtn.className = 'btn btn-success btn-md';
+                       leftBtn.className = 'btn button btn-md'; 
+                       bottomBtn.className = 'btn button btn-md';
+                       rightBtn.className = 'btn button btn-md';
+                       topBtn.className = 'btn button btn-md';
                        padLeft = false; 
                    } 
               });
@@ -1418,10 +1418,10 @@
                     
                     padBottom = false, padLeft = false, padRight = false, padTop = false;
                     
-                    bottomBtn.className = 'btn btn-success btn-md';
-                    leftBtn.className = 'btn btn-success btn-md';
-                    rightBtn.className = 'btn btn-success btn-md';
-                    topBtn.className = 'btn btn-success btn-md';
+                    bottomBtn.className = 'btn button btn-md';
+                    leftBtn.className = 'btn button btn-md';
+                    rightBtn.className = 'btn button btn-md';
+                    topBtn.className = 'btn button btn-md';
                     
                 });
 
@@ -1625,8 +1625,9 @@
                     
                     //console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
 
+                   
                     // if the draw flag is true and length of clicks is 0
-                    if(drawFlag && clickArray.length === 0){
+                    if(drawFlag && clickArray.length === 0 && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         // create the new  line dynamically and add it to the array so we can remove it later if needed
                         line = document.createElementNS("http://www.w3.org/2000/svg","line");
                         line.setAttribute("x1",mouseX);
@@ -1646,7 +1647,7 @@
                         lineArr.push(line);
                         captureClick(mouseX,mouseY);
                     }
-                    else if(drawFlag && clickArray.length > 1){
+                    else if(drawFlag && clickArray.length > 1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         // if the line is being drawn and the seconf click happens set the final location
                         line.setAttribute("x2",mouseX);
                         line.setAttribute("y2",mouseY);
@@ -1654,13 +1655,13 @@
                         clickArray = [];
                         drawFlag = false;
                         // reset the button color and allow for click detection again
-                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
                         if(lineArr.length > 0){
                             document.getElementById("undoLine").style.visibility = "visible";
                         }
 
-                        svg.className.baseVal = "image-image float-center";
+                        document.getElementById("svgBackground").className.baseVal = "";
 
                         
                         let svgElements = svg.childNodes;
@@ -1791,8 +1792,7 @@
                         mouseY = parseInt(svgP.y);
 
                         //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
-                        if( drawFlag && clickArray.length >1){
-                            
+                        if( drawFlag && clickArray.length >1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                             drawLine(line, mouseX, mouseY);
                         }
                         
@@ -2069,8 +2069,8 @@
                     if(drawFlag){
                         drawFlag = false;
                         // reset the interface 
-                        svg.className.baseVal = "image-image float-center";
-                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
+                        document.getElementById("svgBackground").className.baseVal = "";
+                        document.getElementById("pencilIconFlag").className = "btn btn-lg button";
                         clickArray = [];
                         // remove half drawn lines
                         if(lineArr.length && clickArray > 1){
@@ -2098,7 +2098,7 @@
                         }
                     }
                     else{
-                        svg.className.baseVal = "image-image float-center draw";
+                        document.getElementById("svgBackground").className.baseVal = "draw";
                         drawFlag = true;
                         document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
 
@@ -2141,7 +2141,7 @@
                     if(lineArr.length > 0 && clickArray.length > 1){
                         lineArr.pop().remove();
                         svg.className.baseVal = "image-image float-center";
-                        document.getElementById("pencilIconFlag").className = "btn btn-success btn-lg button";
+                        document.getElementById("pencilIconFlag").className = "btn btn-lg button";
                         drawFlag = false;
                         clickArray = [];
                     }
@@ -2181,7 +2181,7 @@
                             northIconPlaced = !northIconPlaced;
                             northImage.remove();
                             northImage.style.visibility = 'hidden';
-                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-success btn-lg button");
+                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
                             document.getElementById("northCheckbox").style.visibility = "hidden";
                             document.getElementById("northCheckboxLabel").style.visibility = "hidden";
                             
@@ -2233,7 +2233,7 @@
                             eyeImage.remove();
                             eyeImage.style.visibility = 'hidden';
                             eyeFlag = !eyeFlag;
-                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-success btn-lg button");
+                            document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
                             document.getElementById("eyeCheckbox").style.visibility = "hidden";
                             document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
                            
@@ -2268,7 +2268,7 @@
                             sunIconPlaced = !sunIconPlaced;
                             sunImage.style.visibility = 'hidden';
                             sunImage.remove();
-                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-success btn-lg button");
+                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
                             sunFlag = false;
                             document.getElementById("sunCheckbox").style.visibility = "hidden";
                             document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
@@ -2816,8 +2816,6 @@
 
                     // rotate the arrow around the center point of the eye
                     if(icon.id.indexOf('eye') > -1){
-                        console.log('transform of eye is: '+ icon.getAttribute("transform"));
-    
                         for(index in transformArray){
                             if(transformArray[index].indexOf("rotate") > -1){
                                 var tmp = transformArray[index].split("rotate(")[1];

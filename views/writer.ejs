@@ -22,8 +22,8 @@
             <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
         </div>
         
-        <div class="container" style="height: 15rem; width: 75%; padding: 0; border: 0 solid red;"> 
-            <div class="jumbotron text-center" style="height: 85%; padding: 2rem; background-color: lightgray;">
+        <div class="container" style="height: 13rem; width: 75%; padding: 0; border: 1px solid black; margin-bottom: 1rem;"> 
+            <div class="jumbotron text-center" style="height: 100%; padding: 1rem; border: 1% solid black;background-color: #e7c492;">
                 <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
                 <h1 class="display-5" style="margin: 0; float: center;">Upload Successful</h1>
                 <p class="lead">Edit in the bottom box using tags in the middle box</p>
@@ -61,7 +61,7 @@
                 
                 <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
                     <label for="template-text-output">
-                        <h3 class="display-5 alert alert-secondary">Template Text Output</h2>
+                        <h3 class="display-5 alert alert-secondary" style="background: #63585e; color: white;">Template Text Output</h2>
                     </label>
                     <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
@@ -69,7 +69,7 @@
 
                     <form class="lg-form text-center float-right" style="margin: 0;">
                         <div class="form-group">
-                            <a class="btn btn-success text-white btn-lg" role="button" id="link" download="<%=outputName%>">Download
+                            <a class="btn button text-white btn-lg" style="width: 12rem" role="button" id="link" download="<%=outputName%>">Download
                                 Caption</a>
                         </div>
                     </form>
@@ -116,7 +116,7 @@
                 <!-- Active Tag Box -->
                 <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
                     <label for="test" class="float-center" style="margin: 0;">
-                        <h3 class="display-5 alert alert-secondary" style="margin: inherit;">Usable Tags</h2>
+                        <h3 class="display-5 alert alert-secondary" style="margin: inherit; background: #63585e; color: white;">Usable Tags</h2>
                     </label>
                     <br/>
                     <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
@@ -127,13 +127,13 @@
                     <br/>
                     <textarea readonly id="test" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                    <button id="button-more-tags" class="btn btn-md btn-success float-left" style="margin: 0; margin-top:1rem;" onclick="showMoreTags()">Show Important Tags</button>
+                    <button id="button-more-tags" class="btn btn-md button float-left" style="margin: 0; margin-top:1rem; width: auto;" onclick="showMoreTags()">Show Important Tags</button>
                     
                     <form action="/csv" method='POST' class="lg-form text-center float-right" style="margin: 0;  margin-top:1rem;">
                         <div class="lg-form text-center" style="margin: 0;">
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                            <input type="submit" value="Save Metadata CSV" class="btn btn-success btn-lg" />
+                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" style="width: 13rem;" />
                         </div>
                     </form>
                 </div>
@@ -142,7 +142,7 @@
                 <!-- Editing Box-->
                 <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
                     <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary">Edit Text</h2>
+                        <h3 class="display-5 alert alert-secondary" style="background: #63585e; color: white;">Edit Text</h2>
                     </label>
                     <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
                         style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>

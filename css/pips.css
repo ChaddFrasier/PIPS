@@ -137,8 +137,10 @@ image:hover {
     display: block;
 }
 .button {
-    width:90%;
+    width:4.5rem;
     height: auto;
+    background: #007150;
+    color: white;
 }
 .canvas-legend {
     height: 50px;
@@ -236,7 +238,7 @@ svg{
 }
 
 li{
-    padding-top:2rem;
+    padding-top:1rem;
     right: 80%;
     padding-left: 5rem; 
     list-style-type: none;
