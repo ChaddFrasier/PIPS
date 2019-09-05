@@ -104,6 +104,7 @@ image:hover {
     display: block;
     align-content: left;
     padding-right:auto;
+    padding: 0;
     left: 0rem;
     top: 4rem;
     padding-left: 0%;            
@@ -240,7 +241,7 @@ svg{
 li{
     padding-top:1rem;
     right: 80%;
-    padding-left: 5rem; 
+    padding-left: 2rem; 
     list-style-type: none;
     margin-left: auto;
     margin-right: 10%;

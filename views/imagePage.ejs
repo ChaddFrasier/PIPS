@@ -15,572 +15,572 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     </head>
 
-<script type="text/javascript">
-    // function to create a draggable field from svg element
-    function makeDraggable(event) {
-    
-        // get svg element
-        var svg = event;
-    
-        // adds event functions to the whole svg element
-        svg.addEventListener('mousedown', startDrag);
-        svg.addEventListener('mousemove', drag);
-        svg.addEventListener('mouseup', endDrag);
-        svg.addEventListener('mouseleave', endDrag);
+    <script type="text/javascript">
+        // function to create a draggable field from svg element
+        function makeDraggable(event) {
         
-        // decrale all global function variables for dragging
-        var selectedElement, offset, transform,
-            bbox, minX, maxX, minY, maxY, confined,elementOver;
-        // & for resizing
-        var resizing = false,
-            dragging = false,
-            currentScale,
-            transformString,
-            startH,
-            startW,
-            minNorth = .1219513,
-            maxNorth = 1.219513,
-            minSun = .15625,
-            maxSun = 1.5625,
-            minEye = .52,
-            maxEye = 5.2,
-            maxText = textSize*10,
-            minText = textSize,
-            iconMin,
-            outlineMin = .125,
-            scale;
+            // get svg element
+            var svg = event;
         
+            // adds event functions to the whole svg element
+            svg.addEventListener('mousedown', startDrag);
+            svg.addEventListener('mousemove', drag);
+            svg.addEventListener('mouseup', endDrag);
+            svg.addEventListener('mouseleave', endDrag);
             
-        // sets boundries for draggable objects when confined based on the view box
-        // minX = x of viewbox
-        var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
-        // maxX = the width of the viewbox - the absolute value of the x value
-        var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
-        // minY = y of the viewBox
-        var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
-        // maxY = the height of the viewbox - the absolute value of the  y of the view box
-        var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
-
-
-        // get the mouse position relative to the svg screen matrix
-        // math functions were found on a blog post
-        function getMousePosition(event) {
-            var CTM = svg.getScreenCTM();
+            // decrale all global function variables for dragging
+            var selectedElement, offset, transform,
+                bbox, minX, maxX, minY, maxY, confined,elementOver;
+            // & for resizing
+            var resizing = false,
+                dragging = false,
+                currentScale,
+                transformString,
+                startH,
+                startW,
+                minNorth = .1219513,
+                maxNorth = 1.219513,
+                minSun = .15625,
+                maxSun = 1.5625,
+                minEye = .52,
+                maxEye = 5.2,
+                maxText = textSize*10,
+                minText = textSize,
+                iconMin,
+                outlineMin = .125,
+                scale;
             
-            return {
-                x: (event.clientX - CTM.e) / CTM.a,
-                y: (event.clientY - CTM.f) / CTM.d
-            };
-        }
-
-        // start the drag on mousedown
-        function startDrag(event){
-            // get the mouseX and mouseY on the client
-            mX = event.clientX, mY = event.clientY;
-            // prevent all other mousedown events
-            event.preventDefault();
-            // find what element the event is on
-            elementOver = document.elementFromPoint(mX,mY);
-            // get the element that needs to be dragged or scaled
-            selectedElement = event.target.parentNode;
-
-            // if the event.target.parentNode is the svg element set it back to the target
-            if(selectedElement === svg){
-                selectedElement = event.target;
-            }
-
-            // grab the limits scale value for whichever icon is selected
-            // functions find min if passed true and find max if passed false
-            if(selectedElement){
-                iconMin = findLimit(selectedElement,true);
-                iconMax = findLimit(selectedElement, false);
-            }
-
-            // get the bounding box of the group element
-            try{
-                bbox = selectedElement.getBBox();
-            }catch(err){
-                return;
-            }
-            // Make sure the first transform on the element is a translate transform
-            var transforms = selectedElement.transform.baseVal;
-
-
-            // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
-            // start resize logic
-            if(elementOver.classList.contains('resize') && !resizing){
-                // set resizing flag
-                resizing = true;
-            
-                 // get scale data
-                scale = transforms.getItem(transforms.length -1);
-
-                // get the coordinates where the click happend inside the svg box
-                offset = getMousePosition(event);
-
-                // get the transform string so we can change it later strip the scale part off the end because we are resizing
-                transformString = selectedElement.getAttribute("transform").split("scale(")[0];
                 
-                // extract the scale value as a number
-                currentScale = scale.matrix.a;
+            // sets boundries for draggable objects when confined based on the view box
+            // minX = x of viewbox
+            var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
+            // maxX = the width of the viewbox - the absolute value of the x value
+            var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
+            // minY = y of the viewBox
+            var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
+            // maxY = the height of the viewbox - the absolute value of the  y of the view box
+            var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
 
-                // get translate data
-                transform = transforms.getItem(0);
 
+            // get the mouse position relative to the svg screen matrix
+            // math functions were found on a blog post
+            function getMousePosition(event) {
+                var CTM = svg.getScreenCTM();
+                
+                return {
+                    x: (event.clientX - CTM.e) / CTM.a,
+                    y: (event.clientY - CTM.f) / CTM.d
+                };
             }
-            // if the event click happened on a draggable element start drag logic
-            else if (selectedElement.classList.contains('draggable')) {
-                // set dragging flag
-                dragging = true;
-                // get the offset value for the translation
-                offset = getMousePosition(event);
-                 // get scale data
-                scale = transforms.getItem(transforms.length -1);
 
-                // make sure that the first element of the tranform object is the translate and create one if it isnt there
-                if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                // sets current transform position to 0,0 to make moving item easier
-                var translate = svg.createSVGTransform();
-                translate.setTranslate(0, 0);
-                selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+            // start the drag on mousedown
+            function startDrag(event){
+                // get the mouseX and mouseY on the client
+                mX = event.clientX, mY = event.clientY;
+                // prevent all other mousedown events
+                event.preventDefault();
+                // find what element the event is on
+                elementOver = document.elementFromPoint(mX,mY);
+                // get the element that needs to be dragged or scaled
+                selectedElement = event.target.parentNode;
+
+                // if the event.target.parentNode is the svg element set it back to the target
+                if(selectedElement === svg){
+                    selectedElement = event.target;
                 }
 
-                // Get initial translation in relation to the current mouse position (offset) and the current translation
-                transform = transforms.getItem(0);
+                // grab the limits scale value for whichever icon is selected
+                // functions find min if passed true and find max if passed false
+                if(selectedElement){
+                    iconMin = findLimit(selectedElement,true);
+                    iconMax = findLimit(selectedElement, false);
+                }
 
-                // calculate the transform location in relation to the svg element
-                offset.x -= transform.matrix.e;
-                offset.y -= transform.matrix.f;
-
-                // is the selected item confined?
-                confined = selectedElement.classList.contains('confine');
-
-                // if true
-                if (confined) {
-                    let rotateVal = transforms.getItem(1).angle;
-                    if(rotateVal > 360){rotateVal-= 360;}
-
-                    // get the current scale of the icon
-                    let scaleFactor = scale.matrix.a;
+                // get the bounding box of the group element
+                try{
                     bbox = selectedElement.getBBox();
-
-                    // if no rotate has occured
-                    if(rotateVal ===0 || rotateVal === 360 ){
-                        // set the new boundry values based on the view box and the width/height of the icons
-                        // dim * scale = dim of icon
-                        minX = boundaryX1 - bbox.x;
-                        maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
-                        minY = boundaryY1 - bbox.y;
-                        maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
-                    }
-                    else{ // rotate has been applied
-                        // calculate the degree of the rotation in radians
-                        var trigInput = rotateVal * Math.PI/180;
-                        var trigInput2 = (rotateVal-90) * Math.PI/180;
-                        var trigInput3 = (rotateVal-180) * Math.PI/180;
-                        var trigInput4 = (rotateVal-270) * Math.PI/180;
-
-                        // check for easy angle calculations, this save processing time if the value is a 45 45 90 triangle
-                        // 30 60 90 triangle, or a interval of 90 degrees
-                        if(rotateVal === 180){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x+ bbox.width * scaleFactor;
-                            maxX = boundaryX2 - bbox.x;
-                            minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
-                            maxY = boundaryY2 - bbox.y;
-                        }else if(rotateVal === 90){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
-                            maxX = boundaryX2 - bbox.x;
-                            minY = boundaryY1 - bbox.y;
-                            maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
-                        }else if(rotateVal === 270){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x;
-                            maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor;
-                            minY = boundaryY1 - bbox.y + bbox.width * scaleFactor;
-                            maxY = boundaryY2 - bbox.y;
-                        }
-                        else if(rotateVal === 45){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2));
-                            maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor)/Math.sqrt(2);
-                            minY = boundaryY1 - bbox.y;
-                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - (bbox.height * scaleFactor)/Math.sqrt(2);
-                        }
-                        else if(rotateVal === 135){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2)+ (bbox.width * scaleFactor/Math.sqrt(2)));
-                            maxX = boundaryX2 - bbox.x;
-                            minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
-                            maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);                            
-                        }
-                        else if(rotateVal === 225){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x + (bbox.width * scaleFactor/Math.sqrt(2));
-                            maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor/Math.sqrt(2);
-                            minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) + (bbox.width * scaleFactor)/Math.sqrt(2);
-                            maxY = boundaryY2 - bbox.y;
-                        }
-                        else if(rotateVal === 315){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
-                            minX = boundaryX1 - bbox.x;
-                            maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) - bbox.width * scaleFactor/Math.sqrt(2);
-                            minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
-                            maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
-                        }
-                        // end of easy calculations
-                        // if less than 90 calculate using trig using the first trig radian value
-                        // the triangles caculated are based on the top left of the original icon so we need 4 different checks
-                        else if(rotateVal < 90){
-                            minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
-                            maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
-                            minY = boundaryY1 - bbox.y;
-                            maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
-                        }
-                        else if(rotateVal < 180){
-                            // calculate with 2nd radian value
-                            minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
-                            maxX = boundaryX2 - bbox.x;
-                            minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
-                            maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
-                        }
-                        else if(rotateVal < 270){
-                            //calculate with 3rd radian value
-                            minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
-                            maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
-                            minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
-                            maxY = boundaryY2 - bbox.y;
-                        }
-                        else if(rotateVal < 360){
-                            // calculate with 4th radian value     
-                            minX = boundaryX1 - bbox.x;
-                            maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
-                            minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
-                            maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);    
-                        }
-                    }
-                    console.log("BOUNDING DIMENSIONS ARE FROM: x" + minX + " to " + maxX);
-                    console.log("AND Y: " + minY + " to " + maxY);
+                }catch(err){
+                    return;
                 }
-            }
-        }
-
-        // set flags for rescale
-        var bottomL = false,
-            bottomR = false,
-            topR = false,
-            topL = false,
-            bottom=false;
-        
-
-        // move the icon around using translate or scale it by detecting what the mouse was over on the click
-        function drag(event) {
-            // get the mouse x and y based on client
-            mX = event.clientX, mY = event.clientY;
-
-            // set the factor at which the resize happens
-            let growingFactor = .02;
-
-            // reset growing factor if needed
-            if( elementOver && elementOver.parentElement && elementOver.parentElement.classList.contains("textbox")){
-                growingFactor *= 10;
-            }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
-                growingFactor *=2.5;
-            }
-            
-            // if the selectedElement is non false then check if its an outline
-            if(selectedElement){
-                var isOutline = selectedElement.classList.contains("outline");
-            }
-            
-            // prevent all other mousemove events
-            event.preventDefault();
-            
-            // if the selectedElement is not null and resizing is true and dragging is false
-            if(selectedElement && resizing && !dragging){
-         
-                // get new mouse position in svg space
-                var coord = getMousePosition(event);
-
-                // calculate icon size using bbox height and width times the scale 
-                startH = bbox.height * currentScale;
-                startW = bbox.width * currentScale;
-
-                // first make sure there are no other flags active and
-                // either the top right element is moused over or the top right is being moved
-                if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
-                    //set the flag just incase it isn't
-                    topR = true;
-                    // if the new x is less  & the new y is greater than the old position then shrink
-                    if(coord.x < offset.x && coord.y > offset.y){
-                        // decrement by the growing factor
-                        currentScale -= growingFactor;
-                        // check for the min
-                        if(currentScale < iconMin){currentScale = iconMin;}
-
-                        // translate the icon 0 in the x direction and by the difference in the positive y direction
-                        dx = parseInt(transform.matrix.e);
-                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
-                    }
-                    // if the old x is greater and the new y is smaller then we are growing
-                    else if(coord.x > offset.x && coord.y < offset.y){
-                        // increment by the factor
-                        currentScale += growingFactor;
-
-                        // check for max size
-                        if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
-                        
-                        // translate the icon 0 in the x direction and by the difference in the negative y direction        
-                        dx = parseInt(transform.matrix.e);
-                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);    
-                    }
-
-                    // set scale using svg data method
-                    scale.setScale(currentScale,currentScale);
-                    // if parse it returns a true value for both
-                    /* if(dx && dy){
-                        // set the new translate
-                        transform.setTranslate(dx,dy);
-                    } */
-                    // set the new mouse position as the old so we can scale up and down
-                    offset = coord;
-                }
-                // using the same logic for other corners of the scale
-                else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
-                    topL = true;
-                    // if new x is greater than the old & the new y is greater than the old
-                    // shrink the scale
-                    if(coord.x > offset.x && coord.y > offset.y){
-                        currentScale -= growingFactor;
-                        // check for min
-                        if(currentScale < iconMin){currentScale = iconMin;}
-
-                        // transform the icon by the positive difference in the sizes                        
-                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
-                        dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
-                    }
-                    // if the new x and new y are both less than the old position
-                    // grow
-                    else if(coord.x < offset.x && coord.y < offset.y){
-                        currentScale += growingFactor;
+                // Make sure the first transform on the element is a translate transform
+                var transforms = selectedElement.transform.baseVal;
 
 
-                        // check for max size
-                        if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && 
-                        (bbox.height * currentScale > parseInt("<%=h%>")/3 || bbox.width * currentScale > parseInt("<%=w%>")/3))
-                        {currentScale -= growingFactor}
-
-                        // transform the icon by the negative difference in the sizes
-                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
-                        dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
-                    }
-
-                    // set scale using svg data method
-                    scale.setScale(currentScale,currentScale);
-                    // if parse it returns a true value for both
-                    /* if(dx && dy){
-                        // set the new translate
-                        transform.setTranslate(dx,dy);
-                    } */
-
-                    // set new mouse position
-                    offset = coord;
-                }
-                // same logic as other corners
-                else if((!bottomR && !topR && !topL) && (elementOver.classList.contains('bottom-left') || bottomL)){
-                    bottomL = true;
-                    // if new x is greater and new y is less
-                    // shrink
-                    if(coord.x > offset.x && coord.y < offset.y){
-                        currentScale -= growingFactor;
-                        // check for min
-                        if(currentScale < iconMin){currentScale =iconMin;}
-                        
-
-                        // transform the icon by the negative difference in the sizes keep y the same
-                        dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
-                        dy = parseInt(transform.matrix.f);
-
-
-                    }
-                    // of the new x is less and the new y is greater
-                    // grow the icon
-                    else if(coord.x < offset.x && coord.y > offset.y){
-                        currentScale += growingFactor;
-
-                        // check for max size
-                        if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
-                        
-                        // transform the icon by the negative difference in the sizes keep y the same
-                        dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
-                        dy = parseInt(transform.matrix.f);
-
-                    }
-                    
-                    // set scale using svg data method
-                    scale.setScale(currentScale,currentScale);
-                    // if parse it returns a true value for both
-                    /* if(dx && dy){
-                        // set the new translate
-                        transform.setTranslate(dx,dy);
-                    } */
-
-                    // set new mouse position
-                    offset = coord;
-                }
-                // same logic as other corners 
-                else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
-                    bottomR = true;
-                    // if the new x is less and the new y is also less
-                    // shrink
-                    if(coord.x < offset.x && coord.y < offset.y){
-                        currentScale -= growingFactor;
-                        // check min bound
-                        if(currentScale < iconMin){currentScale = iconMin;}
-                    }
-                    // if the new x is greater than the old and the new y is greater
-                    // grow
-                    else if(coord.x > offset.x && coord.y > offset.y){
-                        currentScale += growingFactor;
-
-                        //check for max size
-                        if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
-                    }
-                    // set scale using svg data method
-                    scale.setScale(currentScale,currentScale);
-                    // no need to translate for bottom right corner
-                    // set new mouse position
-                    offset = coord;
-                }
-
-                // same logic as other corners 
-                else if((!topL && !topR && !bottomL && !bottomR) && (elementOver.classList.contains('bottom') || bottom)){
-                    bottom = true;
-                    // if the new x is less and the new y is also less
-                    // shrink
-                    if(coord.y < offset.y){
-                        currentScale -= growingFactor*10;
-                        // check min bound
-                        if(currentScale < iconMin){currentScale = iconMin;}
-                    }
-                    // if the new x is greater than the old and the new y is greater
-                    // grow
-                    else if(coord.y > offset.y){
-                        currentScale += growingFactor*10;
-
-                        //check for max size
-                        if(currentScale > iconMax){currentScale = iconMax;}
-                        if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
-                    }
-                    // set scale using svg data method
-                    scale.setScale(currentScale,currentScale);
-                    // no need to translate for bottom right corner
-                    // set new mouse position
-                    offset = coord;
-                }
-
-                // if the element is an outline then reset the stroke to the proper size
-                // removing the current scale and applying the base scale
-                if(isOutline){
-                    // calculate and set the stroke-width
-                    selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
-                }
-                       
-            }
-            // if the selected element is not null and the dragging flag is true
-            else if (selectedElement && dragging) {
-             
-                // get mouse coordinates
-                var coord = getMousePosition(event);
-                // calculate the difference in the two
-                var dx = coord.x - offset.x;
-                var dy = coord.y - offset.y;
-
-                // if the icon is confined check for boundry values
-                if (confined) {
-                    if (dx < minX) { dx = minX; }
-                    else if (dx > maxX) { dx = maxX; }
-                    if (dy < minY) { dy = minY; }
-                    else if (dy > maxY) { dy = maxY; }
-                }
-                // set the transform
-                transform.setTranslate(dx, dy);
+                // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
+                // start resize logic
+                if(elementOver.classList.contains('resize') && !resizing){
+                    // set resizing flag
+                    resizing = true;
                 
-            }
-        }
+                    // get scale data
+                    scale = transforms.getItem(transforms.length -1);
 
-        // when mouseup or mouse leave the svg box reset all flags 
-        // and set the selectedElement to null
-        function endDrag(event) {
+                    // get the coordinates where the click happend inside the svg box
+                    offset = getMousePosition(event);
+
+                    // get the transform string so we can change it later strip the scale part off the end because we are resizing
+                    transformString = selectedElement.getAttribute("transform").split("scale(")[0];
+                    
+                    // extract the scale value as a number
+                    currentScale = scale.matrix.a;
+
+                    // get translate data
+                    transform = transforms.getItem(0);
+
+                }
+                // if the event click happened on a draggable element start drag logic
+                else if (selectedElement.classList.contains('draggable')) {
+                    // set dragging flag
+                    dragging = true;
+                    // get the offset value for the translation
+                    offset = getMousePosition(event);
+                    // get scale data
+                    scale = transforms.getItem(transforms.length -1);
+
+                    // make sure that the first element of the tranform object is the translate and create one if it isnt there
+                    if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+                    // sets current transform position to 0,0 to make moving item easier
+                    var translate = svg.createSVGTransform();
+                    translate.setTranslate(0, 0);
+                    selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+                    }
+
+                    // Get initial translation in relation to the current mouse position (offset) and the current translation
+                    transform = transforms.getItem(0);
+
+                    // calculate the transform location in relation to the svg element
+                    offset.x -= transform.matrix.e;
+                    offset.y -= transform.matrix.f;
+
+                    // is the selected item confined?
+                    confined = selectedElement.classList.contains('confine');
+
+                    // if true
+                    if (confined) {
+                        let rotateVal = transforms.getItem(1).angle;
+                        if(rotateVal > 360){rotateVal-= 360;}
+
+                        // get the current scale of the icon
+                        let scaleFactor = scale.matrix.a;
+                        bbox = selectedElement.getBBox();
+
+                        // if no rotate has occured
+                        if(rotateVal ===0 || rotateVal === 360 ){
+                            // set the new boundry values based on the view box and the width/height of the icons
+                            // dim * scale = dim of icon
+                            minX = boundaryX1 - bbox.x;
+                            maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
+                            minY = boundaryY1 - bbox.y;
+                            maxY = boundaryY2 - bbox.y - bbox.height * scaleFactor;
+                        }
+                        else{ // rotate has been applied
+                            // calculate the degree of the rotation in radians
+                            var trigInput = rotateVal * Math.PI/180;
+                            var trigInput2 = (rotateVal-90) * Math.PI/180;
+                            var trigInput3 = (rotateVal-180) * Math.PI/180;
+                            var trigInput4 = (rotateVal-270) * Math.PI/180;
+
+                            // check for easy angle calculations, this save processing time if the value is a 45 45 90 triangle
+                            // 30 60 90 triangle, or a interval of 90 degrees
+                            if(rotateVal === 180){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x+ bbox.width * scaleFactor;
+                                maxX = boundaryX2 - bbox.x;
+                                minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
+                                maxY = boundaryY2 - bbox.y;
+                            }else if(rotateVal === 90){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
+                                maxX = boundaryX2 - bbox.x;
+                                minY = boundaryY1 - bbox.y;
+                                maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
+                            }else if(rotateVal === 270){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x;
+                                maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor;
+                                minY = boundaryY1 - bbox.y + bbox.width * scaleFactor;
+                                maxY = boundaryY2 - bbox.y;
+                            }
+                            else if(rotateVal === 45){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2));
+                                maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor)/Math.sqrt(2);
+                                minY = boundaryY1 - bbox.y;
+                                maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - (bbox.height * scaleFactor)/Math.sqrt(2);
+                            }
+                            else if(rotateVal === 135){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2)+ (bbox.width * scaleFactor/Math.sqrt(2)));
+                                maxX = boundaryX2 - bbox.x;
+                                minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
+                                maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);                            
+                            }
+                            else if(rotateVal === 225){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x + (bbox.width * scaleFactor/Math.sqrt(2));
+                                maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor/Math.sqrt(2);
+                                minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) + (bbox.width * scaleFactor)/Math.sqrt(2);
+                                maxY = boundaryY2 - bbox.y;
+                            }
+                            else if(rotateVal === 315){
+                                // set the new boundry values based on the view box and the width/height of the icons
+                                // dim * scale = dim of icon
+                                minX = boundaryX1 - bbox.x;
+                                maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) - bbox.width * scaleFactor/Math.sqrt(2);
+                                minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
+                                maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
+                            }
+                            // end of easy calculations
+                            // if less than 90 calculate using trig using the first trig radian value
+                            // the triangles caculated are based on the top left of the original icon so we need 4 different checks
+                            else if(rotateVal < 90){
+                                minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
+                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
+                                minY = boundaryY1 - bbox.y;
+                                maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
+                            }
+                            else if(rotateVal < 180){
+                                // calculate with 2nd radian value
+                                minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
+                                maxX = boundaryX2 - bbox.x;
+                                minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
+                                maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
+                            }
+                            else if(rotateVal < 270){
+                                //calculate with 3rd radian value
+                                minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
+                                maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
+                                minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
+                                maxY = boundaryY2 - bbox.y;
+                            }
+                            else if(rotateVal < 360){
+                                // calculate with 4th radian value     
+                                minX = boundaryX1 - bbox.x;
+                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
+                                minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
+                                maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);    
+                            }
+                        }
+                        console.log("BOUNDING DIMENSIONS ARE FROM: x" + minX + " to " + maxX);
+                        console.log("AND Y: " + minY + " to " + maxY);
+                    }
+                }
+            }
+
+            // set flags for rescale
+            var bottomL = false,
+                bottomR = false,
+                topR = false,
+                topL = false,
+                bottom=false;
             
-            if(selectedElement){
-                drag(event);
-                resizing = false;
-                dragging = false;
-                bottomL = false;
-                bottomR = false;
-                topL = false;
-                topR = false;
-                bottom = false;
-            }
-          selectedElement = null;
-        }
 
-        // given an icon element returnns the min scale value for each icon to test against the new scale
-        function findLimit(selectedElement, isMin){
-            if(selectedElement && selectedElement !== 'null'){
-                if(isMin){
-                    if(selectedElement.id.indexOf('north') !== -1){
-                        return minNorth;
+            // move the icon around using translate or scale it by detecting what the mouse was over on the click
+            function drag(event) {
+                // get the mouse x and y based on client
+                mX = event.clientX, mY = event.clientY;
+
+                // set the factor at which the resize happens
+                let growingFactor = .02;
+
+                // reset growing factor if needed
+                if( elementOver && elementOver.parentElement && elementOver.parentElement.classList.contains("textbox")){
+                    growingFactor *= 10;
+                }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
+                    growingFactor *=2.5;
+                }
+                
+                // if the selectedElement is non false then check if its an outline
+                if(selectedElement){
+                    var isOutline = selectedElement.classList.contains("outline");
+                }
+                
+                // prevent all other mousemove events
+                event.preventDefault();
+                
+                // if the selectedElement is not null and resizing is true and dragging is false
+                if(selectedElement && resizing && !dragging){
+            
+                    // get new mouse position in svg space
+                    var coord = getMousePosition(event);
+
+                    // calculate icon size using bbox height and width times the scale 
+                    startH = bbox.height * currentScale;
+                    startW = bbox.width * currentScale;
+
+                    // first make sure there are no other flags active and
+                    // either the top right element is moused over or the top right is being moved
+                    if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
+                        //set the flag just incase it isn't
+                        topR = true;
+                        // if the new x is less  & the new y is greater than the old position then shrink
+                        if(coord.x < offset.x && coord.y > offset.y){
+                            // decrement by the growing factor
+                            currentScale -= growingFactor;
+                            // check for the min
+                            if(currentScale < iconMin){currentScale = iconMin;}
+
+                            // translate the icon 0 in the x direction and by the difference in the positive y direction
+                            dx = parseInt(transform.matrix.e);
+                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
+                        }
+                        // if the old x is greater and the new y is smaller then we are growing
+                        else if(coord.x > offset.x && coord.y < offset.y){
+                            // increment by the factor
+                            currentScale += growingFactor;
+
+                            // check for max size
+                            if(currentScale > iconMax){currentScale = iconMax;}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                            
+                            // translate the icon 0 in the x direction and by the difference in the negative y direction        
+                            dx = parseInt(transform.matrix.e);
+                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);    
+                        }
+
+                        // set scale using svg data method
+                        scale.setScale(currentScale,currentScale);
+                        // if parse it returns a true value for both
+                        /* if(dx && dy){
+                            // set the new translate
+                            transform.setTranslate(dx,dy);
+                        } */
+                        // set the new mouse position as the old so we can scale up and down
+                        offset = coord;
                     }
-                    else if(selectedElement.id.indexOf('sun') !== -1){
-                        return minSun;
+                    // using the same logic for other corners of the scale
+                    else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
+                        topL = true;
+                        // if new x is greater than the old & the new y is greater than the old
+                        // shrink the scale
+                        if(coord.x > offset.x && coord.y > offset.y){
+                            currentScale -= growingFactor;
+                            // check for min
+                            if(currentScale < iconMin){currentScale = iconMin;}
+
+                            // transform the icon by the positive difference in the sizes                        
+                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
+                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
+                        }
+                        // if the new x and new y are both less than the old position
+                        // grow
+                        else if(coord.x < offset.x && coord.y < offset.y){
+                            currentScale += growingFactor;
+
+
+                            // check for max size
+                            if(currentScale > iconMax){currentScale = iconMax;}
+                            if(!isOutline && 
+                            (bbox.height * currentScale > parseInt("<%=h%>")/3 || bbox.width * currentScale > parseInt("<%=w%>")/3))
+                            {currentScale -= growingFactor}
+
+                            // transform the icon by the negative difference in the sizes
+                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
+                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
+                        }
+
+                        // set scale using svg data method
+                        scale.setScale(currentScale,currentScale);
+                        // if parse it returns a true value for both
+                        /* if(dx && dy){
+                            // set the new translate
+                            transform.setTranslate(dx,dy);
+                        } */
+
+                        // set new mouse position
+                        offset = coord;
                     }
-                    else if(selectedElement.id.indexOf('eye') !== -1){
-                        return minEye;
+                    // same logic as other corners
+                    else if((!bottomR && !topR && !topL) && (elementOver.classList.contains('bottom-left') || bottomL)){
+                        bottomL = true;
+                        // if new x is greater and new y is less
+                        // shrink
+                        if(coord.x > offset.x && coord.y < offset.y){
+                            currentScale -= growingFactor;
+                            // check for min
+                            if(currentScale < iconMin){currentScale =iconMin;}
+                            
+
+                            // transform the icon by the negative difference in the sizes keep y the same
+                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
+                            dy = parseInt(transform.matrix.f);
+
+
+                        }
+                        // of the new x is less and the new y is greater
+                        // grow the icon
+                        else if(coord.x < offset.x && coord.y > offset.y){
+                            currentScale += growingFactor;
+
+                            // check for max size
+                            if(currentScale > iconMax){currentScale = iconMax;}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                            
+                            // transform the icon by the negative difference in the sizes keep y the same
+                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
+                            dy = parseInt(transform.matrix.f);
+
+                        }
+                        
+                        // set scale using svg data method
+                        scale.setScale(currentScale,currentScale);
+                        // if parse it returns a true value for both
+                        /* if(dx && dy){
+                            // set the new translate
+                            transform.setTranslate(dx,dy);
+                        } */
+
+                        // set new mouse position
+                        offset = coord;
                     }
-                    else if(selectedElement.id.indexOf('attension') !== -1){
-                        return outlineMin;
+                    // same logic as other corners 
+                    else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
+                        bottomR = true;
+                        // if the new x is less and the new y is also less
+                        // shrink
+                        if(coord.x < offset.x && coord.y < offset.y){
+                            currentScale -= growingFactor;
+                            // check min bound
+                            if(currentScale < iconMin){currentScale = iconMin;}
+                        }
+                        // if the new x is greater than the old and the new y is greater
+                        // grow
+                        else if(coord.x > offset.x && coord.y > offset.y){
+                            currentScale += growingFactor;
+
+                            //check for max size
+                            if(currentScale > iconMax){currentScale = iconMax;}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        }
+                        // set scale using svg data method
+                        scale.setScale(currentScale,currentScale);
+                        // no need to translate for bottom right corner
+                        // set new mouse position
+                        offset = coord;
                     }
-                    else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
-                        return minText;
-                    } else{
-                        return .05;
+
+                    // same logic as other corners 
+                    else if((!topL && !topR && !bottomL && !bottomR) && (elementOver.classList.contains('bottom') || bottom)){
+                        bottom = true;
+                        // if the new x is less and the new y is also less
+                        // shrink
+                        if(coord.y < offset.y){
+                            currentScale -= growingFactor*10;
+                            // check min bound
+                            if(currentScale < iconMin){currentScale = iconMin;}
+                        }
+                        // if the new x is greater than the old and the new y is greater
+                        // grow
+                        else if(coord.y > offset.y){
+                            currentScale += growingFactor*10;
+
+                            //check for max size
+                            if(currentScale > iconMax){currentScale = iconMax;}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                        }
+                        // set scale using svg data method
+                        scale.setScale(currentScale,currentScale);
+                        // no need to translate for bottom right corner
+                        // set new mouse position
+                        offset = coord;
+                    }
+
+                    // if the element is an outline then reset the stroke to the proper size
+                    // removing the current scale and applying the base scale
+                    if(isOutline){
+                        // calculate and set the stroke-width
+                        selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
+                    }
+                        
+                }
+                // if the selected element is not null and the dragging flag is true
+                else if (selectedElement && dragging) {
+                
+                    // get mouse coordinates
+                    var coord = getMousePosition(event);
+                    // calculate the difference in the two
+                    var dx = coord.x - offset.x;
+                    var dy = coord.y - offset.y;
+
+                    // if the icon is confined check for boundry values
+                    if (confined) {
+                        if (dx < minX) { dx = minX; }
+                        else if (dx > maxX) { dx = maxX; }
+                        if (dy < minY) { dy = minY; }
+                        else if (dy > maxY) { dy = maxY; }
+                    }
+                    // set the transform
+                    transform.setTranslate(dx, dy);
+                    
+                }
+            }
+
+            // when mouseup or mouse leave the svg box reset all flags 
+            // and set the selectedElement to null
+            function endDrag(event) {
+                
+                if(selectedElement){
+                    drag(event);
+                    resizing = false;
+                    dragging = false;
+                    bottomL = false;
+                    bottomR = false;
+                    topL = false;
+                    topR = false;
+                    bottom = false;
+                }
+            selectedElement = null;
+            }
+
+            // given an icon element returnns the min scale value for each icon to test against the new scale
+            function findLimit(selectedElement, isMin){
+                if(selectedElement && selectedElement !== 'null'){
+                    if(isMin){
+                        if(selectedElement.id.indexOf('north') !== -1){
+                            return minNorth;
+                        }
+                        else if(selectedElement.id.indexOf('sun') !== -1){
+                            return minSun;
+                        }
+                        else if(selectedElement.id.indexOf('eye') !== -1){
+                            return minEye;
+                        }
+                        else if(selectedElement.id.indexOf('attension') !== -1){
+                            return outlineMin;
+                        }
+                        else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                            return minText;
+                        } else{
+                            return .05;
+                        }
+                    }
+                    else{
+                        if(selectedElement.id.indexOf('north') !== -1){
+                            return maxNorth;
+                        }
+                        else if(selectedElement.id.indexOf('sun') !== -1){
+                            return maxSun;
+                        }
+                        else if(selectedElement.id.indexOf('eye') !== -1){
+                            return maxEye;
+                        }
+                        else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                            return maxText;
+                        }else{
+                            return 2;
+                        }
                     }
                 }
-                else{
-                    if(selectedElement.id.indexOf('north') !== -1){
-                        return maxNorth;
-                    }
-                    else if(selectedElement.id.indexOf('sun') !== -1){
-                        return maxSun;
-                    }
-                    else if(selectedElement.id.indexOf('eye') !== -1){
-                        return maxEye;
-                    }
-                    else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
-                        return maxText;
-                    }else{
-                        return 2;
-                    }
-                }
-            }
-        }        
-    }// end make dragable
+            }        
+        }// end make dragable
 
-</script>
+    </script>
 
     <body>
         <!-- Page Header Block-->
@@ -592,11 +592,15 @@
                 <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
         <div class="container" style="background: #e7c492; height: 12rem; padding: 2rem;">
+            <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
             <div class="jumbotron text-center" style="background: #f3d6b0; height:7rem; padding: 0;">
                 <h2>Edit Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> &times; <%=h%> px</h5>   
-                <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
+                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" style="width: auto; height: 2.5rem; padding:5;">
+                    View Caption
+                </button>
+                <a class="btn btn-primary btn-lg float-right" style="width: auto; height: 2.5rem; padding:5;" href="/" role="button">New Upload</a>
             </div>
         </div>
         <br/>
@@ -645,39 +649,34 @@
 
         <!-- Button Interface-->
         <div class="container float-left" style=" top: 9%; width: 20%; height: 5%; position: absolute;
-                                                 padding: 5%; margin-left: auto; left: auto; right: auto;
+                                                 padding: 2%; margin-left: auto; left: auto; right: auto;
                                                  border-right: 0%; margin-right: auto;">
             <br/>
             <div class="image-controls">
-                <h2 class="text-right float-left" style="position: inherit; left: 7rem;">Tools</h2>
+                <h2 class="text-right float-left" style="position: inherit; left: 2rem;">Tools</h2>
                 <br/>
-                <table style="width: 25rem; height:100%; table-layout:auto;">
+                <table style="width: 10rem; height:100%; table-layout:auto;">
                     <tr>
                         <th colspan="2" class="text-left float-center">
                             <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                             <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
-                            <li>
-                                <button class="btn btn-primary btn-lg" onclick="captionHandler()">View Caption</button>
-                            </li>
-                            <li>
-                                <a class="btn btn-primary btn-lg" href="/" role="button">New Upload</a>
-                            </li>
+                            
                             <li>
                                 <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png" ></img>
                                 
                                 <label id="northCheckboxLabel" for="northCheckbox" style="visibility: hidden">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:13rem; left: 14rem;">
+                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:5.5rem; left: 11rem;">
                                 
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="sunIconFlag"src="/images/sun_symbol.png"></img>
                                 <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 18rem; left: 14rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 10.5rem; left: 11rem; visibility: hidden;">
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
                                 <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 22.5rem; left: 14rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 15rem; left: 11rem; visibility: hidden;">
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
@@ -705,13 +704,12 @@
                                     </svg>
                                 </button>
                                 <label id="scaleCheckboxLabel" for="scaleCheckbox" style="visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 31rem; left: 18.5rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 23rem; left: 15.5rem; visibility: hidden;">
                             </li>
                             <li>
                                 <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
                                 <svg viewBox="0 0 2 1.5">
                                     <rect x="0" y="0" width="2" height="1.5" stroke="white" stroke-width=".5" fill="transparent"></rect>
-
                                 </svg>
                                 </button>
                                 
@@ -728,7 +726,7 @@
                                 <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">Undo</button>
                             </li>
-                            <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left: 5rem;">
+                            <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left:2rem;">
                                 <h2 class="text-left">Pad Image</h2>
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
                                         <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
@@ -756,17 +754,26 @@
                             <li>
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; border: 0px solid blue;">
                                     <div class="col" style="padding: 0; top: 0rem">
-                                        <button class="btn btn-primary btn-lg" id="exportBtn"> Export Figure</button>
+                                        <button class="btn btn-primary btn-lg" style="width: 3.5rem;" id="exportBtn"> 
+                                            <svg viewBox="0 0 20 25">
+                                                <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
+                                                <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
+                                                fill="white" stroke="white"></path>
+                                                <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 L 12 5" stroke="black" fill="black"></path>
+                                                <path d="M 2 15.5 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 15.5 a1,1 0 0 0 -1,-1 L 3 14.5 a1,1 0 0 0 -1,1" 
+                                                fill="white" stroke="white"></path>
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
                             </li>
                         </th>
                     </tr>
                 </table>
+            </div>
         </div>
-    </div>
         
-<br/>
+        <br/>
         <!-- Hidden Tags for data parsing-->
         <div id="metadata" style="display:none;"  class="text-center green-border-focus">
                 <label for="metadata-text">
@@ -786,21 +793,16 @@
 
 
         <script type="text/javascript">
-        // preserves the data on the writer page if it was the last seen page before the image editor
-        function captionHandler(){
-            // if the last window seen was captionWriter then go back to preserve changes
-            if(document.referrer.indexOf("/captionWriter") > -1){
-                window.history.back();
-            }else{
-                // else reload the page
-                window.open('/captionWriter','_self');
+            // preserves the data on the writer page if it was the last seen page before the image editor
+            function captionHandler(){
+                // if the last window seen was captionWriter then go back to preserve changes
+                if(document.referrer.indexOf("/captionWriter") > -1){
+                    window.history.back();
+                }else{
+                    // else reload the page
+                    window.open('/captionWriter','_self');
+                }
             }
-         }
-        </script>
-
-
-
-        <script type="text/javascript">
 
             // string version of the icons so they can be added dynamically with a single function call 
            
@@ -881,23 +883,22 @@
 
             // dynamically add the elements to export better 
             svg.insertAdjacentHTML("beforeend",sunObjectString);
-            
-           
-            var sunImage = document.getElementById("sunPosition");
             svg.insertAdjacentHTML("beforeend",northObjectString);
-            var northImage = document.getElementById("northPosition");
             svg.insertAdjacentHTML('beforeend',outlineObjectString);
-            var outlineBox = document.getElementById('cropOutline');
             svg.insertAdjacentHTML("beforeend",eyeObjectString);
-            var eyeImage = document.getElementById('eyePosition');
-            var eyeArrow = document.getElementById("eyeArrow");
             svg.insertAdjacentHTML("beforeend",scaleBarObject);
-            var scaleBarIcon = document.getElementById('scalebarPosition');
-            
            
+            // save the elements to dynamically add and remove them with a single line of code
+            var sunImage = document.getElementById("sunPosition"),
+                northImage = document.getElementById("northPosition"),
+                outlineBox = document.getElementById('cropOutline'),
+                eyeImage = document.getElementById('eyePosition'),
+                eyeArrow = document.getElementById("eyeArrow"),
+                scaleBarIcon = document.getElementById('scalebarPosition');
 
             // get half the scalebar length for drawing
             let half = parseFloat("<%=scalebarLength%>")/2;
+
             // get needed dimension values
             let scalePX = parseFloat("<%=scalebarPx%>"),
                 w = parseInt("<%=w%>"),
@@ -913,13 +914,10 @@
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
                     textSize = (scalePX/4000)* 21 * (w/origW);
-
                 }else{
                     scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
                     textSize = (scalePX/4000)* 21 * (h/origH);
-
-                    
                 }
                 
                 // if half the bar is less than 1 km then give it the decimal
@@ -937,29 +935,14 @@
                 // set deafult font size for text boxes note that this is a scale value not px size  (px = font size * textSize)
                 textSize = 2;
             }
-            
 
-            // grab the image data for changing colors before it is removed
-            var sunIconInner = document.getElementById("sunIcon");
-            var sunIconOuter = document.getElementById("sunIconOuter");
-
-            var northBG = document.getElementById("northBG");
-            var northArrow = document.getElementById("northIcon");
-            var northLetter = document.getElementById("nLetter");
-
-            var eyeIconOuter = document.getElementById("eyeIconOuter");
-            var eyeIconCenter = document.getElementById("eyeIconCenter");
-            var eyePupel = document.getElementById("eyeIconPupel");
-
-            // reove the objects because they are not needed yet
+            // remove the objects because they are not needed yet
             northImage.remove();
             sunImage.remove();
             outlineBox.remove();
             eyeImage.remove();
             scaleBarIcon.remove();
             
-
-
             // set defaults
             outlineBox.style.visibility = 'hidden';
 
@@ -981,10 +964,7 @@
             var toggleScalebar = true,
                 userTextColor;
 
-            
-
             // sets the display name
-            
             document.getElementById("imageName").innerHTML = "<%=displayCube%>";
             
             // when the box check value changes switch the fills and strokes
@@ -1027,19 +1007,19 @@
             // same as above
             $("#scaleCheckbox").on("change",function(){
                 
-                    var children = scaleBarIcon.childNodes;
+                var children = scaleBarIcon.childNodes;
 
-                    for(index in children){
-                        if(typeof(children[index]) == "object"){
-                            if(children[index].getAttribute("stroke")){
-                                children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
-                            }
-                            if(children[index].getAttribute("fill")){
-                                children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
-                            }
-                   
+                for(index in children){
+                    if(typeof(children[index]) == "object"){
+                        if(children[index].getAttribute("stroke")){
+                            children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
                         }
+                        if(children[index].getAttribute("fill")){
+                            children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                        }
+                
                     }
+                }
             });
 
 
@@ -1157,11 +1137,14 @@
             $(document).ready(function() {
                 // reset click array on a new load
                 clickArray = [];
-                // get and start the draggable svg element
+                
+                // get the draggable svg element
                 var svgDOM = document.getElementById('svgWrapper');
-                makeDraggable(svgDOM);
                 // get the image from the link
                 var myImage = document.getElementById('crop');
+
+                // start the draggable svg element
+                makeDraggable(svgDOM);
 
                 // convert image to data Base64 and set the src
                 getDataUri('/<%=image%>', function(dataUri) {
@@ -1169,9 +1152,9 @@
                 });
                 
                 // get padding input box and other important DOM elements for export
-                var paddingBoxInput = document.getElementById("paddingInput");
-                var bg = document.getElementById("svgBackground");
-                var canvas = document.getElementById("canvas");
+                var paddingBoxInput = document.getElementById("paddingInput"),
+                    bg = document.getElementById("svgBackground"),
+                    canvas = document.getElementById("canvas");
                 
                 // init the padding value
                 paddingBoxInput.value = '';
@@ -1179,8 +1162,8 @@
                 // function that adjusts the view box and background to add padding to the image
                 function setImagePadding(val,location){
                     // image w and h vars
-                    let imageW;
-                    let imageH;
+                    let imageW,
+                        imageH;
 
                     // switch on the location of the padding
                     switch(location){
@@ -1303,12 +1286,12 @@
                     
                 }
 
-                var padBottom = false,
+                let padBottom = false,
                     padTop = false,
                     padLeft = false,
                     padRight = false;
 
-                var bottomBtn = document.getElementById("bottomPaddingBtn"),
+                let bottomBtn = document.getElementById("bottomPaddingBtn"),
                     topBtn = document.getElementById("topPaddingBtn"),
                     rightBtn = document.getElementById("rightPaddingBtn"),
                     leftBtn = document.getElementById("leftPaddingBtn");
@@ -1447,7 +1430,7 @@
                             alert("Only Accepts Whole Numbers");
                             warned = true;
                         }
-                        setImagePadding(parseInt(0),"none");
+                        $("#resetPaddingBtn").click();
                     }
                 });
 
@@ -1609,11 +1592,13 @@
                 $('#svgWrapper').on("click", function(event){
                     
                     // set event variables
-                    var t = event.target;
-                    var x = event.clientX;
-                    var y = event.clientY;
+                    var t = event.target,
+                        x = event.clientX,
+                        y = event.clientY;
+
                     // TODO: figure our how to buffer the Y portion
                     var bufferY = parseInt(Number(<%=h%>) * .09);
+                    
                     // get proper svg as target
                     var target = (t == svg ? svg : t.parentNode);
                     
@@ -1623,9 +1608,6 @@
                     mouseX = parseInt(svgP.x),
                     mouseY = parseInt(svgP.y);
                     
-                    //console.log('MOUSE CLICK ON SVG Outer BOX: '+ mouseX + ' '+ mouseY);
-
-                   
                     // if the draw flag is true and length of clicks is 0
                     if(drawFlag && clickArray.length === 0 && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         // create the new  line dynamically and add it to the array so we can remove it later if needed
@@ -1661,7 +1643,7 @@
                             document.getElementById("undoLine").style.visibility = "visible";
                         }
 
-                        document.getElementById("svgBackground").className.baseVal = "";
+                        bg.className.baseVal = "";
 
                         
                         let svgElements = svg.childNodes;
@@ -1775,26 +1757,26 @@
 
                  $('#svgWrapper').mousemove(function(event){
                     
-                        // set event variables
-                        var t = event.target;
-                        var x = event.clientX;
-                        var y = event.clientY;
-                        // TODO: figure our how to buffer the Y portion
-                        var bufferY = 50;
-                        // get proper svg as target
-                        var target = (t == svg ? svg : t.parentNode);
-                        
-                        
-                        // get new svg relative point
-                        var svgP = svgPoint(target, x, y);
-                        // convert to int
-                        mouseX = parseInt(svgP.x),
-                        mouseY = parseInt(svgP.y);
+                    // set event variables
+                    var t = event.target;
+                    var x = event.clientX;
+                    var y = event.clientY;
+                    // TODO: figure our how to buffer the Y portion
+                    var bufferY = 50;
+                    // get proper svg as target
+                    var target = (t == svg ? svg : t.parentNode);
+                    
+                    
+                    // get new svg relative point
+                    var svgP = svgPoint(target, x, y);
+                    // convert to int
+                    mouseX = parseInt(svgP.x),
+                    mouseY = parseInt(svgP.y);
 
-                        //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
-                        if( drawFlag && clickArray.length >1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
-                            drawLine(line, mouseX, mouseY);
-                        }
+                    //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
+                    if( drawFlag && clickArray.length >1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
+                        drawLine(line, mouseX, mouseY);
+                    }
                         
                         
 /*
@@ -2069,7 +2051,7 @@
                     if(drawFlag){
                         drawFlag = false;
                         // reset the interface 
-                        document.getElementById("svgBackground").className.baseVal = "";
+                        bg.className.baseVal = "";
                         document.getElementById("pencilIconFlag").className = "btn btn-lg button";
                         clickArray = [];
                         // remove half drawn lines
@@ -2098,7 +2080,7 @@
                         }
                     }
                     else{
-                        document.getElementById("svgBackground").className.baseVal = "draw";
+                        bg.className.baseVal = "draw";
                         drawFlag = true;
                         document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
 
@@ -2550,9 +2532,7 @@
                 </tr>
             </table>
         </div>
-        <br/>
-        <br/>
-        <br/>
+        
                                                                      
         <script type="text/javascript">
             function hideNorth(){
@@ -2639,6 +2619,7 @@
                 }
             }
 
+            // boolean to tell if the image is map projected
             var isMapProjected = <%=isMapProjected %>;
  
             // Gets Important Metadata from the "metadata-text" div

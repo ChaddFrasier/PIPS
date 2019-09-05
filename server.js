@@ -10,7 +10,7 @@
  * @description This is the driver for the PIP Server by USGS.
  * 
  * @since 05/31/19
- * @updated 08/28/19
+ * @updated 09/04/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that
@@ -71,13 +71,13 @@
   * 
   *     Comment your code and include an 'author' tag for any functions you write to the server. 
   * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
-  * functions on the server js files (not on the webpages).
+  * functions on the server's javascript files (not on the webpages).
   *  
   *     DO NOT remove functions if your version does not use them. Let the repository managers do that
   * during merging.(This is to prevent conflicts with any major branch changes.)
   * 
   *     Lastly, this server is built to simplify the figure creation process not to replace photo editing software so keep
-  * that in mind when adding yor owm code.
+  * that in mind when adding yor own code.
   * 
   * 
 */
@@ -205,7 +205,7 @@ app.get('/', function(request, response){
 /**
  * GET '/tpl'
  * 
- * Renders the basic page with the description file
+ * Renders the basic page
  */ 
 app.get('/tpl',function(request, response){
     // render the data
@@ -380,8 +380,6 @@ app.post('/captionWriter', async function(request, response){
 
             // if the desired width and height are both given set that to be the user dimensions 
             if(Number(request.body.desiredWidth) > 50 || Number(request.body.desiredHeight)> 50){
-
-                
                 if(Number(request.body.desiredHeight) === 0){
                     // set to negative so we know to calculate it with jimp later
                     cubeObj.userDim = [Number(request.body.desiredWidth),-1];
@@ -393,9 +391,6 @@ app.post('/captionWriter', async function(request, response){
                 else{
                     cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
                 }
-
-
-                
             }else{
                 // otherwise ignore and default
                 cubeObj.userDim = [0,0];
@@ -568,7 +563,6 @@ app.get('/csv', function(request, response){
     if(userId === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
-
     }else{
         // return the index if not found
         let userObject = util.getObjectFromArray(userId,cubeArray);
@@ -588,69 +582,6 @@ app.get('/csv', function(request, response){
         }
     }
 });
-
-
-/**
- * POST '/imageDownload'
- * 
- *  this post function is only for sending the raw image to the user as a download  
- */
-app.post('/imageDownload', function(request,response){
-
-    // get user id cookie
-    let uid = request.cookies["userId"];
-
-    let cubeObj = util.getObjectFromArray(uid, cubeArray);
-    // if user instance found
-    if(typeof(cubeObj) === "object"){
-        // send download file
-        response.download(path.join('images',cubeObj.name.replace('.cub','.png')),function(err){
-            if(err){
-                console.log('file was not sent successfully');
-            }else{
-                // file sent
-                response.status(200);
-                response.end();
-            }
-        });
-    }else{
-        response.redirect("/?alertCode=4");
-        response.end();
-    }
-    
-});
-
-/**
- * GET '/imageDownload'
- * 
- * send the last image upload from the user instance if found
- */
-app.get('/imageDownload', function(request, response){
-    console.log(request.path);
-    var uid = request.cookies['userId'];
-
-    if(uid === undefined){
-        // send response w/ all variables
-        response.redirect('/?alertCode=7');
-    }else{
-        let cubeObj = util.getObjectFromArray(uid, cubeArray);
-        if(typeof(cubeObj) === "object"){
-            // send download file
-            response.download(path.join('images',cubeObj.name.replace('.cub','.png')),function(err){
-                if(err){
-                    console.log('file was not sent successfully');
-                }else{
-                    // file sent
-                    response.status(200);
-                    response.end();
-                }
-            });
-        }else{
-            response.redirect("/?alertCode=4");
-        }
-    }
-});
-
 
 /**
  * GET '/imageEditor'
@@ -785,7 +716,6 @@ app.get('/imageEditor', function(request, response){
 });
 
 /**
- * @todo chnage this link to something not so low down
  * POST '/imageEditor'
  * 
  * renders the image page with needed data
@@ -795,9 +725,9 @@ app.post('/imageEditor', function(request, response){
 
     // prepare variables 
     var uid = request.cookies['userId'],
-        userObject;
-    var imagepath;
-    var data,
+        userObject,
+        imagepath,
+        data,
         resolution;
 
     if(uid !== undefined){
