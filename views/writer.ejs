@@ -22,17 +22,17 @@
             <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
         </div>
         
-        <div class="container" style="height: 11rem; width: 75%; padding: 0; border: 1px solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
-            <div class="jumbotron text-center" style="height: 68%; padding: 2rem; padding-top: 1rem; padding-bottom:0;background-color: #e7c492;">
+        <div class="container" style="height: 11rem; width: 75%; padding: 0; border-top: 1px; border-left: 1px; border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
+            <div class="jumbotron text-center" style="height: 68%; padding: 2rem; border: 1px solid black; padding-top: 1rem; padding-bottom:0;background-color: #e7c492;">
                 <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
                 <h1 class="display-5" style="margin: 0;float: center;">Upload Successful</h1>
                 <p class="lead" style="margin-bottom:2rem;">Edit in the bottom box using tags in the middle box</p>
-                <a class="btn btn-primary btn-lg float-left" href="/" role="button" style="width: auto; height: 2.5rem; padding:5;">Upload New File</a>
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button" style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
 
                 <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
                     <div class="form-group">
                         <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" style="width: auto; height: 2.5rem; padding:5;"
+                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
                         onclick="loaderActivate()" />
                     </div>
                 </form>
@@ -43,7 +43,7 @@
             <button class="float-right helpBtn" id="hideBtn" 
             style="width: auto; height:auto; border-radius: 5px; 
             background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-            background-color: rgba(39, 109, 200); color: darkred;">&times;
+            background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
             </button>
             <div class="container title" style="background: whitesmoke; ">Help</div>
             <div class="row lead"> 1. Type your caption in the bottom box</div>
@@ -61,15 +61,15 @@
                 
                 <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
                     <label for="template-text-output">
-                        <h3 class="display-5 alert alert-secondary" style="background: #63585e; color: white;">Template Text Output</h2>
+                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
                     </label>
                     <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
-                        style="resize: vertical; font-size: 22px;" rows="7"></textarea>
+                        style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
                         <br/>
 
                     <form class="lg-form text-center float-right" style="margin: 0;">
                         <div class="form-group">
-                            <a class="btn button text-white btn-lg" style="width: 12rem" role="button" id="link" download="<%=outputName%>">Download
+                            <a class="btn button text-white btn-lg" style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" id="link" download="<%=outputName%>">Download
                                 Caption</a>
                         </div>
                     </form>
@@ -116,24 +116,27 @@
                 <!-- Active Tag Box -->
                 <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
                     <label for="test" class="float-center" style="margin: 0;">
-                        <h3 class="display-5 alert alert-secondary" style="margin: inherit; background: #63585e; color: white;">Usable Tags</h2>
+                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">Usable Tags</h2>
                     </label>
                     <br/>
                     <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
-                        <label for="filterInput"><h4>Search for keywords</h4></label><br/>
+                        <label for="filterInput" class="alert alert-light" style="color:black; width: auto; height:40px; padding:3px;"><h4>Search for keywords</h4></label><br/>
                         <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
-                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;">
+                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black; border: 1.5px solid black;">
                     </div>
                     <br/>
                     <textarea readonly id="test" class="form-control bg-white text-dark metadata"
-                        style="resize: vertical; font-size: 22px;" rows="7"></textarea>
-                    <button id="button-more-tags" class="btn btn-md button float-left" style="margin: 0; margin-top:1rem; width: auto;" onclick="showMoreTags()">Show Important Tags</button>
+                        style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
+                    <button id="button-more-tags" class="btn btn-md button float-left" 
+                        style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" onclick="showMoreTags()">
+                        Show Important Tags
+                    </button>
                     
                     <form action="/csv" method='POST' class="lg-form text-center float-right" style="margin: 0;  margin-top:1rem;">
                         <div class="lg-form text-center" style="margin: 0;">
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" style="width: 13rem;" />
+                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" style="width: 13rem; border: 2px solid black; padding: 7px;" />
                         </div>
                     </form>
                 </div>
@@ -142,10 +145,10 @@
                 <!-- Editing Box-->
                 <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
                     <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary" style="background: #63585e; color: white;">Edit Text</h2>
+                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
                     </label>
                     <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                        style="resize: vertical; font-size: 22px; "> <%= templateText %> </textarea>
+                        style="resize: vertical; font-size: 22px; border: 2px solid black;"> <%= templateText %> </textarea>
                 </div>
             </div>
             

@@ -105,7 +105,6 @@
                 // Make sure the first transform on the element is a translate transform
                 var transforms = selectedElement.transform.baseVal;
 
-
                 // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
                 // start resize logic
                 if(elementOver.classList.contains('resize') && !resizing){
@@ -328,7 +327,7 @@
 
                             // translate the icon 0 in the x direction and by the difference in the positive y direction
                             dx = parseInt(transform.matrix.e);
-                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
+                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/4);
                         }
                         // if the old x is greater and the new y is smaller then we are growing
                         else if(coord.x > offset.x && coord.y < offset.y){
@@ -341,7 +340,7 @@
                             
                             // translate the icon 0 in the x direction and by the difference in the negative y direction        
                             dx = parseInt(transform.matrix.e);
-                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);    
+                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/4);    
                         }
 
                         // set scale using svg data method
@@ -365,8 +364,8 @@
                             if(currentScale < iconMin){currentScale = iconMin;}
 
                             // transform the icon by the positive difference in the sizes                        
-                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
-                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/2);
+                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/4);
+                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/4);
                         }
                         // if the new x and new y are both less than the old position
                         // grow
@@ -381,8 +380,8 @@
                             {currentScale -= growingFactor}
 
                             // transform the icon by the negative difference in the sizes
-                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
-                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/2);
+                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/4);
+                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/4);
                         }
 
                         // set scale using svg data method
@@ -408,7 +407,7 @@
                             
 
                             // transform the icon by the negative difference in the sizes keep y the same
-                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/2);
+                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
 
 
@@ -423,7 +422,7 @@
                             if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
                             
                             // transform the icon by the negative difference in the sizes keep y the same
-                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/2);
+                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
 
                         }
@@ -497,6 +496,12 @@
                         // calculate and set the stroke-width
                         selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
                     }
+                    if(isOutline || selectedElement.classList.contains("textbox") || selectedElement.id === "eyePosition"){
+                        if(dx && dy){
+                            // set the new translate
+                            transform.setTranslate(dx,dy);
+                        }
+                    }
                         
                 }
                 // if the selected element is not null and the dragging flag is true
@@ -505,8 +510,8 @@
                     // get mouse coordinates
                     var coord = getMousePosition(event);
                     // calculate the difference in the two
-                    var dx = coord.x - offset.x;
-                    var dy = coord.y - offset.y;
+                    var dx = parseInt(coord.x - offset.x);
+                    var dy = parseInt(coord.y - offset.y);
 
                     // if the icon is confined check for boundry values
                     if (confined) {
@@ -589,18 +594,18 @@
         <div id="loading" class="float-md-right text-center lead loading">
                 <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
-                <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
+                <h3 id="loadingText" style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
-        <div class="container" style="background: #e7c492; height: 12rem; padding: 2rem;">
+        <div class="container" style="background: #e7c492; height: 12rem; padding: 2rem; border: 1px solid black;">
             <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
-            <div class="jumbotron text-center" style="background: #f3d6b0; height:7rem; padding: 0;">
+            <div class="jumbotron text-center" style="border: 1px solid black; background: #f3d6b0; height:7rem; padding: 0;">
                 <h2>Edit Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> &times; <%=h%> px</h5>   
-                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" style="width: auto; height: 2.5rem; padding:5;">
+                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;">
                     View Caption
                 </button>
-                <a class="btn btn-primary btn-lg float-right" style="width: auto; height: 2.5rem; padding:5;" href="/" role="button">New Upload</a>
+                <a class="btn btn-primary btn-lg float-right" style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;" href="/" role="button">New Upload</a>
             </div>
         </div>
         <br/>
@@ -608,14 +613,14 @@
         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
         class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
-            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" fill="black" xlink:href="/<%=image%>"/>  
+            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
             
         </svg>
 
         <!--------------------------- Help Box ------------------------->
         <div class="help-box-right" id="help-box" style="visibility: hidden;">
             <button class="float-right helpBtn" id="hideBtn" 
-            style="width: auto; height:auto; border-radius: 5px; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+            style="width: auto; height:auto; border-radius: 5px; border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke;font-size: 2rem;">Help</div>
                 <div class="row lead">1. Add Icons with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
@@ -653,7 +658,7 @@
                                                  border-right: 0%; margin-right: auto;">
             <br/>
             <div class="image-controls">
-                <h2 class="text-right float-left" style="position: inherit; left: 2rem;">Tools</h2>
+                <h2 class="text-right float-left" style="position: inherit; left: 8rem;">Tools</h2>
                 <br/>
                 <table style="width: 10rem; height:100%; table-layout:auto;">
                     <tr>
@@ -661,30 +666,34 @@
                             <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
                             <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
                             
-                            <li>
-                                <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png" ></img>
+                            <li style="margin-top:.5rem; border-top: 4px solid black">
+                                <p class="float-left" style="margin-right: .5rem;">North <br/>Azimuthal <br/>Direction</p>
+                                <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
                                 
                                 <label id="northCheckboxLabel" for="northCheckbox" style="visibility: hidden">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:5.5rem; left: 11rem;">
+                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:6rem; left: 17rem;">
                                 
                             </li>
                             <li>
+                                <p class="float-left" style="margin-right: .5rem;">Sun <br/>Azimuthal <br/>Direction</p>
                                 <img class="btn btn-lg button" id="sunIconFlag"src="/images/sun_symbol.png"></img>
                                 <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 10.5rem; left: 11rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 11rem; left: 17rem; visibility: hidden;">
                             </li>
                             <li>
+                                <p class="float-left" style="margin-right: .5rem;">Observer <br/>Azimuthal <br/>Direction</p>
                                 <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
                                 <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 15rem; left: 11rem; visibility: hidden;">
+                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 15.5rem; left: 17rem; visibility: hidden;">
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
-                                
+                                <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">Drawing <br/>Tool</p>
                                 <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
                                 <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">Undo</button>
                             </li>
                             <li>
+                                <p class="float-left" style="margin-right: .5rem; padding-top: .5rem;">Scalebar</p>
                                 <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
                                     <svg viewBox= "0 0 25 4">
                                         <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" stroke="black" fill="white" ></rect>
@@ -703,10 +712,11 @@
                                     
                                     </svg>
                                 </button>
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 23rem; left: 15.5rem; visibility: hidden;">
+                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 25rem; left: 16rem; visibility: hidden;">
                             </li>
                             <li>
+                                <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">Outline <br/>Box</p>
                                 <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
                                 <svg viewBox="0 0 2 1.5">
                                     <rect x="0" y="0" width="2" height="1.5" stroke="white" stroke-width=".5" fill="transparent"></rect>
@@ -717,6 +727,7 @@
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">Undo</button>
                             </li>
                             <li>
+                                <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">Text <br/>Tool</p>
                                 <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
                                 <svg viewBox="0 0 20 8">
                                     <rect x="0" y="0" width="20" height="8"stroke="white" stroke-width="1"fill="transparent"></rect>
@@ -726,12 +737,14 @@
                                 <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">Undo</button>
                             </li>
-                            <li style=" height: 10rem; padding: 0; padding-top: 1rem; padding-left:2rem;">
-                                <h2 class="text-left">Pad Image</h2>
+                            <li style=" height: 12rem; width: auto; padding: 0; padding-top: 0rem; padding-left: 1rem;">
+                                <h2 class="text-left" style="padding-left: .5rem; color: white;"> Pad Image</h2>
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
-                                        <div class="col" style="padding:0;"><input class="form-control form-control-lg" style="width: 14rem;"id="paddingInput" type="text" placeholder="Image Padding (px)"/> </div>
-                                        <div class="col" style="padding:0; padding-left: .5rem; padding-top: .5rem">
-                                            <button  style="left: 15rem; top: 0rem;" class="btn btn-danger btn-md" id="resetPaddingBtn"> Reset </button>
+                                        <div class="col" style="padding:0; margin-right: 1rem;">
+                                            <input class="form-control form-control-lg" style="width: 10rem; border: 1px solid lightgrey;"id="paddingInput" type="text" placeholder="Pad Pixels"/>
+                                        </div>
+                                        <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
+                                            <button  style="left: 15rem; top: 0rem;" class="btn btn-danger btn-md button" id="resetPaddingBtn"> Reset </button>
                                         </div>
                                 </div>
                             
@@ -751,10 +764,11 @@
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; border: 0px solid blue;">
+                            <li style="border-bottom: 4px solid black;">
+                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
                                     <div class="col" style="padding: 0; top: 0rem">
-                                        <button class="btn btn-primary btn-lg" style="width: 3.5rem;" id="exportBtn"> 
+                                        <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">Save <br/>Figure</p>
+                                        <button class="btn btn-primary btn-lg button" style="width: 4rem;" id="exportBtn" > 
                                             <svg viewBox="0 0 20 25">
                                                 <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
                                                 <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
@@ -879,6 +893,10 @@
             var myImage = document.getElementById('crop');
             var svg = document.getElementById('svgWrapper');
             var loader = document.getElementById('loading');
+
+
+            myImage.setAttribute("x",parseInt("<%=w%>")*1.5 + "px");
+            myImage.setAttribute("y",parseInt("<%=h%>")*1.25 + "px");
            
 
             // dynamically add the elements to export better 
@@ -1095,25 +1113,37 @@
             * converts image to a data url so that when exporting all that is needed 
             * is to convert the svg block to a canvas and then export as an image
             **/
-            function getDataUri(url, callback) {
-                var image = new Image();
+            const toDataURL = url => fetch(url)
+            .then(response => response.blob())
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsDataURL(blob)
+            }));
 
-                image.onload = function () {
-                    var canvas = document.createElement('canvas');
-                    canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-                    canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-                    canvas.getContext('2d').drawImage(this, 0, 0);
+            const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+                const byteCharacters = atob(b64Data);
+                const byteArrays = [];
 
-                    // Get raw image data
-                    callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+                for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+                    const slice = byteCharacters.slice(offset, offset + sliceSize);
 
-                    // ... or get as Data URI
-                    callback(canvas.toDataURL('image/png'));
-                };
-                // set image src
-                image.src = url;
-            }
+                    const byteNumbers = new Array(slice.length);
+                    for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                    }
+
+                    const byteArray = new Uint8Array(byteNumbers);
+                    byteArrays.push(byteArray);
+                }
+
+                const blob = new Blob(byteArrays, {type: contentType});
+                return blob;
+                }
+
+
 
         </script>
 
@@ -1146,10 +1176,31 @@
                 // start the draggable svg element
                 makeDraggable(svgDOM);
 
-                // convert image to data Base64 and set the src
-                getDataUri('/<%=image%>', function(dataUri) {
-                    myImage.setAttribute('xlink:href',dataUri);
-                });
+                // converts raw image format to base 64 data
+                toDataURL('/<%=image%>')
+                    .then(dataUrl => {
+                        // get the window URL element on any browser
+                        let DOMURL = window.URL || window.webkitURL || window;
+
+                        // set the data equal to the image display
+                        // set image link to nothing to remove the loading image before a load operation
+                        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
+                        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', dataUrl);
+
+                        
+
+                        // remove the data url from the memory because it is saved in the xlink now
+                        DOMURL.revokeObjectURL(dataUrl);
+                    }).then(function(){
+                        // default all transforms
+                        myImage.setAttribute("x","0");
+                        myImage.setAttribute("y","0");
+                        myImage.setAttribute("transform","scale(1)");
+                        
+
+                    });
+
+                    
                 
                 // get padding input box and other important DOM elements for export
                 var paddingBoxInput = document.getElementById("paddingInput"),
@@ -1194,12 +1245,14 @@
                         case "top":
                             // get the new image height for the box and background
                             imageH = <%=h%> + val;
+
+                            console.log(imageH);
                             // set background x,y to show padding at the right spot
                             bg.setAttribute("y",val*-1);
                             bg.setAttribute("x",0);
                             // adjust the height and set the width to what it should be
                             bg.setAttribute("height",imageH);
-                            bg.setAttribute("height",<%=w%>);
+                            bg.setAttribute("width",<%=w%>);
                             
                             // set the viewbox values 
                             svgDOM.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
@@ -2391,32 +2444,49 @@
             }
 
             
+
+            $('#exportBtn').on("mousedown",function(){
+                loader.style.visibility = "visible";
+                document.getElementById("loadingText").innerHTML = "Compressing Image";
+                
+            });
+
+
             // when the export is clicked
             exportBtn.addEventListener('click', function () {
-                
+
                 // get the canvas information
                 canvas = document.getElementById('canvas');
-                var ctx = canvas.getContext('2d');
-
+                var ctx = canvas.getContext('2d',{alpha:false});
                 // encode the svg
                 var data = (new XMLSerializer()).serializeToString(svg);
+
                 // get the window URL element on any browser
                 var DOMURL = window.URL || window.webkitURL || window;
 
-                // creates a new blank image
-                var img = new Image();
-                // creates a blob from the encoded svg and sets the type of the blob to svg
                 var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
                 // creates an object url for the download
                 var url = DOMURL.createObjectURL(svgBlob);
 
+                // creates a new blank image
+                var img = new Image();
+
+               /*  // creates a blob from the encoded svg and sets the type of the blob to svg
+                var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+                // creates an object url for the download
+                var url = DOMURL.createObjectURL(svgBlob); */
+        
+
                 // when the image is done being created and its loaded
                 img.onload = function(){
+                    document.getElementById("loadingText").innerHTML = "Writing File";
                     // draw the svg image onto the canvas
                     ctx.drawImage(img,0,0);
                     
+                    console.log("done writing to canvas");
                     // if the filename is a false value
                     if(!filename){
+                        
                         // read in a filename with prompt
                         var filename = prompt("Save File as png svg or jpeg","");
                     }
@@ -2430,19 +2500,19 @@
                             try{
                                 if(fileExt === 'jpg'){
                                     // export an image of jpeg becuse jpg defaults to png
-                                    var imgURI = canvas
+                                    url = canvas
                                     .toDataURL('image/jpeg', 1.0)
                                     .replace('image/jpeg', 'image/octet-stream');
                                 }
                                 else{
                                     // export an image of the extension type given
-                                    var imgURI = canvas
+                                    url = canvas
                                     .toDataURL('image/'+fileExt, 1.0)
                                     .replace('image/'+fileExt, 'image/octet-stream');
                                 }
                                 
                                 // start the download
-                                triggerDownload(imgURI,filename);            
+                                triggerDownload(url,filename);            
                             }catch(err){
                                 alert('Image is too large to save from browser');
                             }
@@ -2450,11 +2520,11 @@
                             // fileExt === 'svg'
                             try{
                                 // trigger the download with the svg url instead of converting to image
-                                triggerDownload(url,filename);       
+                                triggerDownload(url,filename); 
+
                             }catch(err){
                                 alert('Image is too large to save from browser');
                             }
-
                         }
                     }
                     // must enter an accepted fileExt
@@ -2462,19 +2532,19 @@
                         // make the user try again
                        exportBtn.click();
                     }
+                    loader.style.visibility = "hidden";
+                    document.getElementById("loadingText").innerHTML = "Loading";
                     // revoke the url
                     DOMURL.revokeObjectURL(url);
 
+                    
                     // Note:
                     //     if the user hits cancel the filename will be null, we ignore this case
                 };
-                // set the img src to the svg url
-                // should be below the img.onload
-                try{
-                    img.src = url;
-                }catch(err){
-                    console.log('source could not be located');
-                }
+                
+                img.src = url;
+
+
             });
         </script>
 

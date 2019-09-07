@@ -36,8 +36,8 @@
         <br/>
         <div class="title text-center" style="width: auto; background: #f3d6b0;">
             <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">You can upload .cub file and .tpl file </p>
-            <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" role="button" onclick="showHelp(this)">Help</a>
-            <a class="btn btn-primary btn-lg" style= "border-color: black; color: white;" href= '/tpl'
+            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" onclick="showHelp(this)">Help</a>
+            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" href= '/tpl'
                 role="button">What is a TPL file?
             </a>
         </div>
@@ -60,7 +60,7 @@
         <br/>
         <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
             <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" enctype="multipart/form-data">
-                <div class="btn btn-dark btn-lg form-group" style="color: black; width: 25rem;display: inline-block; background: #e7c492;">
+                <div class="btn btn-dark btn-lg form-group" style="color: black; width: 25rem;display: inline-block; background: #e7c492; border: 2px solid black;">
                     <label for="cubUpload" style="font-size: x-large;">Choose an ISIS Cube File</label>
                     <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"type="file" class="form-control-file" />
 
@@ -71,13 +71,13 @@
                 </div>
 
                 <hr class="style5">
-                <div class="btn btn-dark btn-lg form-group" style="color: black; background: #e7c492;">
+                <div class="btn btn-dark btn-lg form-group" style="color: black; background: #e7c492; border: 2px solid black;">
                     <label for="tplUpload" style="font-size: larger;">Choose a Template File</label>
                     <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
                 </div>
                 <br/>
                 <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                    style="width: 10rem;" onclick="loaderActivate()" />
+                    style="width: 10rem; border: 1px solid black;" onclick="loaderActivate()" />
             </form>
         </div>
 

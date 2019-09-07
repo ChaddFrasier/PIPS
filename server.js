@@ -273,7 +273,7 @@ app.post('/captionWriter', async function(request, response){
 
     // cube file section
     try{
-        if(request.files === null ){
+        if(request.files === null || !request.files.uploadFile ){
             // if no files uploaded
             // redirect the user & alert they need a .cub
             response.redirect('/?alertCode=3');
@@ -1043,6 +1043,14 @@ app.post('/crop', async function(request,response){
     }
 });
 
+
+
+app.post("/figureDownload", function(request, response){
+    console.log(request.url);
+
+
+    console.log(request.body);
+});
 
 
 /**

@@ -1,8 +1,8 @@
 body,html{
     background-image: url('../images/webAppBackground.jpg');
-    background-repeat: round;
+    background-repeat: repeat-x;
     backface-visibility: visible;
-    background-size: contain; 
+    background-size: cover; 
     width: 100%;
     margin: 0%;
 }
@@ -20,8 +20,8 @@ body,html{
 }
 
 p{
-    font-size: 15px;
-    color: black;
+    font-size: 16px;
+    color: white;
 }
    
 .body-background-area{
@@ -134,6 +134,10 @@ image:hover {
 .image-size-label {
     margin-top: 10px;
 }
+
+label{
+    color: white;
+}
 .export {
     display: block;
 }
@@ -142,6 +146,17 @@ image:hover {
     height: auto;
     background: #007150;
     color: white;
+    border: 2px solid black !important;
+}
+.button:hover {
+    background: rgba(0, 113, 79, 0.705);
+    border: 2px solid rgba(0, 0, 0, 0.534) !important;
+}
+
+input[type=color]:hover{
+    cursor: pointer;
+    border: 1.5px double rgba(0, 0, 0, 0.452);
+    background: white;
 }
 .canvas-legend {
     height: 50px;
@@ -239,12 +254,20 @@ svg{
 }
 
 li{
-    padding-top:1rem;
+    
+    padding-top:.5rem;
+    padding-bottom: .5rem;
     right: 80%;
     padding-left: 2rem; 
     list-style-type: none;
     margin-left: auto;
-    margin-right: 10%;
+    margin-right: auto;
+    border: 4px solid black;
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+    margin-left: 1rem;
+    background: #63585e;
+    text-align: left;
 }
 .btnList{
     padding-top: 0rem;
