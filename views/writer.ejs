@@ -6,15 +6,16 @@
 
         <link rel="stylesheet" type="text/css" href="css/pips.css">
 
-
+        <link rel="icon" href="images/usgsLogo.png" type="image/x-icon">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
 
     </head>
     <body>
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%">
+        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" 
+        style="margin: 0%; padding: 0%">
         <br>
         <div id="loading" class="float-md-right text-center lead loading">
             <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
@@ -22,17 +23,23 @@
             <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
         </div>
         
-        <div class="container" style="height: 11rem; width: 75%; padding: 0; border-top: 1px; border-left: 1px; border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
-            <div class="jumbotron text-center" style="height: 68%; padding: 2rem; border: 1px solid black; padding-top: 1rem; padding-bottom:0;background-color: #e7c492;">
+        <div class="container" 
+        style="height: 11rem; width: 75%; padding: 0; border-top: 1px; border-left: 1px; 
+        border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
+            <div class="jumbotron text-center" 
+            style="height: 68%; padding: 2rem; border: 1px solid black; padding-top: 1rem; 
+            padding-bottom:0;background-color: #e7c492;">
                 <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
                 <h1 class="display-5" style="margin: 0;float: center;">Upload Successful</h1>
                 <p class="lead" style="margin-bottom:2rem;">Edit in the bottom box using tags in the middle box</p>
-                <a class="btn btn-primary btn-lg float-left" href="/" role="button" style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
+                style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
 
                 <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
                     <div class="form-group">
                         <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
+                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
+                        style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
                         onclick="loaderActivate()" />
                     </div>
                 </form>
@@ -50,18 +57,20 @@
             <br/>
             <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
             <br/>
-            <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags 
+            <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags
                 <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
             </div>
             <br/>
             <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
         </div>
 
-            <div class="container float-center" style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
+            <div class="container float-center" 
+            style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
                 
                 <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
                     <label for="template-text-output">
-                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
+                        <h3 class="display-5 alert alert-secondary" 
+                        style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
                     </label>
                     <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
@@ -69,8 +78,11 @@
 
                     <form class="lg-form text-center float-right" style="margin: 0;">
                         <div class="form-group">
-                            <a class="btn button text-white btn-lg" style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" id="link" download="<%=outputName%>">Download
-                                Caption</a>
+                            <a class="btn button text-white btn-lg" 
+                            style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
+                            id="link" download="<%=outputName%>">
+                                Download Caption
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -116,27 +128,36 @@
                 <!-- Active Tag Box -->
                 <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
                     <label for="test" class="float-center" style="margin: 0;">
-                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">Usable Tags</h2>
+                        <h3 class="display-5 alert alert-secondary" 
+                        style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">
+                            Usable Tags
+                        </h3>
                     </label>
                     <br/>
                     <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
-                        <label for="filterInput" class="alert alert-light" style="color:black; width: auto; height:40px; padding:3px;"><h4>Search for keywords</h4></label><br/>
+                        <label for="filterInput" class="alert alert-light" 
+                        style="color:black; width: auto; height:40px; padding:3px;">
+                            <h4>Search for keywords</h4>
+                        </label>
+                        <br/>
                         <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
-                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black; border: 1.5px solid black;">
+                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;
+                         border: 1.5px solid black;">
                     </div>
                     <br/>
                     <textarea readonly id="test" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
                     <button id="button-more-tags" class="btn btn-md button float-left" 
-                        style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" onclick="showMoreTags()">
-                        Show Important Tags
-                    </button>
+                        style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" 
+                        onclick="showMoreTags()">Show Important Tags</button>
                     
-                    <form action="/csv" method='POST' class="lg-form text-center float-right" style="margin: 0;  margin-top:1rem;">
+                    <form action="/csv" method='POST' class="lg-form text-center float-right" 
+                    style="margin: 0;  margin-top:1rem;">
                         <div class="lg-form text-center" style="margin: 0;">
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" style="width: 13rem; border: 2px solid black; padding: 7px;" />
+                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
+                            style="width: 13rem; border: 2px solid black; padding: 7px;" />
                         </div>
                     </form>
                 </div>
@@ -145,10 +166,12 @@
                 <!-- Editing Box-->
                 <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
                     <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary" style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
+                        <h3 class="display-5 alert alert-secondary" 
+                        style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
                     </label>
                     <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                        style="resize: vertical; font-size: 22px; border: 2px solid black;"> <%= templateText %> </textarea>
+                        style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
+                    </textarea>
                 </div>
             </div>
             
@@ -156,14 +179,22 @@
         <script type="text/javascript">
             var loader = document.getElementById('loading');
 
-            // set the template information 
+            /**
+             * Function: setOutput
+             * 
+             * Desc: sets the value of the output to the template and then calls output() 
+             */
             function setOutput() {
                 let getTemplate = document.getElementById("template-text").value;
                 document.getElementById("template-text-output").innerHTML = getTemplate;
                 output();
             }
             
-            // Gets important keys and values
+            /**
+             * Function: getMetadata
+             * 
+             * Desc: parse out the important tags and populate the tag area
+            */
             function getMetadata() {
                 var metaDataString = document.getElementById("metadata-text").value;
                 var metaDataArea = document.getElementById("metadataTagArea");
@@ -180,7 +211,11 @@
                 }
 
             }
-            // Gets All Tags
+            /**
+             * Function: getAllTags
+             * 
+             * Desc: retrieve all the tags from the passedTXT and populate the all tag area with tag format
+            */
             function getAllTags() {
                 var metaData = document.getElementById("passedTXT").value;
                 var metaDataArea = document.getElementById("allTagArea");
@@ -192,15 +227,23 @@
                 }
             }
 
-            // Converts Key to Tag
+            /**
+             * Function: keyToTag
+             * 
+             * Desc: converts key balues into tags for display on the UI
+            */
             function keyToTag(key) {
                 var tag = "[[ " + key + " ]]";
                 return tag;
             }
             // punctuation to be ignored
-            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'"];
+            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'","<",">"];
 
-            // boolean value that tells if there is puctuation in the key 
+            /**
+             * Function: removePunctuation
+             * 
+             * Desc: returns true if punctuation needs to be parsed out false if there is no punctuation  
+             */ 
             function removePunctuation(key){
                 for(index in unwantedPunc){
                     if(key[key.length - 1] === unwantedPunc[index] || key[0] === unwantedPunc[index]){
@@ -210,7 +253,11 @@
                 return false;
             }
 
-            // breaks string into punctuation and exchnages data with key then rejoins all punctuation in order
+            /**
+             * Function: exchangeData
+             * 
+             * Desc: parses out the data key and adds back the puctuation that was removed
+            */
             function exchangeData(keyString){
                 let Farr =[],
                     Barr = [],
@@ -240,6 +287,9 @@
 
                 // if the key is the same as val then it isn't a data value
                 if(key !== val){
+                    if(hasUnits(val)){
+                        val = removeUnits(val);
+                    }
                     // join arrays and add the new data value in between
                     return Farr.join("") + val + Barr.join("");
                 }
@@ -251,7 +301,11 @@
 
             }
 
-            // Return Metadata Val from Key
+            /**
+             * Function: getMetadataVal
+             * 
+             * Desc: get a value out of the data that matches the key passed
+            */
             function getMetadataVal(key) {
                 // get both data objects
                 var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
@@ -275,22 +329,73 @@
                 return key;
             }
 
-            // prototype function for strings to replace all occurances of 1 string with another 
+            /**
+             * TODO: this function might be able to be used instead of parsing out the punctiation in loops
+             * Function: replaceAll
+             *
+             * Desc: prototype string function that replaces every occurance of a string with another given value
+            */ 
             String.prototype.replaceAll = function (find, replace) {
                 var str = this;
                 return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
             }
 
-            // set the output in the text box from the tempplate text
+            /**
+             * Function: hasUnits
+             * 
+             * Desc: return true if the data value has units in it, false if not
+            */
+            function hasUnits(str){
+                if(str.indexOf("<") > -1 && str.indexOf(">") > -1){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+
+
+            /**
+             * Function: removeUnits
+             * 
+             * Desc: remove the units string out of the value leaving only the important parts
+            */
+            function removeUnits(str){
+                let tmpArr = str.split(" "),
+                    unitsFound = false;
+
+                for(index in tmpArr){
+                    if(tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1 && !unitsFound){
+                        // remove this index and everything after
+                        tmpArr[index] = "";
+                        unitsFound = true;
+                    }
+                    else if(unitsFound){
+                        tmpArr[index] = "";
+                    }
+                }
+
+                return tmpArr.join("");
+            }
+
+
+            /**
+             * Function: output
+             * 
+             * Desc: set the output of the template to the caption area
+            */
             function output() {
                 var tempText = document.getElementById("template-text").value;
 
                 //Find values of keys one by one, replace "[[...]]" with their value
                 var tempArr = tempText.split(' ');
                 for(var i=0; i<tempArr.length; i++){
-                    
+    
                     // get the val of the tag
                     tempArr[i] = getMetadataVal(tempArr[i]);
+
+                    if(hasUnits(tempArr[i])){
+                        tempArr[i] = removeUnits(tempArr[i]);
+                    }
                     
                 }
                 
@@ -300,7 +405,7 @@
                 var output = document.getElementById("template-text-output").innerHTML = tempText;
                 
 
-                //Download all contents in this textarea
+                //update the download link to the new text
                 var finalResult = output;
                 var tpl = document.getElementById("link");
                 tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
@@ -308,6 +413,11 @@
                 tpl.download = '<%=outputName%>';
             }
 
+            /**
+             * Function: showMoreTags
+             * 
+             * Desc: display the all tags in the live div or display the important tags if it already is showing all
+            */
             function showMoreTags() {
                 var val = document.getElementById("button-more-tags").innerHTML;
                 var textArea = document.getElementById("test");
@@ -329,36 +439,58 @@
                 }
             }
 
-            // functions to control the loading gif visibility  
+            /**
+             * Function: loadInvisible
+             * 
+             * Desc: hide the loader gif
+            */
             function loadInvisible(){
                 loader.style.visibility = 'hidden';    
             }
 
+            /**
+             * Function: loaderActivate
+             * 
+             * Desc: show the loader gif
+            */
             function loaderActivate(){
                 loader.style.visibility = 'visible';
             }
 
-            // whenever the user clicks in the template section
+            /**
+             * Function: template-text 'keyup' event handler
+             * 
+             * Desc: set the new output value whenever a new character is added to the template
+            */
             $("#template-text").keyup(function(){
                 setOutput();
             });
 
-            // whenever the fitering section is interacted with
+            /**
+             * Function: filterInput 'keyup' event handler
+             * 
+             * Desc: set the tag section to the fitered version by calling the filterTags()
+            */
             $("#filterInput").keyup(function(){
                 filterTags();
             });
 
-            // this function takes the input of the filter and matches all tags that contain the string
+            /**
+             * Function: filterTags
+             * 
+             * Desc: grab the filter section text and search for any values that contain that string in the tags
+            */
             function filterTags(){
                 let filterValue = document.getElementById("filterInput").value;
                 let dataTagField = (document.getElementById("button-more-tags").innerHTML === "Show All Tags")
-                                     ? document.getElementById("metadataTagArea").value:document.getElementById("allTagArea").value;
+                                     ? document.getElementById("metadataTagArea").value 
+                                     : document.getElementById("allTagArea").value;
 
                 // all lines of the visible tag section
                 let dataLines = dataTagField.split("\n");
 
                 // mak sure the filterValue is not 0 and the length of the string is at least 3 characters long
-                if(filterValue !== "" && filterValue.length > 2){
+                if(filterValue !== "" && filterValue.length >= 2){
                     var filteredArray = [];
                     
                     // for every line that contains the filtering string push the line into an array
@@ -378,20 +510,39 @@
                 }
             }
 
-
+            /**
+             * Function: helpBtn 'mousedown' event handler
+             * 
+             * Desc: show the help box div
+            */
             $("#helpBtn").on("mousedown",function(){
                 // show the help box
                 document.getElementById("help-box").style.visibility = "visible";
             });
 
-  
+            /**
+             * Function: helpBtn 'mousedown' event handler
+             * 
+             * Desc: hide the help box div
+            */
             $("#hideBtn").on("mousedown",function(){
                 // hide the help box
                 document.getElementById("help-box").style.visibility = "hidden";
             });
 
-            // make sure the loader is invisible on pageshow
+            function initTags(){
+                // write default to tag section
+                showMoreTags();
+            }
+
+
+            /**
+             * Function: window 'pageshow' event handler
+             * 
+             * Desc: run the logic to start the page
+            */
             $(window).bind('pageshow',function(event){
+                // if this page was rendered from the cache hide the loader
                 if(event.originalEvent.persisted){
                     loadInvisible();
                 }
@@ -401,9 +552,8 @@
             setOutput();
             getMetadata();
             getAllTags();
-            showMoreTags();
-            
-            //setInterval(output, 1000);
+            initTags();
+
         </script>
     </body>
 </html>
