@@ -178,13 +178,12 @@
         
         <script type="text/javascript">
             var loader = document.getElementById('loading');
-
             /**
              * Function: setOutput
              * 
              * Desc: sets the value of the output to the template and then calls output() 
              */
-            function setOutput() {
+            function setOutput(){
                 let getTemplate = document.getElementById("template-text").value;
                 document.getElementById("template-text-output").innerHTML = getTemplate;
                 output();
@@ -195,14 +194,14 @@
              * 
              * Desc: parse out the important tags and populate the tag area
             */
-            function getMetadata() {
+            function getMetadata(){
                 var metaDataString = document.getElementById("metadata-text").value;
                 var metaDataArea = document.getElementById("metadataTagArea");
                 metaDataArea.value = "";
                 var jsonData = JSON.parse(metaDataString);
                 
                 //'StartTime': '1997-10-20T10:58:37.46'
-                for (key in jsonData) {
+                for(key in jsonData){
                     //console.log('key: ' + key + ':val:' + jsonData[key]);
                     if(key != undefined){  
                         let str = keyToTag(key) + ": " + jsonData[key] + "\n";
@@ -216,12 +215,12 @@
              * 
              * Desc: retrieve all the tags from the passedTXT and populate the all tag area with tag format
             */
-            function getAllTags() {
+            function getAllTags(){
                 var metaData = document.getElementById("passedTXT").value;
                 var metaDataArea = document.getElementById("allTagArea");
                 metaDataArea.value = "";
                 metaData = JSON.parse(metaData);
-                for (key in metaData) {
+                for(key in metaData){
                     let str = keyToTag(key) + ": " + metaData[key].toString().trim() + "\n";
                     metaDataArea.value += str;
                 }
@@ -232,7 +231,7 @@
              * 
              * Desc: converts key balues into tags for display on the UI
             */
-            function keyToTag(key) {
+            function keyToTag(key){
                 var tag = "[[ " + key + " ]]";
                 return tag;
             }
@@ -266,8 +265,8 @@
                 for(let i = 0; i<keyString.length; i++){
                     if(unwantedPunc.includes(keyString[i])){
                         Farr.push(keyString[i]);
-                    }else
-                    {
+                    }
+                    else{
                         break;
                     }
                 }
@@ -275,8 +274,8 @@
                 for(let i = keyString.length-1; i>0; i++){
                     if(unwantedPunc.includes(keyString[i])){
                         Barr.push(keyString[i]);
-                    }else
-                    {
+                    }
+                    else{
                         break;
                     }
                 }
@@ -306,7 +305,7 @@
              * 
              * Desc: get a value out of the data that matches the key passed
             */
-            function getMetadataVal(key) {
+            function getMetadataVal(key){
                 // get both data objects
                 var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
                 var impData = JSON.parse(document.getElementById("metadata-text").value);
@@ -335,7 +334,7 @@
              *
              * Desc: prototype string function that replaces every occurance of a string with another given value
             */ 
-            String.prototype.replaceAll = function (find, replace) {
+            String.prototype.replaceAll = function(find, replace){
                 var str = this;
                 return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
             }
@@ -348,7 +347,8 @@
             function hasUnits(str){
                 if(str.indexOf("<") > -1 && str.indexOf(">") > -1){
                     return true;
-                }else{
+                }
+                else{
                     return false;
                 }
             }
@@ -383,7 +383,7 @@
              * 
              * Desc: set the output of the template to the caption area
             */
-            function output() {
+            function output(){
                 var tempText = document.getElementById("template-text").value;
 
                 //Find values of keys one by one, replace "[[...]]" with their value
@@ -403,7 +403,6 @@
                 
                 //set the innerHTML for the last(output) textarea
                 var output = document.getElementById("template-text-output").innerHTML = tempText;
-                
 
                 //update the download link to the new text
                 var finalResult = output;
@@ -418,17 +417,18 @@
              * 
              * Desc: display the all tags in the live div or display the important tags if it already is showing all
             */
-            function showMoreTags() {
+            function showMoreTags(){
                 var val = document.getElementById("button-more-tags").innerHTML;
                 var textArea = document.getElementById("test");
                 var metaTags = document.getElementById("metadataTagArea");
                 var importantTags = document.getElementById("allTagArea");
                 val = val.toString();
-                if (val === "Show Important Tags") {
+                if(val === "Show Important Tags"){
                     val = "Show All Tags";
                     document.getElementById("button-more-tags").innerHTML = val;
                     textArea.value = metaTags.value;
-                } else {
+                }
+                else{
                     val = "Show Important Tags";
                     document.getElementById("button-more-tags").innerHTML = val;
                     textArea.value = importantTags.value;
@@ -500,11 +500,10 @@
                             filteredArray.push(dataLines[line]);
                         }
                     }
-
                     // set the tag field to he new filtered array
-                    document.getElementById("test").value = filteredArray.join("\n");
-                    
-                }else{
+                    document.getElementById("test").value = filteredArray.join("\n");   
+                }
+                else{
                     // if not filtering the data just set the data to the default
                     document.getElementById("test").value = dataTagField;
                 }
@@ -541,7 +540,7 @@
              * 
              * Desc: run the logic to start the page
             */
-            $(window).bind('pageshow',function(event){
+            $(window).bind('pageshow', function(event){
                 // if this page was rendered from the cache hide the loader
                 if(event.originalEvent.persisted){
                     loadInvisible();
