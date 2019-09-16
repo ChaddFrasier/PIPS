@@ -1,6 +1,6 @@
 body,html{
     background-image: url('../images/webAppBackground.jpg');
-    background-repeat: repeat-x;
+    background-repeat: repeat-y;
     backface-visibility: visible;
     background-size: cover; 
     width: 100%;
@@ -76,12 +76,7 @@ input.largeBox{
 .helpBtn:hover{
     cursor: pointer;
 }
-.image-editer{        
-    align-content: center;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
+
 .image-image {
     display: inherit;
     margin: 0;
@@ -90,10 +85,6 @@ input.largeBox{
     margin-left: auto;
     margin-right: auto;
     width: inherit;
-}
-  
-image:hover {
-    cursor: crosshair;
 }
 
 .image-controls{
@@ -110,37 +101,10 @@ image:hover {
     padding-left: 0%;            
 }
 
-.image-symbols{
-    margin-left: auto;
-    margin-right:auto;
-    background-color: #d9d9d9;
-    border: 5px solid #000000;
-    width: 400px;
-}
-.cropit-preview {
-    background-color: #f8f8f8;
-    background-size: cover;
-    border: 20px solid #000000;
-    border-radius: 3px;
-    margin-top: 7px;
-    margin-left: 25%;
-    width: 600px;
-    height: 600px;
-}
-.cropit-preview-image-container {
-    cursor: move;
-}
-
-.image-size-label {
-    margin-top: 10px;
-}
-
 label{
     color: white;
 }
-.export {
-    display: block;
-}
+
 .button {
     width:4.5rem;
     height: auto;
@@ -158,9 +122,7 @@ input[type=color]:hover{
     border: 1.5px double rgba(0, 0, 0, 0.452);
     background: white;
 }
-.canvas-legend {
-    height: 50px;
-}
+
 svg{ 
     position: relative;
     text-align: center;
@@ -193,6 +155,7 @@ svg{
 
 .help-box-right{
     float: right;
+    color: black;
     position: absolute;
     right: 5%;
     top: 30%;
@@ -214,8 +177,8 @@ svg{
 
 .small-text{
     font-size: 75%;
+    color: black;
 }
-
 
 .draggable{
     cursor: move;
@@ -232,25 +195,13 @@ svg{
 .bottom-left{
     cursor:nesw-resize;
 }
+
 .top-left{
     cursor:nwse-resize;
 }
 
 .top-right{
     cursor:nesw-resize;
-}
-
-.top{
-    cursor:ns-resize;
-}
-.bottom{
-    cursor:ns-resize;
-}
-.left{
-    cursor:ew-resize;
-}
-.right{
-    cursor:ew-resize;
 }
 
 li{
@@ -276,3 +227,34 @@ li{
     border: 1rem;
     display: inline;
 }
+
+#progressBar {
+    width: 75%;
+    background-color: green;
+    margin-left:auto;
+    margin-right:auto;
+    overflow: hidden;
+    position: relative;
+    float: center;
+    transform: translateZ(0);
+  }
+
+  #mainBar {
+    height: 30px;
+    background-color:  grey; 
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: relative;
+    
+  }
+
+  @keyframes growBar{
+    from {transform: translateX(0%);}
+    to {transform: translateX(96%);}
+  }
+  @-webkit-keyframes growBar{
+    from {-webkit-transform: translateX(0%);}
+    to {-webkit-transform: translateX(96%);}
+  }
