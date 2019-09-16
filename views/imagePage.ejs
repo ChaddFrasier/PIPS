@@ -3,20 +3,32 @@
         <!-- Required meta tags -->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+        <!-- TODO: add meta tags -->
+
 
         <link rel="stylesheet", href="css/pips.css" type="text/css">
-
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
+            crossorigin="anonymous">
         <title>Image Editor</title>
+        <link rel="icon" href="images/usgsLogo.png" type="image/x-icon">
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
     </head>
 
     <script type="text/javascript">
-        // function to create a draggable field from svg element
+        /**
+         * Function: makeDraggable
+         * 
+         * Desc: This function initializes all the draggable elements in the svg element.
+         *  It adds all the event listener functions for manipulating the icons that need to be changed.
+         * 
+         *  Note: This function needs to be called whenever any object is added to the inline svg or the 
+         * size of the svg changes otherwise the functions will not find the new icons or the icons
+         * will not register the bpoundry of the svg sapce.
+         * 
+        */
         function makeDraggable(event) {
         
             // get svg element
@@ -35,7 +47,6 @@
             var resizing = false,
                 dragging = false,
                 currentScale,
-                transformString,
                 startH,
                 startW,
                 minNorth = .1219513,
@@ -47,6 +58,7 @@
                 maxText = textSize*10,
                 minText = textSize,
                 iconMin,
+                iconMax,
                 outlineMin = .125,
                 scale;
             
@@ -55,25 +67,39 @@
             // minX = x of viewbox
             var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
             // maxX = the width of the viewbox - the absolute value of the x value
-            var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
+            var boundaryX2 = Number(svg.getAttribute('viewBox').split(" ")[2]) - 
+                            Math.abs(Number(svg.getAttribute('viewBox').split(" ")[0]));
             // minY = y of the viewBox
             var boundaryY1 = Number(svg.getAttribute('viewBox').split(" ")[1]);
             // maxY = the height of the viewbox - the absolute value of the  y of the view box
-            var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) - Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
+            var boundaryY2 = Number(svg.getAttribute('viewBox').split(" ")[3]) -
+                             Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
 
-
-            // get the mouse position relative to the svg screen matrix
-            // math functions were found on a blog post
+            /**
+             * Function: getMousePosition
+             * 
+             * Desc: gets mouse x y coordinates based on the tranform of the svg element
+             * 
+            */
             function getMousePosition(event) {
+                // get transform matrix in relation to svg
                 var CTM = svg.getScreenCTM();
-                
+                // Note: calculations where found on a blog post
+                // return the calculated x and y coordinates of the mouse
                 return {
                     x: (event.clientX - CTM.e) / CTM.a,
                     y: (event.clientY - CTM.f) / CTM.d
                 };
             }
 
-            // start the drag on mousedown
+            /**
+             * Function: startDrag
+             * 
+             * Desc: this runs whenever the mousedown in registered
+             *      This function retrieves the transform variables, and sets the draggable boundry 
+             *      as well as setting the scale limits for which ever icon is clicked on, also sets flags for scaling
+             * 
+            */
             function startDrag(event){
                 // get the mouseX and mouseY on the client
                 mX = event.clientX, mY = event.clientY;
@@ -105,7 +131,8 @@
                 // Make sure the first transform on the element is a translate transform
                 var transforms = selectedElement.transform.baseVal;
 
-                // if the element that the mousedown happened over is a resize block and the function is not currently resizing,
+                // if the element that the mousedown happened over is a resize block 
+                //      and the function is not currently resizing,
                 // start resize logic
                 if(elementOver.classList.contains('resize') && !resizing){
                     // set resizing flag
@@ -116,9 +143,6 @@
 
                     // get the coordinates where the click happend inside the svg box
                     offset = getMousePosition(event);
-
-                    // get the transform string so we can change it later strip the scale part off the end because we are resizing
-                    transformString = selectedElement.getAttribute("transform").split("scale(")[0];
                     
                     // extract the scale value as a number
                     currentScale = scale.matrix.a;
@@ -136,15 +160,17 @@
                     // get scale data
                     scale = transforms.getItem(transforms.length -1);
 
-                    // make sure that the first element of the tranform object is the translate and create one if it isnt there
-                    if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
-                    // sets current transform position to 0,0 to make moving item easier
-                    var translate = svg.createSVGTransform();
-                    translate.setTranslate(0, 0);
-                    selectedElement.transform.baseVal.insertItemBefore(translate, 0);
+                    // make sure that the first element of the tranform object is the translate 
+                    //  and create one if it isnt there
+                    if (transforms.length === 0 
+                        || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE){
+                        // sets current transform position to 0,0 to make moving item easier
+                        var translate = svg.createSVGTransform();
+                        translate.setTranslate(0, 0);
+                        selectedElement.transform.baseVal.insertItemBefore(translate, 0);
                     }
 
-                    // Get initial translation in relation to the current mouse position (offset) and the current translation
+                    // Get initial translation in relation to the current mouse position (offset)
                     transform = transforms.getItem(0);
 
                     // calculate the transform location in relation to the svg element
@@ -165,8 +191,8 @@
 
                         // if no rotate has occured
                         if(rotateVal ===0 || rotateVal === 360 ){
-                            // set the new boundry values based on the view box and the width/height of the icons
-                            // dim * scale = dim of icon
+                            // set the new boundry values based on the view box 
+                            // and the width/height of the icons (dim * scale = dim of icon)
                             minX = boundaryX1 - bbox.x;
                             maxX = boundaryX2 - bbox.x - bbox.width * scaleFactor;
                             minY = boundaryY1 - bbox.y;
@@ -179,95 +205,102 @@
                             var trigInput3 = (rotateVal-180) * Math.PI/180;
                             var trigInput4 = (rotateVal-270) * Math.PI/180;
 
-                            // check for easy angle calculations, this save processing time if the value is a 45 45 90 triangle
-                            // 30 60 90 triangle, or a interval of 90 degrees
+                            // check for easy angle calculations, this save processing time 
+                            // iff the angle makes, 45 45 90 triangle, 30 60 90 triangle,
+                            //  or a interval of 90 degrees
                             if(rotateVal === 180){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x+ bbox.width * scaleFactor;
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
                                 maxY = boundaryY2 - bbox.y;
                             }else if(rotateVal === 90){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y;
                                 maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
                             }else if(rotateVal === 270){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x;
                                 maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor;
                                 minY = boundaryY1 - bbox.y + bbox.width * scaleFactor;
                                 maxY = boundaryY2 - bbox.y;
                             }
                             else if(rotateVal === 45){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2));
                                 maxX = boundaryX2 - bbox.x - (bbox.width * scaleFactor)/Math.sqrt(2);
                                 minY = boundaryY1 - bbox.y;
-                                maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - (bbox.height * scaleFactor)/Math.sqrt(2);
+                                maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2) - 
+                                                             (bbox.height * scaleFactor)/Math.sqrt(2);
                             }
                             else if(rotateVal === 135){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
-                                minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2)+ (bbox.width * scaleFactor/Math.sqrt(2)));
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
+                                minX = boundaryX1 - bbox.x + (bbox.height * scaleFactor/Math.sqrt(2) + 
+                                                             (bbox.width * scaleFactor/Math.sqrt(2)));
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
                                 maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);                            
                             }
                             else if(rotateVal === 225){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x + (bbox.width * scaleFactor/Math.sqrt(2));
                                 maxX = boundaryX2 - bbox.x - bbox.height * scaleFactor/Math.sqrt(2);
-                                minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) + (bbox.width * scaleFactor)/Math.sqrt(2);
+                                minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2) +
+                                                             (bbox.width * scaleFactor)/Math.sqrt(2);
                                 maxY = boundaryY2 - bbox.y;
                             }
                             else if(rotateVal === 315){
-                                // set the new boundry values based on the view box and the width/height of the icons
-                                // dim * scale = dim of icon
+                                // set the new boundry values based on the view box 
+                                // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x;
-                                maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) - bbox.width * scaleFactor/Math.sqrt(2);
+                                maxX = boundaryX2 - bbox.x  - bbox.height * scaleFactor/Math.sqrt(2) -
+                                                              bbox.width * scaleFactor/Math.sqrt(2);
                                 minY = boundaryY1 - bbox.y  + (bbox.width * scaleFactor)/Math.sqrt(2);
                                 maxY = boundaryY2 - bbox.y - (bbox.height * scaleFactor)/Math.sqrt(2);
                             }
-                            // end of easy calculations
                             // if less than 90 calculate using trig using the first trig radian value
-                            // the triangles caculated are based on the top left of the original icon so we need 4 different checks
+                            // the triangles caculated are based on the top left of the original icon 
+                            // so we need 4 different checks
                             else if(rotateVal < 90){
-                                minX = boundaryX1 - bbox.x  + Math.sin(trigInput)*(bbox.height*scaleFactor);
-                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput)*(bbox.width*scaleFactor);
+                                minX = boundaryX1 - bbox.x  + Math.sin(trigInput)* (bbox.height*scaleFactor);
+                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput)* (bbox.width*scaleFactor);
                                 minY = boundaryY1 - bbox.y;
-                                maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)*(bbox.height*scaleFactor) + Math.sin(trigInput)*(bbox.width*scaleFactor));
+                                maxY = boundaryY2 - bbox.y - (Math.cos(trigInput)* (bbox.height*scaleFactor)+
+                                                              Math.sin(trigInput)* (bbox.width*scaleFactor));
                             }
                             else if(rotateVal < 180){
                                 // calculate with 2nd radian value
-                                minX = boundaryX1 - bbox.x + Math.sin(trigInput2) * (bbox.width*scaleFactor) + Math.cos(trigInput2)*(bbox.height*scaleFactor);;
+                                minX = boundaryX1 - bbox.x + Math.sin(trigInput2)* (bbox.width*scaleFactor)+
+                                                             Math.cos(trigInput2)*(bbox.height*scaleFactor);
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y + Math.sin(trigInput2)*(bbox.height*scaleFactor);
                                 maxY = boundaryY2 - bbox.y - (Math.cos(trigInput2)*(bbox.width*scaleFactor));
                             }
                             else if(rotateVal < 270){
                                 //calculate with 3rd radian value
-                                minX = boundaryX1 - bbox.x + Math.cos(trigInput3) * (bbox.width*scaleFactor);
-                                maxX = boundaryX2 - bbox.x - Math.sin(trigInput3) * (bbox.height*scaleFactor);
-                                minY = boundaryY1 - bbox.y + Math.cos(trigInput3)*(bbox.height*scaleFactor) + Math.sin(trigInput3)*(bbox.width*scaleFactor);
+                                minX = boundaryX1 - bbox.x + Math.cos(trigInput3)* (bbox.width*scaleFactor);
+                                maxX = boundaryX2 - bbox.x - Math.sin(trigInput3)* (bbox.height*scaleFactor);
+                                minY = boundaryY1 - bbox.y + Math.cos(trigInput3)* (bbox.height*scaleFactor)+
+                                                             Math.sin(trigInput3)* (bbox.width*scaleFactor);
                                 maxY = boundaryY2 - bbox.y;
                             }
                             else if(rotateVal < 360){
                                 // calculate with 4th radian value     
                                 minX = boundaryX1 - bbox.x;
-                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput4) * (bbox.height*scaleFactor) - Math.sin(trigInput4) * (bbox.width*scaleFactor);
-                                minY = boundaryY1 - bbox.y + Math.cos(trigInput4)*(bbox.width*scaleFactor);
-                                maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)*(bbox.height*scaleFactor);    
+                                maxX = boundaryX2 - bbox.x - Math.cos(trigInput4)* (bbox.height*scaleFactor)-
+                                                             Math.sin(trigInput4)* (bbox.width*scaleFactor);
+                                minY = boundaryY1 - bbox.y + Math.cos(trigInput4)* (bbox.width*scaleFactor);
+                                maxY = boundaryY2 - bbox.y - Math.sin(trigInput4)* (bbox.height*scaleFactor);
                             }
                         }
-                        console.log("BOUNDING DIMENSIONS ARE FROM: x" + minX + " to " + maxX);
-                        console.log("AND Y: " + minY + " to " + maxY);
                     }
                 }
             }
@@ -280,7 +313,16 @@
                 bottom=false;
             
 
-            // move the icon around using translate or scale it by detecting what the mouse was over on the click
+
+            /**
+             * Function: drag
+             * 
+             * Desc: This runs when the mousemove event occurs
+             *      This functions performs the actual icon manipulation
+             *      This functions will scale icons up and down in size based on mouse motion.
+             *      It also moves icons around the screen when the dragging event is occuring 
+             *      
+            */
             function drag(event) {
                 // get the mouse x and y based on client
                 mX = event.clientX, mY = event.clientY;
@@ -289,7 +331,8 @@
                 let growingFactor = .02;
 
                 // reset growing factor if needed
-                if( elementOver && elementOver.parentElement && elementOver.parentElement.classList.contains("textbox")){
+                if( elementOver && elementOver.parentElement 
+                    && elementOver.parentElement.classList.contains("textbox")){
                     growingFactor *= 10;
                 }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
                     growingFactor *=2.5;
@@ -315,7 +358,8 @@
 
                     // first make sure there are no other flags active and
                     // either the top right element is moused over or the top right is being moved
-                    if((!topL && !bottomL && !bottomR) && (elementOver.classList.contains('top-right') || topR)){
+                    if((!topL && !bottomL && !bottomR) 
+                        && (elementOver.classList.contains('top-right') || topR)){
                         //set the flag just incase it isn't
                         topR = true;
                         // if the new x is less  & the new y is greater than the old position then shrink
@@ -325,9 +369,11 @@
                             // check for the min
                             if(currentScale < iconMin){currentScale = iconMin;}
 
-                            // translate the icon 0 in the x direction and by the difference in the positive y direction
+                            // translate the icon 0 in the x direction and by the difference 
+                            //      in the positive y direction
                             dx = parseInt(transform.matrix.e);
-                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/4);
+                            dy = parseInt(transform.matrix.f + 
+                                    Math.abs(startH - bbox.height * currentScale)/4);
                         }
                         // if the old x is greater and the new y is smaller then we are growing
                         else if(coord.x > offset.x && coord.y < offset.y){
@@ -336,15 +382,20 @@
 
                             // check for max size
                             if(currentScale > iconMax){currentScale = iconMax;}
-                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){
+                                currentScale -= growingFactor
+                            }
                             
-                            // translate the icon 0 in the x direction and by the difference in the negative y direction        
+                            // translate the icon 0 in the x direction and by the difference 
+                            //      in the negative y direction        
                             dx = parseInt(transform.matrix.e);
-                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/4);    
+                            dy = parseInt(transform.matrix.f -
+                                    Math.abs(startH - bbox.height * currentScale)/4);
                         }
 
                         // set scale using svg data method
                         scale.setScale(currentScale,currentScale);
+
                         // if parse it returns a true value for both
                         /* if(dx && dy){
                             // set the new translate
@@ -354,7 +405,8 @@
                         offset = coord;
                     }
                     // using the same logic for other corners of the scale
-                    else if((!topR && !bottomL && !bottomR) && (elementOver.classList.contains('top-left') || topL)){
+                    else if((!topR && !bottomL && !bottomR) 
+                            && (elementOver.classList.contains('top-left') || topL)){
                         topL = true;
                         // if new x is greater than the old & the new y is greater than the old
                         // shrink the scale
@@ -364,8 +416,10 @@
                             if(currentScale < iconMin){currentScale = iconMin;}
 
                             // transform the icon by the positive difference in the sizes                        
-                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/4);
-                            dy = parseInt(transform.matrix.f + Math.abs(startH - bbox.height * currentScale)/4);
+                            dx = parseInt(transform.matrix.e +
+                                    Math.abs(startW - bbox.width * currentScale)/4);
+                            dy = parseInt(transform.matrix.f +
+                                    Math.abs(startH - bbox.height * currentScale)/4);
                         }
                         // if the new x and new y are both less than the old position
                         // grow
@@ -376,16 +430,22 @@
                             // check for max size
                             if(currentScale > iconMax){currentScale = iconMax;}
                             if(!isOutline && 
-                            (bbox.height * currentScale > parseInt("<%=h%>")/3 || bbox.width * currentScale > parseInt("<%=w%>")/3))
-                            {currentScale -= growingFactor}
+                            (bbox.height * currentScale > parseInt("<%=h%>")/3 
+                            || bbox.width * currentScale > parseInt("<%=w%>")/3)
+                            ){
+                                currentScale -= growingFactor
+                            }
 
                             // transform the icon by the negative difference in the sizes
-                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/4);
-                            dy = parseInt(transform.matrix.f - Math.abs(startH - bbox.height * currentScale)/4);
+                            dx = parseInt(transform.matrix.e -
+                                    Math.abs(startW - bbox.width * currentScale)/4);
+                            dy = parseInt(transform.matrix.f -
+                                    Math.abs(startH - bbox.height * currentScale)/4);
                         }
 
                         // set scale using svg data method
                         scale.setScale(currentScale,currentScale);
+
                         // if parse it returns a true value for both
                         /* if(dx && dy){
                             // set the new translate
@@ -396,7 +456,8 @@
                         offset = coord;
                     }
                     // same logic as other corners
-                    else if((!bottomR && !topR && !topL) && (elementOver.classList.contains('bottom-left') || bottomL)){
+                    else if((!bottomR && !topR && !topL) 
+                            && (elementOver.classList.contains('bottom-left') || bottomL)){
                         bottomL = true;
                         // if new x is greater and new y is less
                         // shrink
@@ -407,7 +468,8 @@
                             
 
                             // transform the icon by the negative difference in the sizes keep y the same
-                            dx = parseInt(transform.matrix.e + Math.abs(startW - bbox.width * currentScale)/4);
+                            dx = parseInt(transform.matrix.e +
+                                    Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
 
 
@@ -419,16 +481,20 @@
 
                             // check for max size
                             if(currentScale > iconMax){currentScale = iconMax;}
-                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){
+                                currentScale -= growingFactor
+                            }
                             
                             // transform the icon by the negative difference in the sizes keep y the same
-                            dx = parseInt(transform.matrix.e - Math.abs(startW - bbox.width * currentScale)/4);
+                            dx = parseInt(transform.matrix.e -
+                                    Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
 
                         }
                         
                         // set scale using svg data method
                         scale.setScale(currentScale,currentScale);
+
                         // if parse it returns a true value for both
                         /* if(dx && dy){
                             // set the new translate
@@ -439,7 +505,8 @@
                         offset = coord;
                     }
                     // same logic as other corners 
-                    else if((!topL && !topR && !bottomL) && (elementOver.classList.contains('bottom-right') || bottomR)){
+                    else if((!topL && !topR && !bottomL) 
+                            && (elementOver.classList.contains('bottom-right') || bottomR)){
                         bottomR = true;
                         // if the new x is less and the new y is also less
                         // shrink
@@ -455,33 +522,9 @@
 
                             //check for max size
                             if(currentScale > iconMax){currentScale = iconMax;}
-                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
-                        }
-                        // set scale using svg data method
-                        scale.setScale(currentScale,currentScale);
-                        // no need to translate for bottom right corner
-                        // set new mouse position
-                        offset = coord;
-                    }
-
-                    // same logic as other corners 
-                    else if((!topL && !topR && !bottomL && !bottomR) && (elementOver.classList.contains('bottom') || bottom)){
-                        bottom = true;
-                        // if the new x is less and the new y is also less
-                        // shrink
-                        if(coord.y < offset.y){
-                            currentScale -= growingFactor*10;
-                            // check min bound
-                            if(currentScale < iconMin){currentScale = iconMin;}
-                        }
-                        // if the new x is greater than the old and the new y is greater
-                        // grow
-                        else if(coord.y > offset.y){
-                            currentScale += growingFactor*10;
-
-                            //check for max size
-                            if(currentScale > iconMax){currentScale = iconMax;}
-                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){currentScale -= growingFactor}
+                            if(!isOutline && bbox.height * currentScale > parseInt("<%=h%>")/3){
+                                currentScale -= growingFactor
+                            }
                         }
                         // set scale using svg data method
                         scale.setScale(currentScale,currentScale);
@@ -494,9 +537,11 @@
                     // removing the current scale and applying the base scale
                     if(isOutline){
                         // calculate and set the stroke-width
-                        selectedElement.style.strokeWidth = (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
+                        selectedElement.style.strokeWidth = 
+                                    (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
                     }
-                    if(isOutline || selectedElement.classList.contains("textbox") || selectedElement.id === "eyePosition"){
+                    if(isOutline || selectedElement.classList.contains("textbox") 
+                        || selectedElement.id === "eyePosition"){
                         if(dx && dy){
                             // set the new translate
                             transform.setTranslate(dx,dy);
@@ -522,28 +567,39 @@
                     }
                     // set the transform
                     transform.setTranslate(dx, dy);
-                    
                 }
             }
 
-            // when mouseup or mouse leave the svg box reset all flags 
-            // and set the selectedElement to null
+            /**
+             * Function: endDrag
+             * 
+             * Desc:   This function runs when the mouse leaves the gragging area 
+             *          or when the user lift their finger off the mouse
+             * 
+             * This function just resets the variables and erases the currently selected element
+             * 
+            */
             function endDrag(event) {
-                
                 if(selectedElement){
                     drag(event);
-                    resizing = false;
-                    dragging = false;
-                    bottomL = false;
-                    bottomR = false;
-                    topL = false;
-                    topR = false;
+                    resizing = false,
+                    dragging = false,
+                    bottomL = false,
+                    bottomR = false,
+                    topL = false,
+                    topR = false,
                     bottom = false;
                 }
             selectedElement = null;
             }
 
-            // given an icon element returnns the min scale value for each icon to test against the new scale
+        
+            /**
+             * Function: findLimit
+             * 
+             * Desc: given an icon element returns the min or max scale value for each icon
+             * 
+            */
             function findLimit(selectedElement, isMin){
                 if(selectedElement && selectedElement !== 'null'){
                     if(isMin){
@@ -559,7 +615,8 @@
                         else if(selectedElement.id.indexOf('attension') !== -1){
                             return outlineMin;
                         }
-                        else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                        else if(selectedElement.getAttribute("class") 
+                            && selectedElement.getAttribute("class").indexOf('text') !== -1){
                             return minText;
                         } else{
                             return .05;
@@ -575,7 +632,8 @@
                         else if(selectedElement.id.indexOf('eye') !== -1){
                             return maxEye;
                         }
-                        else if(selectedElement.getAttribute("class") && selectedElement.getAttribute("class").indexOf('text') !== -1){
+                        else if(selectedElement.getAttribute("class") 
+                            && selectedElement.getAttribute("class").indexOf('text') !== -1){
                             return maxText;
                         }else{
                             return 2;
@@ -584,43 +642,51 @@
                 }
             }        
         }// end make dragable
-
     </script>
 
     <body>
         <!-- Page Header Block-->
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%">
+        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto"
+            style="margin: 0%; padding: 0%">
         <!-- Loading GIF-->
         <div id="loading" class="float-md-right text-center lead loading">
                 <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
                 <h3 id="loadingText" style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
-        <div class="container" style="background: #e7c492; height: 12rem; padding: 2rem; border: 1px solid black;">
+        <div class="container" 
+        style="background: #e7c492; height: 12rem; padding: 2rem; border: 1px solid black;">
             <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
-            <div class="jumbotron text-center" style="border: 1px solid black; background: #f3d6b0; height:7rem; padding: 0;">
+            <div class="jumbotron text-center" 
+            style="border: 1px solid black; background: #f3d6b0; height:7rem; padding: 0;">
                 <h2>Edit Cube Image</h2> 
                 <h4 id="imageName"></h4>  
                 <h5><%=w%> &times; <%=h%> px</h5>   
-                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;">
+                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" 
+                style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;">
                     View Caption
                 </button>
-                <a class="btn btn-primary btn-lg float-right" style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;" href="/" role="button">New Upload</a>
+                <a class="btn btn-primary btn-lg float-right" 
+                style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;" 
+                href="/" role="button">New Upload</a>
             </div>
         </div>
         <br/>
         <!-----------------------Editor Box----------------------------------------------->
-        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"  xmlns:xlink="http://www.w3.org/1999/xlink" 
-        class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:black;" width='<%=w%>' height='<%=h%>'> 
+        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"
+        xmlns:xlink="http://www.w3.org/1999/xlink" class="image-image" viewBox="0 0 <%=w%> <%=h%>" 
+        style="fill:rgb(1, 1, 1);" width='<%=w%>' height='<%=h%>'> 
             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
-            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
-            
+            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" 
+                transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
         </svg>
 
         <!--------------------------- Help Box ------------------------->
         <div class="help-box-right" id="help-box" style="visibility: hidden;">
             <button class="float-right helpBtn" id="hideBtn" 
-            style="width: auto; height:auto; border-radius: 5px; border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+            style="width: auto; height:auto; border-radius: 5px; 
+            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+            background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke;font-size: 2rem;">Help</div>
                 <div class="row lead">1. Add Icons with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
@@ -629,25 +695,25 @@
                 <br/>
                 <div class="row lead">2. Drag icons around the image with the mouse</div>
                 <br/>
-                <div class="row lead"> 3. Scale all icons and text by mousing over the corners of the object</div>
+                <div class="row lead">3. Scale all icons and text by mousing over the corners of the object</div>
                 <br/>
-                <div class="row lead"> 4. Draw lines using the Pencil Tool.  
+                <div class="row lead">4. Draw lines using the Pencil Tool.  
                     <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.
                          Use Esc key to remove the head after the first click)</p> 
                 </div>
-                <div class="row lead"> 5. Use the color pickers to change the color of the adjacent object.  
+                <div class="row lead">5. Use the color pickers to change the color of the adjacent object.  
                         <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
                 </div>
                 <br/>
-                <div class="row lead"> 6. Add text to the image by clicking on the text box button and typing your text. 
+                <div class="row lead">6. Add text to the image by clicking on the text box button and typing your text. 
                         <p class="small-text">(Undo a text element by clicking the red button.)</p>  
                 </div>
                 <br/>
-                <div class="row lead"> 7. Padding can be added to the image by typing the amount 
+                <div class="row lead">7. Padding can be added to the image by typing the amount 
                     of pixels you want to add, and then selecting a location.  
                 </div>
                 <br/>
-                <div class="row lead"> 8. Click the 'Export Figure' button to save the new figure as an accepted format  
+                <div class="row lead">8. Click the 'Export Figure' button to save the new figure as an accepted format
                        <p class="small-text">(Accepted Formats: png, svg, jpeg, or jpg)</p>
                 </div>
             </div>
@@ -663,88 +729,124 @@
                 <table style="width: 10rem; height:100%; table-layout:auto;">
                     <tr>
                         <th colspan="2" class="text-left float-center">
-                            <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li> -->
-                            <!-- <li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li> -->
+        <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
+    <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
                             
                             <li style="margin-top:.5rem; border-top: 4px solid black">
-                                <p class="float-left" style="margin-right: .5rem;">North <br/>Azimuthal <br/>Direction</p>
+                                <p class="float-left" style="margin-right:.5rem;">North<br/>Azimuthal<br/>Direction</p>
                                 <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
                                 
-                                <label id="northCheckboxLabel" for="northCheckbox" style="visibility: hidden">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" style="visibility: hidden; top:6rem; left: 17rem;">
+                                <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
+                                    Toggle Color
+                                </label>
+                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
+                                style="visibility: hidden; top:6rem; left: 17rem;">
                                 
                             </li>
                             <li>
-                                <p class="float-left" style="margin-right: .5rem;">Sun <br/>Azimuthal <br/>Direction</p>
+                                <p class="float-left" style="margin-right: .5rem;">Sun<br/>Azimuthal<br/>Direction</p>
                                 <img class="btn btn-lg button" id="sunIconFlag"src="/images/sun_symbol.png"></img>
-                                <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox" style="top: 11rem; left: 17rem; visibility: hidden;">
+                                <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">
+                                    Toggle Color
+                                </label>
+                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
+                                style="top: 11rem; left: 17rem; visibility: hidden;">
                             </li>
                             <li>
-                                <p class="float-left" style="margin-right: .5rem;">Observer <br/>Azimuthal <br/>Direction</p>
+                                <p class="float-left" style="margin-right: .5rem;">
+                                    Observer<br/>Azimuthal<br/>Direction
+                                </p>
                                 <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
-                                <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" style="top: 15.5rem; left: 17rem; visibility: hidden;">
+                                <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">
+                                    Toggle Color
+                                </label>
+                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
+                                style="top: 15.5rem; left: 17rem; visibility: hidden;">
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
-                                <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">Drawing <br/>Tool</p>
+                                <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">
+                                    Drawing<br/>Tool
+                                </p>
                                 <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
-                                <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">Undo</button>
+                                <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">
+                                    Undo
+                                </button>
                             </li>
                             <li>
                                 <p class="float-left" style="margin-right: .5rem; padding-top: .5rem;">Scalebar</p>
                                 <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
                                     <svg viewBox= "0 0 25 4">
-                                        <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" stroke="black" fill="white" ></rect>
+                                        <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
+                                        stroke="black" fill="white" ></rect>
                                         <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
                                         <path id="scalebarVert" d="M 15 0 L 15 4"  stroke="black" stroke-width=".75"/>
                                         <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
-                                        <path id="scalebarLine10th" d="M 0 2 L 2.5 2"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert30th" d="M 5 0 L 5 4"  stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine10th" d="M 0 2 L 2.5 2"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert30th" d="M 5 0 L 5 4" stroke="black" stroke-width=".75"/>
                                       
-                                        <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 10 0 L 10 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine70th" d="M 5 2 L 7.5 2"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine90th" d="M 10 2 L 12.5 2"  stroke="black" stroke-width=".75"/>
-                                    
+                                        <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert50th" d="M 10 0 L 10 4"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine70th" d="M 5 2 L 7.5 2"
+                                        stroke="black" stroke-width=".75"/>
+                                        <path id="scalebarLine90th" d="M 10 2 L 12.5 2"
+                                        stroke="black" stroke-width=".75"/>
                                     </svg>
                                 </button>
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox" style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" style="top: 25rem; left: 16rem; visibility: hidden;">
+                                <label id="scaleCheckboxLabel" for="scaleCheckbox"
+                                style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
+                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
+                                style="top: 25.75rem; left: 16rem; visibility: hidden;">
                             </li>
                             <li>
-                                <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">Outline <br/>Box</p>
+                                <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">
+                                    Outline<br/>Box
+                                </p>
                                 <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
                                 <svg viewBox="0 0 2 1.5">
-                                    <rect x="0" y="0" width="2" height="1.5" stroke="white" stroke-width=".5" fill="transparent"></rect>
+                                    <rect x="0" y="0" width="2" height="1.5" 
+                                    stroke="white" stroke-width=".5" fill="transparent"></rect>
                                 </svg>
                                 </button>
                                 
                                 <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">Undo</button>
+                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">
+                                    Undo
+                                </button>
                             </li>
                             <li>
-                                <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">Text <br/>Tool</p>
+                                <p class="float-left" style="margin-right: 2rem; padding-top:.5rem;">Text<br/>Tool</p>
                                 <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
                                 <svg viewBox="0 0 20 8">
-                                    <rect x="0" y="0" width="20" height="8"stroke="white" stroke-width="1"fill="transparent"></rect>
+                                    <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
+                                    fill="transparent"></rect>
                                     <text x="3" y="7" font-size="9">Aa</text>
                                 </svg>
                                 </button>
-                                <input type="color" id="textColorPicker" style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">Undo</button>
+                                <input type="color" id="textColorPicker" 
+                                style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
+                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">
+                                    Undo
+                                </button>
                             </li>
-                            <li style=" height: 12rem; width: auto; padding: 0; padding-top: 0rem; padding-left: 1rem;">
+                            <li style="height: 12rem; width: auto; padding: 0; padding-top: 0rem; padding-left: 1rem;">
                                 <h2 class="text-left" style="padding-left: .5rem; color: white;"> Pad Image</h2>
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
                                         <div class="col" style="padding:0; margin-right: 1rem;">
-                                            <input class="form-control form-control-lg" style="width: 10rem; border: 1px solid lightgrey;"id="paddingInput" type="text" placeholder="Pad Pixels"/>
+                                            <input class="form-control form-control-lg"
+                                            style="width: 10rem; border: 1px solid lightgrey;"
+                                            id="paddingInput" type="text" placeholder="Pad Pixels"/>
                                         </div>
                                         <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
-                                            <button  style="left: 15rem; top: 0rem;" class="btn btn-danger btn-md button" id="resetPaddingBtn"> Reset </button>
+                                            <button  style="left: 15rem; top: 0rem;"
+                                             class="btn btn-danger btn-md button" id="resetPaddingBtn">Reset</button>
                                         </div>
                                 </div>
                             
@@ -767,14 +869,20 @@
                             <li style="border-bottom: 4px solid black;">
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
                                     <div class="col" style="padding: 0; top: 0rem">
-                                        <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">Save <br/>Figure</p>
-                                        <button class="btn btn-primary btn-lg button" style="width: 4rem;" id="exportBtn" > 
+                                        <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">
+                                            Save<br/>Figure
+                                        </p>
+                                        <button class="btn btn-primary btn-lg button" 
+                                        style="width: 4rem;" id="exportBtn" >
                                             <svg viewBox="0 0 20 25">
                                                 <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
-                                                <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
+                                                <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
+                                                L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
                                                 fill="white" stroke="white"></path>
-                                                <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 L 12 5" stroke="black" fill="black"></path>
-                                                <path d="M 2 15.5 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 15.5 a1,1 0 0 0 -1,-1 L 3 14.5 a1,1 0 0 0 -1,1" 
+                                                <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 
+                                                L 12 5" stroke="black" fill="black"></path>
+                                                <path d="M 2 17 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 17 
+                                                a1,1 0 0 0 -1,-1 L 3 16 a1,1 0 0 0 -1,1"
                                                 fill="white" stroke="white"></path>
                                             </svg>
                                         </button>
@@ -793,21 +901,36 @@
                 <label for="metadata-text">
                     <h2>Metadata Output</h2>
                 </label>
-                <textarea readonly id="metadata-text" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
+                <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
+                 style="resize: vertical; font-size: 22px;"><%= tagField %></textarea>
             </div>
         
             <div id="metadata-tags" style="display:none;" class="text-center green-border-focus">
                 <label for="metadataTagArea">
                     <h2>Metadata Tags</h2>
                 </label>
-                <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" style="resize: vertical; font-size: 22px;"></textarea>
+                <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark" 
+                style="resize: vertical; font-size: 22px;"></textarea>
             </div>
-            <!-- Canvas for extracting inline svg-->
-            <canvas id="canvas" width="<%=w%>" height="<%=h%>" style="display:none; border: 5px solid black; fill: black;" ></canvas>
 
+            <!--  Progress bar -->
+            <div id="progressBar" style="visibility: hidden;">
+                <div id="mainBar"></div>
+              </div> 
+
+              <!--TODO: may not be needed later -->
+            <!-- Canvas for extracting inline svg-->
+            <canvas id="canvas" width="<%=w%>" height="<%=h%>" 
+                style="display:none; border: 5px solid black; fill: rgb(255, 255, 255);" ></canvas>
 
         <script type="text/javascript">
-            // preserves the data on the writer page if it was the last seen page before the image editor
+            /**
+             * Function: captionHandler
+             * 
+             * Desc: checks the caller page to see if it was the captionWriter, 
+             *      goes back if true, otherwise calls an open to the server to get the page
+             * 
+            */
             function captionHandler(){
                 // if the last window seen was captionWriter then go back to preserve changes
                 if(document.referrer.indexOf("/captionWriter") > -1){
@@ -818,49 +941,125 @@
                 }
             }
 
+            //TODO: finish the logic in this function
+            // grow the progress bar using animations up to the width over duration seconds
+            /**
+             * Function:
+             * 
+             * Desc:
+             * 
+            */
+            function growProgress(width, duration){
+                console.log("start growing");
+                //document.getElementById("mainBar").className = "growBar";
+                document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
+                document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
+            }
+
+            /**
+             * Function: showProgress
+             * 
+             * Desc: sets the progressBar div to visible
+             * 
+            */
+            // show the download progress bar
+            function showProgress(){
+                var elem = document.getElementById("progressBar");
+                elem.style.visibility = "visible";
+            }
+            /**
+             * Function: hideProgress
+             * 
+             * Desc: sets the visibility of the progressBar div to hidden and resets the animations
+             * 
+            */
+            // hide the progress bar for download
+            function hideProgress(){
+                var elem = document.getElementById("progressBar");
+                // stop the animation
+                document.getElementById("mainBar").style.animation = "";
+                document.getElementById("mainBar").style.webkitAnimation = "";
+                // hide the bar
+                elem.style.visibility = "hidden";
+            }
+
             // string version of the icons so they can be added dynamically with a single function call 
-           
-            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0; padding:0; pointer-events:visible;"> '
-                    +'<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black" style="border:0;"></circle>'
-                    +'<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"></circle>'
-                    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="black"  fill="white" stroke-width="10"/>'
-                    +'<rect class="resize top-left"x="0" y="0" width="100" height="100" style="visibility: hidden;"fill="red"/>'
-                    +'<rect class="resize top-right"x="220" y="0" width="100" height="100" style="visibility: hidden;"fill="blue"/>'
-                    +'<rect class="resize bottom-right"x="220" y="200" width="100" height="100" style="visibility: hidden;"fill="green"/>'
-                    +'<rect class="resize bottom-left"x="0" y="200" width="100" height="100" style="visibility: hidden;"fill="yellow"/></g>';
+            var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
+                + 'transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0;'
+                + 'padding:0; pointer-events:visible;"> '
+                + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black"'
+                + 'style="border:0;"></circle>'
+                + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>'
+                + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="black"'
+                + 'fill="white" stroke-width="10"/>'
+                + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
+                + 'style="visibility: hidden;"fill="red"/>'
+                + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
+                + 'style="visibility: hidden;"fill="blue"/>'
+                + '<rect class="resize bottom-right"x="220" y="200" width="100"height="100" style="visibility: hidden;'
+                + '"fill="green"/>'
+                + '<rect class="resize bottom-left"x="0" y="200" width="100" height="100"'
+                + 'style="visibility: hidden;"fill="yellow"/></g>';
         
           
-            var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"  transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7" style="border:0; padding:0; pointer-events:all;">'
-                +'<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
-                +'<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="100" height="125" fill="red"/>'
-                +'<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150" fill="yellow"/>'
-                +'<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white"  stroke="black" stroke-width="4" style="border:0;"></path>'
-                +'<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10" transform="translate(0,200)"fill="black" style="border:0;"></path>'
-                +'<rect class= "resize bottom-right"x="100" y="300" width="110" height="110" style="visibility: hidden;"fill="green"/>'
-                +'<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"fill="blue"/></g>'
+            var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
+                + 'transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7"'
+                + 'style="border:0; padding:0; pointer-events:all;">'
+                + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
+                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
+                + 'width="100" height="125" fill="red"/>'
+                + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150"'
+                + 'fill="yellow"/>'
+                + '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white"  stroke="black"' 
+                + 'stroke-width="4" style="border:0;"></path>'
+                + '<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10"'
+                + 'transform="translate(0,200)"fill="black" style="border:0;"></path>'
+                + '<rect class= "resize bottom-right"x="100" y="300" width="110" height="110"'
+                + 'style="visibility: hidden;"fill="green"/>'
+                + '<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"'
+                + 'fill="blue"/></g>'
                 
 
-            var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5" style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
+            var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
+                + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
 
-            var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400" />'
-                + '<rect class=" resize top-left" x="0" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
-                + '<rect class=" resize top-right" x="275" y="0" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
-                + '<rect class=" resize bottom-right" x="275" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />'
-                + '<rect class=" resize bottom-left" x="0" y="275" width="125" height="125" style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke-width:2;stroke:blue" />';
+            var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>'
+                + '<rect class=" resize top-left" x="0" y="0" width="100" height="100"'
+                + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+                + '<rect class=" resize top-right" x="300" y="0" width="100" height="100"'
+                + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+                + '<rect class=" resize bottom-right" x="300" y="300" width="100" height="100"'
+                + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+                + '<rect class=" resize bottom-left" x="0" y="300" width="100" height="100"'
+                + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />';
             
-            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;" transform="translate(0,100) rotate(0) scale(.52)" stroke-width="3" style="border:0; padding:0; pointer-events:visible;">'
-                + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  stroke-width="2" d="M 76.5 0 L 55 21.6 L 73.5 21.6 L 73.5 65 L78.5 65 L 78.5 21.6  L 95 21.6 L 74.5 0" stroke="white" fill="black"/>'
-                + '<ellipse id= "eyeIconOuter"  cx="75" cy="55" rx="37" ry="25"  stroke="white" fill="black" style="border:0;"></ellipse>'
-                + '<ellipse id= "eyeIconCenter" rx="18" ry="20" cy="55" cx="75" stroke-width="3" fill="white" stroke="black"  style="border:0;">'
-                + '</ellipse><circle id= "eyeIconPupel"  r="7"cy="55" cx="75" stroke-width="4" stroke="white" fill="black"  style="border:0;"></circle>'
-                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="55" height="50" fill="red"/>'
-                + '<rect x="88" y="0" class="resize top-right" style="visibility: hidden;"width="47" height="45" fill="blue"/>'
-                + '<rect x="88" y="67" class="resize bottom-right" style="visibility:hidden;"width="47" height="40" fill="green"/>'
-                + '<rect x="1" y="65" class="resize bottom-left" style="visibility: hidden;"width="55" height="40" fill="yellow"/></g>';
+            var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
+                + 'transform="translate(0,100) rotate(0) scale(.52)" stroke-width="3" style="border:0; padding:0;'
+                + 'pointer-events:visible;">'
+                + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  stroke-width="2"'
+                + 'd="M 76.5 0 L 55 21.6 L 73.5 21.6 L 73.5 65 L78.5 65 L 78.5 21.6  L 95 21.6 L 74.5 0" '
+                + 'stroke="white" fill="black"/>'
+                + '<ellipse id= "eyeIconOuter"  cx="75" cy="55" rx="37" ry="25"  stroke="white" fill="black"'
+                + 'style="border:0;"></ellipse>'
+                + '<ellipse id= "eyeIconCenter" rx="18" ry="20" cy="55" cx="75" stroke-width="3" fill="white"'
+                + 'stroke="black"  style="border:0;">'
+                + '</ellipse><circle id= "eyeIconPupel"  r="7"cy="55" cx="75" stroke-width="4" stroke="white"'
+                + 'fill="black"  style="border:0;"></circle>'
+                + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="55" height="50"'
+                + 'fill="red"/>'
+                + '<rect x="88" y="0" class="resize top-right" style="visibility: hidden;"width="47"'
+                + 'height="45" fill="blue"/>'
+                + '<rect x="88" y="67" class="resize bottom-right" style="visibility:hidden;"width="47"'
+                + 'height="40" fill="green"/>'
+                + '<rect x="1" y="65" class="resize bottom-left" style="visibility: hidden;"width="55" height="40"'
+                + 'fill="yellow"/></g>';
             
-            var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar" transform="translate(0,175) scale(.1)" stroke-width="10" style="border:0; padding:0; pointer-events:all;">'
+            var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
+                + 'transform="translate(0,175) scale(.1)" stroke-width="10"'
+                + 'style="border:0; padding:0; pointer-events:all;">'
                 + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;"></rect>'
-                + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white" fill="black" ></rect>'
+                + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white"'
+                + 'fill="black" ></rect>'
                 + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>'
                 + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>'
@@ -882,10 +1081,14 @@
                 + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
                 + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
 
-                + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
-                + '<text id="scalebar1" x="50" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
-                + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white"></text>'
-                + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="150" stroke="white"fill="white">0</text></g>';
+                + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif"'
+                + 'font-size="150" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
+                + '<text id="scalebar1" x="50" y="150" font-family="sans-serif"'
+                + 'font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
+                + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="150"'
+                + 'stroke="white"fill="white"></text>'
+                + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="150"'
+                + 'stroke="white"fill="white">0</text></g>';
 
 
             // grab DOM elements that are needed
@@ -895,6 +1098,7 @@
             var loader = document.getElementById('loading');
 
 
+            // center the loading gif
             myImage.setAttribute("x",parseInt("<%=w%>")*1.5 + "px");
             myImage.setAttribute("y",parseInt("<%=h%>")*1.25 + "px");
            
@@ -912,7 +1116,8 @@
                 outlineBox = document.getElementById('cropOutline'),
                 eyeImage = document.getElementById('eyePosition'),
                 eyeArrow = document.getElementById("eyeArrow"),
-                scaleBarIcon = document.getElementById('scalebarPosition');
+                scaleBarIcon = document.getElementById('scalebarPosition'),
+                bg = document.getElementById("svgBackground");
 
             // get half the scalebar length for drawing
             let half = parseFloat("<%=scalebarLength%>")/2;
@@ -929,11 +1134,13 @@
             if('<%=scalebarPx%>' !== 'none'){
                 // set the size based on how the image is drawn
                 if((w/origW) < (h/origH)){
-                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
+                    scaleBarIcon.setAttribute("transform",
+                                                    "translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
                     textSize = (scalePX/4000)* 21 * (w/origW);
                 }else{
-                    scaleBarIcon.setAttribute("transform","translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
+                    scaleBarIcon.setAttribute("transform",
+                                                    "translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
                     textSize = (scalePX/4000)* 21 * (h/origH);
                 }
@@ -949,8 +1156,10 @@
             }
             else{
                 // if the scalebarPx is none disable the button
-                document.getElementById("scaleBarButton").setAttribute("class","btn btn-secondary btn-lg button disabled"); 
-                // set deafult font size for text boxes note that this is a scale value not px size  (px = font size * textSize)
+                document.getElementById("scaleBarButton").setAttribute("class",
+                                                                        "btn btn-secondary btn-lg button disabled");
+                // set deafult font size for text boxes note that this is a scale value not px size 
+                // (px = font size * textSize)
                 textSize = 2;
             }
 
@@ -964,28 +1173,105 @@
             // set defaults
             outlineBox.style.visibility = 'hidden';
 
-            // function to hide the loading gif
+            
+            /**
+             * Function: loadInvisible
+             * 
+             * Desc: hides the loader gif
+             * 
+            */
             function loadInvisible(){
                 loader.style.visibility = 'hidden';    
             }
-            // function to show the loading gif
+            
+            /**
+             * Function: loaderActivate
+             * 
+             * Desc: shows the loader gif
+             * 
+            */
             function loaderActivate(){
                 loader.style.visibility = 'visible';
             }
 
             
+            /**
+             * Function: setSvgClickDetection
+             * 
+             * Desc: takes an inline svg element, parses over all its children and nested children
+             *      to set the click detection property to the value in mouseDetect
+             * 
+            */
+            function setSvgClickDetection(svg, mouseDetect){
+                let svgElements = svg.childNodes;
+                
+                // for every child
+                for(index in svgElements){
+                    // if the group is draggable
+                    if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
+                        // reset the pointer events
+                        svgElements[index].style.pointerEvents = mouseDetect;
+                        // add if that element has child nodes
+                        if(svgElements[index].childNodes){
+                            // do the same with its children
+                            for(index2 in svgElements[index].childNodes){
+                                if(svgElements[index].childNodes[index2].classList 
+                                    && svgElements[index].childNodes[index2].classList.contains("resize")){
+                                    svgElements[index].childNodes[index2].style.pointerEvents = mouseDetect;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            /**
+             * Function: resetDrawTool
+             * 
+             * Desc: resets all properties that are changed when drawing
+             * 
+            */
+            function resetDrawTool(){
+                // reset draw flag
+                drawFlag = false;
+                // reset the UI 
+                bg.className.baseVal = "";
+                document.getElementById("pencilIconFlag").className = "btn btn-lg button";
+                
+                // remove half drawn lines if any
+                if(lineArr.length > 0 && clickArray.length > 1){
+                    lineArr.pop().remove();
+                }
+                // reset the click array
+                clickArray = [];
+                
+                // allow click detection on svg painted elements again
+                setSvgClickDetection(svg, "painted");
+            }
+
+
             console.log(" image dimensions are => <%= w %>: <%= h %>");
             // set loader to invisible
             loadInvisible();
         
             // toggle colors tracker
             var toggleScalebar = true,
-                userTextColor;
+                userTextColor,
+                // declare the drawing flag
+                drawFlag = false,
+                lineArr = [];
 
             // sets the display name
             document.getElementById("imageName").innerHTML = "<%=displayCube%>";
             
-            // when the box check value changes switch the fills and strokes
+            
+            /**
+             * Function: northCheckbox 'change' event handler
+             * 
+             * Desc: when the check box changes toggle the colors of the icons children
+             * 
+            */
             $("#northCheckbox").on("change",function(){
                 // get all children in the group
                 let children = northImage.childNodes;
@@ -1005,7 +1291,13 @@
                 }
             });
 
-            // same inversion as above
+            
+            /**
+             * Function: sunCheckbox 'change' event handler
+             * 
+             * Desc:when the check box changes toggle the colors of the icons children
+             * 
+            */
             $("#sunCheckbox").on("change",function(){
                 let children = sunImage.childNodes;
                 
@@ -1022,7 +1314,12 @@
                 }
             });
 
-            // same as above
+            /**
+             * Function: scaleCheckbox 'change' event handler
+             * 
+             * Desc:when the check box changes toggle the colors of the icons children
+             * 
+            */
             $("#scaleCheckbox").on("change",function(){
                 
                 var children = scaleBarIcon.childNodes;
@@ -1040,15 +1337,25 @@
                 }
             });
 
-
-            // reverses black and white fills for icons
+            /**
+             * Function: setOpposite
+             * 
+             * Desc: reverses black and white fills for icons
+             * 
+            */
             function setOpposite(colorString){
                 if(colorString === "black"){return "white";}
                 else{return "black";}
             }
 
-            // same as above
+            /**
+             * Function: eyeCheckbox 'change' event handler
+             * 
+             * Desc:when the check box changes toggle the colors of the icons children
+             * 
+            */
             $("#eyeCheckbox").on("change",function(){
+                
                 let children = eyeImage.childNodes;
                 
                 for(index in children){
@@ -1064,10 +1371,20 @@
                 }
             });
 
-            // toggle scalebar by appending and removing it
+            /**
+             * Function: scaleBarButton 'mousedown' event handler
+             * 
+             * Desc: When clicked toggle the scalebar on and off by appending and removing it as needed
+             * 
+            */
             $("#scaleBarButton").on("mousedown",function(){
                 // if the scalebar btn is not disabled
                 if(!this.classList.contains("disabled")){
+                    // clear all draw instance data if the flag is true
+                    if(drawFlag){
+                        resetDrawTool();
+                    }
+
                     // if scalebar true then toggle the bar on
                     if(toggleScalebar){
                         // add bar and toggle the boolean
@@ -1093,8 +1410,13 @@
 
 
         <script type="text/javascript">
-            // function to convert client pixel values to svg DOM relative values
-
+            
+            /**
+             * Function: svgPoint
+             * 
+             * Desc: gets the points clicked based on the svg viewBox
+             * 
+            */  
             function svgPoint(element, x, y) {
                 // get a new svg point
                 var pt = svg.createSVGPoint();
@@ -1107,43 +1429,96 @@
                     the browsers coordinate matrix */
                 return pt.matrixTransform(element.getScreenCTM().inverse());    
             }
-            
-
+   
             /**
-            * converts image to a data url so that when exporting all that is needed 
-            * is to convert the svg block to a canvas and then export as an image
-            **/
-            const toDataURL = url => fetch(url)
-            .then(response => response.blob())
-            .then(blob => new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result)
-                reader.onerror = reject
-                reader.readAsDataURL(blob)
-            }));
+             * Function: loadImageAsURL
+             * 
+             * Desc: loads an image on the server and onvert the image into a base64 dataURL
+             * 
+             *  Note: limits the size of the image based on the users browser because of differing dataUrl limits
+             * 
+            */
+            function loadImageAsURL(url, callback) {
+                // create a new image
+                var image = new Image();
 
+                // add the onload event
+                image.onload = function (){
+                    var canvas = document.createElement('canvas');
 
-            const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
-                const byteCharacters = atob(b64Data);
-                const byteArrays = [];
+                    // keep for testing only
+                    console.log("This image is: " +this.naturalWidth+ " by " +this.naturalHeight+ " px is demension");
+                    console.log("And has " + this.naturalWidth * this.naturalHeight + " total number of pixels");
 
-                for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-                    const slice = byteCharacters.slice(offset, offset + sliceSize);
+                    // Chrome 1 - 71
+                    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+                    // Firefox 1.0+
+                    var isFirefox = typeof InstallTrigger !== 'undefined';
 
-                    const byteNumbers = new Array(slice.length);
-                    for (let i = 0; i < slice.length; i++) {
-                    byteNumbers[i] = slice.charCodeAt(i);
+                    // for chrome
+                    if(isChrome){
+                        // this logical block of ifs checks for the size of the image 
+                        // and shrinks large images down to help with the export process.
+                        // The main purpose of this is to shrink the size of the base64 data string
+                        if(this.naturalHeight * this.naturalWidth < 16000000){
+                            console.log("Using normal image resolution");
+                            canvas.width = this.naturalWidth;
+                            canvas.height = this.naturalHeight;
+                        }else if(this.naturalHeight * this.naturalWidth <= 45000000){
+                            console.log("Using half the normal image resolution");
+                            canvas.width = this.naturalWidth/2;
+                            canvas.height = this.naturalHeight/2;
+                            canvas.getContext('2d').scale(.5,.5);
+                        }else if(this.naturalHeight * this.naturalWidth <= 110000000){
+                            console.log("Using a third of the normal image resolution");
+                            canvas.width = this.naturalWidth/3;
+                            canvas.height = this.naturalHeight/3;
+                            canvas.getContext('2d').scale(.33333,.33333);
+                        }
+                        else if(this.naturalHeight * this.naturalWidth <= 200000000){
+                            console.log("Using a 1/3.5 of the normal image resolution");
+                            canvas.width = this.naturalWidth/3.5;
+                            canvas.height = this.naturalHeight/3.5;
+                            canvas.getContext('2d').scale(0.28571428571,0.28571428571);
+                        }
+                        else{
+                            console.log("Using a fourth of the normal image resolution");
+                            canvas.width = this.naturalWidth/4;
+                            canvas.height = this.naturalHeight/4;
+                            canvas.getContext('2d').scale(.25,.25);
+                        }
+                    }else if(isFirefox){
+                        // firefox has a higher data cap and therefore can handle larger data
+                        if(this.naturalHeight * this.naturalWidth <= 100000000){
+                            console.log("Using normal image resolution");
+                            canvas.width = this.naturalWidth;
+                            canvas.height = this.naturalHeight;
+                        }else if(this.naturalHeight * this.naturalWidth <= 250000000){
+                            console.log("Using half the normal image resolution");
+                            canvas.width = this.naturalWidth/2;
+                            canvas.height = this.naturalHeight/2;
+                            canvas.getContext('2d').scale(.5,.5);
+                        }else{
+                            console.log("Using a third of the normal image resolution");
+                            canvas.width = this.naturalWidth/3;
+                            canvas.height = this.naturalHeight/3;
+                            canvas.getContext('2d').scale(.33333,.33333);
+                        }
                     }
-
-                    const byteArray = new Uint8Array(byteNumbers);
-                    byteArrays.push(byteArray);
-                }
-
-                const blob = new Blob(byteArrays, {type: contentType});
-                return blob;
-                }
-
-
+                    
+                    
+                    // draw the image to the canvas at the new scale
+                    canvas.getContext('2d').drawImage(this, 0, 0);
+                    // pass the dataUrl to the callback function
+                    callback(canvas.toDataURL('image/png'));
+                };
+                // display any errors
+                image.onerror = function(err){
+                    console.log("Error: " + err);
+                };
+                // set the image source to load the image
+                image.src = url;
+            }
 
         </script>
 
@@ -1158,50 +1533,43 @@
                 cropFlag = false, 
                 sunFlag = false,
                 eyeFlag = false,
-                attensionBoxVisible = false;
+                attensionBoxVisible = false,
+                // get the window URL element on any browser
+                DOMURL = window.URL || window.webkitURL || window;
 
             //create clickArray
             var clickArray = [];
 
-            // on doc ready run the button logic and click capturing events
+            /**
+             * Function: document 'ready' event handler
+             * 
+             * Desc: runs once all page contents are loaded
+             * 
+            */
             $(document).ready(function() {
                 // reset click array on a new load
                 clickArray = [];
-                
-                // get the draggable svg element
-                var svgDOM = document.getElementById('svgWrapper');
+            
                 // get the image from the link
                 var myImage = document.getElementById('crop');
 
                 // start the draggable svg element
-                makeDraggable(svgDOM);
+                makeDraggable(svg);
 
-                // converts raw image format to base 64 data
-                toDataURL('/<%=image%>')
-                    .then(dataUrl => {
-                        // get the window URL element on any browser
-                        let DOMURL = window.URL || window.webkitURL || window;
-
-                        // set the data equal to the image display
-                        // set image link to nothing to remove the loading image before a load operation
-                        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
-                        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', dataUrl);
-
-                        
-
-                        // remove the data url from the memory because it is saved in the xlink now
-                        DOMURL.revokeObjectURL(dataUrl);
-                    }).then(function(){
-                        // default all transforms
-                        myImage.setAttribute("x","0");
-                        myImage.setAttribute("y","0");
-                        myImage.setAttribute("transform","scale(1)");
-                        
-
-                    });
-
+                // load the users base image as base64 to embed in the svg element
+                loadImageAsURL("/<%= image %>", function(data) {
                     
-                
+                    // remove the loading gif and add the new dataURL
+                    myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
+                    myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', data);
+
+                    // default all transforms
+                    myImage.setAttribute("x","0");
+                    myImage.setAttribute("y","0");
+                    myImage.setAttribute("transform","scale(1)");
+            
+                });
+          
                 // get padding input box and other important DOM elements for export
                 var paddingBoxInput = document.getElementById("paddingInput"),
                     bg = document.getElementById("svgBackground"),
@@ -1210,7 +1578,13 @@
                 // init the padding value
                 paddingBoxInput.value = '';
                 
-                // function that adjusts the view box and background to add padding to the image
+
+                /**
+                 * Function: setImagePadding
+                 * 
+                 * Desc: adjust the svg size and viewBox as needed to add extra black pixels to one side
+                 * 
+                */
                 function setImagePadding(val,location){
                     // image w and h vars
                     let imageW,
@@ -1223,7 +1597,7 @@
                             // get the new image height for the box and background
                             imageH = <%=h%> + val; 
                             // set the viewbox values to how on the bottom of the image
-                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> " + imageH);
+                            svg.setAttribute("viewBox", "0 0 <%=w%> " + imageH);
 
                             // set background x,y to 0 to show at the bottom of the image
                             bg.setAttribute("x",0);
@@ -1236,17 +1610,15 @@
                             canvas.setAttribute("height", imageH);
                             canvas.setAttribute("width",<%=w%>);
                             // fix the svg to properly export all content
-                            svgDOM.setAttribute("height", imageH);
-                            svgDOM.setAttribute("width",<%=w%>);
+                            svg.setAttribute("height", imageH);
+                            svg.setAttribute("width",<%=w%>);
                             // call makeDraggable again to reset the boundaries of the draggable elements
-                            makeDraggable(svgDOM);
+                            makeDraggable(svg);
                             break;
 
                         case "top":
                             // get the new image height for the box and background
                             imageH = <%=h%> + val;
-
-                            console.log(imageH);
                             // set background x,y to show padding at the right spot
                             bg.setAttribute("y",val*-1);
                             bg.setAttribute("x",0);
@@ -1255,15 +1627,15 @@
                             bg.setAttribute("width",<%=w%>);
                             
                             // set the viewbox values 
-                            svgDOM.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
+                            svg.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("height", imageH);
                             canvas.setAttribute("width",<%=w%>);
                             // fix the svg to properly export all content
-                            svgDOM.setAttribute("height", imageH);
-                            svgDOM.setAttribute("width",<%=w%>);
+                            svg.setAttribute("height", imageH);
+                            svg.setAttribute("width",<%=w%>);
                             // call makeDraggable again to reset the boundaries of the draggable elements
-                            makeDraggable(svgDOM);
+                            makeDraggable(svg);
                             break;
 
                         case "right":
@@ -1277,15 +1649,15 @@
                             bg.setAttribute("height",<%=h%>);
                             
                             // set the viewbox values
-                            svgDOM.setAttribute("viewBox", "0 0 "  + imageW + " <%=h%>");
+                            svg.setAttribute("viewBox", "0 0 "  + imageW + " <%=h%>");
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
                             canvas.setAttribute("height",<%=h%>);
                             // fix the svg to properly export all content
-                            svgDOM.setAttribute("width", imageW);
-                            svgDOM.setAttribute("height",<%=h%>);
+                            svg.setAttribute("width", imageW);
+                            svg.setAttribute("height",<%=h%>);
                             // call makeDraggable again to reset the boundaries of the draggable elements
-                            makeDraggable(svgDOM);
+                            makeDraggable(svg);
                             break;
 
 
@@ -1300,15 +1672,15 @@
                             bg.setAttribute("height",<%=h%>);
                             
                             // set the viewbox values 
-                            svgDOM.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " <%=h%>");
+                            svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " <%=h%>");
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
                             canvas.setAttribute("height",<%=h%>);
                             // fix the svg to properly export all content
-                            svgDOM.setAttribute("width", imageW);
-                            svgDOM.setAttribute("height",<%=h%>);
+                            svg.setAttribute("width", imageW);
+                            svg.setAttribute("height",<%=h%>);
                             // call makeDraggable again to reset the boundaries of the draggable elements
-                            makeDraggable(svgDOM);
+                            makeDraggable(svg);
                             break;
 
                         default:
@@ -1324,19 +1696,16 @@
                             bg.setAttribute("height",imageH);
 
                             // set the viewbox values
-                            svgDOM.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
+                            svg.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", <%=w%>);
                             canvas.setAttribute("height",<%=h%>);
                             // fix the svg to properly export all content
-                            svgDOM.setAttribute("width", <%=w%>);
-                            svgDOM.setAttribute("height",<%=h%>);
+                            svg.setAttribute("width", <%=w%>);
+                            svg.setAttribute("height",<%=h%>);
                             // call makeDraggable again to reset the boundaries of the draggable elements
-                            makeDraggable(svgDOM);
-
+                            makeDraggable(svg);
                     }
-                        
-                    
                 }
 
                 let padBottom = false,
@@ -1350,8 +1719,12 @@
                     leftBtn = document.getElementById("leftPaddingBtn");
 
 
-                // jquery to detect a click on the padding buttons just call set function 
-                // with either 0 or the padding input val and tell function where to place the padding 
+    
+                /**
+                 * Function: bottomPaddingBtn 'click' event handler
+                 * 
+                 * Desc: on click, checks for valid input and then calls the padding functions and changes UI
+                */
                 $("#bottomPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'bottom');
@@ -1374,6 +1747,11 @@
                     }
                 });
 
+                /**
+                 * Function: topPaddingBtn 'click' event handler
+                 * 
+                 * Desc: on click, checks for valid input and then calls the padding functions and changes UI
+                */
                 $("#topPaddingBtn").on('click',function(event){
                     if(!isNaN(parseInt(paddingBoxInput.value))){
                         setImagePadding(parseInt(paddingBoxInput.value),'top');
@@ -1397,6 +1775,11 @@
                     }
                 });
 
+                /**
+                 * Function: rightPaddingBtn 'click' event handler
+                 * 
+                 * Desc: on click, checks for valid input and then calls the padding functions and changes UI
+                */
                 $("#rightPaddingBtn").on('click',function(event){
                    
                     if(!isNaN(parseInt(paddingBoxInput.value))){
@@ -1422,8 +1805,13 @@
                         padRight = false; 
                     } 
                });
-
-               $("#leftPaddingBtn").on('click',function(event){
+                
+                /**
+                 * Function: leftPaddingBtn 'click' event handler
+                 * 
+                 * Desc: on click, checks for valid input and then calls the padding functions and changes UI
+                */  
+                $("#leftPaddingBtn").on('click',function(event){
                    
                    if(!isNaN(parseInt(paddingBoxInput.value))){
                        setImagePadding(parseInt(paddingBoxInput.value),'left');
@@ -1445,8 +1833,13 @@
                        topBtn.className = 'btn button btn-md';
                        padLeft = false; 
                    } 
-              });
+                });
 
+                /**
+                 * Function: resetPaddingBtn 'click' event handler
+                 * 
+                 * Desc: on click resets UI and padding to 0
+                */
                 $("#resetPaddingBtn").on('click',function(event){
                    
                     setImagePadding(parseInt(0),"none"); 
@@ -1462,8 +1855,14 @@
                 });
 
 
-                var warned = false;
-                // chnages the padding whenever padding has been applied and the box chnages values
+                let warned = false;
+
+                /**
+                 * Function: paddingInput 'keyup' event handler
+                 * 
+                 * Desc: when user clicks a key in the box check if the value in the box can be used an an int
+                 *      set the padding depending on the current flag otherwise reset the value
+                */
                 $("#paddingInput").keyup(function(){
                     if(!isNaN(parseInt(this.value))){
                         if(padBottom){
@@ -1479,10 +1878,13 @@
                             setImagePadding(parseInt(this.value),'top');
                         }
                     }else{
+                        // if the value is not a number, warn the user that only numbers can render
+                        //  warned flag is to onl warn each user 1 time
                         if(this.value !== "" && !warned){
                             alert("Only Accepts Whole Numbers");
                             warned = true;
                         }
+                        // reset the padding to 0
                         $("#resetPaddingBtn").click();
                     }
                 });
@@ -1552,7 +1954,8 @@
                                 type: 'POST',
                                 cache: false,
                                 async: true,
-                                url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>',
+                                url: 'http://localhost:8080/crop?cropArray=' + arrayStr 
+                                + '&currentImage=' +'<%= image %>',
                                 success: function(response) { 
                                     // on success load the new html data into the page    
                                     $("html").html(response);
@@ -1581,9 +1984,15 @@
                     startX,
                     startY;
                     
-                    
-                // ready the cropArray before pasing the points ion the required order
-                // must be done this way because we cannot pass negative width and height values
+                
+                /**
+                 * Function: prepareCrop
+                 * 
+                 * Desc: calculates the values needed for cropping an image and returns the value in an ordered array
+                 * 
+                 * returns: [x,y,w,h]
+                 * 
+                */
                 function prepareCrop(clickArray){
                     var startX = clickArray[0],
                         startY = clickArray[1],
@@ -1639,9 +2048,14 @@
                 }); */
 
                 var line,
-                    lineArr = [],
                     userLineColor;
                  
+                /**
+                 * Function: svgWrapper 'click' event handler
+                 * 
+                 * Desc: when the svg element is clicked on
+                 *      Checks for active flags and then performs actions to help edit image
+                */
                 $('#svgWrapper').on("click", function(event){
                     
                     // set event variables
@@ -1662,7 +2076,8 @@
                     mouseY = parseInt(svgP.y);
                     
                     // if the draw flag is true and length of clicks is 0
-                    if(drawFlag && clickArray.length === 0 && document.elementFromPoint(event.clientX, event.clientY) !== svg){
+                    if(drawFlag && clickArray.length === 0 
+                        && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         // create the new  line dynamically and add it to the array so we can remove it later if needed
                         line = document.createElementNS("http://www.w3.org/2000/svg","line");
                         line.setAttribute("x1",mouseX);
@@ -1682,7 +2097,8 @@
                         lineArr.push(line);
                         captureClick(mouseX,mouseY);
                     }
-                    else if(drawFlag && clickArray.length > 1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
+                    else if(drawFlag && clickArray.length > 1  
+                        && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         // if the line is being drawn and the seconf click happens set the final location
                         line.setAttribute("x2",mouseX);
                         line.setAttribute("y2",mouseY);
@@ -1699,20 +2115,8 @@
                         bg.className.baseVal = "";
 
                         
-                        let svgElements = svg.childNodes;
                         // parse the whole svg and set the pointerevents to accept clicks again
-                        for(index in svgElements){
-                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
-                                svgElements[index].style.pointerEvents = "visible";
-                                if(svgElements[index].childNodes){
-                                    for(index2 in svgElements[index].childNodes){
-                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
-                                            svgElements[index].childNodes[index2].style.pointerEvents = "painted";
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        setSvgClickDetection(svg, "painted");
                     }
                    
                  /*   COMMENTING OUT FOR NOW
@@ -1752,7 +2156,8 @@
 
                         if(clickArray.length === 4){
                             // and if the points arent stacked
-                            if((clickArray[0] === clickArray[2] && clickArray[0] !== 0) || clickArray[1] === clickArray[3]){
+                            if((clickArray[0] === clickArray[2] && clickArray[0] !== 0) 
+                                || clickArray[1] === clickArray[3]){
                                 clickArray = [];
                                 alert('Cannot be cropped in this manner');
                                 cropFlag = false;
@@ -1774,7 +2179,8 @@
                                     type: 'POST',
                                     cache: false,
                                     async: true,
-                                    url: 'http://localhost:8080/crop?cropArray=' + arrayStr + '&currentImage=' +'<%= image %>',
+                                    url: 'http://localhost:8080/crop?cropArray=' + arrayStr 
+                                    + '&currentImage=' +'<%= image %>',
                                     success: function(response) { 
                                         // on success load the new html data into the page    
                                         $("html").html(response);
@@ -1801,15 +2207,26 @@
                 });
 
 
-                // used to update the line while still drawing
+                /**
+                 * Function: drawLine
+                 * 
+                 * Desc: draws the line whenever it needs to be updated in the middle of drawing action
+                */
                 function drawLine(lineElement,x2,y2){
                     lineElement.setAttribute("x2", x2);
                     lineElement.setAttribute("y2",y2);
                 }
 
 
-                 $('#svgWrapper').mousemove(function(event){
-                    
+
+                /**
+                 * Function: svgWrapper 'mouseover' event handler
+                 * 
+                 * Desc: when the mouse is hovering over the svg element
+                 *      Helps update the UI when drawing or cropping action is taking place
+                */
+                $('#svgWrapper').mousemove(function(event){
+                
                     // set event variables
                     var t = event.target;
                     var x = event.clientX;
@@ -1827,12 +2244,13 @@
                     mouseY = parseInt(svgP.y);
 
                     //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
-                    if( drawFlag && clickArray.length >1  && document.elementFromPoint(event.clientX, event.clientY) !== svg){
+                    if( drawFlag && clickArray.length >1  
+                        && document.elementFromPoint(event.clientX, event.clientY) !== svg){
                         drawLine(line, mouseX, mouseY);
                     }
+                    
                         
-                        
-/*
+                    /*
                     if(cropFlag && !doneResizing){
 
 
@@ -1869,7 +2287,11 @@
                     }*/
                 }); 
             
-                // function to change the outline box dimensions to the calulated size
+                /**
+                 * Function: adjustBox
+                 * 
+                 * Desc: updates the look of the crop box when mouseover is occuring and crop in not finished
+                */
                 function adjustBox(){
 
                     // get start points of the crop
@@ -1886,7 +2308,6 @@
                             h = Math.abs(h);
                             w = Math.abs(w);
                             
-
                             outlineBox.setAttribute('x' , startX  - w);
                             outlineBox.setAttribute('y' , startY - h);
                             outlineBox.setAttribute('width' , w);
@@ -1917,8 +2338,18 @@
                 var highlightBoxArray = [],
                     userBoxColor;
 
-                // when the outline box is clicked
-                $("#outlineBtn").on("mousedown",function(){
+                /**
+                 * Function: outlineBtn "mousedown" event handler
+                 * 
+                 * Desc: when the outline box btn is clicked draws a box on the svg 
+                */
+                $("#outlineBtn").on("mousedown",function(){                    
+                    
+                    // clear all draw instance data if the flag is true
+                    if(drawFlag){
+                        resetDrawTool();
+                    }
+
                     // generate the new scalable draggables group dynamically 
                     var g = document.createElementNS("http://www.w3.org/2000/svg","g");
 
@@ -1929,15 +2360,14 @@
                     g.style.border = 0;
                     g.style.padding = 0;
                     g.style.pointerEvents = "visible";
+                    g.style.fill = "none";
 
                     g.innerHTML = attensionBoxObjectString;
                     
                     // set the color if needed
                     if(userBoxColor){
                         g.style.stroke = userBoxColor;
-                        g.style.fill = "none";
                     }else{
-                        g.style.fill = "none";
                         g.style.stroke = "white";
                     }
                     // append the group and reset the draggable functions
@@ -1946,7 +2376,7 @@
                     highlightBoxArray.push(g);
                     makeDraggable(svg);
 
-
+                    // make the undo button visible
                     if(highlightBoxArray.length > 0){
                         document.getElementById("undoBox").style.visibility = "visible";
                     }
@@ -1956,8 +2386,19 @@
                 // array for removing text
                 var textBoxArray = [];
 
-                // when the text box is clicked
+                
+                /**
+                 * Function: textBtn 'mousedown' event handler
+                 * 
+                 * Desc: draw the text on screen with the rectangles to help resizing occur
+                 * 
+                */
                 $("#textBtn").on("mousedown",function(){
+                    // clear all draw instance data if the flag is true
+                    if(drawFlag){
+                        resetDrawTool();
+                    }
+                    
                     // prompt for text box contents
                     var textboxVal = prompt("What Should It Say?","");
                     
@@ -1965,8 +2406,6 @@
                         
                         let strlength = textboxVal.length; 
                         let numberOfSpaces = textboxVal.split(" ").length;
-                        
-
                         
                         // Draw the scaleable and draggable group with the new text element dynamically
                         var text = document.createElementNS("http://www.w3.org/2000/svg","text");
@@ -2062,7 +2501,12 @@
                 });
 
 
-                // everytime  the check boxes is changed switch the places of the fill and stroke
+                /**
+                 * Function: textColorPicker 'change' event handler
+                 * 
+                 * Desc: when the color value is changed in the color picker set the global
+                 * 
+                */
                 $("#textColorPicker").on("change",function(){
                     userTextColor = document.getElementById("textColorPicker").value;
 
@@ -2070,7 +2514,13 @@
         
 
 
-                // undoes the last added text element
+                
+                /**
+                 * Function: undoText 'mousedown' event handler
+                 * 
+                 * Desc: remove the last added instance of the text box
+                 * 
+                */
                 $("#undoText").on("mousedown",function(){
                     
                     if(textBoxArray.length > 0){
@@ -2082,11 +2532,16 @@
                         document.getElementById("undoText").style.visibility = "hidden";
                     }
                 });
-                // declare the drawing flag
-                var drawFlag = false;
+                
 
 
-                // removes a line the user just drew by using Escape w/o resetting the button
+                
+                /**
+                 * Function: document 'keyup' event handler
+                 * 
+                 * Desc: if the key pressed was esc and draw flag is true then undo the line
+                 * 
+                */
                 $(document).keyup(function(event){
                     // when escape is clicked with the drawFlag true
                     if(event.keyCode === 27 && drawFlag){
@@ -2099,67 +2554,37 @@
 
 
 
-                // when the mouse clicks the draw button
+                
+                /**
+                 * Function: pencilIconFlag 'mousedown' event handler
+                 * 
+                 * Desc: start or stop the drawing event on the webpage
+                 * 
+                */
                 $("#pencilIconFlag").on('mousedown',function(){
+                    // clear all draw instance data if the flag is true
                     if(drawFlag){
-                        drawFlag = false;
-                        // reset the interface 
-                        bg.className.baseVal = "";
-                        document.getElementById("pencilIconFlag").className = "btn btn-lg button";
-                        clickArray = [];
-                        // remove half drawn lines
-                        if(lineArr.length && clickArray > 1){
-                            lineArr.pop().remove();
-                        }
-                        // get the children of the svg element
-                        let svgElements = svg.childNodes;
-                        
-                        // for every child
-                        for(index in svgElements){
-                            // if the group is draggable
-                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
-                                // reset the pointer events
-                                svgElements[index].style.pointerEvents = "visible";
-                                // add if that element has child nodes
-                                if(svgElements[index].childNodes){
-                                    // do the same with its children
-                                    for(index2 in svgElements[index].childNodes){
-                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
-                                            svgElements[index].childNodes[index2].style.pointerEvents = "painted";
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        resetDrawTool();
                     }
                     else{
+                        // start drawing
                         bg.className.baseVal = "draw";
                         drawFlag = true;
                         document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
 
-
-                        let svgElements = svg.childNodes;
-
                         // loop through all children and children of the children and set the pointer 
                         // events to none so the draw function does not get interfiered with
-                        for(index in svgElements){
-                            if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
-                                svgElements[index].style.pointerEvents = "none";
-                                if(svgElements[index].childNodes){
-                                    for(index2 in svgElements[index].childNodes){
-                                        if(svgElements[index].childNodes[index2].classList && svgElements[index].childNodes[index2].classList.contains("resize")){
-                                            svgElements[index].childNodes[index2].style.pointerEvents = "none";
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        
+                        setSvgClickDetection(svg, "none");
                     }
                 });
 
-                // removes any outline boxes if they exist
+                
+                /**
+                 * Function: undoBox 'mousedown' event handler
+                 * 
+                 * Desc: remove the last added instance of the outline boxes
+                 * 
+                */
                 $("#undoBox").on("mousedown",function(){
                     if(highlightBoxArray.length > 0){
                         highlightBoxArray.pop().remove();
@@ -2171,7 +2596,13 @@
                     }
                 });
 
-                // removes any lines if they exists
+                
+                 /**
+                 * Function: undoLine 'mousedown' event handler
+                 * 
+                 * Desc: remove the last added instance of the lines
+                 * 
+                */
                 $("#undoLine").on("mousedown",function(){
                     if(lineArr.length > 0 && clickArray.length > 1){
                         lineArr.pop().remove();
@@ -2194,20 +2625,43 @@
 
                 });
 
-                // simply sets the color when the value is changed
+                
+                /**
+                 * Function: colorPickerLine 'change' event handler
+                 * 
+                 * Desc: when the color value is changed in the color picker set the global
+                 * 
+                */
                 $("#colorPickerLine").change(function(){
                     userLineColor = document.getElementById("colorPickerLine").value;
                 });
+
+                /**
+                 * Function: colorPickerBox 'change' event handler
+                 * 
+                 * Desc: when the color value is changed in the color picker set the global
+                 * 
+                */
                 $("#colorPickerBox").change(function(){
                     userBoxColor = document.getElementById("colorPickerBox").value;
                 });
 
 
-
-
-                // when north button is clicked
+                
+                /**
+                 * Function:  northIconFlag 'mousedown' event handler
+                 * 
+                 * Desc: add or remove the north arrow from the svg element
+                 * 
+                */
                 $('#northIconFlag').on('mousedown',function(){
                     if(!document.getElementById("northIconFlag").classList.contains("disabled")){
+                        
+                        // clear all draw instance data if the flag is true
+                        if(drawFlag){
+                            resetDrawTool();
+                        }
+                            
                         // change north flag
                         northFlag = !northFlag;
                         
@@ -2247,20 +2701,32 @@
                             makeDraggable(svg);
                             northIconPlaced = !northIconPlaced;
                             northFlag = false;
-                            document.getElementById('northIconFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                            document.getElementById('northIconFlag').setAttribute('class',
+                                                                                    "btn btn-danger btn-lg button");
                             document.getElementById("northCheckbox").style.visibility = "visible";
                             document.getElementById("northCheckboxLabel").style.visibility = "visible";
                         }
-                        
                         clickArray = [];
                     }
                     
                 }); 
 
 
-                // use same logic for other button
+                
+                /**
+                 * Function:  eyeFlag 'click' event handler
+                 * 
+                 * Desc: add or remove the eye icon from the svg element
+                 * 
+                */
                 $('#eyeFlag').click(function(){
                     if(!document.getElementById("eyeFlag").classList.contains("disabled")){
+                        
+                        // clear all draw instance data if the flag is true
+                        if(drawFlag){
+                            resetDrawTool();
+                        }
+                        
                         eyeFlag = !eyeFlag;
 
                         if(eyeIconPlaced){
@@ -2293,10 +2759,22 @@
                     } 
                 });
 
-                // use same logic for other button
+                
+                /**
+                 * Function:  sunIconFlag 'click' event handler
+                 * 
+                 * Desc: add or remove the sun icon from the svg element
+                 * 
+                */
                 $('#sunIconFlag').click(function(){
                     
                     if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
+                        
+                        // clear all draw instance data if the flag is true
+                        if(drawFlag){
+                            resetDrawTool();
+                        }
+                            
                         sunFlag = !sunFlag;
 
                         if(sunIconPlaced){
@@ -2320,25 +2798,38 @@
                             svg.appendChild(sunImage);
                             sunFlag = false;
                             sunIconPlaced = true;
-                            document.getElementById('sunIconFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                            document.getElementById('sunIconFlag').setAttribute('class',
+                                                                                    "btn btn-danger btn-lg button");
                             document.getElementById("sunCheckbox").style.visibility = "visible";
                             document.getElementById("sunCheckboxLabel").style.visibility = "visible";
                             
                             setIconAngle(sunImage, sunDegree);
                             makeDraggable(svg);  
                         }
-                        
                         clickArray = [];
                     }
                     
                 });
 
 
-
+                
+                /**
+                 * Function: hideBtn 'mousedown' event handler
+                 * 
+                 * Desc: hide the help box element
+                 * 
+                */
                 $("#hideBtn").on("mousedown", function(){
                     document.getElementById("help-box").style.visibility = "hidden";
                 });
 
+                
+                /**
+                 * Function: helpBtn 'mousedown' event handler
+                 * 
+                 * Desc: shows the help box element
+                 * 
+                */
                 $("#helpBtn").on("mousedown", function(){
                     document.getElementById("help-box").style.visibility = "visible";
                 });
@@ -2376,8 +2867,8 @@
 
 
 
-
 /* 
+
                 // button to undo the cropped image
                 $("#backBtn").on('click',function(event){
                     event.preventDefault();
@@ -2416,17 +2907,27 @@
             
             }); // end doc.ready
             
-            // function to push the x,y coordinates into the clickArray
+            
+            /**
+             * Function: captureClick
+             * 
+             * Desc: simply pushes the click coordinates into the global array
+             * 
+            */
             function captureClick(x,y){
                 clickArray.push(x);
                 clickArray.push(y);
-            }
+            }            
+            
 
             
-            // Export Section
-
-            // works for any file type as long as the image is not massive
-            function triggerDownload (imgURI,filename) {
+            /**
+             * Function: triggerDownload
+             * 
+             * Desc: create a new mouse event for a download and create an anchor to click on that forces a download
+             * 
+            */
+            function triggerDownload(imgURI,filename){
                 // create a click event
                 var event = new MouseEvent('click', {
                     view: window,
@@ -2444,225 +2945,337 @@
             }
 
             
-
+            /**
+             * Function: exportBtn 'mousedown' event handler
+             * 
+             * Desc: shows the loading and progress bar
+             * 
+            */
             $('#exportBtn').on("mousedown",function(){
                 loader.style.visibility = "visible";
                 document.getElementById("loadingText").innerHTML = "Compressing Image";
-                
+                showProgress(); 
             });
 
 
-            // when the export is clicked
-            exportBtn.addEventListener('click', function () {
+            
+            /**
+             * Function: createTimer
+             * 
+             * Desc: captures and returns the current time values 
+             * 
+             * returns: [hrs,mins,secs]
+             * 
+            */
+            function createTimer(){
+                let startTime = new Date();
 
-                // get the canvas information
-                canvas = document.getElementById('canvas');
-                var ctx = canvas.getContext('2d',{alpha:false});
-                // encode the svg
-                var data = (new XMLSerializer()).serializeToString(svg);
+                return [startTime.getHours(),startTime.getMinutes(),startTime.getSeconds()];
+            }
 
-                // get the window URL element on any browser
-                var DOMURL = window.URL || window.webkitURL || window;
 
-                var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-                // creates an object url for the download
-                var url = DOMURL.createObjectURL(svgBlob);
+            
+            /**
+             * Function: peekTimer
+             * 
+             * Desc: captures he current time and figures out how long it has been since the passed startTime
+             * 
+            */
+            function peekTimer(startTime){
+                // get the end data values and calculate the difference in the startTime
+                let endTime = new Date(),
+                    hrs = parseFloat(endTime.getHours()) - parseFloat(startTime[0]),
+                    mins = parseFloat(endTime.getMinutes()) - parseFloat(startTime[1]),
+                    secs = parseFloat(endTime.getSeconds()) - parseFloat(startTime[2]);
 
-                // creates a new blank image
-                var img = new Image();
+                // if the difference is negative decriment the next highest value
+                // and add 60 to the negative
+                if(secs < 0){
+                    secs = 60 + secs;
+                    mins -= 1;
+                }
+                else if(mins < 0){
+                    mins = 60 + mins;
+                    hrs -= 1;
+                }
+                // return the fixed times 
+                return String(hrs) + ":" + String(mins) + ":" + String(secs);
+            }
 
-               /*  // creates a blob from the encoded svg and sets the type of the blob to svg
-                var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-                // creates an object url for the download
-                var url = DOMURL.createObjectURL(svgBlob); */
-        
 
-                // when the image is done being created and its loaded
-                img.onload = function(){
-                    document.getElementById("loadingText").innerHTML = "Writing File";
-                    // draw the svg image onto the canvas
-                    ctx.drawImage(img,0,0);
-                    
-                    console.log("done writing to canvas");
-                    // if the filename is a false value
-                    if(!filename){
-                        
-                        // read in a filename with prompt
-                        var filename = prompt("Save File as png svg or jpeg","");
+            // check if the browser supports worker files
+            var workerSupported = (typeof(Worker) !== "undefined") ? true : false;
+
+
+            
+            /**
+             * Function: getCookie
+             * 
+             * Desc: reads all browser cookies and finds the cookie value with the given name
+             * 
+            */
+            function getCookie(cname) {
+                // atach the '=' to the name
+                var name = cname + "=";
+                // get the string version of the object
+                var decodedCookie = decodeURIComponent(document.cookie);
+                // get array of every cookie found
+                var cookieArr = decodedCookie.split(';');
+                // loop through the cookies and match the name
+                for(var i = 0; i < cookieArr.length; i++) {
+                    var cookie = cookieArr[i];
+                    // if the first character is a space, find the start of the cookie name
+                    while (cookie.charAt(0) == ' ') {
+                        // get a substring of the cookie with the ' ' removed
+                        cookie = cookie.substring(1);
                     }
-
-                    // if the filename is one of the accepted filenames and it isnt null              
-                    if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
-                        var fileExt = filename.split(".")[filename.split(".").length - 1];
-
-                        // if the fileExt is NOT svg
-                        if(fileExt !== 'svg'){
-                            try{
-                                if(fileExt === 'jpg'){
-                                    // export an image of jpeg becuse jpg defaults to png
-                                    url = canvas
-                                    .toDataURL('image/jpeg', 1.0)
-                                    .replace('image/jpeg', 'image/octet-stream');
-                                }
-                                else{
-                                    // export an image of the extension type given
-                                    url = canvas
-                                    .toDataURL('image/'+fileExt, 1.0)
-                                    .replace('image/'+fileExt, 'image/octet-stream');
-                                }
-                                
-                                // start the download
-                                triggerDownload(url,filename);            
-                            }catch(err){
-                                alert('Image is too large to save from browser');
-                            }
-                        }else{
-                            // fileExt === 'svg'
-                            try{
-                                // trigger the download with the svg url instead of converting to image
-                                triggerDownload(url,filename); 
-
-                            }catch(err){
-                                alert('Image is too large to save from browser');
-                            }
-                        }
+                    // if the cookie string contains the cname+'='
+                    if (cookie.indexOf(name) == 0) {
+                        // return that cookie
+                        return cookie.substring(name.length, cookie.length);
                     }
-                    // must enter an accepted fileExt
-                    else if(filename !== null){
-                        // make the user try again
-                       exportBtn.click();
-                    }
+                }
+                // not found
+                return "";
+            }
+
+
+
+        //TODO: this needs to be commented and finished
+            /**
+             * Function: exportBtn 'click' event handler
+             * 
+             * Desc: gets a filename for the download and sends a request to the server to download the figure image
+             * 
+            */
+            exportBtn.addEventListener('click', async function (event) {
+                // prevent event defaults
+                event.preventDefault();
+                
+                // read in a filename while the filename is not empty 
+                // and it passes the file extension check
+                do{
+                    // read in a filename with prompt
+                    var filename = prompt("Save File as png svg or jpeg","");
+                }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
+                                                                                                .test(filename))
+                // move the loading bar to 15% over .5 seconds
+                growProgress(15,.5);
+
+                // if the file is not null
+                if(filename !== null){
+                    // rea the file extenson TODO: may not be needed soon because of the fetch to server
+                    var fileExt = filename.split(".")[filename.split(".").length - 1];
+                }else{
+                    // hid the loading elements because the user hit cancel on the prompt
+                    hideProgress();
                     loader.style.visibility = "hidden";
                     document.getElementById("loadingText").innerHTML = "Loading";
-                    // revoke the url
-                    DOMURL.revokeObjectURL(url);
+                }
+               
+
+                // TODO: huge refactor here for the fetch to server for download
+
+                console.log("STARTING TIMER");
+                let time = createTimer();
+                // get the canvas information
+                canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext('2d');
+                // encode the svg to a string
+                var data = (new XMLSerializer()).serializeToString(svg); 
+
+                 // creates a blob from the encoded svg and sets the type of the blob to and image svg
+                var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+                
+                // creates an object url for the download
+                var url = DOMURL.createObjectURL(svgBlob);
+                 
+
+                // check what browser the user has to help predict the time of the download
+                var isChromium = window.chrome;
+                var winNav = window.navigator;
+                var vendorName = winNav.vendor;
+                var isOpera = typeof window.opr !== "undefined";
+                var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+                var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1,
+                    guess;
+
+                // get number of bytes in the svgBlob
+                var numBytes = svgBlob.size;
+
+                if(
+                    isChromium !== null &&
+                    typeof isChromium !== "undefined" &&
+                    vendorName === "Google Inc." &&
+                    isOpera === false &&
+                    isIEedge === false
+                ){
+                    // is Google Chrome
+                    let limitBuffer = numBytes/2000000;
+                    console.log(limitBuffer);
+                    if(limitBuffer > 1 ){
+                        console.log("This data is LARGER than chromes limit");
+                        guess = limitBuffer;
+                    }else{
+                        console.log("This data is smaller than chromes limit");
+                        guess = .5;
+                    }
+                }else{ 
+                    // not Google Chrome 
+                    if(isFirefox){
+                        console.log("Firefix has no limit this will be fastest");
+                        
+                        guess = numBytes/25000000;
+                    }
+                }
+
+                // grow the bar upto 75 over the guess interval based on # of bytes sent
+                growProgress(75,Math.round(guess));
+
+                // create a new Form data object
+                var fd = new FormData();
+                // append a new file to the form. 
+                // upl = name of the file upload
+                // svgBlob is the raw blob image
+                // and the name of the svg file will be the user's unique id
+                fd.append("upl",svgBlob, getCookie("userId") + ".svg");
+                // append download and canvas data to the form
+                fd.append("w",w);
+                fd.append("h",h);
+                fd.append("downloadName",filename);
+
+                // send a post request to the server attaching the formData as the body of the request
+                fetch('/figureDownload',
+                    {
+                        method:'POST',
+                        body: fd
+                    }).then((response) =>{
+                        // if the response is an error code
+                        if(response.status !== 200){
+                            // read the response as text
+                            response.text().then((responseText) =>{
+                                // create a small div box to notify the error
+                                let div = document.createElement("div");
+                                div.className = "jumbotron text-center float-center";
+                                div.style.width = "25rem";
+                                div.style.height= "auto";
+                                div.innerHTML = responseText;
+                                // attach a button to the div so the user can remove the div if they want
+                                var btn = document.createElement("button");
+                                btn.className = "btn btn-danger";
+                                btn.style.position = "relative";
+                                btn.innerHTML = "&times;";
+                                btn.style.width = "5rem";
+                                // append the button to the div
+                                div.appendChild(btn);
+                                // then after it has been added,
+                                // make an eventLister to remove the whole div box when the button is clicked
+                                btn.addEventListener("click",function(event){
+                                    this.parentElement.remove();
+                                });
+                                // append the whole div to the document
+                                document.body.appendChild(div);
+                                loader.style.visibility = "hidden";
+                                document.getElementById("loadingText").innerHTML = "Loading";
+                                hideProgress();
+
+
+                            });
+                        }else{
+                            // server sent back a 200
+                            console.log("GOOD RESPONSE: THIS SHOULD DOWNLOAD");
+                        }
+                    }).catch((err) =>{
+                        // catch any fetch errors
+                        if(err){
+                            console.log(err);
+                        }
+                    });
+
+
+
+                
+
+
+                /* if(fileExt !== "svg"){
+                    // creates a new blank image
+                    var img = new Image();
 
                     
-                    // Note:
-                    //     if the user hits cancel the filename will be null, we ignore this case
-                };
-                
-                img.src = url;
+                    // when the image is done being created and its loaded
+                    img.onload = function(){
+                       
+                        console.log(peekTimer(time));
+                        growProgress(100,.5);
+                        // draw the svg image onto the canvas
+                        
+                        ctx.drawImage(img,0,0);
+                        console.log("Image Written to canvas");
+                        document.getElementById("loadingText").innerHTML = "Finishing";
+                        
+                        // while the filename is a false value
+                        
 
+                        // if the filename is one of the accepted filenames and it isnt null              
+                        if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
+                            // if the fileExt is NOT svg
+                            if(fileExt !== 'svg'){
+                                try{
+                                    if(fileExt === 'jpg'){
+                                        // export an image of jpeg becuse jpg defaults to png
+                                        url = canvas
+                                        .toDataURL('image/jpeg', 1.0)
+                                        .replace('image/jpeg', 'image/octet-stream');
+                                    }
+                                    else{
+                                        // export an image of the extension type given
+                                        url = canvas
+                                        .toDataURL('image/'+fileExt, 1.0)
+                                        .replace('image/'+fileExt, 'image/octet-stream');
+                                    }
+                                    
+                                    // start the download
+                                    triggerDownload(url,filename);            
+                                }catch(err){
+                                    alert('Image is too large to save from browser');
+                                }
+                            }
+                        }
+
+                        console.log("THIS DOWNLOAD TOOK: " + peekTimer(time));
+                   
+                        // revoke the url
+                        DOMURL.revokeObjectURL(url);
+                        loader.style.visibility = "hidden";
+                        document.getElementById("loadingText").innerHTML = "Loading";
+                        setTimeout(hideProgress,1000);
+                        
+                        // Note:
+                        //     if the user hits cancel the filename will be null, we ignore this case
+                    };
+                    
+                    
+                    document.getElementById("loadingText").innerHTML = "Writing File";
+                    
+                    img.src = url;
+                
+                }
+                else
+                { // the image needs to be exported as an svg
+                    
+                    growProgress(100,.5);
+                    triggerDownload(url,filename);
+
+                    loader.style.visibility = "hidden";
+                    document.getElementById("loadingText").innerHTML = "Loading";
+                    setTimeout(hideProgress,1000);
+                    
+                }
+             */
 
             });
         </script>
-
-        <!-- Legend Section (depricated right now) -->
-        <br/>
-        <div class="position-relative text-center" style="margin-left:auto; margin-right:auto; display: none;">
-            <h2 style="padding-top:1%;padding-bottom:1%; margin-bottom: 0%;">Image Legend</h2>
-            <table class="float-center text-center" style="margin-left:auto; margin-right:auto; margin-top: 0px;">
-                <tr>
-                    <td>
-                        <svg id="legend-image" width="450" height="200">
-                            <rect width="100%" height="100%" rx="10" ry="10" style="fill:rgb(233, 236, 239);">
-                            </rect>
-                            <foreignObject x="10" y="10" width="100%" height="100%">
-                                <table class="float-center" id="legend-table">
-                                    <tr id="north">
-                                        <th>North:</th>
-                                        <th><img id="northImg" src="images/north.png" width="25" preserveAspectratio="xMaxYMid meet" height="25"><img/></th>
-                                        <th id="northDeg">0 degrees</th>
-                                    </tr>
-                                    <tr id="sun-az">
-                                        <th>Sun Azimuthal Direction:</th>
-                                        <th><img id="sunImg" src="images/sun_symbol.png" width="25" height="25"></img></th>
-                                        <th id="sunDeg">0 degrees</th>
-                                    </tr>
-                                    <tr id="obs-az">
-                                        <th>Observer Azimuthal Direction:</th>
-                                        <th><img id="observerImg" src="images/eye_symbol.png" width="25" height="25"></img></th>
-                                        <th id="obsDeg">0 degrees</th>
-                                    </tr>
-                                    <tr id="image-scalebar" style="overflow:hidden;">
-                                        <th>Scalebar:</th>
-                                        <th><img src="images/arrow.png" width="25" height="25"></img></th>
-                                        <th id="scaleDeg">0 degrees</th>
-                                    </tr>   
-                                </table>
-                            </foreignObject>
-                            <line id="observerArrow" x1="0" y1="0" x2="50" y2="0" style="stroke:rgb(255,0,0);stroke-width:2; display:none;"/>
-                            <line id="sunArrow" x1="0" y1="0" x2="50" y2="0" style="stroke:rgb(255,0,0);stroke-width:2; display:none;"/>
-                        </svg>
-                    </td>
-                    <td valign="top">
-                        <div class="float-center" style="align-content: center; width: 300px; height: auto; margin: auto;">
-                            <div id="hide-legend" class="float-center" style="text-align: left;">
-                                <table style="text-align:left;">
-                                    <tr><h4>Hide Legend Elements</h4></tr>
-                                    <tr><input type="checkbox" id="north-radio" name="leg" checked>North Arrow</input><br/></tr>
-                                    <tr><input type="checkbox" id="sun-radio" name="leg" checked>Sun Azimuthal Direction</input><br/></tr>
-                                    <tr><input type="checkbox" id="obs-radio" name="leg" checked>Observer Azimuthal Direction</input><br/></tr>
-                                    <tr><input type="checkbox" id="scalebar-radio" name="leg" checked>Scalebar</input><br/></tr>
-                                </table>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-                                                                     
-        <script type="text/javascript">
-            function hideNorth(){
-                document.getElementById("north").style.display = "none";
-                
-            }
-            function showNorth(){
-                document.getElementById("north").style.display = "table-row";
-                
-            }
-            function hideSun(){
-                document.getElementById("sun-az").style.display = "none";
-            }
-            function showSun(){
-                document.getElementById("sun-az").style.display = "table-row";
-            }
-            function hideObs(){
-                document.getElementById("obs-az").style.display = "none";
-            }
-            function showObs(){
-                document.getElementById("obs-az").style.display = "table-row";
-            }
-            function hideScale(){
-                document.getElementById("image-scalebar").style.display = "none";
-               
-            }
-            function showScale(){
-                document.getElementById("image-scalebar").style.display = "table-row";
-                
-            }
-
-            // function to hide the elements in the legend area
-            function showHide(){
-                var northRadio = document.getElementById("north-radio").checked;
-                var sunRadio = document.getElementById("sun-radio").checked;
-                var obsRadio = document.getElementById("obs-radio").checked;
-                var scalebarRadio = document.getElementById("scalebar-radio").checked;
-                if(!northRadio){
-                    hideNorth();
-                }else{
-                    showNorth();
-                }
-                if(!sunRadio){
-                    hideSun();
-                }else{
-                    showSun();
-                }
-                if(!obsRadio){
-                    hideObs();
-                }else{
-                    showObs();
-                }
-                if(!scalebarRadio){
-                    hideScale();
-                }else{
-                    showScale();
-                }
-            }
-            setInterval(showHide, 1000);
-        </script>
+                                                                        
 
         <script type="text/javascript">
             // degree variables
@@ -2678,12 +3291,17 @@
                         "bottom-left":4
                         });
         
-            // prototype for any object
-            // when given a value of a JSON object it retrieve the associated key
-            Object.prototype.getNameWithVal = function(val){
-                let tmpArr = Object.keys(this);
+            
+            /**
+             * Function: getNameWithVal
+             * 
+             * Desc: returns the key points to the given value
+             * 
+            */
+            getNameWithVal = function(val){
+                let tmpArr = Object.keys(placeEnum);
                 for(key in tmpArr){
-                    if( this[tmpArr[key]] === val){
+                    if( placeEnum[tmpArr[key]] === val){
                         return tmpArr[key];
                     }
                 }
@@ -2693,6 +3311,13 @@
             var isMapProjected = <%=isMapProjected %>;
  
             // Gets Important Metadata from the "metadata-text" div
+
+            /**
+             * Function: getMetadata
+             * 
+             * Desc: extracts the data values used for angle calculations and disables any buttons with missing values
+             * 
+            */
             function getMetadata(){
                 // get value string from hidden DOM element
                 var metadata = document.getElementById("metadata-text").innerHTML;
@@ -2714,23 +3339,21 @@
                         }
                     }else{
                         // disable the button if the degree was not found
-                        document.getElementById("north-radio").checked = false;
-                        document.getElementById('northIconFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
+                        document.getElementById('northIconFlag').setAttribute('class',
+                                                                        "btn btn-secondary btn-lg button disabled");
                     }
-                }else{
-                    setLegendAngle("northImg", "northDeg", northDegree);
                 }
 
                 if(isNaN(sunDegree)){
                     // disable the button if the degree was not found
-                    document.getElementById("sun-radio").checked = false;
-                    document.getElementById('sunIconFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
+                    document.getElementById('sunIconFlag').setAttribute('class',
+                                                                        "btn btn-secondary btn-lg button disabled");
                 }
 
                 if(isNaN(observerDegree)){
                     // disable the button if the degree was not found
-                    document.getElementById("obs-radio").checked = false;
-                    document.getElementById('eyeFlag').setAttribute('class',"btn btn-secondary btn-lg button disabled");
+                    document.getElementById('eyeFlag').setAttribute('class',
+                                                                        "btn btn-secondary btn-lg button disabled");
                 }
 
 
@@ -2747,6 +3370,13 @@
             
 
             // this function figures out where to draw the scalebar corners to better fit the new icon orientation
+
+            /**
+             * Function: setScaleboxCorners
+             * 
+             * Desc: takes the rotation angle and calculates where each corner will be for scaling
+             * 
+            */
             function setScaleboxCorners(northDegree, sunDegree){
                 // as long as northDegree is not NaN and not 0 we will need to adjust the boxes
                 if(!isNaN(northDegree) &&  northDegree!== 0){
@@ -2754,42 +3384,44 @@
                     let childList = northImage.childNodes;
                     let offset90 = Math.round(northDegree / 90);
                     let offset45 = northDegree / 45;
-
                     /* 
-                    1. each corner was given a numeric value starting from top-left and going clockwise around the image
+                    1. each corner was given a numeric value starting from top-left and going clockwise around 
+                        the image
                     2. I caculate how many times 90 goes into the degree and i shift the boxes by that amount
                     3. by adding the ossfet to the box values it tells us where that box should move to. 
                     */
                     for(index in childList){
-                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 4){
+                        if(childList[index].classList 
+                            && childList[index].classList.contains("resize") 
+                                && offset90 >= 1 && offset90 <= 4){
                             
                             if(childList[index].classList.contains("top-left")){
                                 let newClass = placeEnum["top-left"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("top-right")){
                                 let newClass = placeEnum["top-right"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("bottom-right")){
                                 let newClass = placeEnum["bottom-right"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("bottom-left")){
                                 let newClass = placeEnum["bottom-left"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                         }
                         
@@ -2801,35 +3433,37 @@
                     let offset90 = Math.round(sunDegree / 90);
                     
                     for(index in childList){
-                        if(childList[index].classList && childList[index].classList.contains("resize") && offset90 >= 1 && offset90 <= 3){
+                        if(childList[index].classList 
+                            && childList[index].classList.contains("resize") 
+                                && offset90 >= 1 && offset90 <= 3){
                             
                             if(childList[index].classList.contains("top-left")){
                                 let newClass = placeEnum["top-left"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("top-right")){
                                 let newClass = placeEnum["top-right"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("bottom-right")){
                                 let newClass = placeEnum["bottom-right"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                             else if(childList[index].classList.contains("bottom-left")){
                                 let newClass = placeEnum["bottom-left"] + offset90;
                                 if(newClass > 4){newClass -= 4}
                                 
 
-                                childList[index].setAttribute("class","resize " + placeEnum.getNameWithVal(newClass));
+                                childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                             }
                         }
                     }
@@ -2837,31 +3471,21 @@
             }
 
 
-
-            
-
-            // Set Legend North Angle Angle
-            function setLegendAngle(img, degree, value){
-                // get the image element and the element to display the angle degree
-                let image = document.getElementById(String(img));
-                let deg = document.getElementById(String(degree));
-                // rotate the value using css transform
-                let rotateVal = String("transform: rotate(" + String(value) + "deg);");
-                // transform about the origin
-                image.setAttribute("transform-origin", "50%; 50%;");
-                // change the html angle display
-                deg.innerHTML = String(value) + "degrees";
-
-                // set the new style for the image
-                image.setAttribute("style", rotateVal);
-            }
-
-            // set the transform rotate() string of the given icon
+            /**
+             * Function: setIconAngle
+             * 
+             * Desc: sets the icon transform values for the rotation
+             * 
+            */
             function setIconAngle(icon, degree){
+                // if the degree is no NaN
                 if(!isNaN(degree)){
+                    // get the transform value if the icon object
                     let transformVal = icon.getAttribute("transform");
+                    // get the seperate transform values in a list
                     let transformArray = transformVal.split(" ");
 
+                    // set 0 as offsets 
                     let offsetX = 0,
                         offsetY = 0;
 
@@ -2881,6 +3505,8 @@
                         }
                     }
                     else{
+                        // set the rotation transform and return after
+                        // the new transform attribute has been set
                         for(index in transformArray){
                             
                             if(transformArray[index].indexOf("rotate") > -1){
@@ -2893,23 +3519,8 @@
                                 icon.setAttribute("transform", transformArray.join(" "));
                                 return;
                             }
-
                         }
-                    }
-                    
-
-                    // adds the new rotate() string in the exact same order as it appeared before to preserve the dragging function
-                    let scaleStr = transformArray[transformArray.length -1];
-                    let translateStr = transformArray[0];
-
-                    let rotateStr = "rotate(" + String(degree) + ")";
-
-                    transformArray.pop();
-                    transformArray.push(rotateStr);
-                    transformArray.push(scaleStr);
-                    
-                    icon.setAttribute("transform", transformArray.join(" "));
-                    
+                    } 
                 }
             }
         </script>
