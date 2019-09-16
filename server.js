@@ -7,15 +7,19 @@
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
  * @version 3.7.1
- * @description This is the driver for the PIP Server by USGS.
+ * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/04/19
+ * @updated 09/16/19
  *
  * 
- * @todo 8 log the isis returns to a file if the user wants that
- * @todo 9 have a POST '/pow' link that calculates data and creates an image based on preset defaults and a data file for input
+ * @todo 8 log the isis returns to a file if the user wants that.
+ * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
+ *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
+ * 
+ * @todo 11 '/figureDownload' will need to create an image of the correct type for the filename
+ * @todo 12 it will need to then send the new image to the user for download
  * 
  * 
  * 
@@ -25,61 +29,77 @@
  * Note: This server is only capable of running on a linux or mac operating systems due to ISIS3 
  */
 
- /** READ ME BEFORE EDITING
-  * --------------------------------------------------------------------------------------------------------------------------
-  * @summary  08/28/19
-  * 
-  *     Uploads can be in .cub or .tif and the server now has more user friendly acceptance of dimensions by auto 
-  * generating the size of the other dimensions when not given 
-  * 
-  * Ex: if given a height OR a width and the other box is left blank, 
-  *     the server calculated the other dimension preserving aspect ratio
-  * 
-  * Or the user can specify an exact output size of the figures (width AND height).
-  * The user can now add icons with the proper roatation and invert any of the icons' color. Scalebars are working and 
-  * will be disabled if its not possible to calculate. Icons are disabled when the data cannot be found.
-  * Icons, Text, and Outline Boxes all can be scaled using the corners of the icon by clicking when indicated 
-  * and dragging the mouse in the directions of the mouse pointer.
-  * 
-  *     The pencil tool now allows the user to hit the escape key to undo a misplaced point on the pencil tool.
-  * The pencil works off of a two click system right now and this make be changed to a drag later if the users would
-  * prefer that method instead. 
-  * 
-  *     Sizes of UI are more friendly toward smaller screens. Changes include tighter spaceing on the writer page,
-  * and better button placements. The user no longer has to scroll down to move to the photo editing page. The UI 
-  * on the writer page now has a filter tags function where the user can type a 3 or more character string into the filter bar 
-  * and results that contain that string will be displayed in the tag section.
-  *  
-  * 
-  *     Annotation and outline boxes have been added, the user can select a color for the text, outline
-  * boxes, and pencil tool independent of one another. 
-  * 
-  *     Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
-  * not shrinks the image down and it will update the padding on any change of the value in the textbox. 
-  * 
-  *     A new id system has been created to allow users to keep a 23 character id for a month before losing it.
-  * this helps testing and prevents users from having identical ids when the server restarts unexpectedly. 
-  * 
-  *     Exporting is working perfectly now and can be saved as either png,jpeg,jpg (at any size),
-  * or svg (when the data is not too large). SVGs are in standard format and can be opened and edited 
-  * with Gimp as long as the files are not too large to parse safely.
-  * 
-  * --------------------------------------------------------------------------------------------------------------------------
-  * 
-  * Last Notes for Coders
-  * ---------------------
-  * 
-  *     Comment your code and include an 'author' tag for any functions you write to the server. 
-  * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
-  * functions on the server's javascript files (not on the webpages).
-  *  
-  *     DO NOT remove functions if your version does not use them. Let the repository managers do that
-  * during merging.(This is to prevent conflicts with any major branch changes.)
-  * 
-  *     Lastly, this server is built to simplify the figure creation process not to replace photo editing software so keep
-  * that in mind when adding yor own code.
-  * 
-  * 
+/** READ ME BEFORE EDITING
+ * ----------------------------------------------------------------------------------------------------------
+ * @summary  09/16/19
+ * 
+ *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
+ *  by auto generating the size of the other dimensions when not given.
+ * 
+ *     Ex: If given a height OR a width and the other box is left blank, 
+ *         the server now calculates the other dimension preserving the aspect ratio of the image.
+ *         Uploading a 900 x 900 image with a desire width of 500 will auto calculate the height
+ *         of 500 for the user.
+ * 
+ *     Or the user can specify an exact output size of the figures (width AND height).
+ * 
+ *     The user can now add icons with the proper rotation and invert any of the icons' color 
+ *  using a check box. Scalebars are working and will be disabled if it's not possible to calculate.
+ *  All addable icons are disabled when the data cannot be found. Icons, Text, and Outline Boxes all
+ *  can be scaled using the corners of the icon by clicking when indicated and dragging the mouse in
+ *  the directions of the mouse pointer.
+ * 
+ *     The pencil tool now allows the user to hit the escape key to undo a misplaced point on the pencil 
+ *  tool. The pencil works off of a two click system right now and this may be changed to a drag later 
+ *  if the users would prefer that method instead. 
+ * 
+ *     Sizes of UI are more friendly toward smaller screens. Changes include tighter spacing on the
+ *  writer page, and better button placements. The user no longer has to scroll down to move to the photo
+ *  editing page. The UI on the writer page now has a 'filter tags' function where the user can type 
+ *  3 or more characters into the filter bar and results that contain that string will be displayed in 
+ *  the tag section.
+ *  
+ *     Annotation and outline boxes have been added, the user can select a color for the text, outline
+ *  boxes, and pencil tool independent of one another. 
+ * 
+ *     Padding can be added to the image on one of the 4 sides, it adds pixels to the image 
+ *  not shrinks the image down and it will update the padding on any change of the value in the textbox. 
+ * 
+ *     A new id system has been created to allow users to keep a 23 character id for a month before losing
+ *  it. This helps testing and prevents users from having identical ids when the server restarts 
+ *  unexpectedly. 
+ * 
+ *     Exporting has change completly, instead of the user saving the inline svg from the browser, the
+ *  export button now sends a request to the server with the svg data and the users filename for the download
+ *  and the server uses the node-canvas module to convert the image data from svg to the output type and
+ *  send the download directly to the user. This helps the download process by speeding up image processing
+ *  and allowing chrome users to see a progress bar instead of having to wait for the download to finish.
+ * 
+ *      A progress bar has been added to the image editor for when users are downloading the figure.
+ *  This is a better interface for users when a download is occuring rather than just a spinning animation.
+ *  The progress bar guesses how long the download will take and it runs a css animation for that duration
+ *  to show a rough estiate of how long the download will take.
+ * 
+ * ----------------------------------------------------------------------------------------------------------
+*                                          Last Notes for Coders
+*                                          ---------------------
+ * 
+ *     Comment your code and include an 'author' tag for any functions you write to the server. 
+ * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
+ * functions on the server's javascript files (not on the webpages).
+ *  
+ *     DO NOT remove functions if your version does not use them. Let the repository managers do that
+ * during merging.(This is to prevent conflicts with any major branch changes.)
+ * 
+ *     Lastly, this server is built to simplify the figure creation process not to replace photo 
+ *  editing software so keep that in mind when adding your own code.
+ * ----------------------------------------------------------------------------------------------------------
+ *                                   General Code Paradigms
+ *                                   ----------------------
+ *                          1. Comment, comment, comment
+ *                          2. Document the 'author' and 'function description' for every function
+ *                          3. lines should not exceed 110 characters for server files and 120 for view files
+ * 
 */
 
 // require dependencies
@@ -92,6 +112,8 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const {performance} = require('perf_hooks');
+const bodyParser = require("body-parser");
+const { createCanvas, loadImage, Image } = require('canvas')
 
 // include custom utility functions
 const util = require('./util.js');
@@ -104,9 +126,11 @@ var app = express();
 var cubeArray = [];
 var numUsers = 0;
 
-// use express upload and cookie parser
+// use express middleware declarations
 app.use(fileUpload());
 app.use(cookieparser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.set('etag', false);
 app.disable('view cache');
@@ -123,6 +147,7 @@ app.use("/tpl" , express.static("tpl"));
 app.use("/jimp", express.static("jimp"));
 app.use("/pvl " , express.static("pvl"));
 
+
 // start view engine
 app.set('view engine', 'ejs');
 
@@ -134,13 +159,15 @@ try{
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
+    exec('rm ./tmp/*');
     
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
     // loop throught then and delete the file if it matchest this regexp
     for(index in fileArr){
         // regexp uses negativelookbehind to ensure the image file is not one of the required file strings
-        if(/^.*(?<!arrow|eye_symbol|north|pencil|pencilcursor|sun_symbol|usgsLogo)\.(png)$/gm.test(fileArr[index])){
+        if(/^.*(?<!arrow|eye_symbol|north|pencil|pencilcursor|sun_symbol|usgsLogo)\.(png)$/gm
+            .test(fileArr[index])){
             // remove the file
             fs.unlinkSync(path.join('images',fileArr[index]));
         }
@@ -303,8 +330,9 @@ app.post('/captionWriter', async function(request, response){
             if(uid === undefined){
                 // create a random 23 character user id
                 uid = util.createUserID(23);
-                // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) (TEST SERVER USING SHORT EXPIRE TIMES)
-                response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: true});
+                // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) 
+                // TODO: (TEST SERVER USING SHORT EXPIRE TIMES)
+                response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
             }
 
             // if the cubeArray is empty
@@ -409,7 +437,8 @@ app.post('/captionWriter', async function(request, response){
                 // reset the promises array
                 promises = [];
                 
-                // TODO: this is where i can test the loging functions also this is the functions that '/pow' will need to run
+                // TODO: this is where i can test the loging functions also this is the functions that
+                    //  '/pow' will need to run
                 // make promise on the isis function calls
 
                 /** ========Testing log system ========
@@ -477,7 +506,8 @@ app.post('/captionWriter', async function(request, response){
 
 
                     if(errcode === -1){
-                        // alert 8 which happens when the server is no configured properly (ISIS is not running)
+                        // alert 8 which happens when the server is no configured properly 
+                        // (ISIS is not running)
                         response.redirect('/?alertCode=8');
                         // end response
                         response.end();
@@ -639,7 +669,8 @@ app.get('/imageEditor', function(request, response){
 
                     // if the imageWidth is non-false
                     if(imageMeterWidth > -1){
-                        // get log base 10 of the image width (dividing by 2 because there is two sides to the scalebar)
+                        // get log base 10 of the image width 
+                        // (dividing by 2 because there is two sides to the scalebar)
                         let x = Math.log10(imageMeterWidth/2);
                         // get the whole value of the base
                         let a = Math.floor(x);
@@ -648,7 +679,8 @@ app.get('/imageEditor', function(request, response){
 
                         // if the decimal is 75% or more closer to a whole 10 set the base to 5
                         // check if 35% or greater, set base 2
-                        // if the value is very close to a whole base on the low side set base to 5 and decrement the 10 base
+                        // if the value is very close to a whole base on the 
+                        //   low side set base to 5 and decrement the 10 base
                         // (this is to keep text from leaving image)
                         // default to 1
                         if(b >= 0.75){
@@ -684,11 +716,32 @@ app.get('/imageEditor', function(request, response){
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
-                                rotationOffset:rotationOffset ,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs", 
+                            {
+                                image:imagepath,
+                                tagField: data,
+                                displayCube:rawCube,
+                                isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset ,
+                                origW: w,origH: h,
+                                w: userDim[0],h: userDim[1],
+                                scalebarLength: scalebarLength,
+                                scalebarPx: scalebarPx,
+                                scalebarUnits: scalebarUnits
+                            });
                         }else{
-                            response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
-                                rotationOffset:rotationOffset ,w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                            response.render("imagePage.ejs",
+                            {
+                                image:imagepath,
+                                tagField: data,
+                                displayCube:rawCube,
+                                isMapProjected: isMapProjected,
+                                rotationOffset:rotationOffset,
+                                w: w, h: h, origW: w,origH: h,
+                                scalebarLength: scalebarLength,
+                                scalebarPx: scalebarPx,
+                                scalebarUnits: scalebarUnits
+                            });
                         }
 
                     }else{
@@ -698,16 +751,35 @@ app.get('/imageEditor', function(request, response){
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
-                           rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs",
+                        {
+                            image:imagepath, 
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset, 
+                            origW: w, origH: h, w: userDim[0], h: userDim[1],
+                            scalebarLength: 'none',
+                            scalebarPx: 'none',
+                            scalebarUnits: scalebarUnits
+                        });
                     }else{
-                        response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube,isMapProjected: isMapProjected,
-                           rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
+                        response.render("imagePage.ejs",
+                        {
+                            image:imagepath, 
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset,
+                            w: w, h: h, origW: w,origH: h,
+                            scalebarLength: 'none',
+                            scalebarPx: 'none',
+                            scalebarUnits: scalebarUnits
+                        });
                     }
 
                 }
             });
-
         }else{
             response.redirect("/?alertCode=4");
             response.end();
@@ -734,139 +806,176 @@ app.post('/imageEditor', function(request, response){
         // get image name and path
         userObject = util.getObjectFromArray(uid, cubeArray);
 
-
-        let image = util.getimagename(userObject.name, 'png');
-        imagepath = 'images/' + image;
-
-        // if the data val is an error code then fail
-        if(userObject < 1){
-            data = 'NONE';
-        }else{
-           
-            // get resolution value
-            var resolution = util.getPixelResolution(userObject);
-
-            // otherwise load the important data from the active object array into data variable
-            data = userObject.impData;
-        }
+        if(typeof(userObject) === "object"){
+            let image = util.getimagename(userObject.name, 'png');
+            imagepath = 'images/' + image;
+    
+            // if the data val is an error code then fail
+            if(userObject < 1){
+                data = 'NONE';
+            }else{
+               
+                // get resolution value
+                var resolution = util.getPixelResolution(userObject);
+    
+                // otherwise load the important data from the active object array into data variable
+                data = userObject.impData;
+            }
+        } 
     }else{
         // image path could not be found
         imagepath = 'none';
     }
 
-   if(imagepath === 'none'){
+   if(imagepath === 'none' || typeof(userObject)!== "object"){
        response.redirect("/?alertCode=4");
        return response.end();
-   }
-    var w,
-        h;
+   }else{
+        var w,
+            h;
 
-    // get the height and width of the image and render the page with all needed variables
-    jimp.read(imagepath).then(function(img){
-        w = img.bitmap.width;
-        h = img.bitmap.height;
-        // check and calculate user dimensions if needed
-        if(userObject.userDim[0] === -1){
-            let factor = userObject.userDim[1]/h;
+        // get the height and width of the image and render the page with all needed variables
+        jimp.read(imagepath).then(function(img){
+            // get raw width and height from the image file
+            w = img.bitmap.width;
+            h = img.bitmap.height;
+            // check and calculate user dimensions if needed
+            if(userObject.userDim[0] === -1){
+                let factor = userObject.userDim[1]/h;
 
-            userObject.userDim = [w*factor,userObject.userDim[1]];
-        }
-        else if(userObject.userDim[1] === -1){
-            let factor = userObject.userDim[0]/w;
+                userObject.userDim = [w*factor,userObject.userDim[1]];
+            }
+            else if(userObject.userDim[1] === -1){
+                let factor = userObject.userDim[0]/w;
 
-            userObject.userDim = [userObject.userDim[0],h*factor];
-        
-        }
+                userObject.userDim = [userObject.userDim[0],h*factor];
+            
+            }
 
-        var userDim = userObject.userDim;
-        var rawCube = util.getRawCube(userObject.name,userObject.userNum);
-        var isMapProjected = util.isMapProjected(userObject.data),
-            rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+            var userDim = userObject.userDim;
+            var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+            var isMapProjected = util.isMapProjected(userObject.data),
+                rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
 
-        
+            
 
-        // calculate image width in meters
-        if(resolution !== -1){
-            var imageMeterWidth = util.calculateWidth(resolution, w);
+            // calculate image width in meters
+            if(resolution !== -1){
+                var imageMeterWidth = util.calculateWidth(resolution, w);
 
-            if(imageMeterWidth > -1){
-                // same as above for calculating scale bar
-                let x = Math.log10(imageMeterWidth/2);
-                let a = Math.floor(x);
-                let b = x - a;
+                if(imageMeterWidth > -1){
+                    // same as above for calculating scale bar
+                    let x = Math.log10(imageMeterWidth/2);
+                    let a = Math.floor(x);
+                    let b = x - a;
 
-                // if the decimal is 75% or more closer to a whole 10 set the base to 5
-                // check if 35% or greater, set base 2
-                // if the value is very close to a whole base on the low side set base to 5 and decrement the 10 base
-                // (this is to keep text from leaving image)
-                // default to 1
-                if(b >= 0.75){
-                    b = 5;
-                }else if(b >= 0.35){
-                    b = 2;
-                }else if(b<.05){
-                    a -= 1;
-                    b = 5;
+                    // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                    // check if 35% or greater, set base 2
+                    // if the value is very close to a whole base on the low side 
+                    //      set base to 5 and decrement the 10 base
+                    // (this is to keep text from leaving image)
+                    // default to 1
+                    if(b >= 0.75){
+                        b = 5;
+                    }else if(b >= 0.35){
+                        b = 2;
+                    }else if(b<.05){
+                        a -= 1;
+                        b = 5;
+                    }else{
+                        b=1;
+                    }
+
+                    var scalebarMeters = b*Math.pow(10,a);
+
+                    var scalebarLength,
+                        scalebarUnits="";
+                    // if the length is less than 1KM return length in meters
+                    if(imageMeterWidth/1000 < 1){
+                        scalebarLength = scalebarMeters;
+                        var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                        console.log(scalebarLength + " m");
+                        scalebarUnits = "m";
+                    }
+                    else{
+                        
+                        scalebarLength = scalebarMeters/1000;
+                        var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                        console.log(scalebarLength + " km");
+                        scalebarUnits = "km";
+                    }
+
+                    // render image page with needed data
+                    if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                        response.render("imagePage.ejs", 
+                        {
+                            image:imagepath,
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset,
+                            origW: w,origH: h, w: userDim[0], h: userDim[1],
+                            scalebarLength: scalebarLength,
+                            scalebarPx: scalebarPx, 
+                            scalebarUnits: scalebarUnits
+                        });
+                    }else{
+                        response.render("imagePage.ejs", 
+                        {
+                            image:imagepath,
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset,
+                            w: w, h: h, origW: w,origH: h,
+                            scalebarLength: scalebarLength,
+                            scalebarPx: scalebarPx,
+                            scalebarUnits: scalebarUnits
+                        });
+                    }
                 }else{
-                    b=1;
+                    console.log("Image Width in Meters Failed to Calculate");
                 }
-
-                var scalebarMeters = b*Math.pow(10,a);
-
-                var scalebarLength,
-                    scalebarUnits="";
-                // if the length is less than 1KM return length in meters
-                if(imageMeterWidth/1000 < 1){
-                    scalebarLength = scalebarMeters;
-                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
-                    console.log(scalebarLength + " m");
-                    scalebarUnits = "m";
-                }
-                else{
-                    
-                    scalebarLength = scalebarMeters/1000;
-                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                    console.log(scalebarLength + " km");
-                    scalebarUnits = "km";
-                }
-
+            }else{
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data,displayCube:rawCube, isMapProjected: isMapProjected,
-                        rotationOffset:rotationOffset,origW: w,origH: h, w: userDim[0], h: userDim[1],scalebarLength: scalebarLength,scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", 
+                    {
+                        image:imagepath,
+                        tagField: data,
+                        displayCube:rawCube,
+                        isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,
+                        origW: w, origH: h, w: userDim[0], h: userDim[1],
+                        scalebarLength: 'none',
+                        scalebarPx: 'none',
+                        scalebarUnits: scalebarUnits
+                    });
                 }else{
-                    response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
-                        rotationOffset:rotationOffset,  w: w, h: h, origW: w,origH: h,scalebarLength: scalebarLength, scalebarPx: scalebarPx, scalebarUnits: scalebarUnits});
+                    response.render("imagePage.ejs", 
+                    {
+                        image:imagepath,
+                        tagField: data,
+                        displayCube:rawCube,
+                        isMapProjected: isMapProjected,
+                        rotationOffset:rotationOffset,
+                        w: w, h: h, origW: w,origH: h,
+                        scalebarLength: 'none',
+                        scalebarPx: 'none',
+                        scalebarUnits: scalebarUnits
+                    });
                 }
 
-
-
-            }else{
-                console.log("Image Width in Meters Failed to Calculate");
             }
-        }else{
-            // render image page with needed data
-            if(isWindows){ imagepath = imagepath.replace("\\","/");}
-            if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
-                    rotationOffset:rotationOffset, origW: w, origH: h, w: userDim[0], h: userDim[1],scalebarLength: 'none',scalebarPx: 'none', scalebarUnits: scalebarUnits});
-            }else{
-                response.render("imagePage.ejs", {image:imagepath, tagField: data, displayCube:rawCube,isMapProjected: isMapProjected,
-                    rotationOffset:rotationOffset, w: w, h: h, origW: w,origH: h,scalebarLength: 'none', scalebarPx: 'none',scalebarUnits: scalebarUnits});
-            }
-
-        }
-    });
+        });
+    }
 });
-
-
 
 app.post("/pow",function(request, response){
-    // TODO:
+    // TODO: POW connection link
 });
-
-
 
 
 /**
@@ -875,7 +984,6 @@ app.post("/pow",function(request, response){
  * Undoes the previous cropped image by uniform naming and 
  * array parsing after recieveing ajax get request
  */
-
 app.get('/crop',async function(request, response){
     console.log(request.url + 'from GET');
 
@@ -884,7 +992,6 @@ app.get('/crop',async function(request, response){
     var uid = request.cookies['userId'];
 
     let cubeObj = util.getObjectFromArray(uid, cubeArray);
-
 
     if(uid !== undefined){
         var baseImg = util.findImageLocation(cubeObj.name.replace('.cub','.png'));
@@ -935,7 +1042,8 @@ app.get('/crop',async function(request, response){
         let strArray = imageLink.split('_');
 
         // set second to last string equal to the last and rejoin after popping the end off
-        strArray[strArray.length - 2] += '.' + strArray[strArray.length-1].split('.')[strArray[strArray.length-1].split('.').length - 1];
+        strArray[strArray.length - 2] += '.' + 
+        strArray[strArray.length-1].split('.')[strArray[strArray.length-1].split('.').length - 1];
         strArray.pop();
         newImage = strArray.join('_');
         
@@ -1025,7 +1133,11 @@ app.post('/crop', async function(request,response){
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
             // return the new image and its width and height
             if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
+            response.render('imagePage.ejs',
+            {
+                image:newImage + '?t='+ performance.now(),
+                tagField: data, h: pxArray[3], w: pxArray[2]
+            });
         });
 
     }
@@ -1038,18 +1150,78 @@ app.post('/crop', async function(request,response){
         // await on the crop function like before
         await util.cropImage(imageLocation, pxArray).then( async function(newImage){
             if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render('imagePage.ejs',{image:newImage + '?t='+ performance.now() , tagField: data, h: pxArray[3], w: pxArray[2]});
+            response.render('imagePage.ejs',
+            {
+                image:newImage + '?t='+ performance.now(),
+                tagField: data, h: pxArray[3], w: pxArray[2]
+            });
         });
     }
 });
 
+/**
+ * 
+ * 
+ * 
+ */
+// TODO: get svg image src working somehow (probably after install from IT)
+app.post("/figureDownload", async function(request, response){
+    console.log(request.url);
+    // get the filename that the user entered
+    var filename = request.body.downloadName;
 
+    // save the file in the formdata to the server so it can be read
+    await request.files.upl.mv("./tmp/" + request.files.upl.name, function(err){
+        if(err){
+            // log any errors
+            console.log("Server Error on saving");
+        }else{
+            console.log("saved successfully");
+            // get the base64 data of the file that was sent
+            var svgDataBase64 = util.base64_encode("./tmp/" + request.files.upl.name);
+            // create the new image element
+            const img = new Image();
+            // when image is loaded
+            img.onload = () =>{
+                // create a canvas with the dimensions of the svg image
+                const canvas = createCanvas(request.body.w,request.body.h),
+                ctx = canvas.getContext("2d");
 
-app.post("/figureDownload", function(request, response){
+                // draw the new image onto the canvas
+                ctx.drawImage(this,0,0);
+                // get just the data from the dataUrl by replacing the header with nothing
+                var newImageDataBase64 = canvas.toDataURL("image/png")
+                                        .replace(/^data:image\/(png|jpg);base64,/,"");
+                
+                // write the data into a new file of the output type
+                util.base64_decode(newImageDataBase64,"./uploads/" + filename);
+
+                response.download("./uploads/" + filename,function(err){
+                    if(err){
+                        console.log("Download failed");
+                    }
+                });
+            }
+            // catch any error on image load
+            img.onerror = (err) => {
+                console.log("Error Occured: " + err);
+                response.status(500);
+                response.send("<h1> Download Failed </h1>");
+            }
+            // load the image with the svg header and data from the inline svg
+            img.src = "data:image/svg+xml;charset=utf8," + svgDataBase64;
+        }
+    });
+});
+
+/**
+ * TODO: catch any problems
+ * 
+ */
+app.get("/figureDownload", function(request, response){
     console.log(request.url);
 
-
-    console.log(request.body);
+    response.send("<h1>GET WORKED</h1>");
 });
 
 
