@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>PIPS-USGS</title>
+        <title>PIPS</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <meta name="author" content="Chadd Frasier"/>
         <meta property="og:url" content="https://pips-usgs/"/>
@@ -9,7 +9,7 @@
         <meta property="og:description" content="A publication tool for researchers of planetary science"/>
         <meta name="keywords" content="caption writer, USGS, usgs, Photo Editor, Figure, PIPS">
 
-
+        <link rel="icon" href="images/usgsLogo.png" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="css/pips.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -19,7 +19,8 @@
     </head>
 
     <body>  
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" style="margin: 0%; padding: 0%"><br>
+        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" 
+        style="margin: 0%; padding: 0%"><br>
         <div id="loading" class="float-right lead loading">
             <img src="../images/loading.gif" height="100%" weight="auto"/>
             <br>
@@ -35,8 +36,11 @@
         </div>
         <br/>
         <div class="title text-center" style="width: auto; background: #f3d6b0;">
-            <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">You can upload .cub file and .tpl file </p>
-            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" onclick="showHelp(this)">Help</a>
+            <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem;">
+                You can upload .cub file and .tpl file 
+            </p>
+            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" 
+            onclick="showHelp(this)">Help</a>
             <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" href= '/tpl'
                 role="button">What is a TPL file?
             </a>
@@ -59,19 +63,26 @@
         </div>
         <br/>
         <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
-            <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" enctype="multipart/form-data">
-                <div class="btn btn-dark btn-lg form-group" style="color: black; width: 25rem;display: inline-block; background: #e7c492; border: 2px solid black;">
+            <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
+            enctype="multipart/form-data">
+                <div class="btn btn-dark btn-lg form-group" 
+                style="color:black; width:25rem;display:inline-block; background:#e7c492; border: 2px solid black;">
                     <label for="cubUpload" style="font-size: x-large;">Choose an ISIS Cube File</label>
-                    <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"type="file" class="form-control-file" />
+                    <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
+                    type="file" class="form-control-file" />
 
-                    <div class="form-group float-center" style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;color: black;">
-                        <input class="form-control form-control-sm text-center" type="text" id="widthInput" name="desiredWidth" placeholder="Output Width (Px)" />
-                        <input class="form-control form-control-sm text-center" type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (Px)" />
+                    <div class="form-group float-center" 
+                    style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;color: black;">
+                        <input class="form-control form-control-sm text-center" type="text" id="widthInput" 
+                        name="desiredWidth" placeholder="Output Width (Px)" />
+                        <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
+                        name="desiredHeight" placeholder="Output Height (Px)" />
                     </div>
                 </div>
 
                 <hr class="style5">
-                <div class="btn btn-dark btn-lg form-group" style="color: black; background: #e7c492; border: 2px solid black;">
+                <div class="btn btn-dark btn-lg form-group" 
+                style="color: black; background: #e7c492; border: 2px solid black;">
                     <label for="tplUpload" style="font-size: larger;">Choose a Template File</label>
                     <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
                 </div>
@@ -81,50 +92,60 @@
             </form>
         </div>
 
-        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 50%;" class = "alert alert-warning text-center alertBoxes">
+        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 50%;" 
+        class = "alert alert-warning text-center alertBoxes">
             <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Upload a .cub file
         </div>
         
-        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%; right: 0%;" class = "alert alert-primary text-center">
+        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%; right: 0%;" 
+        class = "alert alert-primary text-center">
             <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Previous User has no server data. Start with Upload.
         </div>
-        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 65%;" class = "alert alert-danger text-center">
+        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 65%;" 
+        class = "alert alert-danger text-center">
             <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Failed to create image from Upload.
         </div>
-        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 58%;" class = "alert alert-danger text-center">
+        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 58%;" 
+        class = "alert alert-danger text-center">
             <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
                 &times;
             </button>
             Failed to Upload.
         </div>
-        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 75%;' class = "alert alert-warning text-center" role="alert">
-            <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
-            &times;
+        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 75%;' 
+        class = "alert alert-warning text-center" role="alert">
+            <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+            onclick="setNotVisible(this)">
+                &times;
             </button>
                     
             Template must be (.tpl) or left blank.
         </div>
 
-        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 75%; right: 0%;' class = "alert alert-primary text-center" role="alert">
-                <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
+        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 75%; right: 0%;' 
+        class = "alert alert-primary text-center" role="alert">
+                <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+                onclick="setNotVisible(this)">
                 &times;
                 </button>
                         
                 Unknown User: Please Upload a Cube to Begin.
             </div>
 
-        <div id="server-isis" style= 'visibility:hidden;position:absolute; top: 8%; right: 0%;' class = "alert alert-dark text-center" role="alert">
-            <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" onclick="setNotVisible(this)">
-            &times;
+        <div id="server-isis" style= 'visibility:hidden;position:absolute; top: 8%; right: 0%;' 
+        class = "alert alert-dark text-center" role="alert">
+            <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+            onclick="setNotVisible(this)">
+                &times;
             </button>
                     
             Server Error: ISIS3 is not running.
@@ -149,8 +170,12 @@
                 timeOut = "server-timeout",
                 isisRun = "server-isis";
 
-            // parse the url and flag the appropriate error messages
-            function fixLoader(){
+            /**
+             * Function: codeToAlert
+             * 
+             * Desc: reads the alertCode and makes the proper alert visible on screen
+            */
+            function codeToAlert(){
                 if(<%= alertCode %> == 1){
                     var alert = document.getElementById(InfoBox);
                     alert.style.visibility = 'visible';
@@ -188,25 +213,38 @@
                 }
             }
         
-            /* get the id of the parent element of the button that was clicked and
-             hide the div box this is to help make the x buttons on the alerts work properly */
+            /**
+             * Function: setNotVisible
+             * 
+             * Desc: hides the alert boxes when any of their x buttons are clicked
+            */
             function setNotVisible(element){
                 var hideElement = document.getElementById($(element).parent().attr('id'));
                 hideElement.style.visibility = 'hidden';    
             }
 
-            // showing an hiding the loading gif
+            /**
+             * Function: loadInvisible
+             * 
+             * Desc: hide the loader gif
+            */
             function loadInvisible(){
                 loader.style.visibility = 'hidden';    
             }
+
+            /**
+             * Function: loaderActivate
+             * 
+             * Desc: show the loader gif
+            */
             function loaderActivate(){
-    
+                // ignore any call to the function if the form is submitted already
                 if(document.uploadForm.onsubmit && !document.uploadForm.onsubmit())
                 {
                     return;
                 }
                 else{
-
+                    // otherwise show loader and submit the form based on input
                     if(heightInputBox.value === "" && widthInputBox.value === ""){
                         // 300dpi at 3 inches (300px/in)
                         heightInputBox.value = 900;
@@ -223,14 +261,23 @@
 
             }
 
-            // shows the help div and  disables the help button 
+            /**
+             * Function: showHelp
+             * 
+             * Desc: show the help box when the button is clicked
+            */
             function showHelp(btn){
                 document.getElementById("help-box").style.visibility = "visible";
-                btn.className = btn.className.replace("btn-primary","btn-secondary disabled ");
+                btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
             }
 
 
-            // contantly check the input boxes just in case they are too big to render on the users screen
+            /**
+             * Function: checkInput
+             * 
+             * Desc: constantly check input values of the width and height and notify
+             *      the user 1 time if it gets too large
+            */
             function checkInput(){
                 let width = widthInputBox.value;
                 let height = heightInputBox.value;
@@ -238,12 +285,12 @@
                 // alert of the are too large
                 // the flag is used to only alert the user 1 time
                 if(!alerted){
-                    if(width >= window.screen.width-window.screen.width*.5 && width !== "900"){
-                        alert("Warning: The selected width is too larger \n     Continuing will cause redering issues");
+                    if(width >= window.screen.width - window.screen.width*.5 && width !== "900"){
+                        alert("Warning: The selected width is too larger \n    Continuing will cause redering issues");
                         alerted = true;
                     }
-                    else if(height >= window.screen.height-window.screen.height*.5 && height !== "900"){
-                        alert("Warning: The selected height is too larger \n    Continuing will cause redering issues");
+                    else if(height >= window.screen.height - window.screen.height*.5 && height !== "900"){
+                        alert("Warning: The selected height is too larger \n   Continuing will cause redering issues");
                         alerted = true;
                     }
                 }
@@ -251,14 +298,18 @@
             // interval for the function above =  1.5 seconds
             setInterval(checkInput,1500);
 
-            // this bind call is used to make the loader gif invisible on the page load
+            /**
+             * Function: window 'pageshow' event handler
+             * 
+             * Desc: run the startup functions for the page's initial load
+            */
             $(window).bind("pageshow", function(event) {
+                // check if the page was loaded from the cache
                 if (event.originalEvent.persisted) {
-                    // functions to run when page loads
                     loadInvisible();
-                    fixLoader(); 
+                    codeToAlert(); 
                 }else{
-                    fixLoader();
+                    codeToAlert();
                 }   
             });
             
