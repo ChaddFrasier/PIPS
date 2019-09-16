@@ -29,7 +29,7 @@
          * will not register the bpoundry of the svg sapce.
          * 
         */
-        function makeDraggable(event) {
+        function makeDraggable(event){
         
             // get svg element
             var svg = event;
@@ -81,12 +81,12 @@
              * Desc: gets mouse x y coordinates based on the tranform of the svg element
              * 
             */
-            function getMousePosition(event) {
+            function getMousePosition(event){
                 // get transform matrix in relation to svg
                 var CTM = svg.getScreenCTM();
                 // Note: calculations where found on a blog post
                 // return the calculated x and y coordinates of the mouse
-                return {
+                return{
                     x: (event.clientX - CTM.e) / CTM.a,
                     y: (event.clientY - CTM.f) / CTM.d
                 };
@@ -125,7 +125,8 @@
                 // get the bounding box of the group element
                 try{
                     bbox = selectedElement.getBBox();
-                }catch(err){
+                }
+                catch(err){
                     return;
                 }
                 // Make sure the first transform on the element is a translate transform
@@ -152,7 +153,7 @@
 
                 }
                 // if the event click happened on a draggable element start drag logic
-                else if (selectedElement.classList.contains('draggable')) {
+                else if(selectedElement.classList.contains('draggable')){
                     // set dragging flag
                     dragging = true;
                     // get the offset value for the translation
@@ -181,7 +182,7 @@
                     confined = selectedElement.classList.contains('confine');
 
                     // if true
-                    if (confined) {
+                    if(confined){
                         let rotateVal = transforms.getItem(1).angle;
                         if(rotateVal > 360){rotateVal-= 360;}
 
@@ -215,14 +216,16 @@
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y + bbox.height * scaleFactor;
                                 maxY = boundaryY2 - bbox.y;
-                            }else if(rotateVal === 90){
+                            }
+                            else if(rotateVal === 90){
                                 // set the new boundry values based on the view box 
                                 // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x + bbox.height * scaleFactor;
                                 maxX = boundaryX2 - bbox.x;
                                 minY = boundaryY1 - bbox.y;
                                 maxY = boundaryY2 - bbox.y - bbox.width * scaleFactor;
-                            }else if(rotateVal === 270){
+                            }
+                            else if(rotateVal === 270){
                                 // set the new boundry values based on the view box 
                                 // and the width/height of the icons
                                 minX = boundaryX1 - bbox.x;
@@ -334,7 +337,8 @@
                 if( elementOver && elementOver.parentElement 
                     && elementOver.parentElement.classList.contains("textbox")){
                     growingFactor *= 10;
-                }else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
+                }
+                else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
                     growingFactor *=2.5;
                 }
                 
@@ -421,18 +425,14 @@
                             dy = parseInt(transform.matrix.f +
                                     Math.abs(startH - bbox.height * currentScale)/4);
                         }
-                        // if the new x and new y are both less than the old position
-                        // grow
+                        // if the new x and new y are both less than the old position, grow
                         else if(coord.x < offset.x && coord.y < offset.y){
                             currentScale += growingFactor;
 
-
                             // check for max size
                             if(currentScale > iconMax){currentScale = iconMax;}
-                            if(!isOutline && 
-                            (bbox.height * currentScale > parseInt("<%=h%>")/3 
-                            || bbox.width * currentScale > parseInt("<%=w%>")/3)
-                            ){
+                            if(!isOutline && (bbox.height * currentScale > parseInt("<%=h%>")/3
+                                || bbox.width * currentScale > parseInt("<%=w%>")/3)){
                                 currentScale -= growingFactor
                             }
 
@@ -471,8 +471,6 @@
                             dx = parseInt(transform.matrix.e +
                                     Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
-
-
                         }
                         // of the new x is less and the new y is greater
                         // grow the icon
@@ -489,7 +487,6 @@
                             dx = parseInt(transform.matrix.e -
                                     Math.abs(startW - bbox.width * currentScale)/4);
                             dy = parseInt(transform.matrix.f);
-
                         }
                         
                         // set scale using svg data method
@@ -559,11 +556,11 @@
                     var dy = parseInt(coord.y - offset.y);
 
                     // if the icon is confined check for boundry values
-                    if (confined) {
-                        if (dx < minX) { dx = minX; }
-                        else if (dx > maxX) { dx = maxX; }
-                        if (dy < minY) { dy = minY; }
-                        else if (dy > maxY) { dy = maxY; }
+                    if(confined){
+                        if(dx < minX){ dx = minX; }
+                        else if(dx > maxX){ dx = maxX; }
+                        if(dy < minY){ dy = minY; }
+                        else if(dy > maxY){ dy = maxY; }
                     }
                     // set the transform
                     transform.setTranslate(dx, dy);
@@ -579,7 +576,7 @@
              * This function just resets the variables and erases the currently selected element
              * 
             */
-            function endDrag(event) {
+            function endDrag(event){
                 if(selectedElement){
                     drag(event);
                     resizing = false,
@@ -590,7 +587,7 @@
                     topR = false,
                     bottom = false;
                 }
-            selectedElement = null;
+                selectedElement = null;
             }
 
         
@@ -618,7 +615,8 @@
                         else if(selectedElement.getAttribute("class") 
                             && selectedElement.getAttribute("class").indexOf('text') !== -1){
                             return minText;
-                        } else{
+                        }
+                        else{
                             return .05;
                         }
                     }
@@ -635,7 +633,8 @@
                         else if(selectedElement.getAttribute("class") 
                             && selectedElement.getAttribute("class").indexOf('text') !== -1){
                             return maxText;
-                        }else{
+                        }
+                        else{
                             return 2;
                         }
                     }
@@ -935,7 +934,8 @@
                 // if the last window seen was captionWriter then go back to preserve changes
                 if(document.referrer.indexOf("/captionWriter") > -1){
                     window.history.back();
-                }else{
+                }
+                else{
                     // else reload the page
                     window.open('/captionWriter','_self');
                 }
@@ -1138,7 +1138,8 @@
                                                     "translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
                     textSize = (scalePX/4000)* 21 * (w/origW);
-                }else{
+                }
+                else{
                     scaleBarIcon.setAttribute("transform",
                                                     "translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
                     // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
@@ -1344,8 +1345,8 @@
              * 
             */
             function setOpposite(colorString){
-                if(colorString === "black"){return "white";}
-                else{return "black";}
+                if(colorString === "black"){ return "white"; }
+                else{ return "black"; }
             }
 
             /**
@@ -1366,7 +1367,6 @@
                         if(children[index].getAttribute("fill")){
                             children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
                         }
-                
                     }
                 }
             });
@@ -1395,7 +1395,8 @@
                         document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
 
                         toggleScalebar = false;
-                    }else{
+                    }
+                    else{
                         // remove the bar and reset toggleValue
                         scaleBarIcon.remove();
                         toggleScalebar = true;
@@ -1464,12 +1465,14 @@
                             console.log("Using normal image resolution");
                             canvas.width = this.naturalWidth;
                             canvas.height = this.naturalHeight;
-                        }else if(this.naturalHeight * this.naturalWidth <= 45000000){
+                        }
+                        else if(this.naturalHeight * this.naturalWidth <= 45000000){
                             console.log("Using half the normal image resolution");
                             canvas.width = this.naturalWidth/2;
                             canvas.height = this.naturalHeight/2;
                             canvas.getContext('2d').scale(.5,.5);
-                        }else if(this.naturalHeight * this.naturalWidth <= 110000000){
+                        }
+                        else if(this.naturalHeight * this.naturalWidth <= 110000000){
                             console.log("Using a third of the normal image resolution");
                             canvas.width = this.naturalWidth/3;
                             canvas.height = this.naturalHeight/3;
@@ -1487,7 +1490,8 @@
                             canvas.height = this.naturalHeight/4;
                             canvas.getContext('2d').scale(.25,.25);
                         }
-                    }else if(isFirefox){
+                    }
+                    else if(isFirefox){
                         // firefox has a higher data cap and therefore can handle larger data
                         if(this.naturalHeight * this.naturalWidth <= 100000000){
                             console.log("Using normal image resolution");
@@ -1505,7 +1509,6 @@
                             canvas.getContext('2d').scale(.33333,.33333);
                         }
                     }
-                    
                     
                     // draw the image to the canvas at the new scale
                     canvas.getContext('2d').drawImage(this, 0, 0);
@@ -1546,7 +1549,7 @@
              * Desc: runs once all page contents are loaded
              * 
             */
-            $(document).ready(function() {
+            $(document).ready(function(){
                 // reset click array on a new load
                 clickArray = [];
             
@@ -1557,7 +1560,7 @@
                 makeDraggable(svg);
 
                 // load the users base image as base64 to embed in the svg element
-                loadImageAsURL("/<%= image %>", function(data) {
+                loadImageAsURL("/<%= image %>", function(data){
                     
                     // remove the loading gif and add the new dataURL
                     myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
@@ -1592,7 +1595,7 @@
 
                     // switch on the location of the padding
                     switch(location){
-                        // if bottom padding
+                       
                         case 'bottom':
                             // get the new image height for the box and background
                             imageH = <%=h%> + val; 
@@ -1737,7 +1740,8 @@
                         rightBtn.className = 'btn button btn-md';
                         topBtn.className = 'btn button btn-md';
 
-                    }else{
+                    }
+                    else{
                         setImagePadding(parseInt(0),"none"); 
                         bottomBtn.className = 'btn button btn-md';
                         leftBtn.className = 'btn button btn-md';
@@ -1764,7 +1768,8 @@
                         leftBtn.className = 'btn button btn-md';
                         rightBtn.className = 'btn button btn-md';
                         bottomBtn.className = 'btn button btn-md';
-                    }else{
+                    }
+                    else{
                         setImagePadding(parseInt(0),"none"); 
                         topBtn.className = 'btn button btn-md';
 
@@ -1795,7 +1800,8 @@
                         leftBtn.className = 'btn button btn-md';
                         bottomBtn.className = 'btn button btn-md';
                         topBtn.className = 'btn button btn-md';
-                    }else{
+                    }
+                    else{
                         setImagePadding(parseInt(0),"none"); 
                         rightBtn.className = 'btn button btn-md'; 
 
@@ -1814,24 +1820,25 @@
                 $("#leftPaddingBtn").on('click',function(event){
                    
                    if(!isNaN(parseInt(paddingBoxInput.value))){
-                       setImagePadding(parseInt(paddingBoxInput.value),'left');
-                       padLeft = true;
-                       padBottom = false,
-                       padRight=false, 
-                       padTop = false;
+                        setImagePadding(parseInt(paddingBoxInput.value),'left');
+                        padLeft = true;
+                        padBottom = false,
+                        padRight=false, 
+                        padTop = false;
                        
-                       leftBtn.className = 'btn btn-danger button btn-md disabled';
+                        leftBtn.className = 'btn btn-danger button btn-md disabled';
                        
-                       bottomBtn.className = 'btn button btn-md';
-                       rightBtn.className = 'btn button btn-md';
-                       topBtn.className = 'btn button btn-md';
-                   }else{
-                       setImagePadding(parseInt(0),"none"); 
-                       leftBtn.className = 'btn button btn-md'; 
-                       bottomBtn.className = 'btn button btn-md';
-                       rightBtn.className = 'btn button btn-md';
-                       topBtn.className = 'btn button btn-md';
-                       padLeft = false; 
+                        bottomBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
+                    }
+                    else{
+                        setImagePadding(parseInt(0),"none"); 
+                        leftBtn.className = 'btn button btn-md'; 
+                        bottomBtn.className = 'btn button btn-md';
+                        rightBtn.className = 'btn button btn-md';
+                        topBtn.className = 'btn button btn-md';
+                        padLeft = false; 
                    } 
                 });
 
@@ -1877,7 +1884,8 @@
                         else if(padTop){
                             setImagePadding(parseInt(this.value),'top');
                         }
-                    }else{
+                    }
+                    else{
                         // if the value is not a number, warn the user that only numbers can render
                         //  warned flag is to onl warn each user 1 time
                         if(this.value !== "" && !warned){
@@ -1984,7 +1992,6 @@
                     startX,
                     startY;
                     
-                
                 /**
                  * Function: prepareCrop
                  * 
@@ -2087,7 +2094,8 @@
                         line.style.visibility = "visible";
                         if(userLineColor){
                             line.style.stroke = userLineColor;
-                        }else{
+                        }
+                        else{
                             line.style.stroke = "white";
                         }
                         
@@ -2199,9 +2207,7 @@
                                     }
                                 });
                             }
-                        } 
-                        
-                        
+                        }   
                     }
                      */
                 });
@@ -2312,21 +2318,24 @@
                             outlineBox.setAttribute('y' , startY - h);
                             outlineBox.setAttribute('width' , w);
                             outlineBox.setAttribute('height' , h);
-                        }else if(w < 0 || h < 0){
+                        }
+                        else if(w < 0 || h < 0){
                             if(w<0){
                                 w = Math.abs(w);
 
                                 outlineBox.setAttribute('x' , startX  - w);
                                 outlineBox.setAttribute('y' , startY);
                                 
-                            }else{
+                            }
+                            else{
                                 h = Math.abs(h);
                                 outlineBox.setAttribute('x' , startX);
                                 outlineBox.setAttribute('y' , startY - h);
                             }
                             outlineBox.setAttribute('width' , w);
                             outlineBox.setAttribute('height' , h);
-                        }else{
+                        }
+                        else{
                             outlineBox.setAttribute('width' , w);
                             outlineBox.setAttribute('height' , h);
                         }
@@ -2367,7 +2376,8 @@
                     // set the color if needed
                     if(userBoxColor){
                         g.style.stroke = userBoxColor;
-                    }else{
+                    }
+                    else{
                         g.style.stroke = "white";
                     }
                     // append the group and reset the draggable functions
@@ -2473,7 +2483,8 @@
                         if(userTextColor){
                             text.setAttribute("stroke",userTextColor);
                             text.setAttribute("fill",userTextColor);
-                        }else{
+                        }
+                        else{
                             text.setAttribute("stroke","white");
                             text.setAttribute("fill","white");
                         
@@ -2525,7 +2536,8 @@
                     
                     if(textBoxArray.length > 0){
                         textBoxArray.pop().remove();
-                    }else{
+                    }
+                    else{
                         alert("text has not been added");
                     }
                     if(textBoxArray.length === 0){
@@ -2588,7 +2600,8 @@
                 $("#undoBox").on("mousedown",function(){
                     if(highlightBoxArray.length > 0){
                         highlightBoxArray.pop().remove();
-                    }else{
+                    }
+                    else{
                         alert("There are no boxes placed yet");
                     }
                     if(highlightBoxArray.length === 0){
@@ -3014,7 +3027,7 @@
              * Desc: reads all browser cookies and finds the cookie value with the given name
              * 
             */
-            function getCookie(cname) {
+            function getCookie(cname){
                 // atach the '=' to the name
                 var name = cname + "=";
                 // get the string version of the object
@@ -3022,15 +3035,15 @@
                 // get array of every cookie found
                 var cookieArr = decodedCookie.split(';');
                 // loop through the cookies and match the name
-                for(var i = 0; i < cookieArr.length; i++) {
+                for(var i = 0; i < cookieArr.length; i++){
                     var cookie = cookieArr[i];
                     // if the first character is a space, find the start of the cookie name
-                    while (cookie.charAt(0) == ' ') {
+                    while (cookie.charAt(0) == ' '){
                         // get a substring of the cookie with the ' ' removed
                         cookie = cookie.substring(1);
                     }
                     // if the cookie string contains the cname+'='
-                    if (cookie.indexOf(name) == 0) {
+                    if (cookie.indexOf(name) == 0){
                         // return that cookie
                         return cookie.substring(name.length, cookie.length);
                     }
@@ -3066,7 +3079,8 @@
                 if(filename !== null){
                     // rea the file extenson TODO: may not be needed soon because of the fetch to server
                     var fileExt = filename.split(".")[filename.split(".").length - 1];
-                }else{
+                }
+                else{
                     // hid the loading elements because the user hit cancel on the prompt
                     hideProgress();
                     loader.style.visibility = "hidden";
@@ -3116,11 +3130,13 @@
                     if(limitBuffer > 1 ){
                         console.log("This data is LARGER than chromes limit");
                         guess = limitBuffer;
-                    }else{
+                    }
+                    else{
                         console.log("This data is smaller than chromes limit");
                         guess = .5;
                     }
-                }else{ 
+                }
+                else{ 
                     // not Google Chrome 
                     if(isFirefox){
                         console.log("Firefix has no limit this will be fastest");
@@ -3181,7 +3197,8 @@
 
 
                             });
-                        }else{
+                        }
+                        else{
                             // server sent back a 200
                             console.log("GOOD RESPONSE: THIS SHOULD DOWNLOAD");
                         }
@@ -3337,7 +3354,8 @@
                         if(!isNaN(rotateOffset)){
                             northDegree = 0 + rotateOffset;
                         }
-                    }else{
+                    }
+                    else{
                         // disable the button if the degree was not found
                         document.getElementById('northIconFlag').setAttribute('class',
                                                                         "btn btn-secondary btn-lg button disabled");
@@ -3358,9 +3376,9 @@
 
 
                 // if the degree value is over 360 just subtract 360 because the math is easier
-                if(northDegree>360){northDegree-=360;}
-                if(sunDegree>360){sunDegree-=360;}
-                if(observerDegree>360){observerDegree-=360;}
+                if(northDegree>360){ northDegree-=360; }
+                if(sunDegree>360){ sunDegree-=360; }
+                if(observerDegree>360){ observerDegree-=360; }
                 // set the scale bar corners to the correct orientation
                 setScaleboxCorners(northDegree, sunDegree);
             }
@@ -3369,7 +3387,6 @@
             getMetadata();
             
 
-            // this function figures out where to draw the scalebar corners to better fit the new icon orientation
 
             /**
              * Function: setScaleboxCorners
