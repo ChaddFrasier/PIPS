@@ -3,7 +3,7 @@
  * 
  * @author Chadd Frasier
  * @since 06/03/19
- * @update 09/03/19
+ * @update 09/16/19
  * @version 2.5.1
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
@@ -13,13 +13,13 @@
  * @todo file loging for isis calls
  */
 
+//TODO: include fs here
 
 // require dependencies
 var spawn = require('child_process').spawn;
 var path = require('path');
 var jimp = require('jimp');
 var Promises = require('bluebird');
-
 
 // exportable functions
 module.exports = {
@@ -90,7 +90,8 @@ module.exports = {
      * 
      * @param {object} cubeObj the current cube object being manipulated
      * 
-     * @returns {number|string} returns the value of the pixel resolution values in the cube or -1 if not found
+     * @returns {number|string} returns the value of the pixel resolution values in the cube 
+     *                          or -1 if not found
      * 
      * @description extracts the values used to calculate the scale of the image 
      */
@@ -254,7 +255,8 @@ module.exports = {
      * 
      * @returns {number} the rotation value if projected is true or 0 if false
      * 
-     * @description this function is to find the offset of the north arrow depending on if the image is rotated or not
+     * @description this function is to find the offset of the north arrow depending
+     *               on if the image is rotated or not
      */
     getRotationOffset: function(isProjected, cubeData){
         if(isProjected){
@@ -277,7 +279,8 @@ module.exports = {
      * 
      * @returns {string} the string path to the base image file
      * 
-     * @description this function is used to create the path to the given cube file image in the images folder 
+     * @description this function is used to create the path to the given cube file
+     *               image in the images folder 
      */
     findImageLocation: function(cookieval){
         return path.join('images', cookieval.replace('.cub','.png'));
@@ -290,8 +293,9 @@ module.exports = {
      * 
      * @returns {number array} the array of Numbers needed to crop the image using jimp js
      * 
-     * @description this function calculates the height and width of the new image and store the x,y coordinates (index 0 and 1)
-     * and the height and width of the crop for the jimp function (2 and 3)
+     * @description this function calculates the height and width of the new image and store
+     *              the x,y coordinates (index 0 and 1) and the height and width of the crop
+     *              for the jimp function (2 and 3)
      */
     calculateCrop: function(cropArray){
         let start_x = Number(cropArray[0]);
@@ -310,23 +314,28 @@ module.exports = {
     /**
      * 
      * @param {string} imageLink the path to the image that jimp is going to be cropping
-     * @param {number array} cropArray the array of the coordinate that jimp needs in order to crop the given image 
+     * @param {number array} cropArray the array of the coordinate that jimp needs in order to crop
+     *                       the given image 
      * 
      * @returns {string} the path to the newly created image
      * 
-     * @description this function asyncrounously calls the crop function from jimp module and awaits for its response befor passing the string back
+     * @description this function asyncrounously calls the crop function from jimp module and 
+     *              awaits for its response befor passing the string back
      */
     cropImage: async function(imageLink,cropArray){
         const cubeImage = await jimp.read(imageLink);
         var returnImage;
 
-        await cubeImage.crop(parseInt(cropArray[0]),parseInt(cropArray[1]),parseInt(cropArray[2]),parseInt(cropArray[3]),function(err){
-            if(err) throw err;
-            returnImage = newImageName(imageLink);
+        await cubeImage.crop(
+                            parseInt(cropArray[0]),
+                            parseInt(cropArray[1]),
+                            parseInt(cropArray[2]),
+                            parseInt(cropArray[3]),
+                            function(err){
+                                if(err) throw err;
+                                returnImage = newImageName(imageLink);
 
-        })
-        .write(returnImage);
-        
+                            }).write(returnImage);
         return returnImage;
     },
 
@@ -356,7 +365,8 @@ module.exports = {
      * @param {object} cubeObj cube object to be added
      * @param {array} cubeArray array of cube objects.
      * 
-     * @returns {object array} returns the new array with the value added for just the array if the valkue is already there
+     * @returns {object array} returns the new array with the value added for just the array 
+     *                          if the value is already there
      * 
      * @description  scans through the array and adds the element if it is not already there
      */
@@ -390,7 +400,8 @@ module.exports = {
      * @returns {number} -1 if item not found
      * @returns {object}Cube Object that matches findObj
      * 
-     * @description retrieves object that is being searched if it can; return 0 if array is empty , -1 if not found
+     * @description retrieves object that is being searched if it can; return 0 if array is empty,
+     *              -1 if not found
      */
     getObjectFromArray: function(userId,cubeArray){
         // if the array is empty return 0
@@ -464,7 +475,7 @@ module.exports = {
      * 
      * @returns {object string} the JSON string of the important data tags
      * 
-     * @description takes important tag array and extracts data if it exists returns none otherwise 
+     * @description takes important tag array and extracts data if it exists returns none otherwise
      */
     importantData: function(cubeFileData, importantTagArr){
         // prepare json object
@@ -494,6 +505,48 @@ module.exports = {
 
     /**
      * 
+     * @param {string} file the path to the file that should be converted into raw base64 data 
+     * 
+     * @returns {string} a string representing the raw base64 data of the image file
+     * 
+     * @requires fs
+     * 
+     * @description takes in a file and reads it using 
+     * fileSystem and then uses a buffer to change it into a base64 string
+     */
+    base64_encode: function(file){
+        var fs = require('fs');
+        // read binary data
+        var bitmap = fs.readFileSync(file);
+        // convert binary data to base64 encoded string
+        return Buffer.from(bitmap).toString('base64');
+    },
+
+
+    /**
+     * 
+     * @param {string} base64str the data that need to be written to file
+     * @param {string} file the filename to write the data to
+     * 
+     * @returns {void} 
+     * 
+     * @requires fs
+     * 
+     * @description takes in a data string and writes it to the file that is given
+     */
+    base64_decode: function(base64str, file) {
+        var fs = require('fs');
+        // create buffer object from base64 encoded string, it is important to tell the
+        // constructor that the string is base64 encoded
+        var bitmap = Buffer.from(base64str, 'base64');
+        // write buffer to file
+        fs.writeFileSync(file, bitmap);
+        console.log('******** File created from base64 encoded string ********');
+    },
+
+
+    /**
+     * 
      * @param {string} cubeName name of the cube file
      * @param {string} format format that the image should be generated to
      *
@@ -516,7 +569,8 @@ module.exports = {
      * 
      * @returns {string} the image name with no time string query attached
      * 
-     * @description if there is a query string remove it and return jus the name otherwise returns the same string
+     * @description if there is a query string remove it and return just the name,
+     *              otherwise returns the same string
      */
     parseQuery: function(imageName){
         try{return imageName.split('?')[0];}
@@ -524,7 +578,7 @@ module.exports = {
     }
 };
 
-// -------------------------------------- local functions --------------------------------------------------------------------
+// -------------------------------------- local functions ---------------------------------------------------
 /**
  * 
  * @param {string} testValue  value to check if it a cube hearder keyword
@@ -813,7 +867,7 @@ var processFile = function(inputFile){
                 }
                 // some other type of data line
                 else{
-                    tagName = combineName(tagName, line.toString().trim().split('=')[1].trim());     
+                    tagName = combineName(tagName, line.toString().trim().split('=')[1].trim());   
                 }
             }
             // if not header line 
@@ -831,7 +885,8 @@ var processFile = function(inputFile){
                 }
                 else{
                     // `variable = data object` line
-                    if(line.toString().trim().split('=')[1] != undefined || line.toString().trim().split('=')[1] == '.'){
+                    if(line.toString().trim().split('=')[1] != undefined 
+                        || line.toString().trim().split('=')[1] == '.'){
                         val = line.toString().split('=')[1].trim();
                         let tmpTag = line.toString().split('=')[0].trim();
 
@@ -849,7 +904,7 @@ var processFile = function(inputFile){
                     else{
                         // if not EOF
                         if(line.trim() != "End"){
-                            cubeData[lastTag] = String(cubeData[lastTag]).trim().concat( ' ' + line.trim()); 
+                            cubeData[lastTag] = String(cubeData[lastTag]).trim().concat( ' ' + line.trim());
                         }
                         else{
                             // End was seen but could be in middle of file
