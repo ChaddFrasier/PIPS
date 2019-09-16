@@ -239,8 +239,7 @@
             */
             function loaderActivate(){
                 // ignore any call to the function if the form is submitted already
-                if(document.uploadForm.onsubmit && !document.uploadForm.onsubmit())
-                {
+                if(document.uploadForm.onsubmit && !document.uploadForm.onsubmit()){
                     return;
                 }
                 else{
@@ -308,7 +307,8 @@
                 if (event.originalEvent.persisted) {
                     loadInvisible();
                     codeToAlert(); 
-                }else{
+                }
+                else{
                     codeToAlert();
                 }   
             });
