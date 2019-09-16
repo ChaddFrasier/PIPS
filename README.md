@@ -1,7 +1,7 @@
 ![USGS](https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png)
--------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
---------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
 ### Introduction
 
 This is a server that is supported by USGS's ISIS3 on the backend, its purpose is to bring the 
@@ -19,13 +19,14 @@ The other purpose is to allow for simple photo editing capabilities using the re
 that is inside the cubes or tiffs. Users can ~~crop~~, annotate and add icons to the image on the fly using
 a web interface that works all off the mouse.
 The server will generate correct size scale bars and allow the user to place it where ever they 
-want just by clicking on the icon and dragging it around. Icons will be generated with the correct orientation and can be scaled
-up and down in size by dragging from the corners. 
+want just by clicking on the icon and dragging it around. Icons will be generated with the correct
+orientation and can be scaled up and down in size by dragging from the corners. 
 
 Since the server has no need for a database and is fed through user input we chose to asyncronously
 return data to the user while using cookies to instance users instead of sign ins. There is no need for a 
-database simply because the user already should know what they would like to edit. Saving large amounts of cubes to the server 
-would just slow the server down and there isn't that much of a need for returning to old uploads when the user should already have the file.
+database simply because the user already should know what they would like to edit. Saving large amounts of
+cubes to the server would just slow the server down and there isn't that much of a need for returning to old
+uploads when the user should already have the file.
 
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
 to a whole new scope of users and data.
@@ -33,16 +34,18 @@ to a whole new scope of users and data.
 
 ## Developing
 
-In order to develop on this project you will first need to install a working version of ISIS, and Node.js/npm.
+In order to develop on this project you will first need to install ISIS3, and Node.js/npm.
 
 To check if they are installed simply run `node -v` & `npm -v` 
 these commands should return a version number that your machine has. Otherwise you will need to install them.
 Node will download npm for you, go [here](https://nodejs.org/en/) for the Node.js install.
 __if you are on company servers you will need IT to install it for you because you lack permissions__
 
-ISIS install can be achieved by following the instructions for installation [here](https://github.com/USGS-Astrogeology/ISIS3).
+ISIS install can be achieved by following the instructions for installation [here]
+                                                                (https://github.com/USGS-Astrogeology/ISIS3).
 
-Once those are installed and environment variables have been set properly for ISIS you can pull down the server code and run 
+Once those are installed and environment variables have been set properly for 
+ISIS you can pull down the server code and run.
 `npm install` in the project folder. 
 *This will install all Node.js dependencies for you.*
 
@@ -56,8 +59,9 @@ any changes that you would like to make, after review by the repository leads yo
 request will either be merged or closed without merge depending on what has been done. 
 Any request will be considered.
 
-Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js) file before contributing to understand what is currently working, 
-do not depricate any functions without replacing their purpose.
+Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js)
+file before contributing to understand what is currently working, do not depricate any functions without
+consent from the repository managers.
 
 Post and issue if you wish to become a contributor stating who you are 
 and why you feel you could benefit the project. 
