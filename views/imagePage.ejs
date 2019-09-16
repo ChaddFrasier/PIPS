@@ -1098,6 +1098,7 @@
             var loader = document.getElementById('loading');
 
 
+            
             // center the loading gif
             myImage.setAttribute("x",parseInt("<%=w%>")*1.5 + "px");
             myImage.setAttribute("y",parseInt("<%=h%>")*1.25 + "px");
@@ -1252,7 +1253,7 @@
             }
 
 
-            console.log(" image dimensions are => <%= w %>: <%= h %>");
+            console.log(" Image Dimensions are => <%= w %>: <%= h %>");
             // set loader to invisible
             loadInvisible();
         
@@ -1552,7 +1553,7 @@
             $(document).ready(function(){
                 // reset click array on a new load
                 clickArray = [];
-            
+        
                 // get the image from the link
                 var myImage = document.getElementById('crop');
 
@@ -1588,6 +1589,7 @@
                  * Desc: adjust the svg size and viewBox as needed to add extra black pixels to one side
                  * 
                 */
+
                 function setImagePadding(val,location){
                     // image w and h vars
                     let imageW,
@@ -1598,7 +1600,7 @@
                        
                         case 'bottom':
                             // get the new image height for the box and background
-                            imageH = <%=h%> + val; 
+                            imageH = h + val; 
                             // set the viewbox values to how on the bottom of the image
                             svg.setAttribute("viewBox", "0 0 <%=w%> " + imageH);
 
@@ -1608,57 +1610,57 @@
 
                             // adjust the height and set the width to what it should be
                             bg.setAttribute("height", imageH);
-                            bg.setAttribute("width",<%=w%>);
+                            bg.setAttribute("width",w);
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("height", imageH);
-                            canvas.setAttribute("width",<%=w%>);
+                            canvas.setAttribute("width",w);
                             // fix the svg to properly export all content
                             svg.setAttribute("height", imageH);
-                            svg.setAttribute("width",<%=w%>);
+                            svg.setAttribute("width",w);
                             // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svg);
                             break;
 
                         case "top":
                             // get the new image height for the box and background
-                            imageH = <%=h%> + val;
+                            imageH = h + val;
                             // set background x,y to show padding at the right spot
                             bg.setAttribute("y",val*-1);
                             bg.setAttribute("x",0);
                             // adjust the height and set the width to what it should be
                             bg.setAttribute("height",imageH);
-                            bg.setAttribute("width",<%=w%>);
+                            bg.setAttribute("width",w);
                             
                             // set the viewbox values 
                             svg.setAttribute("viewBox", "0 " + String(val*-1) + " <%=w%> " + imageH);
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("height", imageH);
-                            canvas.setAttribute("width",<%=w%>);
+                            canvas.setAttribute("width",w);
                             // fix the svg to properly export all content
                             svg.setAttribute("height", imageH);
-                            svg.setAttribute("width",<%=w%>);
+                            svg.setAttribute("width",w);
                             // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svg);
                             break;
 
                         case "right":
                             // get the new image width for the box and background
-                            imageW = <%=w%> + val;
+                            imageW = w + val;
                             // set background x,y to padding at the right spot
                             bg.setAttribute("y",0);
                             bg.setAttribute("x",0);
                             // adjust the height and set the width to what it should be
                             bg.setAttribute("width",imageW);
-                            bg.setAttribute("height",<%=h%>);
+                            bg.setAttribute("height",h);
                             
                             // set the viewbox values
                             svg.setAttribute("viewBox", "0 0 "  + imageW + " <%=h%>");
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
-                            canvas.setAttribute("height",<%=h%>);
+                            canvas.setAttribute("height",h);
                             // fix the svg to properly export all content
                             svg.setAttribute("width", imageW);
-                            svg.setAttribute("height",<%=h%>);
+                            svg.setAttribute("height",h);
                             // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svg);
                             break;
@@ -1666,46 +1668,43 @@
 
                         case "left":
                             // get the new image width for the box and background
-                            imageW = <%=w%> + val;
+                            imageW = w + val;
                             // set background x,y to padding at the right spot
                             bg.setAttribute("y",0);
                             bg.setAttribute("x",val*-1);
                             // adjust the height and set the width to what it should be
                             bg.setAttribute("width",imageW);
-                            bg.setAttribute("height",<%=h%>);
+                            bg.setAttribute("height",h);
                             
                             // set the viewbox values 
                             svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " <%=h%>");
                             // same with canvas to allow exporting the padding
                             canvas.setAttribute("width", imageW);
-                            canvas.setAttribute("height",<%=h%>);
+                            canvas.setAttribute("height",h);
                             // fix the svg to properly export all content
                             svg.setAttribute("width", imageW);
-                            svg.setAttribute("height",<%=h%>);
+                            svg.setAttribute("height",h);
                             // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svg);
                             break;
 
                         default:
-                            // get the new image width and height for the box and background
-                            imageW = <%=w%>;
-                            imageH = <%=h%>; 
-
+                        
                             // set background x,y to padding at the right spot                            
                             bg.setAttribute("x",0);
                             bg.setAttribute("y",0);
                             // adjust the height and set the width to what it should be
-                            bg.setAttribute("width",imageW);
-                            bg.setAttribute("height",imageH);
+                            bg.setAttribute("width",w);
+                            bg.setAttribute("height",h);
 
                             // set the viewbox values
-                            svg.setAttribute("viewBox", "0 0 <%=w%> <%=h%>");
+                            svg.setAttribute("viewBox", "0 0 " + w + " " + h);
                             // same with canvas to allow exporting the padding
-                            canvas.setAttribute("width", <%=w%>);
-                            canvas.setAttribute("height",<%=h%>);
+                            canvas.setAttribute("width", w);
+                            canvas.setAttribute("height",h);
                             // fix the svg to properly export all content
-                            svg.setAttribute("width", <%=w%>);
-                            svg.setAttribute("height",<%=h%>);
+                            svg.setAttribute("width", w);
+                            svg.setAttribute("height",h);
                             // call makeDraggable again to reset the boundaries of the draggable elements
                             makeDraggable(svg);
                     }
@@ -2071,7 +2070,7 @@
                         y = event.clientY;
 
                     // TODO: figure our how to buffer the Y portion
-                    var bufferY = parseInt(Number(<%=h%>) * .09);
+                    var bufferY = parseInt(h * .09);
                     
                     // get proper svg as target
                     var target = (t == svg ? svg : t.parentNode);
@@ -2724,7 +2723,6 @@
                     
                 }); 
 
-
                 
                 /**
                  * Function:  eyeFlag 'click' event handler
@@ -2987,7 +2985,6 @@
             }
 
 
-            
             /**
              * Function: peekTimer
              * 
