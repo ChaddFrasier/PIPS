@@ -52,7 +52,7 @@ var sunImage,
     bg;
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
- /** ---------------------------- Draggable Function ------------------------------------------------------ */
+/** ---------------------------- Draggable Function ------------------------------------------------------ */
 
 /**
  * @function makeDraggable
@@ -2638,16 +2638,7 @@ $(document).ready(function(){
             
             // otherwise set the other flags to false and adjust their html
             if(northFlag){
-                if(!sunIconPlaced){
-                    sunFlag = false;
-                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                }
-
-                if(!eyeIconPlaced){
-                    eyeFlag = false;
-                    document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
-                }
-
+                
                 /* cropFlag = false;
                 document.getElementById('cropFlag').innerHTML = "Crop Image"; */
                 outlineBox.remove();
