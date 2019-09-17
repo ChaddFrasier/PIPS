@@ -51,11 +51,6 @@ var sunImage,
     bg;
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
-
-
-
-
-
  /** ---------------------------- Draggable Function ------------------------------------------------------ */
 
 /**
@@ -357,8 +352,7 @@ function makeDraggable(event){
     var bottomL = false,
         bottomR = false,
         topR = false,
-        topL = false,
-        bottom = false;
+        topL = false;
     
 
 
@@ -633,8 +627,7 @@ function makeDraggable(event){
             bottomL = false,
             bottomR = false,
             topL = false,
-            topR = false,
-            bottom = false;
+            topR = false;
         }
         selectedElement = null;
     }
