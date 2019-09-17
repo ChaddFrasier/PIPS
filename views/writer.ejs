@@ -11,7 +11,7 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-
+        <script src="js/writer.js"></script>
     </head>
     <body>
         <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" 
@@ -45,7 +45,11 @@
                 </form>
             </div>
         </div>
-
+        <!-- for passing server vaiables to the script -->
+        <div id="pageVariables" style="display: none;">
+            <p id="outputName"><%=outputName%></p>
+        </div>
+        
         <div class="help-box" id="help-box" style="visibility: hidden;">
             <button class="float-right helpBtn" id="hideBtn" 
             style="width: auto; height:auto; border-radius: 5px; 
@@ -64,495 +68,115 @@
             <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
         </div>
 
-            <div class="container float-center" 
-            style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
-                
-                <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
-                    <label for="template-text-output">
-                        <h3 class="display-5 alert alert-secondary" 
-                        style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
-                    </label>
-                    <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
-                        style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
-                        <br/>
-
-                    <form class="lg-form text-center float-right" style="margin: 0;">
-                        <div class="form-group">
-                            <a class="btn button text-white btn-lg" 
-                            style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
-                            id="link" download="<%=outputName%>">
-                                Download Caption
-                            </a>
-                        </div>
-                    </form>
-                </div>
-
-                <br/>
-                <br/>
-                <!-- Invisible Boxes -->
-                <div id="metadata" style = "display: none;" class="text-center green-border-focus">
-                    <label for="metadata-text">
-                        <h2>Metadata Output DICTSTRING </h2>
-                    </label>
-                    <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;"><%= dictionaryString %>
-                    </textarea>
-                </div>
-                
-                <div id="tags"  style = "display: none;" class="text-center green-border-focus">
-                    <label for="all-tag-text">
-                        <h2>All Tag Info CSVSTRING</h2>
-                    </label>
-                    <textarea readonly id="all-tag-text" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;"><%= wholeData %></textarea>
-                </div>
-
-                <div id="metadata-tags"  style = "display: none;" class="text-center green-border-focus">
-                    <label for="metadataTagArea">
-                        <h2>Metadata Tags</h2>
-                    </label>
-                    <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;"></textarea>
-                </div>
-
-                <div id="important-tags" style = "display: none;" class="text-center green-border-focus">
-                    <label for="allTagArea">
-                        <h2>allTagArea</h2>
-                    </label>
-                    <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
-                        style="resize: vertical; font-size: 22px;"></textarea>
-                </div>
-                <!-- End Invisible Boxes -->
-
-                <br/>
-                <!-- Active Tag Box -->
-                <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
-                    <label for="test" class="float-center" style="margin: 0;">
-                        <h3 class="display-5 alert alert-secondary" 
-                        style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">
-                            Usable Tags
-                        </h3>
-                    </label>
+        <div class="container float-center" 
+        style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
+            
+            <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
+                <label for="template-text-output">
+                    <h3 class="display-5 alert alert-secondary" 
+                    style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
+                </label>
+                <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
+                    style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
                     <br/>
-                    <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
-                        <label for="filterInput" class="alert alert-light" 
-                        style="color:black; width: auto; height:40px; padding:3px;">
-                            <h4>Search for keywords</h4>
-                        </label>
-                        <br/>
-                        <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
-                        style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;
-                         border: 1.5px solid black;">
+
+                <form class="lg-form text-center float-right" style="margin: 0;">
+                    <div class="form-group">
+                        <a class="btn button text-white btn-lg" 
+                        style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
+                        id="link" download="<%=outputName%>">
+                            Download Caption
+                        </a>
                     </div>
-                    <br/>
-                    <textarea readonly id="test" class="form-control bg-white text-dark metadata"
-                        style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
-                    <button id="button-more-tags" class="btn btn-md button float-left" 
-                        style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" 
-                        onclick="showMoreTags()">Show Important Tags</button>
-                    
-                    <form action="/csv" method='POST' class="lg-form text-center float-right" 
-                    style="margin: 0;  margin-top:1rem;">
-                        <div class="lg-form text-center" style="margin: 0;">
-                            <input type="hidden" value="<%= wholeData %>" id="passedTXT">
-                            <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
-                            style="width: 13rem; border: 2px solid black; padding: 7px;" />
-                        </div>
-                    </form>
-                </div>
-                <br/>
-                <br/>
-                <!-- Editing Box-->
-                <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
-                    <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary" 
-                        style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
-                    </label>
-                    <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                        style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
-                    </textarea>
-                </div>
+                </form>
+            </div>
+
+            <br/>
+            <br/>
+            <!-- Invisible Boxes -->
+            <div id="metadata" style = "display: none;" class="text-center green-border-focus">
+                <label for="metadata-text">
+                    <h2>Metadata Output DICTSTRING </h2>
+                </label>
+                <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
+                    style="resize: vertical; font-size: 22px;"><%= dictionaryString %>
+                </textarea>
             </div>
             
-        
-        <script type="text/javascript">
-            var loader = document.getElementById('loading');
-            /**
-             * Function: setOutput
-             * 
-             * Desc: sets the value of the output to the template and then calls output() 
-             */
-            function setOutput(){
-                let getTemplate = document.getElementById("template-text").value;
-                document.getElementById("template-text-output").innerHTML = getTemplate;
-                output();
-            }
-            
-            /**
-             * Function: getMetadata
-             * 
-             * Desc: parse out the important tags and populate the tag area
-            */
-            function getMetadata(){
-                var metaDataString = document.getElementById("metadata-text").value;
-                var metaDataArea = document.getElementById("metadataTagArea");
-                metaDataArea.value = "";
-                var jsonData = JSON.parse(metaDataString);
+            <div id="tags"  style = "display: none;" class="text-center green-border-focus">
+                <label for="all-tag-text">
+                    <h2>All Tag Info CSVSTRING</h2>
+                </label>
+                <textarea readonly id="all-tag-text" class="form-control bg-white text-dark"
+                    style="resize: vertical; font-size: 22px;"><%= wholeData %></textarea>
+            </div>
+
+            <div id="metadata-tags"  style = "display: none;" class="text-center green-border-focus">
+                <label for="metadataTagArea">
+                    <h2>Metadata Tags</h2>
+                </label>
+                <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark"
+                    style="resize: vertical; font-size: 22px;"></textarea>
+            </div>
+
+            <div id="important-tags" style = "display: none;" class="text-center green-border-focus">
+                <label for="allTagArea">
+                    <h2>allTagArea</h2>
+                </label>
+                <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
+                    style="resize: vertical; font-size: 22px;"></textarea>
+            </div>
+            <!-- End Invisible Boxes -->
+
+            <br/>
+            <!-- Active Tag Box -->
+            <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
+                <label for="test" class="float-center" style="margin: 0;">
+                    <h3 class="display-5 alert alert-secondary" 
+                    style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">
+                        Usable Tags
+                    </h3>
+                </label>
+                <br/>
+                <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
+                    <label for="filterInput" class="alert alert-light" 
+                    style="color:black; width: auto; height:40px; padding:3px;">
+                        <h4>Search for keywords</h4>
+                    </label>
+                    <br/>
+                    <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
+                    style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;
+                        border: 1.5px solid black;">
+                </div>
+                <br/>
+                <textarea readonly id="test" class="form-control bg-white text-dark metadata"
+                    style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
+                <button id="button-more-tags" class="btn btn-md button float-left" 
+                    style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" 
+                    onclick="showMoreTags()">Show Important Tags</button>
                 
-                //'StartTime': '1997-10-20T10:58:37.46'
-                for(key in jsonData){
-                    //console.log('key: ' + key + ':val:' + jsonData[key]);
-                    if(key != undefined){  
-                        let str = keyToTag(key) + ": " + jsonData[key] + "\n";
-                        metaDataArea.value += str;
-                    }
-                }
-
-            }
-            /**
-             * Function: getAllTags
-             * 
-             * Desc: retrieve all the tags from the passedTXT and populate the all tag area with tag format
-            */
-            function getAllTags(){
-                var metaData = document.getElementById("passedTXT").value;
-                var metaDataArea = document.getElementById("allTagArea");
-                metaDataArea.value = "";
-                metaData = JSON.parse(metaData);
-                for(key in metaData){
-                    let str = keyToTag(key) + ": " + metaData[key].toString().trim() + "\n";
-                    metaDataArea.value += str;
-                }
-            }
-
-            /**
-             * Function: keyToTag
-             * 
-             * Desc: converts key balues into tags for display on the UI
-            */
-            function keyToTag(key){
-                var tag = "[[ " + key + " ]]";
-                return tag;
-            }
-            // punctuation to be ignored
-            let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'","<",">"];
-
-            /**
-             * Function: removePunctuation
-             * 
-             * Desc: returns true if punctuation needs to be parsed out false if there is no punctuation  
-             */ 
-            function removePunctuation(key){
-                for(index in unwantedPunc){
-                    if(key[key.length - 1] === unwantedPunc[index] || key[0] === unwantedPunc[index]){
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            /**
-             * Function: exchangeData
-             * 
-             * Desc: parses out the data key and adds back the puctuation that was removed
-            */
-            function exchangeData(keyString){
-                let Farr =[],
-                    Barr = [],
-                    key;
-                // parse front to back until non-punctuation value is found then stop
-                for(let i = 0; i<keyString.length; i++){
-                    if(unwantedPunc.includes(keyString[i])){
-                        Farr.push(keyString[i]);
-                    }
-                    else{
-                        break;
-                    }
-                }
-                // parse back to front until non-punctuation value is found then stop
-                for(let i = keyString.length-1; i>0; i++){
-                    if(unwantedPunc.includes(keyString[i])){
-                        Barr.push(keyString[i]);
-                    }
-                    else{
-                        break;
-                    }
-                }
-                // use the length of the arrays to substring out the key value
-                key = keyString.substring(Farr.length,keyString.length - Barr.length);
-                // get the actual value
-                let val = getMetadataVal(key);
-
-                // if the key is the same as val then it isn't a data value
-                if(key !== val){
-                    if(hasUnits(val)){
-                        val = removeUnits(val);
-                    }
-                    // join arrays and add the new data value in between
-                    return Farr.join("") + val + Barr.join("");
-                }
-                else{
-                    // just return the string
-                    return keyString;
-                }
-
-
-            }
-
-            /**
-             * Function: getMetadataVal
-             * 
-             * Desc: get a value out of the data that matches the key passed
-            */
-            function getMetadataVal(key){
-                // get both data objects
-                var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
-                var impData = JSON.parse(document.getElementById("metadata-text").value);
-
-                // combine the JSONs into 1 object
-                allMetaData = Object.assign(allMetaData,impData);
-                // loop through all data 
-                for(datakey in allMetaData){
-                    //if the key is found
-                    if(datakey === key){
-                        //trim the data and return the result
-                        return allMetaData[datakey].trim();
-                    } 
-                    // if the key has puncuation in it
-                    else if(removePunctuation(key)){
-                        // remove the punctuation from the ends and add it back after the data is added
-                        return exchangeData(key);
-                    }
-                }
-                return key;
-            }
-
-            /**
-             * TODO: this function might be able to be used instead of parsing out the punctiation in loops
-             * Function: replaceAll
-             *
-             * Desc: prototype string function that replaces every occurance of a string with another given value
-            */ 
-            String.prototype.replaceAll = function(find, replace){
-                var str = this;
-                return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
-            }
-
-            /**
-             * Function: hasUnits
-             * 
-             * Desc: return true if the data value has units in it, false if not
-            */
-            function hasUnits(str){
-                if(str.indexOf("<") > -1 && str.indexOf(">") > -1){
-                    return true;
-                }
-                else{
-                    return false;
-                }
-            }
-
-
-            /**
-             * Function: removeUnits
-             * 
-             * Desc: remove the units string out of the value leaving only the important parts
-            */
-            function removeUnits(str){
-                let tmpArr = str.split(" "),
-                    unitsFound = false;
-
-                for(index in tmpArr){
-                    if(tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1 && !unitsFound){
-                        // remove this index and everything after
-                        tmpArr[index] = "";
-                        unitsFound = true;
-                    }
-                    else if(unitsFound){
-                        tmpArr[index] = "";
-                    }
-                }
-
-                return tmpArr.join("");
-            }
-
-
-            /**
-             * Function: output
-             * 
-             * Desc: set the output of the template to the caption area
-            */
-            function output(){
-                var tempText = document.getElementById("template-text").value;
-
-                //Find values of keys one by one, replace "[[...]]" with their value
-                var tempArr = tempText.split(' ');
-                for(var i=0; i<tempArr.length; i++){
-    
-                    // get the val of the tag
-                    tempArr[i] = getMetadataVal(tempArr[i]);
-
-                    if(hasUnits(tempArr[i])){
-                        tempArr[i] = removeUnits(tempArr[i]);
-                    }
-                    
-                }
-                
-                tempText = tempArr.join(' ');
-                
-                //set the innerHTML for the last(output) textarea
-                var output = document.getElementById("template-text-output").innerHTML = tempText;
-
-                //update the download link to the new text
-                var finalResult = output;
-                var tpl = document.getElementById("link");
-                tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
-                tpl.target = '_blank';
-                tpl.download = '<%=outputName%>';
-            }
-
-            /**
-             * Function: showMoreTags
-             * 
-             * Desc: display the all tags in the live div or display the important tags if it already is showing all
-            */
-            function showMoreTags(){
-                var val = document.getElementById("button-more-tags").innerHTML;
-                var textArea = document.getElementById("test");
-                var metaTags = document.getElementById("metadataTagArea");
-                var importantTags = document.getElementById("allTagArea");
-                val = val.toString();
-                if(val === "Show Important Tags"){
-                    val = "Show All Tags";
-                    document.getElementById("button-more-tags").innerHTML = val;
-                    textArea.value = metaTags.value;
-                }
-                else{
-                    val = "Show Important Tags";
-                    document.getElementById("button-more-tags").innerHTML = val;
-                    textArea.value = importantTags.value;
-                }
-
-                if(document.getElementById("filterInput").value !== ""){
-                    filterTags();
-                }
-            }
-
-            /**
-             * Function: loadInvisible
-             * 
-             * Desc: hide the loader gif
-            */
-            function loadInvisible(){
-                loader.style.visibility = 'hidden';    
-            }
-
-            /**
-             * Function: loaderActivate
-             * 
-             * Desc: show the loader gif
-            */
-            function loaderActivate(){
-                loader.style.visibility = 'visible';
-            }
-
-            /**
-             * Function: template-text 'keyup' event handler
-             * 
-             * Desc: set the new output value whenever a new character is added to the template
-            */
-            $("#template-text").keyup(function(){
-                setOutput();
-            });
-
-            /**
-             * Function: filterInput 'keyup' event handler
-             * 
-             * Desc: set the tag section to the fitered version by calling the filterTags()
-            */
-            $("#filterInput").keyup(function(){
-                filterTags();
-            });
-
-            /**
-             * Function: filterTags
-             * 
-             * Desc: grab the filter section text and search for any values that contain that string in the tags
-            */
-            function filterTags(){
-                let filterValue = document.getElementById("filterInput").value;
-                let dataTagField = (document.getElementById("button-more-tags").innerHTML === "Show All Tags")
-                                     ? document.getElementById("metadataTagArea").value 
-                                     : document.getElementById("allTagArea").value;
-
-                // all lines of the visible tag section
-                let dataLines = dataTagField.split("\n");
-
-                // mak sure the filterValue is not 0 and the length of the string is at least 3 characters long
-                if(filterValue !== "" && filterValue.length >= 2){
-                    var filteredArray = [];
-                    
-                    // for every line that contains the filtering string push the line into an array
-                    for(line in dataLines){
-                        if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
-                        {
-                            filteredArray.push(dataLines[line]);
-                        }
-                    }
-                    // set the tag field to he new filtered array
-                    document.getElementById("test").value = filteredArray.join("\n");   
-                }
-                else{
-                    // if not filtering the data just set the data to the default
-                    document.getElementById("test").value = dataTagField;
-                }
-            }
-
-            /**
-             * Function: helpBtn 'mousedown' event handler
-             * 
-             * Desc: show the help box div
-            */
-            $("#helpBtn").on("mousedown",function(){
-                // show the help box
-                document.getElementById("help-box").style.visibility = "visible";
-            });
-
-            /**
-             * Function: helpBtn 'mousedown' event handler
-             * 
-             * Desc: hide the help box div
-            */
-            $("#hideBtn").on("mousedown",function(){
-                // hide the help box
-                document.getElementById("help-box").style.visibility = "hidden";
-            });
-
-            function initTags(){
-                // write default to tag section
-                showMoreTags();
-            }
-
-
-            /**
-             * Function: window 'pageshow' event handler
-             * 
-             * Desc: run the logic to start the page
-            */
-            $(window).bind('pageshow', function(event){
-                // if this page was rendered from the cache hide the loader
-                if(event.originalEvent.persisted){
-                    loadInvisible();
-                }
-            });
-            
-            loadInvisible();
-            setOutput();
-            getMetadata();
-            getAllTags();
-            initTags();
-
-        </script>
+                <form action="/csv" method='POST' class="lg-form text-center float-right" 
+                style="margin: 0;  margin-top:1rem;">
+                    <div class="lg-form text-center" style="margin: 0;">
+                        <input type="hidden" value="<%= wholeData %>" id="passedTXT">
+                        <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
+                        <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
+                        style="width: 13rem; border: 2px solid black; padding: 7px;" />
+                    </div>
+                </form>
+            </div>
+            <br/>
+            <br/>
+            <!-- Editing Box-->
+            <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
+                <label for="template-text">
+                    <h3 class="display-5 alert alert-secondary" 
+                    style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
+                </label>
+                <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
+                    style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
+                </textarea>
+            </div>
+        </div>
     </body>
 </html>
