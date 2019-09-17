@@ -17,7 +17,8 @@ var loader,
     svg,
     textSize,
     w,
-    h;
+    h,
+    isMapProjected;
 
 //create clickArray
 var clickArray = [];
@@ -113,9 +114,9 @@ function makeDraggable(event){
                         Math.abs(Number(svg.getAttribute('viewBox').split(" ")[1]));
 
     /**
-     * Function: getMousePosition
+     * @function getMousePosition
      * 
-     * Desc: gets mouse x y coordinates based on the tranform of the svg element
+     * @description gets mouse x y coordinates based on the tranform of the svg element
      * 
     */
     function getMousePosition(event){
@@ -353,9 +354,7 @@ function makeDraggable(event){
         bottomR = false,
         topR = false,
         topL = false;
-    
-
-
+   
     /**
      * @function drag
      * 
@@ -821,9 +820,13 @@ function setOpposite(colorString){
 
 
  /**
- * Function: drawLine
+ * @function drawLine
  * 
- * Desc: draws the line whenever it needs to be updated in the middle of drawing action
+ * @param {DOM element} lineElement the line to be drawn
+ * @param {number} x2 the x value for the end point of the line element
+ * @param {number} y2 the y value for the end point of the line
+ * 
+ * @description draws the line whenever it needs to be updated in the middle of drawing action
 */
 function drawLine(lineElement,x2,y2){
     lineElement.setAttribute("x2", x2);
@@ -832,9 +835,10 @@ function drawLine(lineElement,x2,y2){
 
 
 /**
- * Function: getMetadata
+ * @function getMetadata
  * 
- * Desc: extracts the data values used for angle calculations and disables any buttons with missing values
+ * @description extracts the data values used for angle calculations
+ *               and disables any buttons with missing values
  * 
 */
 function getMetadata(){
@@ -886,9 +890,11 @@ function getMetadata(){
 }
 
 /**
- * Function: getNameWithVal
+ * @function getNameWithVal
  * 
- * Desc: returns the key points to the given value
+ * @param {number} val the value to look for in the placeEnum object
+ * 
+ * @description returns the key that points to the given value
  * 
 */
 getNameWithVal = function(val){
@@ -901,9 +907,12 @@ getNameWithVal = function(val){
 }
 
 /**
- * Function: loadImageAsURL
+ * @function loadImageAsURL
  * 
- * Desc: loads an image on the server and onvert the image into a base64 dataURL
+ * @param {string} url the location of the file on the server
+ * @param {function} callback the callback function to send output
+ * 
+ * @description loads an image on the server and onvert the image into a base64 dataURL
  * 
  *  Note: limits the size of the image based on the users browser because of differing dataUrl limits
  * 
@@ -994,9 +1003,12 @@ function loadImageAsURL(url, callback) {
 
 
 /**
- * Function: setImagePadding
+ * @function setImagePadding
  * 
- * Desc: adjust the svg size and viewBox as needed to add extra black pixels to one side
+ * @param {number} val the number of pixels to add
+ * @param {string} location the side of the svg to add the pixels (left|right|top|bottom)
+ * 
+ * @description adjust the svg size and viewBox as needed to add extra black pixels to one side
  * 
 */
 
@@ -1125,11 +1137,11 @@ function setImagePadding(val,location){
 }
 
 /**
- * Function: prepareCrop
+ * @function prepareCrop
  * 
- * Desc: calculates the values needed for cropping an image and returns the value in an ordered array
+ * @description calculates the values needed for cropping an image and returns the value in an ordered array
  * 
- * returns: [x,y,w,h]
+ * @returns {array} [x,y,w,h]
  * 
 */
 function prepareCrop(clickArray){
@@ -1160,9 +1172,12 @@ function prepareCrop(clickArray){
 
 
 /**
- * Function: setScaleboxCorners
+ * @function setScaleboxCorners
  * 
- * Desc: takes the rotation angle and calculates where each corner will be for scaling
+ * @param {number} northDegree the north azimuthal direction in degrees (0-360)
+ * @param {number} sunDegree the sun azimuthal direction in degrees (0-360)
+ * 
+ * @description takes the rotation angle and calculates where each corner will be for scaling
  * 
 */
 function setScaleboxCorners(northDegree, sunDegree){
@@ -1260,9 +1275,12 @@ function setScaleboxCorners(northDegree, sunDegree){
 
 
 /**
- * Function: setIconAngle
+ * @function setIconAngle
  * 
- * Desc: sets the icon transform values for the rotation
+ * @param {DOM object} icon the icon to be manipulated
+ * @param {number} the degree of rotation
+ * 
+ * @description sets the icon transform values for the rotation
  * 
 */
 function setIconAngle(icon, degree){
@@ -1272,10 +1290,6 @@ function setIconAngle(icon, degree){
         let transformVal = icon.getAttribute("transform");
         // get the seperate transform values in a list
         let transformArray = transformVal.split(" ");
-
-        // set 0 as offsets 
-        let offsetX = 0,
-            offsetY = 0;
 
         // rotate the arrow around the center point of the eye
         if(icon.id.indexOf('eye') > -1){
@@ -1313,9 +1327,9 @@ function setIconAngle(icon, degree){
 }
 
 /**
- * Function: adjustBox
+ * @function adjustBox
  * 
- * Desc: updates the look of the crop box when mouseover is occuring and crop in not finished
+ * @description updates the look of the crop box when mouseover is occuring and crop in not finished
 */
 function adjustBox(){
 
@@ -1364,23 +1378,26 @@ function adjustBox(){
 
 
 /**
- * Function: captureClick
+ * @function captureClick
  * 
- * Desc: simply pushes the click coordinates into the global array
+ * @param {number} the x value of the mouse click
+ * @param {number} the y value of the mouse click
+ * 
+ * @description simply pushes the click coordinates into the global array
  * 
 */
 function captureClick(x,y){
     clickArray.push(x);
     clickArray.push(y);
-}            
+}       
       
 
 /**
- * Function: createTimer
+ * @function createTimer
  * 
- * Desc: captures and returns the current time values 
+ * @description captures and returns the current time values 
  * 
- * returns: [hrs,mins,secs]
+ * @returns {array} [hrs,mins,secs]
  * 
 */
 function createTimer(){
@@ -1390,11 +1407,12 @@ function createTimer(){
 }
 
 
-
 /**
- * Function: getCookie
+ * @function getCookie
  * 
- * Desc: reads all browser cookies and finds the cookie value with the given name
+ * @param {string} cname the name of the cookie value to find
+ * 
+ * @description reads all browser cookies and finds the cookie value with the given name
  * 
 */
 function getCookie(cname){
@@ -1423,9 +1441,11 @@ function getCookie(cname){
 }
 
 /**
- * Function: peekTimer
+ * @function peekTimer
  * 
- * Desc: captures he current time and figures out how long it has been since the passed startTime
+ * @param {array} startTime the array of time values to calculate the difference [hrs,mins,secs]
+ * 
+ * @description captures he current time and figures out how long it has been since the passed startTime
  * 
 */
 function peekTimer(startTime){
@@ -1451,9 +1471,12 @@ function peekTimer(startTime){
 
         
 /**
- * Function: triggerDownload
+ * @function triggerDownload
  * 
- * Desc: create a new mouse event for a download and create an anchor to click on that forces a download
+ * @param {string} imgURI the download URL for the image data
+ * @param {string} filename the filename that the user would like to save
+ * 
+ * @description create a new mouse event for a download and create an anchor to click on that forces a download
  * 
 */
 function triggerDownload(imgURI,filename){
@@ -1533,7 +1556,6 @@ $(document).ready(function(){
         scalePX,
         scalebarLength,
         imageSrc,
-        isMapProjected,
         displayCube;
         
 
@@ -1563,7 +1585,7 @@ $(document).ready(function(){
     paddingBoxInput.value = '';
         
 
-        // set all flags to false to start
+    // set all flags to false to start
     var sunIconPlaced = false,
         northIconPlaced = false,
         eyeIconPlaced = false,
@@ -1571,8 +1593,7 @@ $(document).ready(function(){
         northFlag = false,
         cropFlag = false, 
         sunFlag = false,
-        eyeFlag = false,
-        attensionBoxVisible = false,
+        eyeFlag = false;
         // get the window URL element on any browser
         DOMURL = window.URL || window.webkitURL || window;
 
@@ -1718,8 +1739,8 @@ $(document).ready(function(){
 
 
     // grab DOM elements that are needed
-    var exportBtn =  document.getElementById('exportBtn');
-    var myImage = document.getElementById('crop');
+    var exportBtn =  document.getElementById('exportBtn'),
+        myImage = document.getElementById('crop');
     var line,
         userLineColor;
 
@@ -1749,8 +1770,6 @@ $(document).ready(function(){
 
     // get half the scalebar length for drawing
     let half = parseFloat(scalebarLength)/2;
-
-    console.log(half);
 
     // start the draggable svg element
     makeDraggable(svg);
@@ -1838,14 +1857,16 @@ $(document).ready(function(){
     getMetadata();
 
 
+    /** ------------------------------- Export Functions ------------------------------------------------- */
     //TODO: this needs to be commented and finished
     /**
-     * Function: exportBtn 'click' event handler
+     * @function exportBtn 'click' event handler
      * 
-     * Desc: gets a filename for the download and sends a request to the server to download the figure image
+     * @description gets a filename for the download and sends a 
+     *              request to the server to download the figure image
      * 
     */
-    exportBtn.addEventListener('click', async function (event) {
+    exportBtn.addEventListener('click', function (event) {
         // prevent event defaults
         event.preventDefault();
         
@@ -1861,7 +1882,7 @@ $(document).ready(function(){
 
         // if the file is not null
         if(filename !== null){
-            // rea the file extenson TODO: may not be needed soon because of the fetch to server
+            // read the file extenson TODO: may not be needed soon because of the fetch to server
             var fileExt = filename.split(".")[filename.split(".").length - 1];
         }
         else{
@@ -2071,10 +2092,778 @@ $(document).ready(function(){
 
     });
 
+
     /**
-     * Function: svgWrapper 'mouseover' event handler
+     * @function exportBtn 'mousedown' event handler
      * 
-     * Desc: when the mouse is hovering over the svg element
+     * @description shows the loading and progress bar
+     * 
+    */
+   $('#exportBtn').on("mousedown",function(){
+        loader.style.visibility = "visible";
+        document.getElementById("loadingText").innerHTML = "Compressing Image";
+        showProgress(); 
+    });
+
+    /** --------------------------------- End Export Functions ------------------------------------------- */
+
+    /** ---------------------------------- UI Interactions ----------------------------------------------- */
+     
+    // ----------------------------------- Help Button ------------------------------------------------------
+    /**
+     * @function hideBtn 'mousedown' event handler
+     * 
+     * @description hide the help box element
+     * 
+    */
+    $("#hideBtn").on("mousedown", function(){
+        document.getElementById("help-box").style.visibility = "hidden";
+    });
+  
+    /**
+     * @function helpBtn 'mousedown' event handler
+     * 
+     * @description shows the help box element
+     * 
+    */
+    $("#helpBtn").on("mousedown", function(){
+        document.getElementById("help-box").style.visibility = "visible";
+    });
+    // --------------------------------- End Help Button ----------------------------------------------------
+            
+    // -------------------------------- Color Selection Handlers --------------------------------------------
+    /**
+     * @function northCheckbox 'change' event handler
+     * 
+     * @description when the check box changes toggle the colors of the icons children
+     * 
+    */
+    $("#northCheckbox").on("change",function(){
+        // get all children in the group
+        let children = northImage.childNodes;
+        
+        // for each child
+        for(index in children){
+            // if the child is an object
+            if(typeof(children[index]) == "object"){
+                // call opposite for fill and stroke
+                if(children[index].getAttribute("stroke")){
+                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                }
+                if(children[index].getAttribute("fill")){
+                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                }
+            }
+        }
+    });
+
+    /**
+     * @function sunCheckbox 'change' event handler
+     * 
+     * @description when the check box changes toggle the colors of the icons children
+     * 
+    */
+    $("#sunCheckbox").on("change",function(){
+        let children = sunImage.childNodes;
+        
+        for(index in children){
+            if(typeof(children[index]) == "object" && children[index].nodeName !== "#text"){
+                if(children[index].getAttribute("stroke")){
+                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                }
+                if(children[index].getAttribute("fill")){
+                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                }
+        
+            }
+        }
+    });
+
+    /**
+     * @function scaleCheckbox 'change' event handler
+     * 
+     * @description when the check box changes toggle the colors of the icons children
+     * 
+    */
+    $("#scaleCheckbox").on("change",function(){
+        
+        var children = scaleBarIcon.childNodes;
+
+        for(index in children){
+            if(typeof(children[index]) == "object"){
+                if(children[index].getAttribute("stroke")){
+                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                }
+                if(children[index].getAttribute("fill")){
+                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                }
+        
+            }
+        }
+    });
+
+    /**
+     * @function eyeCheckbox 'change' event handler
+     * 
+     * @description when the check box changes toggle the colors of the icons children
+     * 
+    */
+    $("#eyeCheckbox").on("change",function(){
+        
+        let children = eyeImage.childNodes;
+        
+        for(index in children){
+            if(typeof(children[index]) == "object"){
+                if(children[index].getAttribute("stroke")){
+                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                }
+                if(children[index].getAttribute("fill")){
+                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                }
+            }
+        }
+    });
+    /**
+     * @function colorPickerLine 'change' event handler
+     * 
+     * @description when the color value is changed in the color picker set the global
+     * 
+    */
+    $("#colorPickerLine").change(function(){
+        userLineColor = document.getElementById("colorPickerLine").value;
+    });
+
+    /**
+     * @function colorPickerBox 'change' event handler
+     * 
+     * @description when the color value is changed in the color picker set the global
+     * 
+    */
+    $("#colorPickerBox").change(function(){
+        userBoxColor = document.getElementById("colorPickerBox").value;
+    });
+
+    /**
+     * @function textColorPicker 'change' event handler
+     * 
+     * @description when the color value is changed in the color picker set the global
+     * 
+    */
+    $("#textColorPicker").on("change",function(){
+        userTextColor = document.getElementById("textColorPicker").value;
+    });
+
+    // ------------------------------ End Color Pickers -----------------------------------------------------
+        
+
+    // -------------------------------- Undo Button UI ------------------------------------------------------
+    /**
+     * @function undoLine 'mousedown' event handler
+     * 
+     * @description remove the last added instance of the lines
+     * 
+    */
+    $("#undoLine").on("mousedown",function(){
+        if(lineArr.length > 0 && clickArray.length > 1){
+            lineArr.pop().remove();
+            svg.className.baseVal = "image-image float-center";
+            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
+            drawFlag = false;
+            clickArray = [];
+        }
+        else if(lineArr.length > 0){
+            lineArr.pop().remove();
+        }
+        else{
+            alert("No lines drawn");
+        }
+
+
+        if(lineArr.length === 0){
+            document.getElementById("undoLine").style.visibility = "hidden";
+        }
+
+    });
+
+    /**
+     * @function document 'keyup' event handler
+     * 
+     * @description if the key pressed was esc and draw flag is true then undo the line
+     * 
+    */
+    $(document).keyup(function(event){
+        // when escape is clicked with the drawFlag true
+        if(event.keyCode === 27 && drawFlag){
+            if(lineArr.length > 0 && clickArray.length > 1){
+                lineArr.pop().remove();
+                clickArray = [];
+            }
+        }
+    });
+    
+    /**
+     * @function undoBox 'mousedown' event handler
+     * 
+     * @description remove the last added instance of the outline boxes
+     * 
+    */
+    $("#undoBox").on("mousedown",function(){
+        if(highlightBoxArray.length > 0){
+            highlightBoxArray.pop().remove();
+        }
+        else{
+            alert("There are no boxes placed yet");
+        }
+        if(highlightBoxArray.length === 0){
+            document.getElementById("undoBox").style.visibility = "hidden";
+        }
+    });
+      
+    /**
+     * @function undoText 'mousedown' event handler
+     * 
+     * @description remove the last added instance of the text box
+     * 
+    */
+    $("#undoText").on("mousedown",function(){
+        
+        if(textBoxArray.length > 0){
+            textBoxArray.pop().remove();
+        }
+        else{
+            alert("text has not been added");
+        }
+        if(textBoxArray.length === 0){
+            document.getElementById("undoText").style.visibility = "hidden";
+        }
+    });
+
+    // -------------------------------- End Undo Button UI --------------------------------------------------
+
+    // ------------------------------- Button Handlers ------------------------------------------------------
+      
+    /**
+     * @function scaleBarButton 'mousedown' event handler
+     * 
+     * @description When clicked toggle the scalebar on and off by appending and removing it as needed
+     * 
+    */
+    $("#scaleBarButton").on("mousedown",function(){
+        // if the scalebar btn is not disabled
+        if(!this.classList.contains("disabled")){
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
+            }
+
+            // if scalebar true then toggle the bar on
+            if(toggleScalebar){
+                // add bar and toggle the boolean
+                svg.appendChild(scaleBarIcon);
+                this.className = "btn btn-danger btn-lg button";
+
+                document.getElementById("scaleCheckbox").style.visibility = "visible";
+                document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
+
+                toggleScalebar = false;
+            }
+            else{
+                // remove the bar and reset toggleValue
+                scaleBarIcon.remove();
+                toggleScalebar = true;
+                this.className = "btn btn-lg button";
+                document.getElementById("scaleCheckbox").style.visibility = "hidden";
+                document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
+            }
+        }
+    });
+
+    /**
+     * @function textBtn 'mousedown' event handler
+     * 
+     * @description draw the text on screen with the rectangles to help resizing occur
+     * 
+    */
+    $("#textBtn").on("mousedown",function(){
+        // clear all draw instance data if the flag is true
+        if(drawFlag){
+            resetDrawTool();
+        }
+
+        // prompt for text box contents
+        var textboxVal = prompt("What Should It Say?","");
+        
+        if(textboxVal !== "" && textboxVal){
+            
+            let strlength = textboxVal.length; 
+            
+            // Draw the scaleable and draggable group with the new text element dynamically
+            var text = document.createElementNS("http://www.w3.org/2000/svg","text");
+            
+            var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+
+            g.setAttribute("class","draggable confine textbox");
+            g.setAttribute("x",0);
+            g.setAttribute("y",0);
+            text.setAttribute("x",0);
+            text.setAttribute("y",15);
+            text.style.fontSize = "15";
+            g.setAttribute("height",0);
+            g.setAttribute("width",0);
+            g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize*2 + ")");
+
+            var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+            rect.setAttribute("x",0);
+            rect.setAttribute("y",13);
+            rect.setAttribute("width", 5);
+            rect.setAttribute("height", 5);
+            rect.style.visibility = "hidden";
+            rect.setAttribute("class","resize bottom-left");
+
+
+            var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+            rect2.setAttribute("x",0);
+            rect2.setAttribute("y",1);
+            rect2.setAttribute("width", 5);
+            rect2.setAttribute("height", 5);
+            rect2.style.visibility = "hidden";
+            rect2.setAttribute("class","resize top-left");
+
+            var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+            rect3.setAttribute("x",10);
+            rect3.setAttribute("y",1);
+            rect3.setAttribute("width", 9);
+            rect3.setAttribute("height", 7);
+            rect3.style.visibility = "hidden";
+            rect3.setAttribute("class","resize top-right");
+            rect3.setAttribute("fill","blue");
+
+            var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+            rect4.setAttribute("x",10);
+            rect4.setAttribute("y",13);
+            rect4.setAttribute("width", 7);
+            rect4.setAttribute("height", 7);
+            rect4.setAttribute("fill","blue");
+            rect4.style.visibility = "hidden";
+            rect4.setAttribute("class","resize bottom-right");
+            
+
+            
+            g.style.pointerEvents = "visible"
+            text.innerHTML = textboxVal;
+            // append the scaleing corners
+            g.appendChild(text);
+            g.appendChild(rect);
+            g.appendChild(rect2);
+            g.appendChild(rect3);
+            g.appendChild(rect4);
+
+            // set the user text color
+            if(userTextColor){
+                text.setAttribute("stroke",userTextColor);
+                text.setAttribute("fill",userTextColor);
+            }
+            else{
+                text.setAttribute("stroke","white");
+                text.setAttribute("fill","white");
+            
+            }
+
+            // set the stroke of the text and append the elements
+            text.setAttribute("stroke-width","1");
+            svg.appendChild(g);
+            let bbox = g.getBBox();
+            
+            if(strlength > 1){
+                rect3.setAttribute("x",bbox.width - 1);
+                rect4.setAttribute("x",bbox.width - 1);
+            }
+            
+        
+
+            textBoxArray.push(g);
+            if(textBoxArray.length > 0){
+                document.getElementById("undoText").style.visibility = "visible";
+            }
+            makeDraggable(svg);
+        }
+    });
+      
+    /**
+     * @function  eyeFlag 'click' event handler
+     * 
+     * @description add or remove the eye icon from the svg element
+     * 
+    */
+    $('#eyeFlag').click(function(){
+        if(!document.getElementById("eyeFlag").classList.contains("disabled")){
+            
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
+            }
+            
+            eyeFlag = !eyeFlag;
+
+            if(eyeIconPlaced){
+                eyeIconPlaced = !eyeIconPlaced;
+                eyeImage.remove();
+                eyeImage.style.visibility = 'hidden';
+                eyeFlag = !eyeFlag;
+                document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById("eyeCheckbox").style.visibility = "hidden";
+                document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
+                
+            }
+
+            if(eyeFlag){
+                
+                cropFlag = false;
+            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                outlineBox.remove();
+                outlineBox.style.visibility = 'hidden';
+                
+                svg.appendChild(eyeImage);
+                setIconAngle(eyeArrow, observerDegree);
+                eyeImage.style.visibility = 'visible'
+                document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                document.getElementById("eyeCheckbox").style.visibility = "visible";
+                document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
+                eyeFlag = false;
+                eyeIconPlaced = true;
+            }
+        } 
+    });
+       
+    /**
+     * @function  sunIconFlag 'click' event handler
+     * 
+     * @description add or remove the sun icon from the svg element
+     * 
+    */
+    $('#sunIconFlag').click(function(){
+        
+        if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
+            
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
+            }
+                
+            sunFlag = !sunFlag;
+
+            if(sunIconPlaced){
+                sunIconPlaced = !sunIconPlaced;
+                sunImage.style.visibility = 'hidden';
+                sunImage.remove();
+                document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
+                sunFlag = false;
+                document.getElementById("sunCheckbox").style.visibility = "hidden";
+                document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
+
+            }
+            
+            if(sunFlag){
+                
+                cropFlag = false;
+                outlineBox.style.visibility = 'hidden';
+                
+            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                sunImage.style.visibility = 'visible';
+                svg.appendChild(sunImage);
+                sunFlag = false;
+                sunIconPlaced = true;
+                document.getElementById('sunIconFlag').setAttribute('class',
+                                                                        "btn btn-danger btn-lg button");
+                document.getElementById("sunCheckbox").style.visibility = "visible";
+                document.getElementById("sunCheckboxLabel").style.visibility = "visible";
+                
+                setIconAngle(sunImage, sunDegree);
+                makeDraggable(svg);  
+            }
+            clickArray = [];
+        }
+        
+    });
+
+    /**
+     * @function  northIconFlag 'mousedown' event handler
+     * 
+     * @description add or remove the north arrow from the svg element
+     * 
+    */
+    $('#northIconFlag').on('mousedown',function(){
+        if(!document.getElementById("northIconFlag").classList.contains("disabled")){
+            
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
+            }
+                
+            // change north flag
+            northFlag = !northFlag;
+            
+            // if north flag is placed currently remove it
+            if(northIconPlaced){
+                northIconPlaced = !northIconPlaced;
+                northImage.remove();
+                northImage.style.visibility = 'hidden';
+                document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById("northCheckbox").style.visibility = "hidden";
+                document.getElementById("northCheckboxLabel").style.visibility = "hidden";
+                
+                
+                northFlag = !northFlag;
+            }
+            
+            // otherwise set the other flags to false and adjust their html
+            if(northFlag){
+                if(!sunIconPlaced){
+                    sunFlag = false;
+                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
+                }
+
+                if(!eyeIconPlaced){
+                    eyeFlag = false;
+                    document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
+                }
+
+                /* cropFlag = false;
+                document.getElementById('cropFlag').innerHTML = "Crop Image"; */
+                outlineBox.remove();
+                outlineBox.style.visibility = 'hidden';
+                
+                svg.appendChild(northImage);
+                northImage.style.visibility = 'visible';
+                setIconAngle(northImage, northDegree);
+                makeDraggable(svg);
+                northIconPlaced = !northIconPlaced;
+                northFlag = false;
+                document.getElementById('northIconFlag').setAttribute('class',
+                                                                        "btn btn-danger btn-lg button");
+                document.getElementById("northCheckbox").style.visibility = "visible";
+                document.getElementById("northCheckboxLabel").style.visibility = "visible";
+            }
+            clickArray = [];
+        }
+        
+    }); 
+
+    /**
+     * @function pencilIconFlag 'mousedown' event handler
+     * 
+     * @description start or stop the drawing event on the webpage
+     * 
+    */
+   $("#pencilIconFlag").on('mousedown',function(){
+        // clear all draw instance data if the flag is true
+        if(drawFlag){
+            resetDrawTool();
+        }
+        else{
+            // start drawing
+            bg.className.baseVal = "draw";
+            drawFlag = true;
+            document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
+
+            // loop through all children and children of the children and set the pointer 
+            // events to none so the draw function does not get interfiered with
+            setSvgClickDetection(svg, "none");
+        }
+    });
+
+    /**
+     * @function outlineBtn "mousedown" event handler
+     * 
+     * @description when the outline box btn is clicked draws a box on the svg 
+    */
+    $("#outlineBtn").on("mousedown",function(){                    
+            
+        // clear all draw instance data if the flag is true
+        if(drawFlag){
+            resetDrawTool();
+        }
+
+        // generate the new scalable draggables group dynamically 
+        var g = document.createElementNS("http://www.w3.org/2000/svg","g");
+
+        g.setAttribute("class","draggable confine outline");
+        g.setAttribute("transform-origin","50%; 50%;");
+        g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
+        g.setAttribute("stroke-width","10");
+        g.style.border = 0;
+        g.style.padding = 0;
+        g.style.pointerEvents = "visible";
+        g.style.fill = "none";
+
+        g.innerHTML = attensionBoxObjectString;
+        
+        // set the color if needed
+        if(userBoxColor){
+            g.style.stroke = userBoxColor;
+        }
+        else{
+            g.style.stroke = "white";
+        }
+        // append the group and reset the draggable functions
+        svg.appendChild(g);
+        // push the object into the array for undoing
+        highlightBoxArray.push(g);
+        makeDraggable(svg);
+
+        // make the undo button visible
+        if(highlightBoxArray.length > 0){
+            document.getElementById("undoBox").style.visibility = "visible";
+        }
+
+    });
+
+    /**
+     * @function bottomPaddingBtn 'click' event handler
+     * 
+     * @description on click, checks for valid input and then calls the padding functions and changes UI
+    */
+    $("#bottomPaddingBtn").on('click',function(event){
+        if(!isNaN(parseInt(paddingBoxInput.value))){
+            setImagePadding(parseInt(paddingBoxInput.value),'bottom');
+            padBottom = true;
+            padLeft = false, padRight = false, padTop = false;
+
+            bottomBtn.className = 'btn btn-danger button btn-md disabled';
+
+            leftBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+
+        }
+        else{
+            setImagePadding(parseInt(0),"none"); 
+            bottomBtn.className = 'btn button btn-md';
+            leftBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+            padBottom = false;  
+        }
+    });
+
+    /**
+     * @function topPaddingBtn 'click' event handler
+     * 
+     * @description on click, checks for valid input and then calls the padding functions and changes UI
+    */
+    $("#topPaddingBtn").on('click',function(event){
+        if(!isNaN(parseInt(paddingBoxInput.value))){
+            setImagePadding(parseInt(paddingBoxInput.value),'top');
+            padTop = true;
+
+            padLeft = false, padRight = false, padBottom = false;
+            
+            topBtn.className = 'btn btn-danger button btn-md disabled';
+
+            leftBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-md';
+        }
+        else{
+            setImagePadding(parseInt(0),"none"); 
+            topBtn.className = 'btn button btn-md';
+
+            leftBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-md';
+            padTop = false;  
+        }
+    });
+
+    /**
+     * @function rightPaddingBtn 'click' event handler
+     * 
+     * @description on click, checks for valid input and then calls the padding functions and changes UI
+    */
+    $("#rightPaddingBtn").on('click',function(event){
+        
+        if(!isNaN(parseInt(paddingBoxInput.value))){
+            setImagePadding(parseInt(paddingBoxInput.value),'right');
+            padRight = true;
+            
+            padLeft = false,
+            padBottom = false,
+            padTop = false;
+
+            rightBtn.className = 'btn btn-danger button btn-md disabled';
+
+            leftBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+        }
+        else{
+            setImagePadding(parseInt(0),"none"); 
+            rightBtn.className = 'btn button btn-md'; 
+
+            leftBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+            padRight = false; 
+        } 
+    });
+
+    /**
+     * @function leftPaddingBtn 'click' event handler
+     * 
+     * @description on click, checks for valid input and then calls the padding functions and changes UI
+    */  
+    $("#leftPaddingBtn").on('click',function(event){
+        
+        if(!isNaN(parseInt(paddingBoxInput.value))){
+            setImagePadding(parseInt(paddingBoxInput.value),'left');
+            padLeft = true;
+            padBottom = false,
+            padRight=false, 
+            padTop = false;
+            
+            leftBtn.className = 'btn btn-danger button btn-md disabled';
+            
+            bottomBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+        }
+        else{
+            setImagePadding(parseInt(0),"none"); 
+            leftBtn.className = 'btn button btn-md'; 
+            bottomBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-md';
+            padLeft = false; 
+        } 
+    });
+
+    /**
+     * @function resetPaddingBtn 'click' event handler
+     * 
+     * @description on click resets UI and padding to 0
+    */
+    $("#resetPaddingBtn").on('click',function(event){
+        
+        setImagePadding(parseInt(0),"none"); 
+        paddingBoxInput.value = "";  
+        
+        padBottom = false, padLeft = false, padRight = false, padTop = false;
+        
+        bottomBtn.className = 'btn button btn-md';
+        leftBtn.className = 'btn button btn-md';
+        rightBtn.className = 'btn button btn-md';
+        topBtn.className = 'btn button btn-md';
+        
+    });
+
+    // ---------------------------------- End Button Handlers -----------------------------------------------
+        
+    // ---------------------------------- Click & Text Input Handlers ---------------------------------------
+    /**
+     * @function svgWrapper 'mouseover' event handler
+     * 
+     * @description when the mouse is hovering over the svg element
      *      Helps update the UI when drawing or cropping action is taking place
     */
     $('#svgWrapper').mousemove(function(event){
@@ -2138,45 +2927,6 @@ $(document).ready(function(){
             adjustBox();
         }*/
     });
-
-
-
- 
-    /**
-     * Function: hideBtn 'mousedown' event handler
-     * 
-     * Desc: hide the help box element
-     * 
-    */
-    $("#hideBtn").on("mousedown", function(){
-        document.getElementById("help-box").style.visibility = "hidden";
-    });
-
-            
-    /**
-     * Function: helpBtn 'mousedown' event handler
-     * 
-     * Desc: shows the help box element
-     * 
-    */
-    $("#helpBtn").on("mousedown", function(){
-        document.getElementById("help-box").style.visibility = "visible";
-    });
-
-
-
-    /**
-     * Function: exportBtn 'mousedown' event handler
-     * 
-     * Desc: shows the loading and progress bar
-     * 
-    */
-    $('#exportBtn').on("mousedown",function(){
-        loader.style.visibility = "visible";
-        document.getElementById("loadingText").innerHTML = "Compressing Image";
-        showProgress(); 
-    });
-
 
     /* 
 
@@ -2247,9 +2997,9 @@ $(document).ready(function(){
 
 
     /**
-     * Function: svgWrapper 'click' event handler
+     * @function svgWrapper 'click' event handler
      * 
-     * Desc: when the svg element is clicked on
+     * @description when the svg element is clicked on
      *      Checks for active flags and then performs actions to help edit image
     */
     $('#svgWrapper').on("click", function(event){
@@ -2401,632 +3151,12 @@ $(document).ready(function(){
         */
     });
 
-
-
-    /**
-     * Function: textBtn 'mousedown' event handler
-     * 
-     * Desc: draw the text on screen with the rectangles to help resizing occur
-     * 
-    */
-    $("#textBtn").on("mousedown",function(){
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            resetDrawTool();
-        }
-    
-        // prompt for text box contents
-        var textboxVal = prompt("What Should It Say?","");
-        
-        if(textboxVal !== "" && textboxVal){
-            
-            let strlength = textboxVal.length; 
-            let numberOfSpaces = textboxVal.split(" ").length;
-            
-            // Draw the scaleable and draggable group with the new text element dynamically
-            var text = document.createElementNS("http://www.w3.org/2000/svg","text");
-            
-            var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-
-
-            g.setAttribute("class","draggable confine textbox");
-            g.setAttribute("x",0);
-            g.setAttribute("y",0);
-            text.setAttribute("x",0);
-            text.setAttribute("y",15);
-            text.style.fontSize = "15";
-            g.setAttribute("height",0);
-            g.setAttribute("width",0);
-            g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize*2 + ")");
-
-            var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect.setAttribute("x",0);
-            rect.setAttribute("y",13);
-            rect.setAttribute("width", 5);
-            rect.setAttribute("height", 5);
-            rect.style.visibility = "hidden";
-            rect.setAttribute("class","resize bottom-left");
-
-
-            var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect2.setAttribute("x",0);
-            rect2.setAttribute("y",1);
-            rect2.setAttribute("width", 5);
-            rect2.setAttribute("height", 5);
-            rect2.style.visibility = "hidden";
-            rect2.setAttribute("class","resize top-left");
-
-            var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect3.setAttribute("x",10);
-            rect3.setAttribute("y",1);
-            rect3.setAttribute("width", 9);
-            rect3.setAttribute("height", 7);
-            rect3.style.visibility = "hidden";
-            rect3.setAttribute("class","resize top-right");
-            rect3.setAttribute("fill","blue");
-
-            var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect4.setAttribute("x",10);
-            rect4.setAttribute("y",13);
-            rect4.setAttribute("width", 7);
-            rect4.setAttribute("height", 7);
-            rect4.setAttribute("fill","blue");
-            rect4.style.visibility = "hidden";
-            rect4.setAttribute("class","resize bottom-right");
-            
-
-            
-            g.style.pointerEvents = "visible"
-            text.innerHTML = textboxVal;
-            // append the scaleing corners
-            g.appendChild(text);
-            g.appendChild(rect);
-            g.appendChild(rect2);
-            g.appendChild(rect3);
-            g.appendChild(rect4);
-
-            // set the user text color
-            if(userTextColor){
-                text.setAttribute("stroke",userTextColor);
-                text.setAttribute("fill",userTextColor);
-            }
-            else{
-                text.setAttribute("stroke","white");
-                text.setAttribute("fill","white");
-            
-            }
-
-            // set the stroke of the text and append the elements
-            text.setAttribute("stroke-width","1");
-            svg.appendChild(g);
-            let bbox = g.getBBox();
-            
-            if(strlength > 1){
-                rect3.setAttribute("x",bbox.width - 1);
-                rect4.setAttribute("x",bbox.width - 1);
-            }
-            
-        
-
-            textBoxArray.push(g);
-            if(textBoxArray.length > 0){
-                document.getElementById("undoText").style.visibility = "visible";
-            }
-
-            makeDraggable(svg);
-        }
-    });
-
-
-
-
-                
-    /**
-     * Function:  eyeFlag 'click' event handler
-     * 
-     * Desc: add or remove the eye icon from the svg element
-     * 
-    */
-    $('#eyeFlag').click(function(){
-        if(!document.getElementById("eyeFlag").classList.contains("disabled")){
-            
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-            
-            eyeFlag = !eyeFlag;
-
-            if(eyeIconPlaced){
-                eyeIconPlaced = !eyeIconPlaced;
-                eyeImage.remove();
-                eyeImage.style.visibility = 'hidden';
-                eyeFlag = !eyeFlag;
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("eyeCheckbox").style.visibility = "hidden";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
-                
-            }
-
-            if(eyeFlag){
-                
-                cropFlag = false;
-            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                outlineBox.remove();
-                outlineBox.style.visibility = 'hidden';
-                
-                svg.appendChild(eyeImage);
-                setIconAngle(eyeArrow, observerDegree);
-                eyeImage.style.visibility = 'visible'
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
-                document.getElementById("eyeCheckbox").style.visibility = "visible";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
-                eyeFlag = false;
-                eyeIconPlaced = true;
-            }
-        } 
-    });
-
-            
-    /**
-     * Function:  sunIconFlag 'click' event handler
-     * 
-     * Desc: add or remove the sun icon from the svg element
-     * 
-    */
-    $('#sunIconFlag').click(function(){
-        
-        if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
-            
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-                
-            sunFlag = !sunFlag;
-
-            if(sunIconPlaced){
-                sunIconPlaced = !sunIconPlaced;
-                sunImage.style.visibility = 'hidden';
-                sunImage.remove();
-                document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
-                sunFlag = false;
-                document.getElementById("sunCheckbox").style.visibility = "hidden";
-                document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
-
-            }
-            
-            if(sunFlag){
-                
-                cropFlag = false;
-                outlineBox.style.visibility = 'hidden';
-                
-            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                sunImage.style.visibility = 'visible';
-                svg.appendChild(sunImage);
-                sunFlag = false;
-                sunIconPlaced = true;
-                document.getElementById('sunIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
-                document.getElementById("sunCheckbox").style.visibility = "visible";
-                document.getElementById("sunCheckboxLabel").style.visibility = "visible";
-                
-                setIconAngle(sunImage, sunDegree);
-                makeDraggable(svg);  
-            }
-            clickArray = [];
-        }
-        
-    });
-
-
-
-    /**
-     * Function:  northIconFlag 'mousedown' event handler
-     * 
-     * Desc: add or remove the north arrow from the svg element
-     * 
-    */
-    $('#northIconFlag').on('mousedown',function(){
-        if(!document.getElementById("northIconFlag").classList.contains("disabled")){
-            
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-                
-            // change north flag
-            northFlag = !northFlag;
-            
-            // if north flag is placed currently remove it
-            if(northIconPlaced){
-                northIconPlaced = !northIconPlaced;
-                northImage.remove();
-                northImage.style.visibility = 'hidden';
-                document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "hidden";
-                document.getElementById("northCheckboxLabel").style.visibility = "hidden";
-                
-                
-                northFlag = !northFlag;
-            }
-            
-            // otherwise set the other flags to false and adjust their html
-            if(northFlag){
-                if(!sunIconPlaced){
-                    sunFlag = false;
-                    document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-                }
-
-                if(!eyeIconPlaced){
-                    eyeFlag = false;
-                    document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
-                }
-
-                /* cropFlag = false;
-                document.getElementById('cropFlag').innerHTML = "Crop Image"; */
-                outlineBox.remove();
-                outlineBox.style.visibility = 'hidden';
-                
-                svg.appendChild(northImage);
-                northImage.style.visibility = 'visible';
-                setIconAngle(northImage, northDegree);
-                makeDraggable(svg);
-                northIconPlaced = !northIconPlaced;
-                northFlag = false;
-                document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "visible";
-                document.getElementById("northCheckboxLabel").style.visibility = "visible";
-            }
-            clickArray = [];
-        }
-        
-    }); 
-
-
-
-    /**
-     * Function: textColorPicker 'change' event handler
-     * 
-     * Desc: when the color value is changed in the color picker set the global
-     * 
-    */
-    $("#textColorPicker").on("change",function(){
-        userTextColor = document.getElementById("textColorPicker").value;
-
-    });
-    
-
-    /**
-     * Function: undoLine 'mousedown' event handler
-     * 
-     * Desc: remove the last added instance of the lines
-     * 
-    */
-    $("#undoLine").on("mousedown",function(){
-        if(lineArr.length > 0 && clickArray.length > 1){
-            lineArr.pop().remove();
-            svg.className.baseVal = "image-image float-center";
-            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
-            drawFlag = false;
-            clickArray = [];
-        }
-        else if(lineArr.length > 0){
-            lineArr.pop().remove();
-        }
-        else{
-            alert("No lines drawn");
-        }
-
-
-        if(lineArr.length === 0){
-            document.getElementById("undoLine").style.visibility = "hidden";
-        }
-
-    });
-
-            
-    /**
-     * Function: colorPickerLine 'change' event handler
-     * 
-     * Desc: when the color value is changed in the color picker set the global
-     * 
-    */
-    $("#colorPickerLine").change(function(){
-        userLineColor = document.getElementById("colorPickerLine").value;
-    });
-
-    /**
-     * Function: colorPickerBox 'change' event handler
-     * 
-     * Desc: when the color value is changed in the color picker set the global
-     * 
-    */
-    $("#colorPickerBox").change(function(){
-        userBoxColor = document.getElementById("colorPickerBox").value;
-    });
-
-
-    /**
-     * Function: document 'keyup' event handler
-     * 
-     * Desc: if the key pressed was esc and draw flag is true then undo the line
-     * 
-    */
-    $(document).keyup(function(event){
-        // when escape is clicked with the drawFlag true
-        if(event.keyCode === 27 && drawFlag){
-            if(lineArr.length > 0 && clickArray.length > 1){
-                lineArr.pop().remove();
-                clickArray = [];
-            }
-        }
-    });
-
-
-
-            
-    /**
-     * Function: pencilIconFlag 'mousedown' event handler
-     * 
-     * Desc: start or stop the drawing event on the webpage
-     * 
-    */
-    $("#pencilIconFlag").on('mousedown',function(){
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            resetDrawTool();
-        }
-        else{
-            // start drawing
-            bg.className.baseVal = "draw";
-            drawFlag = true;
-            document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
-
-            // loop through all children and children of the children and set the pointer 
-            // events to none so the draw function does not get interfiered with
-            setSvgClickDetection(svg, "none");
-        }
-    });
-
-            
-    /**
-     * Function: undoBox 'mousedown' event handler
-     * 
-     * Desc: remove the last added instance of the outline boxes
-     * 
-    */
-    $("#undoBox").on("mousedown",function(){
-        if(highlightBoxArray.length > 0){
-            highlightBoxArray.pop().remove();
-        }
-        else{
-            alert("There are no boxes placed yet");
-        }
-        if(highlightBoxArray.length === 0){
-            document.getElementById("undoBox").style.visibility = "hidden";
-        }
-    });
-
-
-
-            
-    /**
-     * Function: undoText 'mousedown' event handler
-     * 
-     * Desc: remove the last added instance of the text box
-     * 
-    */
-    $("#undoText").on("mousedown",function(){
-        
-        if(textBoxArray.length > 0){
-            textBoxArray.pop().remove();
-        }
-        else{
-            alert("text has not been added");
-        }
-        if(textBoxArray.length === 0){
-            document.getElementById("undoText").style.visibility = "hidden";
-        }
-    });
-
-
-
-
-    /**
-     * Function: outlineBtn "mousedown" event handler
-     * 
-     * Desc: when the outline box btn is clicked draws a box on the svg 
-    */
-    $("#outlineBtn").on("mousedown",function(){                    
-        
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            resetDrawTool();
-        }
-
-        // generate the new scalable draggables group dynamically 
-        var g = document.createElementNS("http://www.w3.org/2000/svg","g");
-
-        g.setAttribute("class","draggable confine outline");
-        g.setAttribute("transform-origin","50%; 50%;");
-        g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
-        g.setAttribute("stroke-width","10");
-        g.style.border = 0;
-        g.style.padding = 0;
-        g.style.pointerEvents = "visible";
-        g.style.fill = "none";
-
-        g.innerHTML = attensionBoxObjectString;
-        
-        // set the color if needed
-        if(userBoxColor){
-            g.style.stroke = userBoxColor;
-        }
-        else{
-            g.style.stroke = "white";
-        }
-        // append the group and reset the draggable functions
-        svg.appendChild(g);
-        // push the object into the array for undoing
-        highlightBoxArray.push(g);
-        makeDraggable(svg);
-
-        // make the undo button visible
-        if(highlightBoxArray.length > 0){
-            document.getElementById("undoBox").style.visibility = "visible";
-        }
-
-    });
-
-
-
-    /**
-     * Function: bottomPaddingBtn 'click' event handler
-     * 
-     * Desc: on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#bottomPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(parseInt(paddingBoxInput.value),'bottom');
-            padBottom = true;
-            padLeft = false, padRight = false, padTop = false;
-
-            bottomBtn.className = 'btn btn-danger button btn-md disabled';
-
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-
-        }
-        else{
-            setImagePadding(parseInt(0),"none"); 
-            bottomBtn.className = 'btn button btn-md';
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-            padBottom = false;  
-        }
-    });
-
-    /**
-     * Function: topPaddingBtn 'click' event handler
-     * 
-     * Desc: on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#topPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(parseInt(paddingBoxInput.value),'top');
-            padTop = true;
-
-            padLeft = false, padRight = false, padBottom = false;
-            
-            topBtn.className = 'btn btn-danger button btn-md disabled';
-
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-        }
-        else{
-            setImagePadding(parseInt(0),"none"); 
-            topBtn.className = 'btn button btn-md';
-
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-            padTop = false;  
-        }
-    });
-
-    /**
-     * Function: rightPaddingBtn 'click' event handler
-     * 
-     * Desc: on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#rightPaddingBtn").on('click',function(event){
-        
-        if(!isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(parseInt(paddingBoxInput.value),'right');
-            padRight = true;
-            
-            padLeft = false,
-            padBottom = false,
-            padTop = false;
-
-            rightBtn.className = 'btn btn-danger button btn-md disabled';
-
-            leftBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-        }
-        else{
-            setImagePadding(parseInt(0),"none"); 
-            rightBtn.className = 'btn button btn-md'; 
-
-            leftBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-            padRight = false; 
-        } 
-    });
-    
-    /**
-     * Function: leftPaddingBtn 'click' event handler
-     * 
-     * Desc: on click, checks for valid input and then calls the padding functions and changes UI
-    */  
-    $("#leftPaddingBtn").on('click',function(event){
-        
-        if(!isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(parseInt(paddingBoxInput.value),'left');
-            padLeft = true;
-            padBottom = false,
-            padRight=false, 
-            padTop = false;
-            
-            leftBtn.className = 'btn btn-danger button btn-md disabled';
-            
-            bottomBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-        }
-        else{
-            setImagePadding(parseInt(0),"none"); 
-            leftBtn.className = 'btn button btn-md'; 
-            bottomBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
-            padLeft = false; 
-        } 
-    });
-
-    /**
-     * Function: resetPaddingBtn 'click' event handler
-     * 
-     * Desc: on click resets UI and padding to 0
-    */
-    $("#resetPaddingBtn").on('click',function(event){
-        
-        setImagePadding(parseInt(0),"none"); 
-        paddingBoxInput.value = "";  
-        
-        padBottom = false, padLeft = false, padRight = false, padTop = false;
-        
-        bottomBtn.className = 'btn button btn-md';
-        leftBtn.className = 'btn button btn-md';
-        rightBtn.className = 'btn button btn-md';
-        topBtn.className = 'btn button btn-md';
-        
-    });
-
-
     let warned = false;
 
     /**
-     * Function: paddingInput 'keyup' event handler
+     * @function paddingInput 'keyup' event handler
      * 
-     * Desc: when user clicks a key in the box check if the value in the box can be used an an int
+     * @description when user clicks a key in the box check if the value in the box can be used an an int
      *      set the padding depending on the current flag otherwise reset the value
     */
     $("#paddingInput").keyup(function(){
@@ -3172,138 +3302,7 @@ $(document).ready(function(){
             }
         }  
     }); // end image click
-                            */
-
-    /**
-     * @function northCheckbox 'change' event handler
-     * 
-     * @description when the check box changes toggle the colors of the icons children
-     * 
     */
-    $("#northCheckbox").on("change",function(){
-        // get all children in the group
-        let children = northImage.childNodes;
-        
-        // for each child
-        for(index in children){
-            // if the child is an object
-            if(typeof(children[index]) == "object"){
-                // call opposite for fill and stroke
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
-                }
-            }
-        }
-    });
-
-
-
-
-    /**
-     * @function sunCheckbox 'change' event handler
-     * 
-     * @description when the check box changes toggle the colors of the icons children
-     * 
-    */
-    $("#sunCheckbox").on("change",function(){
-        let children = sunImage.childNodes;
-        
-        for(index in children){
-            if(typeof(children[index]) == "object" && children[index].nodeName !== "#text"){
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
-                }
-        
-            }
-        }
-    });
-
-    /**
-     * @function scaleCheckbox 'change' event handler
-     * 
-     * @description when the check box changes toggle the colors of the icons children
-     * 
-    */
-    $("#scaleCheckbox").on("change",function(){
-        
-        var children = scaleBarIcon.childNodes;
-
-        for(index in children){
-            if(typeof(children[index]) == "object"){
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
-                }
-        
-            }
-        }
-    });
-
-    /**
-     * @function eyeCheckbox 'change' event handler
-     * 
-     * @description when the check box changes toggle the colors of the icons children
-     * 
-    */
-    $("#eyeCheckbox").on("change",function(){
-        
-        let children = eyeImage.childNodes;
-        
-        for(index in children){
-            if(typeof(children[index]) == "object"){
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
-                }
-            }
-        }
-    });
-
-    /**
-     * @function scaleBarButton 'mousedown' event handler
-     * 
-     * @description When clicked toggle the scalebar on and off by appending and removing it as needed
-     * 
-    */
-    $("#scaleBarButton").on("mousedown",function(){
-        // if the scalebar btn is not disabled
-        if(!this.classList.contains("disabled")){
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-
-            // if scalebar true then toggle the bar on
-            if(toggleScalebar){
-                // add bar and toggle the boolean
-                svg.appendChild(scaleBarIcon);
-                this.className = "btn btn-danger btn-lg button";
-
-                document.getElementById("scaleCheckbox").style.visibility = "visible";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
-
-                toggleScalebar = false;
-            }
-            else{
-                // remove the bar and reset toggleValue
-                scaleBarIcon.remove();
-                toggleScalebar = true;
-                this.className = "btn btn-lg button";
-                document.getElementById("scaleCheckbox").style.visibility = "hidden";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
-            }
-        }
-    });
-
-});
-/** ------------------------------------ End Jquery Handlers --------------------------------------------- */
+    // ---------------------------------- End Click & Text Input Handlers -----------------------------------
+    
+});/** ------------------------------------ End Jquery Handlers ------------------------------------------ */
