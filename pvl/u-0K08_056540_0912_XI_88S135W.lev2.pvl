@@ -1,0 +1,512 @@
+Object = IsisCube
+  Object = Core
+    StartByte   = 65537
+    Format      = Tile
+    TileSamples = 128
+    TileLines   = 336
+
+    Group = Dimensions
+      Samples = 1138
+      Lines   = 672
+      Bands   = 1
+    End_Group
+
+    Group = Pixels
+      Type       = Real
+      ByteOrder  = Lsb
+      Base       = 0.0
+      Multiplier = 1.0
+    End_Group
+  End_Object
+
+  Group = Instrument
+    SpacecraftName        = Mars_Reconnaissance_Orbiter
+    InstrumentId          = CTX
+    TargetName            = Mars
+    MissionPhaseName      = ESP
+    StartTime             = 2018-08-19T02:11:16.832
+    SpacecraftClockCount  = 1219111926:238
+    OffsetModeId          = 197/218/211
+    LineExposureDuration  = 1.877 <MSEC>
+    FocalPlaneTemperature = 298.3 <K>
+    SampleBitModeId       = SQROOT
+    SpatialSumming        = 1
+    SampleFirstPixel      = 0
+  End_Group
+
+  Group = Archive
+    DataSetId           = MRO-M-CTX-2-EDR-L0-V1.0
+    ProductId           = K08_056540_0912_XI_88S135W
+    ProducerId          = MRO_CTX_TEAM
+    ProductCreationTime = 2019-01-08T21:22:47
+    OrbitNumber         = 56540
+  End_Group
+
+  Group = BandBin
+    FilterName = BroadBand
+    Center     = 0.65 <micrometers>
+    Width      = 0.15 <micrometers>
+  End_Group
+
+  Group = Kernels
+    NaifFrameCode             = -74021
+    LeapSecond                = $base/kernels/lsk/naif0012.tls
+    TargetAttitudeShape       = $base/kernels/pck/pck00009.tpc
+    TargetPosition            = (Table, $base/kernels/spk/de405.bsp)
+    InstrumentPointing        = (Table,
+                                 $mro/kernels/ck/mro_sc_psp_180814_180820.bc,
+                                 $mro/kernels/fk/mro_v15.tf)
+    Instrument                = Null
+    SpacecraftClock           = $mro/kernels/sclk/MRO_SCLKSCET.00081.65536.tsc
+    InstrumentPosition        = (Table, $mro/kernels/spk/mro_psp48.bsp)
+    InstrumentAddendum        = $mro/kernels/iak/mroctxAddendum005.ti
+    ShapeModel                = $base/dems/molaMarsPlanetaryRadius0005.cub
+    InstrumentPositionQuality = Reconstructed
+    InstrumentPointingQuality = Reconstructed
+    CameraVersion             = 1
+  End_Group
+
+  Group = Radiometry
+    FlatFile = /usgs/cpkgs/isis3/data/mro/calibration/ctxFlat_0002.cub
+    iof      = 1.46287460032551e-04
+  End_Group
+
+  Group = Mapping
+    ProjectionName     = PolarStereographic
+    CenterLongitude    = 237.31766733628
+    TargetName         = Mars
+    EquatorialRadius   = 3396190.0 <meters>
+    PolarRadius        = 3376200.0 <meters>
+    LatitudeType       = Planetocentric
+    LongitudeDirection = PositiveEast
+    LongitudeDomain    = 360
+    MinimumLatitude    = -89.277488230462
+    MaximumLatitude    = -88.007067564344
+    MinimumLongitude   = 193.3722784309
+    MaximumLongitude   = 281.26305624167
+    UpperLeftCornerX   = -71200.0 <meters>
+    UpperLeftCornerY   = 100500.0 <meters>
+    PixelResolution    = 100.0 <meters/pixel>
+    Scale              = 589.25806205833 <pixels/degree>
+    CenterLatitude     = -90.0
+  End_Group
+
+  Group = AlphaCube
+    AlphaSamples        = 5000
+    AlphaLines          = 18432
+    AlphaStartingSample = 0.5
+    AlphaStartingLine   = 0.5
+    AlphaEndingSample   = 5000.5
+    AlphaEndingLine     = 18432.5
+    BetaSamples         = 5000
+    BetaLines           = 18432
+  End_Group
+End_Object
+
+Object = Label
+  Bytes = 65536
+End_Object
+
+Object = Table
+  Name      = "Ctx Prefix Dark Pixels"
+  StartByte = 3162113
+  Bytes     = 1769472
+  Records   = 18432
+  ByteOrder = Lsb
+
+  Group = Field
+    Name = DarkPixels
+    Type = Integer
+    Size = 24
+  End_Group
+End_Object
+
+Object = Table
+  Name                = InstrumentPointing
+  StartByte           = 4931585
+  Bytes               = 20544
+  Records             = 321
+  ByteOrder           = Lsb
+  TimeDependentFrames = (-74000, -74900, 1)
+  ConstantFrames      = (-74021, -74020, -74699, -74690, -74000)
+  ConstantRotation    = (0.99999956087984, -1.51960241928036e-05,
+                         9.37021451059404e-04, 1.52765520753568e-05,
+                         0.99999999619106, -8.59331791187956e-05,
+                         -9.3702014164768e-04, 8.59474558407972e-05,
+                         0.99999955730305)
+  CkTableStartTime    = 587916746.01498
+  CkTableEndTime      = 587916780.61185
+  CkTableOriginalSize = 18433
+  FrameTypeCode       = 3
+  Description         = "Created by spiceinit"
+  Kernels             = ($mro/kernels/ck/mro_sc_psp_180814_180820.bc,
+                         $mro/kernels/fk/mro_v15.tf)
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name                 = InstrumentPosition
+  StartByte            = 4952129
+  Bytes                = 392
+  Records              = 7
+  ByteOrder            = Lsb
+  CacheType            = HermiteSpline
+  SpkTableStartTime    = 587916746.01498
+  SpkTableEndTime      = 587916780.61185
+  SpkTableOriginalSize = 18433.0
+  Description          = "Created by spiceinit"
+  Kernels              = $mro/kernels/spk/mro_psp48.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000XV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000YV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000ZV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name                = BodyRotation
+  StartByte           = 4952521
+  Bytes               = 128
+  Records             = 2
+  ByteOrder           = Lsb
+  TimeDependentFrames = (10014, 1)
+  CkTableStartTime    = 587916746.01498
+  CkTableEndTime      = 587916780.61185
+  CkTableOriginalSize = 2
+  FrameTypeCode       = 2
+  PoleRa              = (317.68143, -0.1061, 0.0)
+  PoleDec             = (52.8865, -0.0609, 0.0)
+  PrimeMeridian       = (176.63, 350.89198226, 0.0)
+  Description         = "Created by spiceinit"
+  Kernels             = ($base/kernels/spk/de405.bsp,
+                         $base/kernels/pck/pck00009.tpc)
+  SolarLongitude      = 233.15722000519
+
+  Group = Field
+    Name = J2000Q0
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Q3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV1
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV2
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = AV3
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = Table
+  Name                 = SunPosition
+  StartByte            = 4952649
+  Bytes                = 112
+  Records              = 2
+  ByteOrder            = Lsb
+  CacheType            = Linear
+  SpkTableStartTime    = 587916746.01498
+  SpkTableEndTime      = 587916780.61185
+  SpkTableOriginalSize = 2.0
+  Description          = "Created by spiceinit"
+  Kernels              = $base/kernels/spk/de405.bsp
+
+  Group = Field
+    Name = J2000X
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Y
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000Z
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000XV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000YV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = J2000ZV
+    Type = Double
+    Size = 1
+  End_Group
+
+  Group = Field
+    Name = ET
+    Type = Double
+    Size = 1
+  End_Group
+End_Object
+
+Object = History
+  Name      = IsisCube
+  StartByte = 4954543
+  Bytes     = 3126
+End_Object
+
+Object = NaifKeywords
+  BODY499_RADII                        = (3396.19, 3396.19, 3376.2)
+  BODY_FRAME_CODE                      = 10014
+  INS-74021_FOCAL_LENGTH               = 352.9271664
+  INS-74021_PIXEL_PITCH                = 0.007
+  CLOCK_ET_-74_1219111926:238_COMPUTED = f9ea01e57285c141
+  INS-74021_TRANSX                     = (0.0, 0.0, 0.007)
+  INS-74021_TRANSY                     = (0.0, 0.007, 0.0)
+  INS-74021_ITRANSS                    = (0.0, 0.0, 142.85714285714)
+  INS-74021_ITRANSL                    = (0.0, 142.85714285714, 0.0)
+  INS-74021_BORESIGHT_SAMPLE           = 2543.46099
+  INS-74021_BORESIGHT_LINE             = 0.430442527
+  INS-74021_OD_K                       = (-0.0073433925920055,
+                                          2.83758786362417e-05,
+                                          1.28419891240271e-08)
+End_Object
+
+Object = OriginalLabel
+  Name      = IsisCube
+  StartByte = 4952761
+  Bytes     = 1782
+End_Object
+End
+PDS_VERSION_ID               = PDS3
+FILE_NAME                    = K08_056540_0912_XI_88S135W.IMG
+RECORD_TYPE                  = FIXED_LENGTH
+RECORD_BYTES                 = 5056
+FILE_RECORDS                 = 18433
+LABEL_RECORDS                = 1
+^IMAGE                       = 2
+SPACECRAFT_NAME              = MARS_RECONNAISSANCE_ORBITER
+INSTRUMENT_NAME              = "CONTEXT CAMERA"
+INSTRUMENT_HOST_NAME         = "MARS RECONNAISSANCE ORBITER"
+MISSION_PHASE_NAME           = ESP
+TARGET_NAME                  = MARS
+INSTRUMENT_ID                = CTX
+PRODUCER_ID                  = MRO_CTX_TEAM
+DATA_SET_ID                  = MRO-M-CTX-2-EDR-L0-V1.0
+PRODUCT_CREATION_TIME        = 2019-01-08T21:22:47
+SOFTWARE_NAME                = "makepds05 $Revision: 1.16 $"
+UPLOAD_ID                    = UNK
+ORIGINAL_PRODUCT_ID          = 4A_04_111F01DA00
+PRODUCT_ID                   = K08_056540_0912_XI_88S135W
+START_TIME                   = 2018-08-19T02:11:16.832
+STOP_TIME                    = 2018-08-19T02:11:51.424
+SPACECRAFT_CLOCK_START_COUNT = 1219111926:238
+SPACECRAFT_CLOCK_STOP_COUNT  = N/A
+FOCAL_PLANE_TEMPERATURE      = 298.3 <K>
+SAMPLE_BIT_MODE_ID           = SQROOT
+OFFSET_MODE_ID               = 197/218/211
+LINE_EXPOSURE_DURATION       = 1.877 <MSEC>
+SAMPLING_FACTOR              = 1
+SAMPLE_FIRST_PIXEL           = 0
+RATIONALE_DESC               = "South polar residual cap spring mosaic
+                                campaign"
+DATA_QUALITY_DESC            = OK
+ORBIT_NUMBER                 = 56540
+
+Object = IMAGE
+  LINES             = 18432
+  LINE_SAMPLES      = 5056
+  LINE_PREFIX_BYTES = 0
+  LINE_SUFFIX_BYTES = 0
+  SAMPLE_TYPE       = UNSIGNED_INTEGER
+  SAMPLE_BITS       = 8
+  SAMPLE_BIT_MASK   = 2#11111111#
+  CHECKSUM          = 16#EF0A01E4#
+End_Object
+End
+Group = GroundPoint
+  Filename                   = uploads/u-0K08_056540_0912_XI_88S135W.lev2.cub
+  Sample                     = 569.0
+  Line                       = 336.0
+  PixelValue                 = 0.17795512
+  RightAscension             = 357.76947797326 <DEGREE>
+  Declination                = 66.500787631371 <DEGREE>
+  PlanetocentricLatitude     = -88.838059741156 <DEGREE>
+  PlanetographicLatitude     = -88.851694190519 <DEGREE>
+  PositiveEast360Longitude   = 225.21998804886 <DEGREE>
+  PositiveEast180Longitude   = -134.78001195114 <DEGREE>
+  PositiveWest360Longitude   = 134.78001195114 <DEGREE>
+  PositiveWest180Longitude   = 134.78001195114 <DEGREE>
+  BodyFixedCoordinate        = (-48.29102851419, -48.663287970344,
+                                -3380.1396452285) <km>
+  LocalRadius                = 3380834.8318539 <meters>
+  SampleResolution           = 5.2733622284204 <meters/pixel>
+  LineResolution             = 5.2733622284204 <meters/pixel>
+  ObliqueDetectorResolution  = 5.7198168280328 <meters>
+  ObliquePixelResolution     = 5.7198168280328 <meters/pix>
+  ObliqueLineResolution      = 5.7198168280328 <meters>
+  ObliqueSampleResolution    = 5.7198168280328 <meters>
+
+  # Spacecraft Information
+  SpacecraftPosition         = (-72.530786473368, -152.99461972472,
+                                -3623.4830144664) <km>
+  SpacecraftAzimuth          = 291.05164584755 <DEGREE>
+  SlantDistance              = 265.87325552531 <km>
+  TargetCenterDistance       = 3627.4367292591 <km>
+  SubSpacecraftLatitude      = -87.324654779275 <DEGREE>
+  SubSpacecraftLongitude     = 244.63558164585 <DEGREE>
+  SpacecraftAltitude         = 246.09376487805 <km>
+  OffNadirAngle              = 21.161757828331 <DEGREE>
+  SubSpacecraftGroundAzimuth = 33.1493257514 <DEGREE>
+
+  # Sun Information
+  SunPosition                = (-97966602.101671, 168736498.11856,
+                                -70698747.402725) <km>
+  SubSolarAzimuth            = 152.41855801635 <DEGREE>
+  SolarDistance              = 1.3872298494399 <AU>
+  SubSolarLatitude           = -19.917776638963 <DEGREE>
+  SubSolarLongitude          = 120.13899106234 <DEGREE>
+  SubSolarGroundAzimuth      = 254.5162379103 <DEGREE>
+
+  # Illumination and Other
+  Phase                      = 87.950312873161 <DEGREE>
+  Incidence                  = 70.385734929225 <DEGREE>
+  Emission                   = 22.787747841106 <DEGREE>
+  NorthAzimuth               = 257.90232071304 <DEGREE>
+
+  # Time
+  EphemerisTime              = 587916763.32515 <seconds>
+  UTC                        = 2018-08-19T02:11:34.1422941
+  LocalSolarTime             = 19.005399799101 <hour>
+  SolarLongitude             = 233.15722000519 <DEGREE>
+
+  # Look Direction Unit Vectors in Body Fixed, J2000, and Camera Coordinate Systems.
+  LookDirectionBodyFixed     = (24.239757959178, 104.33133175437,
+                                243.34336923793)
+  LookDirectionJ2000         = (105.93303765662, -4.1260528317595,
+                                243.82320485241)
+  LookDirectionCamera        = (-0.0022855583669212, -0.38599614348875,
+                                265.87297531976)
+End_Group
