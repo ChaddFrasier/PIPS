@@ -352,7 +352,6 @@ $(document).ready(function(){
 
     // grab the variables from the server
     for(let i=0; i<varDiv.childElementCount;i++){
-        console.log(varDiv.children[i]);
         if(varDiv.children[i].id === 'outputName'){
             outputName = varDiv.children[i].innerHTML;
         }
