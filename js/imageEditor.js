@@ -1791,7 +1791,7 @@ $(document).ready(function(){
 
 
     // if the scale bar is not none
-    if(scalePX !== 'none'){
+    if(scalePX !== 'none' && !isNaN(scalePX)){
         // set the size based on how the image is drawn
         if((w/origW) < (h/origH)){
             scaleBarIcon.setAttribute("transform",
@@ -1800,6 +1800,12 @@ $(document).ready(function(){
             textSize = (scalePX/4000)* 21 * (w/origW);
         }
         else{
+
+            console.log(scalePX);
+            console.log(h);
+            console.log(origH);
+
+
             scaleBarIcon.setAttribute("transform",
                                             "translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
             // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
