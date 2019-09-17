@@ -31,9 +31,9 @@ var InfoBox = 'info-alert',
 
 /** --------------------------------------------------- Functions ---------------------------------------- */
 /**
- * Function: codeToAlert
+ * @function codeToAlert
  * 
- * Desc: reads the alertCode and makes the proper alert visible on screen
+ * @description reads the alertCode and makes the proper alert visible on screen
 */
 function codeToAlert(){
     if(alertCode == 1){
@@ -74,9 +74,11 @@ function codeToAlert(){
 }
 
 /**
- * Function: setNotVisible
+ * @function setNotVisible
  * 
- * Desc: hides the alert boxes when any of their x buttons are clicked
+ * @param {DOM element} element the element that has the x button in it
+ * 
+ * @description hides the alert boxes when any of their x buttons are clicked
 */
 function setNotVisible(element){
     var hideElement = document.getElementById($(element).parent().attr('id'));
@@ -84,18 +86,18 @@ function setNotVisible(element){
 }
 
 /**
- * Function: loadInvisible
+ * @function loadInvisible
  * 
- * Desc: hide the loader gif
+ * @description hide the loader gif
 */
 function loadInvisible(){
     loader.style.visibility = 'hidden';    
 }
 
 /**
- * Function: loaderActivate
+ * @function loaderActivate
  * 
- * Desc: show the loader gif
+ * @description show the loader gif
 */
 function loaderActivate(){
     // ignore any call to the function if the form is submitted already
@@ -121,9 +123,11 @@ function loaderActivate(){
 }
 
 /**
- * Function: showHelp
+ * @function showHelp
  * 
- * Desc: show the help box when the button is clicked
+ * @param {DOM element} btn the button that was clicked
+ * 
+ * @description show the help box when the button is clicked
 */
 function showHelp(btn){
     document.getElementById("help-box").style.visibility = "visible";
@@ -132,9 +136,9 @@ function showHelp(btn){
 
 
 /**
- * Function: checkInput
+ * @function checkInput
  * 
- * Desc: constantly check input values of the width and height and notify
+ * @description constantly check input values of the width and height and notify
  *      the user 1 time if it gets too large
 */
 function checkInput(){
@@ -158,8 +162,13 @@ function checkInput(){
 setInterval(checkInput,1500);
 
 /** ------------------------------------------ End Functions --------------------------------------------- */
-/** ------------------------------------------- Jquery --------------------------------------------------- */
 
+/** ------------------------------------------- Jquery --------------------------------------------------- */
+/**
+ * @function ready listener which runs after page load
+ * 
+ * @description after the document is loaded, grab the DOM elements that are needed for these functions
+ */
 $(document).ready(function(){
     // get needed DOM element
     loader = document.getElementById('loading');
@@ -176,13 +185,12 @@ $(document).ready(function(){
             alertCode = pageVariable.children[i].innerHTML;
         }
     }
-
 });
 
 /**
- * Function: window 'pageshow' event handler
+ * @function window 'pageshow' event handler
  * 
- * Desc: run the startup functions for the page's initial load
+ * @description run the startup functions for the page's initial load
 */
 $(window).bind("pageshow", function(event) {
     // check if the page was loaded from the cache

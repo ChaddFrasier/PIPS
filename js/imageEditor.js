@@ -1278,7 +1278,7 @@ function setScaleboxCorners(northDegree, sunDegree){
  * @function setIconAngle
  * 
  * @param {DOM object} icon the icon to be manipulated
- * @param {number} the degree of rotation
+ * @param {number} degree the degree of rotation
  * 
  * @description sets the icon transform values for the rotation
  * 
@@ -1380,8 +1380,8 @@ function adjustBox(){
 /**
  * @function captureClick
  * 
- * @param {number} the x value of the mouse click
- * @param {number} the y value of the mouse click
+ * @param {number} x the x value of the mouse click
+ * @param {number} y the y value of the mouse click
  * 
  * @description simply pushes the click coordinates into the global array
  * 
@@ -1527,6 +1527,10 @@ function resetDrawTool(){
 /**
  * @function svgPoint
  * 
+ * @param {DOM element} element the outer svg element
+ * @param {number} x the x value that should be transformed into svg space
+ * @param {number} y the y value that should be transformed into svg space
+ * 
  * @description gets the points clicked based on the svg viewBox
  * 
 */  
@@ -1559,8 +1563,6 @@ $(document).ready(function(){
         imageSrc,
         displayCube;
         
-
-
     let padBottom = false,
         padTop = false,
         padLeft = false,
@@ -1595,8 +1597,9 @@ $(document).ready(function(){
         cropFlag = false, 
         sunFlag = false,
         eyeFlag = false;
-        // get the window URL element on any browser
-        DOMURL = window.URL || window.webkitURL || window;
+
+    // get the window URL element on any browser
+    var DOMURL = window.URL || window.webkitURL || window;
 
     for(let i=0;i<dimDiv.childElementCount;i++){
         if(dimDiv.children[i].id === "width"){
@@ -1742,6 +1745,7 @@ $(document).ready(function(){
     // grab DOM elements that are needed
     var exportBtn =  document.getElementById('exportBtn'),
         myImage = document.getElementById('crop');
+
     var line,
         userLineColor;
 
@@ -2012,7 +2016,7 @@ $(document).ready(function(){
                 }
                 else{
                     // server sent back a 200
-                    console.log("GOOD RESPONSE: THIS SHOULD DOWNLOAD");
+                    console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
                 }
             }).catch((err) =>{
                 // catch any fetch errors
