@@ -290,7 +290,7 @@ function makeDraggable(event){
                                                         (bbox.width * scaleFactor/Math.sqrt(2)));
                         maxX = boundaryX2 - bbox.x;
                         minY = boundaryY1 - bbox.y + (bbox.height * scaleFactor)/Math.sqrt(2);
-                        maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);                            
+                        maxY = boundaryY2 - bbox.y - (bbox.width * scaleFactor)/Math.sqrt(2);            
                     }
                     else if(rotateVal === 225){
                         // set the new boundry values based on the view box 
@@ -1476,7 +1476,8 @@ function peekTimer(startTime){
  * @param {string} imgURI the download URL for the image data
  * @param {string} filename the filename that the user would like to save
  * 
- * @description create a new mouse event for a download and create an anchor to click on that forces a download
+ * @description create a new mouse event for a download 
+ *              and create an anchor to click on that forces a download
  * 
 */
 function triggerDownload(imgURI,filename){
@@ -2148,10 +2149,12 @@ $(document).ready(function(){
             if(typeof(children[index]) == "object"){
                 // call opposite for fill and stroke
                 if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                    children[index].setAttribute("stroke",
+                                                    setOpposite(children[index].getAttribute("stroke")));
                 }
                 if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                    children[index].setAttribute("fill",
+                                                    setOpposite(children[index].getAttribute("fill")));
                 }
             }
         }
@@ -2169,10 +2172,12 @@ $(document).ready(function(){
         for(index in children){
             if(typeof(children[index]) == "object" && children[index].nodeName !== "#text"){
                 if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                    children[index].setAttribute("stroke",
+                                                    setOpposite(children[index].getAttribute("stroke")));
                 }
                 if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                    children[index].setAttribute("fill",
+                                                    setOpposite(children[index].getAttribute("fill")));
                 }
         
             }
@@ -2192,10 +2197,12 @@ $(document).ready(function(){
         for(index in children){
             if(typeof(children[index]) == "object"){
                 if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                    children[index].setAttribute("stroke",
+                                                    setOpposite(children[index].getAttribute("stroke")));
                 }
                 if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                    children[index].setAttribute("fill",
+                                                    setOpposite(children[index].getAttribute("fill")));
                 }
         
             }
@@ -2215,10 +2222,12 @@ $(document).ready(function(){
         for(index in children){
             if(typeof(children[index]) == "object"){
                 if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",setOpposite(children[index].getAttribute("stroke")));
+                    children[index].setAttribute("stroke",
+                                                    setOpposite(children[index].getAttribute("stroke")));
                 }
                 if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",setOpposite(children[index].getAttribute("fill")));
+                    children[index].setAttribute("fill",
+                                                    setOpposite(children[index].getAttribute("fill")));
                 }
             }
         }
