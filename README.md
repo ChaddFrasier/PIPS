@@ -41,8 +41,8 @@ these commands should return a version number that your machine has. Otherwise y
 Node will download npm for you, go [here](https://nodejs.org/en/) for the Node.js install.
 __if you are on company servers you will need IT to install it for you because you lack permissions__
 
-ISIS install can be achieved by following the instructions for installation [here]
-                                                                (https://github.com/USGS-Astrogeology/ISIS3).
+ISIS install can be achieved by following the instructions 
+for installation [here](https://github.com/USGS-Astrogeology/ISIS3).
 
 Once those are installed and environment variables have been set properly for 
 ISIS you can pull down the server code and run.
