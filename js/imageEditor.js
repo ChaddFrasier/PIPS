@@ -10,6 +10,8 @@
  * 
  * @fileoverview This file houses all of the functions and logic that gives life to the image editor page.
  *      The imagePage.ejs page was getting too big and this is easier to read.
+ * 
+ * @see {server.js} Read the header before editing
  */
 
 /** ---------------------------------------- DOM Variables ----------------------------------------------- */
@@ -636,7 +638,7 @@ function makeDraggable(event){
      * @function findLimit
      * 
      * @param {DOM element} selectedElement the element that is currently being manipulated
-     * @param {boolean} true if the value being looked for is a minimum false for max value
+     * @param {boolean} isMin true if the value being looked for is a minimum false for max value
      * 
      * @description given an icon element returns the min or max scale value for each icon
      * 
@@ -693,8 +695,8 @@ function makeDraggable(event){
 /**
  * @function setSvgClickDetection
  * 
- * @param {DOM element} svg 
- * @param {string} mouseDetect 
+ * @param {DOM element} svg the outer svg element
+ * @param {string} mouseDetect the value to set the mouse detection to
  * 
  * @description this function takes in a whole svg element and a mouse detection value
  *              It then parses through all the children of the svg and subchildren to set the mouse detection
@@ -1135,6 +1137,8 @@ function setImagePadding(val,location){
 
 /**
  * @function prepareCrop
+ * 
+ * @param {array} clickArray the array of clicks that are needed to crop an image
  * 
  * @description calculates the values needed for cropping an image and returns the value in an ordered array
  * 

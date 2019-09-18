@@ -96,9 +96,10 @@
  * ----------------------------------------------------------------------------------------------------------
  *                                   General Code Paradigms
  *                                   ----------------------
- *                          1. Comment, comment, comment
- *                          2. Document the 'author' and 'function description' for every function
- *                          3. lines should not exceed 110 characters for server files and 120 for view files
+ *                1. Comment, comment, comment
+ *                2. Document the 'author' and 'function' and 'description' for each javascript function
+ *                                  (Use Javadoc format like in util.js)
+ *                3. lines should not exceed 110 characters for server files and 120 for view files
  * 
 */
 

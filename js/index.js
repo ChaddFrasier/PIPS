@@ -8,6 +8,8 @@
  * 
  * @fileoverview this file will hold all the javascript used to submit the files for upload to the server
  *              from the index.ejs file
+ * 
+ * @see {server.js} Read the header before editing
  */
 
 /** Variables  */

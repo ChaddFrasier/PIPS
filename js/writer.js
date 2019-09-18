@@ -6,6 +6,8 @@
  * @since 09/17/19
  * 
  * @fileoverview This file is for all of the writer functionality in the writer.ejs file
+ * 
+ * @see {server.js} Read the header before editing
  */
 
 /** Variables */
@@ -117,6 +119,8 @@ function keyToTag(key){
 /**
  * @function removePunctuation
  * 
+ * @param {string} key the key value to remove the puncuation from
+ * 
  * @description returns true if punctuation needs to be parsed out false if there is no punctuation  
  */ 
 function removePunctuation(key){
@@ -130,6 +134,8 @@ function removePunctuation(key){
 
 /**
  * @function exchangeData
+ * 
+ * @param {string} keyString complete string that needs to be parsed
  * 
  * @description parses out the data key and adds back the puctuation that was removed
 */
@@ -179,6 +185,8 @@ function exchangeData(keyString){
 /**
  * @function getMetadataVal
  * 
+ * @param {string} key the key value in the metadata object
+ * 
  * @description get a value out of the data that matches the key passed
 */
 function getMetadataVal(key){
@@ -208,6 +216,9 @@ function getMetadataVal(key){
  * TODO: this function might be able to be used instead of parsing out the punctiation in loops
  * @function replaceAll
  *
+ * @param {string} find the substring to replace
+ * @param {string} replace the value to replace the substring with
+ * 
  * @description prototype string function that replaces every occurance of a string with another given value
 */ 
 String.prototype.replaceAll = function(find, replace){
@@ -217,6 +228,8 @@ String.prototype.replaceAll = function(find, replace){
 
 /**
  * @function hasUnits
+ * 
+ * @param {string} str the string to test for unit format
  * 
  * @description return true if the data value has units in it, false if not
 */
