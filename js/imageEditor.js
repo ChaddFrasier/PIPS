@@ -948,7 +948,7 @@ function loadImageAsURL(url, callback) {
                 canvas.width = this.naturalWidth;
                 canvas.height = this.naturalHeight;
             }
-            else if(this.naturalHeight * this.naturalWidth <= 45000000){
+            else if(this.naturalHeight * this.naturalWidth >= 45000000){
                 console.log("Using half the normal image resolution");
                 canvas.width = this.naturalWidth/2;
                 canvas.height = this.naturalHeight/2;

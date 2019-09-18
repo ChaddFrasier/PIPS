@@ -252,9 +252,9 @@ li{
 
   @keyframes growBar{
     from {transform: translateX(0%);}
-    to {transform: translateX(96%);}
+    to {transform: translateX(99%);}
   }
   @-webkit-keyframes growBar{
     from {-webkit-transform: translateX(0%);}
-    to {-webkit-transform: translateX(96%);}
+    to {-webkit-transform: translateX(99%);}
   }
