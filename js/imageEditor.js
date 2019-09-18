@@ -752,7 +752,6 @@ function captionHandler(){
  * 
 */
 function growProgress(width, duration){
-    console.log("start growing");
     //document.getElementById("mainBar").className = "growBar";
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
     document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
@@ -808,6 +807,8 @@ function loaderActivate(){
 
 /**
  * @function setOpposite
+ * 
+ * @param {string} colorString white or black
  * 
  * @description reverses black and white fills for icons
  * 
@@ -1016,10 +1017,6 @@ function setImagePadding(val,location){
     // image w and h vars
     let imageW,
         imageH;
-
-        console.log(val);
-        console.log(w);
-        console.log(h);
 
     // switch on the location of the padding
     switch(location){
@@ -1804,12 +1801,6 @@ $(document).ready(function(){
             textSize = (scalePX/4000)* 21 * (w/origW);
         }
         else{
-
-            console.log(scalePX);
-            console.log(h);
-            console.log(origH);
-
-
             scaleBarIcon.setAttribute("transform",
                                             "translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
             // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
@@ -2119,7 +2110,6 @@ $(document).ready(function(){
     /** --------------------------------- End Export Functions ------------------------------------------- */
 
     /** ---------------------------------- UI Interactions ----------------------------------------------- */
-     
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
      * @function hideBtn 'mousedown' event handler
@@ -2367,7 +2357,7 @@ $(document).ready(function(){
      * @description When clicked toggle the scalebar on and off by appending and removing it as needed
      * 
     */
-    $("#scaleBarButton").on("mousedown",function(){
+    $("#scaleBarButton").on("mousedown", function(){
         // if the scalebar btn is not disabled
         if(!this.classList.contains("disabled")){
             // clear all draw instance data if the flag is true
@@ -2403,7 +2393,7 @@ $(document).ready(function(){
      * @description draw the text on screen with the rectangles to help resizing occur
      * 
     */
-    $("#textBtn").on("mousedown",function(){
+    $("#textBtn").on("mousedown", function(){
         // clear all draw instance data if the flag is true
         if(drawFlag){
             resetDrawTool();

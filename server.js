@@ -6,7 +6,7 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.1
+ * @version 3.7.2
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
