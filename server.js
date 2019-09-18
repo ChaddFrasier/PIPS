@@ -114,7 +114,7 @@ const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const {performance} = require('perf_hooks');
 const bodyParser = require("body-parser");
-const { createCanvas, loadImage, Image } = require('canvas')
+const svg2img = require('svg2img');
 
 // include custom utility functions
 const util = require('./util.js');
@@ -160,7 +160,7 @@ try{
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
-    exec('rm ./tmp/*');
+    //exec('rm ./tmp/*');
     
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
@@ -1169,7 +1169,8 @@ app.post('/crop', async function(request,response){
 app.post("/figureDownload", async function(request, response){
     console.log(request.url);
     // get the filename that the user entered
-    var filename = request.body.downloadName;
+    var filename = request.body.downloadName,
+        fileExt = filename.split(".")[filename.split(".").length - 1];
 
     // save the file in the formdata to the server so it can be read
     await request.files.upl.mv("./tmp/" + request.files.upl.name, function(err){
@@ -1178,39 +1179,41 @@ app.post("/figureDownload", async function(request, response){
             console.log("Server Error on saving");
         }else{
             console.log("saved successfully");
-            // get the base64 data of the file that was sent
-            var svgDataBase64 = util.base64_encode("./tmp/" + request.files.upl.name);
-            // create the new image element
-            const img = new Image();
-            // when image is loaded
-            img.onload = () =>{
-                // create a canvas with the dimensions of the svg image
-                const canvas = createCanvas(request.body.w,request.body.h),
-                ctx = canvas.getContext("2d");
 
-                // draw the new image onto the canvas
-                ctx.drawImage(this,0,0);
-                // get just the data from the dataUrl by replacing the header with nothing
-                var newImageDataBase64 = canvas.toDataURL("image/png")
-                                        .replace(/^data:image\/(png|jpg);base64,/,"");
-                
-                // write the data into a new file of the output type
-                util.base64_decode(newImageDataBase64,"./uploads/" + filename);
 
-                response.download("./uploads/" + filename,function(err){
+
+            if(fileExt === "png"){
+                svg2img("./tmp/"+request.files.upl.name,function(err,buffer){
                     if(err){
-                        console.log("Download failed");
+                        console.log(err);
+                    }else{
+                        fs.writeFileSync("./tmp/" + filename,buffer);
+                        response.download("./tmp/" + filename,filename,function(err){
+                            if(err){
+                                console.log(err);
+                            }else{
+                                console.log("download sent");
+                            }
+                        });
+                    }
+                });
+            }else{
+                svg2img("./tmp/"+request.files.upl.name, {format:'jpg'}, function(err,buffer){
+                    if(err){
+                        console.log(err);
+                    }else{
+                        fs.writeFileSync("./tmp/" + filename,buffer);
+                        response.download("./tmp/" + filename,filename,function(err){
+                            if(err){
+                                console.log(err);
+                            }else{
+                                console.log("download sent");
+                            }
+                        });
                     }
                 });
             }
-            // catch any error on image load
-            img.onerror = (err) => {
-                console.log("Error Occured: " + err);
-                response.status(500);
-                response.send("<h1> Download Failed </h1>");
-            }
-            // load the image with the svg header and data from the inline svg
-            img.src = "data:image/svg+xml;charset=utf8," + svgDataBase64;
+            
         }
     });
 });

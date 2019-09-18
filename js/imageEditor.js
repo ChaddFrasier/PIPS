@@ -1780,12 +1780,23 @@ $(document).ready(function(){
     // start the draggable svg element
     makeDraggable(svg);
 
+
+    /* myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', imageSrc);
+        
+
+    // default all transforms
+    myImage.setAttribute("x","0");
+    myImage.setAttribute("y","0");
+    myImage.setAttribute("transform","scale(1)");
+ */
+
     // load the users base image as base64 to embed in the svg element
     loadImageAsURL(imageSrc, function(data){
         
         // remove the loading gif and add the new dataURL
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', data);
+        
 
         // default all transforms
         myImage.setAttribute("x","0");
@@ -1909,11 +1920,23 @@ $(document).ready(function(){
         // encode the svg to a string
         var data = (new XMLSerializer()).serializeToString(svg); 
 
+        //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
             // creates a blob from the encoded svg and sets the type of the blob to and image svg
         var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-        
         // creates an object url for the download
         var url = DOMURL.createObjectURL(svgBlob);
+
+        if(fileExt === "svg"){
+            triggerDownload(url,filename);
+            loader.style.visibility = "hidden";
+            document.getElementById("loadingText").innerHTML = "Loading";
+            setTimeout(hideProgress,1000);
+            return;
+        }else{
+
+        }
+
+        
             
 
         // check what browser the user has to help predict the time of the download
@@ -2005,13 +2028,20 @@ $(document).ready(function(){
                         loader.style.visibility = "hidden";
                         document.getElementById("loadingText").innerHTML = "Loading";
                         hideProgress();
-
-
                     });
                 }
                 else{
                     // server sent back a 200
                     console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
+                    response.blob().then((blob)=>{
+                        console.log(blob);
+                        url = DOMURL.createObjectURL(blob);
+
+                        triggerDownload(url,filename);
+                        loader.style.visibility = "hidden";
+                        document.getElementById("loadingText").innerHTML = "Loading";
+                        hideProgress();
+                    });
                 }
             }).catch((err) =>{
                 // catch any fetch errors
