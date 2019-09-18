@@ -23,7 +23,8 @@ var loader,
     isMapProjected;
 
 //create clickArray
-var clickArray = [];
+var clickArray = [],
+    lineArr = [];
 
 // set values for calculating outline box size 
 var mouseX,
@@ -1522,7 +1523,7 @@ function resetDrawTool(){
     clickArray = [];
 
     // allow click detection on svg painted elements again
-    setSvgClickDetection(svg, "painted");
+    setSvgClickDetection(svg, "visible");
 }
 
 /**
@@ -1863,7 +1864,6 @@ $(document).ready(function(){
         userTextColor,
         // declare the drawing flag
         drawFlag = false,
-        lineArr = [],
         // array for removing text
         textBoxArray = [];
 
@@ -1894,13 +1894,150 @@ $(document).ready(function(){
             var filename = prompt("Save File as png svg or jpeg","");
         }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
                                                                                         .test(filename))
-        // move the loading bar to 15% over .5 seconds
-        growProgress(15,.5);
 
         // if the file is not null
         if(filename !== null){
             // read the file extenson TODO: may not be needed soon because of the fetch to server
             var fileExt = filename.split(".")[filename.split(".").length - 1];
+
+            // TODO: huge refactor here for the fetch to server for download
+
+            console.log("STARTING TIMER");
+            let time = createTimer();
+            // get the canvas information
+            canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            // encode the svg to a string
+            var data = (new XMLSerializer()).serializeToString(svg); 
+
+            //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
+                // creates a blob from the encoded svg and sets the type of the blob to and image svg
+            var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            // creates an object url for the download
+            var url = DOMURL.createObjectURL(svgBlob);
+
+            if(fileExt === "svg"){
+                triggerDownload(url,filename);
+                loader.style.visibility = "hidden";
+                document.getElementById("loadingText").innerHTML = "Loading";
+                setTimeout(hideProgress,1000);
+                return;
+            }else{
+                // check what browser the user has to help predict the time of the download
+                var isChromium = window.chrome;
+                var winNav = window.navigator;
+                var vendorName = winNav.vendor;
+                var isOpera = typeof window.opr !== "undefined";
+                var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
+                var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1,
+                    guess;
+
+                // get number of bytes in the svgBlob
+                var numBytes = svgBlob.size;
+
+                if(
+                    isChromium !== null &&
+                    typeof isChromium !== "undefined" &&
+                    vendorName === "Google Inc." &&
+                    isOpera === false &&
+                    isIEedge === false
+                ){
+                    // is Google Chrome
+                    let limitBuffer = numBytes/2000000;
+                    console.log(limitBuffer/10);
+                    if(limitBuffer > 1 ){
+                        console.log("This data is LARGER than chromes limit");
+                        guess = limitBuffer/10;
+                    }
+                    else{
+                        console.log("This data is smaller than chromes limit");
+                        guess = .5;
+                    }
+
+                    console.log("download will take: " + guess +" seconds");
+                }
+                else{ 
+                    // not Google Chrome 
+                    if(isFirefox){
+                        console.log("Firefix has no limit this will be fastest");
+                        
+                        guess = numBytes/10/25000000;
+                        console.log("download will take: " + guess +" seconds");
+                    }
+                }
+
+
+                // grow the bar upto 75 over the guess interval based on # of bytes sent
+                growProgress(75,(guess>1)?guess:1);
+
+                // create a new Form data object
+                var fd = new FormData();
+                // append a new file to the form. 
+                // upl = name of the file upload
+                // svgBlob is the raw blob image
+                // and the name of the svg file will be the user's unique id
+                fd.append("upl",svgBlob, getCookie("userId") + ".svg");
+                // append download and canvas data to the form
+                fd.append("w",w);
+                fd.append("h",h);
+                fd.append("downloadName",filename);
+
+                // send a post request to the server attaching the formData as the body of the request
+                fetch('/figureDownload',
+                    {
+                        method:'POST',
+                        body: fd
+                    }).then((response) =>{
+                        // if the response is an error code
+                        if(response.status !== 200){
+                            // read the response as text
+                            response.text().then((responseText) =>{
+                                // create a small div box to notify the error
+                                let div = document.createElement("div");
+                                div.className = "jumbotron text-center float-center";
+                                div.style.width = "25rem";
+                                div.style.height= "auto";
+                                div.innerHTML = responseText;
+                                // attach a button to the div so the user can remove the div if they want
+                                var btn = document.createElement("button");
+                                btn.className = "btn btn-danger";
+                                btn.style.position = "relative";
+                                btn.innerHTML = "&times;";
+                                btn.style.width = "5rem";
+                                // append the button to the div
+                                div.appendChild(btn);
+                                // then after it has been added,
+                                // make an eventLister to remove the whole div box when the button is clicked
+                                btn.addEventListener("click",function(event){
+                                    this.parentElement.remove();
+                                });
+                                // append the whole div to the document
+                                document.body.appendChild(div);
+                                loader.style.visibility = "hidden";
+                                document.getElementById("loadingText").innerHTML = "Loading";
+                                hideProgress();
+                            });
+                        }
+                        else{
+                            // server sent back a 200
+                            console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
+                            response.blob().then((blob)=>{
+                                console.log(blob);
+                                url = DOMURL.createObjectURL(blob);
+
+                                triggerDownload(url,filename);
+                                loader.style.visibility = "hidden";
+                                document.getElementById("loadingText").innerHTML = "Loading";
+                                hideProgress();
+                            });
+                        }
+                    }).catch((err) =>{
+                        // catch any fetch errors
+                        if(err){
+                            console.log(err);
+                        }
+                    });
+            }
         }
         else{
             // hid the loading elements because the user hit cancel on the prompt
@@ -1908,224 +2045,7 @@ $(document).ready(function(){
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
         }
-        
-
-        // TODO: huge refactor here for the fetch to server for download
-
-        console.log("STARTING TIMER");
-        let time = createTimer();
-        // get the canvas information
-        canvas = document.getElementById('canvas');
-        var ctx = canvas.getContext('2d');
-        // encode the svg to a string
-        var data = (new XMLSerializer()).serializeToString(svg); 
-
-        //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
-            // creates a blob from the encoded svg and sets the type of the blob to and image svg
-        var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-        // creates an object url for the download
-        var url = DOMURL.createObjectURL(svgBlob);
-
-        if(fileExt === "svg"){
-            triggerDownload(url,filename);
-            loader.style.visibility = "hidden";
-            document.getElementById("loadingText").innerHTML = "Loading";
-            setTimeout(hideProgress,1000);
-            return;
-        }else{
-
-        }
-
-        
-            
-
-        // check what browser the user has to help predict the time of the download
-        var isChromium = window.chrome;
-        var winNav = window.navigator;
-        var vendorName = winNav.vendor;
-        var isOpera = typeof window.opr !== "undefined";
-        var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
-        var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1,
-            guess;
-
-        // get number of bytes in the svgBlob
-        var numBytes = svgBlob.size;
-
-        if(
-            isChromium !== null &&
-            typeof isChromium !== "undefined" &&
-            vendorName === "Google Inc." &&
-            isOpera === false &&
-            isIEedge === false
-        ){
-            // is Google Chrome
-            let limitBuffer = numBytes/2000000;
-            console.log(limitBuffer);
-            if(limitBuffer > 1 ){
-                console.log("This data is LARGER than chromes limit");
-                guess = limitBuffer;
-            }
-            else{
-                console.log("This data is smaller than chromes limit");
-                guess = .5;
-            }
-        }
-        else{ 
-            // not Google Chrome 
-            if(isFirefox){
-                console.log("Firefix has no limit this will be fastest");
-                
-                guess = numBytes/25000000;
-            }
-        }
-
-        // grow the bar upto 75 over the guess interval based on # of bytes sent
-        growProgress(75,Math.round(guess));
-
-        // create a new Form data object
-        var fd = new FormData();
-        // append a new file to the form. 
-        // upl = name of the file upload
-        // svgBlob is the raw blob image
-        // and the name of the svg file will be the user's unique id
-        fd.append("upl",svgBlob, getCookie("userId") + ".svg");
-        // append download and canvas data to the form
-        fd.append("w",w);
-        fd.append("h",h);
-        fd.append("downloadName",filename);
-
-        // send a post request to the server attaching the formData as the body of the request
-        fetch('/figureDownload',
-            {
-                method:'POST',
-                body: fd
-            }).then((response) =>{
-                // if the response is an error code
-                if(response.status !== 200){
-                    // read the response as text
-                    response.text().then((responseText) =>{
-                        // create a small div box to notify the error
-                        let div = document.createElement("div");
-                        div.className = "jumbotron text-center float-center";
-                        div.style.width = "25rem";
-                        div.style.height= "auto";
-                        div.innerHTML = responseText;
-                        // attach a button to the div so the user can remove the div if they want
-                        var btn = document.createElement("button");
-                        btn.className = "btn btn-danger";
-                        btn.style.position = "relative";
-                        btn.innerHTML = "&times;";
-                        btn.style.width = "5rem";
-                        // append the button to the div
-                        div.appendChild(btn);
-                        // then after it has been added,
-                        // make an eventLister to remove the whole div box when the button is clicked
-                        btn.addEventListener("click",function(event){
-                            this.parentElement.remove();
-                        });
-                        // append the whole div to the document
-                        document.body.appendChild(div);
-                        loader.style.visibility = "hidden";
-                        document.getElementById("loadingText").innerHTML = "Loading";
-                        hideProgress();
-                    });
-                }
-                else{
-                    // server sent back a 200
-                    console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
-                    response.blob().then((blob)=>{
-                        console.log(blob);
-                        url = DOMURL.createObjectURL(blob);
-
-                        triggerDownload(url,filename);
-                        loader.style.visibility = "hidden";
-                        document.getElementById("loadingText").innerHTML = "Loading";
-                        hideProgress();
-                    });
-                }
-            }).catch((err) =>{
-                // catch any fetch errors
-                if(err){
-                    console.log(err);
-                }
-            });
-
-        /* if(fileExt !== "svg"){
-            // creates a new blank image
-            var img = new Image();
-
-            
-            // when the image is done being created and its loaded
-            img.onload = function(){
-                
-                console.log(peekTimer(time));
-                growProgress(100,.5);
-                // draw the svg image onto the canvas
-                
-                ctx.drawImage(img,0,0);
-                console.log("Image Written to canvas");
-                document.getElementById("loadingText").innerHTML = "Finishing";
-                
-                // while the filename is a false value
-                
-
-                // if the filename is one of the accepted filenames and it isnt null              
-                if( filename !== null && /^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm.test(filename)){
-                    // if the fileExt is NOT svg
-                    if(fileExt !== 'svg'){
-                        try{
-                            if(fileExt === 'jpg'){
-                                // export an image of jpeg becuse jpg defaults to png
-                                url = canvas
-                                .toDataURL('image/jpeg', 1.0)
-                                .replace('image/jpeg', 'image/octet-stream');
-                            }
-                            else{
-                                // export an image of the extension type given
-                                url = canvas
-                                .toDataURL('image/'+fileExt, 1.0)
-                                .replace('image/'+fileExt, 'image/octet-stream');
-                            }
-                            
-                            // start the download
-                            triggerDownload(url,filename);            
-                        }catch(err){
-                            alert('Image is too large to save from browser');
-                        }
-                    }
-                }
-
-                console.log("THIS DOWNLOAD TOOK: " + peekTimer(time));
-            
-                // revoke the url
-                DOMURL.revokeObjectURL(url);
-                loader.style.visibility = "hidden";
-                document.getElementById("loadingText").innerHTML = "Loading";
-                setTimeout(hideProgress,1000);
-                
-                // Note:
-                //     if the user hits cancel the filename will be null, we ignore this case
-            };
-            
-            
-            document.getElementById("loadingText").innerHTML = "Writing File";
-            
-            img.src = url;
-        
-        }
-        else
-        { // the image needs to be exported as an svg
-            
-            growProgress(100,.5);
-            triggerDownload(url,filename);
-
-            loader.style.visibility = "hidden";
-            document.getElementById("loadingText").innerHTML = "Loading";
-            setTimeout(hideProgress,1000);
-            
-        }
-        */
-
+       
     });
 
 
@@ -3097,7 +3017,7 @@ $(document).ready(function(){
 
             
             // parse the whole svg and set the pointerevents to accept clicks again
-            setSvgClickDetection(svg, "painted");
+            setSvgClickDetection(svg, "all");
         }
     
         /*   COMMENTING OUT FOR NOW

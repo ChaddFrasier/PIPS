@@ -160,7 +160,7 @@ try{
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
-    //exec('rm ./tmp/*');
+    exec('rm ./tmp/*');
     
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
@@ -1180,8 +1180,6 @@ app.post("/figureDownload", async function(request, response){
         }else{
             console.log("saved successfully");
 
-
-
             if(fileExt === "png"){
                 svg2img("./tmp/"+request.files.upl.name,function(err,buffer){
                     if(err){
@@ -1208,6 +1206,7 @@ app.post("/figureDownload", async function(request, response){
                                 console.log(err);
                             }else{
                                 console.log("download sent");
+                                fs.unlinkSync("./tmp/" + filename);
                             }
                         });
                     }
