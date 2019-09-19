@@ -55,7 +55,6 @@ module.exports = {
                     console.log('image extraction failed to create image\n');
                     reject();
                 }
-
             });
         });
     },
@@ -212,6 +211,55 @@ module.exports = {
             });
         });
     },
+
+
+    /**
+     * @function reduceCube
+     * 
+     * @param {string} cubeName the name of the cube file to reduce
+     * @param {number} scaleFactor the factor to reduce by (4 = 1/4th actual size) 
+     *
+     * @description shrink the size of the cube file using isis3 reduce function 
+     */
+    reduceCube: function(cubeName, scaleFactor, logToFile){
+        return new Promise(function(resolve, reject){
+            console.log("Reduce the file: " + cubeName + " by a factor of " + scaleFactor);
+
+            var isisCall = "reduce";
+            var from = path.join(".","uploads",cubeName);
+            var to = path.join(".","uploads",cubeName.replace("u-","r-"));
+
+            var reduceCall = spawn(isisCall, ['from=',from,"to=",to,
+                                            "sscale=",scaleFactor,"lscale=",scaleFactor]);
+
+
+            reduceCall.stderr.on("data",function(data){
+                console.log(isisCall + " Error: " + data.toString() + "\n");
+            });
+
+
+            reduceCall.stdout.on("data",function(data){
+                console.log(isisCall + " stdout: " + data.toString() + "\n");
+            });
+
+
+            reduceCall.on("exit",function(code){
+                console.log(isisCall + ' Exited with code: ' + code + "\n");
+
+                if(code === 0){
+                    resolve(cubeName.replace("u-","r-"));
+                }
+                else{
+                    reject(isisCall + 'Error: ' + code.toString() + "\n");
+                }
+            });
+
+            reduceCall.on("error",function(err){
+                console.log("std2isis Failed: -1\n");
+                reject(-1);
+            });
+        });
+    },
     
 
     /**
@@ -224,7 +272,12 @@ module.exports = {
      * @description removed the added u-# tag based on the users' instance number
      */
     getRawCube: function(cubeName, userNum){
-        return cubeName.split("u-" + userNum)[1]; 
+        if(cubeName.indexOf("u-" + userNum) > -1){
+            return cubeName.split("u-" + userNum)[1]; 
+        }else{
+            return cubeName.split("r-" + userNum)[1]; 
+        }
+        
     },
 
 

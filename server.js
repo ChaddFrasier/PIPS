@@ -433,92 +433,140 @@ app.post('/captionWriter', async function(request, response){
 
                 // if the return array legth is not 0 extract the new cubefile name
                 if(cubeName.length > 0){
+                    fs.unlinkSync(cubeName[0].replace(".cub",".tif"));
                     cubeObj.name = path.basename(cubeName[0]);
+
                 }
                 // reset the promises array
                 promises = [];
-                
-                // TODO: this is where i can test the loging functions also this is the functions that
-                    //  '/pow' will need to run
-                // make promise on the isis function calls
+                var lines,
+                    samples,
+                    scaleFactor;
 
-                /** ========Testing log system ========
-                 * 
-                 * setting last input of function to true (hard coded)
-                */
-                promises.push(util.makeSystemCalls(cubeObj.name,
-                    path.join('.','uploads',cubeObj.name),
-                    path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
-                    'images',
-                    cubeObj.logFlag));
-                
-                
-                // when isis is done read the pvl file
-                Promise.all(promises).then(function(){
-                    //reset promises array
-                    promises = [];
-
-                    // make new promise on the data extraction functions
-                    promises.push(util.readPvltoStruct(cubeObj.name));
-
-                    // when the readPvltoStructf function resolves create data instance
-                    Promise.all(promises).then(function(cubeData){
-                    
-                        console.log("PVL Extraction Finished");
-                        // add the cube instance to the cube array if it does not already exist
-                        cubeArray = util.addCubeToArray(cubeObj,cubeArray);
-                    
-                        // save data to object using setter in class
-                        cubeObj.data = JSON.parse(cubeData);
-                        
-                        // obtain the data for the important tags
-                        var impDataString = util.importantData(cubeObj.data, importantTagArr);
-
-                        // save the important data values to object using setter
-                        cubeObj.impData = JSON.parse(impDataString);
-                        
-                        // get the csv string
-                        let csv = util.getCSV(cubeObj.data);
-
-                        // get name of csv and write it to the csv folder
-                        let csvFilename = cubeObj.name.replace('.cub','.csv');
-
-                        // get name of possible output file
-                        let txtFilename = cubeObj.name.replace('.cub','_PIPS_Caption.txt');
-
-                        // write the csv data to the file
-                        fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
-
-                        // send response w/ all variables
-                        response.render('writer.ejs',
-                            { templateText: templateText, 
-                            dictionaryString: impDataString,
-                            wholeData: cubeObj.data,
-                            csvString: csv,
-                            outputName: txtFilename}); 
-
-                    }).catch(function(err){
-                        // catch any promise error
-                        console.log('Promise Error Occured: ' + err);
-                        response.write('<html>PROGRAMMING SYNC ERROR</html>');
-                        response.end();
-                    });
-                }).catch(function(errcode){
-
-
-                    if(errcode === -1){
-                        // alert 8 which happens when the server is no configured properly 
-                        // (ISIS is not running)
-                        response.redirect('/?alertCode=8');
-                        // end response
-                        response.end();
+                // get the original dimensions of the cube file just in case scaling is required
+                fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
+                    if(err){
+                        console.log("READING ERROR: " + err);
                     }else{
-                        // alert 6 which happens when isis failed to create an image form the cube
-                        response.redirect('/?alertCode=6');
-                        // end response
-                        response.end();
-                    }                    
-                });          
+                        console.log("gets here");
+                        let bufferArray = data.subarray(0,data.length/10).toString().split("\n");
+                        for(let index=0; index< bufferArray.length;index++){
+                            if(bufferArray[index].indexOf("Group = Dimensions") > -1){
+                            
+                                samples = Number(bufferArray[index + 1].split("=")[1]);
+                                lines = Number(bufferArray[index + 2].split("=")[1]);
+
+                                console.log("This cube file is " + samples + " samples by " + lines + " lines");
+                                // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
+                                scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1] : samples/cubeObj.userDim[0];
+                                break;
+                            }
+                        }
+
+                        if(scaleFactor > 1){
+                            promises.push(util.reduceCube(cubeObj.name, scaleFactor, cubeObj.logFlag));
+                        }
+                        
+                        Promise.all(promises).then(function(cubeName){
+                            
+                            if(cubeName.length > 0){
+                                cubeObj.name = cubeName[0];
+                            }
+                            
+                            promises = [];
+
+                            // TODO: this is where i can test the loging functions also this is the functions that
+                            //  '/pow' will need to run
+                            // make promise on the isis function calls
+
+                            /** ========Testing log system ========
+                             * 
+                             * setting last input of function to true (hard coded)
+                            */
+                            promises.push(util.makeSystemCalls(cubeObj.name,
+                                path.join('.','uploads',cubeObj.name),
+                                path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
+                                'images',
+                                cubeObj.logFlag));
+                        
+                        
+                            // when isis is done read the pvl file
+                            Promise.all(promises).then(function(){
+                                //reset promises array
+                                promises = [];
+
+                                // make new promise on the data extraction functions
+                                promises.push(util.readPvltoStruct(cubeObj.name));
+
+                                // when the readPvltoStructf function resolves create data instance
+                                Promise.all(promises).then(function(cubeData){
+                                
+                                    console.log("PVL Extraction Finished");
+                                    // add the cube instance to the cube array if it does not already exist
+                                    cubeArray = util.addCubeToArray(cubeObj,cubeArray);
+                                
+                                    // save data to object using setter in class
+                                    cubeObj.data = JSON.parse(cubeData);
+                                    
+                                    // obtain the data for the important tags
+                                    var impDataString = util.importantData(cubeObj.data, importantTagArr);
+
+                                    // save the important data values to object using setter
+                                    cubeObj.impData = JSON.parse(impDataString);
+                                    
+                                    // get the csv string
+                                    let csv = util.getCSV(cubeObj.data);
+
+                                    // get name of csv and write it to the csv folder
+                                    let csvFilename = cubeObj.name.replace('.cub','.csv');
+
+                                    // get name of possible output file
+                                    let txtFilename = cubeObj.name.replace('.cub','_PIPS_Caption.txt');
+
+                                    // write the csv data to the file
+                                    fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+
+                                    // send response w/ all variables
+                                    response.render('writer.ejs',
+                                        { templateText: templateText, 
+                                        dictionaryString: impDataString,
+                                        wholeData: cubeObj.data,
+                                        csvString: csv,
+                                        outputName: txtFilename}); 
+
+                                }).catch(function(err){
+                                    // catch any promise error
+                                    console.log('Promise Error Occured: ' + err);
+                                    response.write('<html>PROGRAMMING SYNC ERROR</html>');
+                                    response.end();
+                                });
+                            }).catch(function(errcode){
+
+                                if(errcode === -1){
+                                    // alert 8 which happens when the server is no configured properly 
+                                    // (ISIS is not running)
+                                    response.redirect('/?alertCode=8');
+                                    // end response
+                                    response.end();
+                                }else{
+                                    // alert 6 which happens when isis failed to create an image form the cube
+                                    response.redirect('/?alertCode=6');
+                                    // end response
+                                    response.end();
+                                }                    
+                            });    
+                        }).catch(function(err){
+                            if(err === -1){
+                                // alert 8 because isis is not on
+                                response.redirect('/?alertCode=8');
+                                // end response
+                                response.end();
+                            }else{
+                                console.log("Reduce ERROR: " + err)
+                            }
+                        });
+                    }
+                });      
             }).catch(function(err){
                 if(err === -1){
                     // alert 8 because isis is not on
@@ -1212,21 +1260,9 @@ app.post("/figureDownload", async function(request, response){
                     }
                 });
             }
-            
         }
     });
 });
-
-/**
- * TODO: catch any problems
- * 
- */
-app.get("/figureDownload", function(request, response){
-    console.log(request.url);
-
-    response.send("<h1>GET WORKED</h1>");
-});
-
 
 /**
  * '/*' catch all unknown routes
