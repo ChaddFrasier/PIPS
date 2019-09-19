@@ -22,6 +22,14 @@ var loader,
     h,
     isMapProjected;
 
+// toggle colors tracker
+var toggleScalebar = true,
+    userTextColor,
+    // declare the drawing flag
+    drawFlag = false,
+    // array for removing text
+    textBoxArray = [];
+
 //create clickArray
 var clickArray = [],
     lineArr = [];
@@ -691,7 +699,6 @@ function makeDraggable(event){
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
 
-
 /** ------------------------------------------ Helper Function ------------------------------------------- */
 /**
  * @function setSvgClickDetection
@@ -748,13 +755,12 @@ function captionHandler(){
 /**
  * @function growProgress
  * 
- * @param {number} width the ending width of the scale bar
  * @param {number} duration the amount of time in seconds that the animation should last
  * 
  * @description grow the progress bar using animations up to the width over duration seconds
  * 
 */
-function growProgress(width, duration){
+function growProgress(duration){
     //document.getElementById("mainBar").className = "growBar";
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
     document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
@@ -836,7 +842,6 @@ function drawLine(lineElement,x2,y2){
     lineElement.setAttribute("x2", x2);
     lineElement.setAttribute("y2",y2);
 }
-
 
 /**
  * @function getMetadata
@@ -933,64 +938,8 @@ function loadImageAsURL(url, callback) {
         console.log("This image is: " +this.naturalWidth+ " by " +this.naturalHeight+ " px is demension");
         console.log("And has " + this.naturalWidth * this.naturalHeight + " total number of pixels");
 
-        // Chrome 1 - 71
-        var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
-        // Firefox 1.0+
-        var isFirefox = typeof InstallTrigger !== 'undefined';
-
-        // for chrome
-        if(isChrome){
-            // this logical block of ifs checks for the size of the image 
-            // and shrinks large images down to help with the export process.
-            // The main purpose of this is to shrink the size of the base64 data string
-            if(this.naturalHeight * this.naturalWidth < 16000000){
-                console.log("Using normal image resolution");
-                canvas.width = this.naturalWidth;
-                canvas.height = this.naturalHeight;
-            }
-            else if(this.naturalHeight * this.naturalWidth >= 45000000){
-                console.log("Using half the normal image resolution");
-                canvas.width = this.naturalWidth/2;
-                canvas.height = this.naturalHeight/2;
-                canvas.getContext('2d').scale(.5,.5);
-            }
-            else if(this.naturalHeight * this.naturalWidth <= 110000000){
-                console.log("Using a third of the normal image resolution");
-                canvas.width = this.naturalWidth/3;
-                canvas.height = this.naturalHeight/3;
-                canvas.getContext('2d').scale(.33333,.33333);
-            }
-            else if(this.naturalHeight * this.naturalWidth <= 200000000){
-                console.log("Using a 1/3.5 of the normal image resolution");
-                canvas.width = this.naturalWidth/3.5;
-                canvas.height = this.naturalHeight/3.5;
-                canvas.getContext('2d').scale(0.28571428571,0.28571428571);
-            }
-            else{
-                console.log("Using a fourth of the normal image resolution");
-                canvas.width = this.naturalWidth/4;
-                canvas.height = this.naturalHeight/4;
-                canvas.getContext('2d').scale(.25,.25);
-            }
-        }
-        else if(isFirefox){
-            // firefox has a higher data cap and therefore can handle larger data
-            if(this.naturalHeight * this.naturalWidth <= 100000000){
-                console.log("Using normal image resolution");
-                canvas.width = this.naturalWidth;
-                canvas.height = this.naturalHeight;
-            }else if(this.naturalHeight * this.naturalWidth <= 250000000){
-                console.log("Using half the normal image resolution");
-                canvas.width = this.naturalWidth/2;
-                canvas.height = this.naturalHeight/2;
-                canvas.getContext('2d').scale(.5,.5);
-            }else{
-                console.log("Using a third of the normal image resolution");
-                canvas.width = this.naturalWidth/3;
-                canvas.height = this.naturalHeight/3;
-                canvas.getContext('2d').scale(.33333,.33333);
-            }
-        }
+        canvas.width = this.naturalWidth;
+        canvas.height = this.naturalHeight;
         
         // draw the image to the canvas at the new scale
         canvas.getContext('2d').drawImage(this, 0, 0);
@@ -1523,7 +1472,7 @@ function resetDrawTool(){
     clickArray = [];
 
     // allow click detection on svg painted elements again
-    setSvgClickDetection(svg, "visible");
+    setSvgClickDetection(svg, "all");
 }
 
 /**
@@ -1710,7 +1659,7 @@ $(document).ready(function(){
     var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
     + 'transform="translate(0,175) scale(.1)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:all;">'
-    + '<rect x="0" y="0" id="scalebarBG" width="4250" height="500" style="visibility:hidden;"></rect>'
+    + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>'
     + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white"'
     + 'fill="black" ></rect>'
     + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>'
@@ -1735,12 +1684,12 @@ $(document).ready(function(){
     + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
 
     + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif"'
-    + 'font-size="150" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
+    + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
     + '<text id="scalebar1" x="50" y="150" font-family="sans-serif"'
-    + 'font-size="150" stroke="white"fill="white"> <%=scalebarLength%></text>'
-    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="150"'
+    + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
+    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white"></text>'
-    + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="150"'
+    + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white">0</text></g>';
 
 
@@ -1832,7 +1781,7 @@ $(document).ready(function(){
             document.getElementById("scalebarHalf").innerHTML = parseInt(half);
         }
 
-        document.getElementById("scalebarText").innerHTML = scalebarLength + " " + scalebarUnits;
+        document.getElementById("scalebarText").innerHTML = scalebarLength + scalebarUnits;
         document.getElementById("scalebar1").innerHTML = scalebarLength;
 
     }
@@ -1858,14 +1807,6 @@ $(document).ready(function(){
     console.log(" Image Dimensions are => " + w + " : " + h);
     // set loader to invisible
     loadInvisible();
-
-    // toggle colors tracker
-    var toggleScalebar = true,
-        userTextColor,
-        // declare the drawing flag
-        drawFlag = false,
-        // array for removing text
-        textBoxArray = [];
 
     // sets the display name
     document.getElementById("imageName").innerHTML = displayCube;
@@ -1917,58 +1858,16 @@ $(document).ready(function(){
             var url = DOMURL.createObjectURL(svgBlob);
 
             if(fileExt === "svg"){
+                growProgress(.25);
                 triggerDownload(url,filename);
                 loader.style.visibility = "hidden";
                 document.getElementById("loadingText").innerHTML = "Loading";
-                setTimeout(hideProgress,1000);
+                setTimeout(hideProgress,500);
                 return;
             }else{
-                // check what browser the user has to help predict the time of the download
-                var isChromium = window.chrome;
-                var winNav = window.navigator;
-                var vendorName = winNav.vendor;
-                var isOpera = typeof window.opr !== "undefined";
-                var isIEedge = winNav.userAgent.indexOf("Edge") > -1;
-                var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1,
-                    guess;
-
-                // get number of bytes in the svgBlob
-                var numBytes = svgBlob.size;
-
-                if(
-                    isChromium !== null &&
-                    typeof isChromium !== "undefined" &&
-                    vendorName === "Google Inc." &&
-                    isOpera === false &&
-                    isIEedge === false
-                ){
-                    // is Google Chrome
-                    let limitBuffer = numBytes/2000000;
-                    console.log(limitBuffer/10);
-                    if(limitBuffer > 1 ){
-                        console.log("This data is LARGER than chromes limit");
-                        guess = limitBuffer/10;
-                    }
-                    else{
-                        console.log("This data is smaller than chromes limit");
-                        guess = .5;
-                    }
-
-                    console.log("download will take: " + guess +" seconds");
-                }
-                else{ 
-                    // not Google Chrome 
-                    if(isFirefox){
-                        console.log("Firefix has no limit this will be fastest");
-                        
-                        guess = numBytes/10/25000000;
-                        console.log("download will take: " + guess +" seconds");
-                    }
-                }
-
-
-                // grow the bar upto 75 over the guess interval based on # of bytes sent
-                growProgress(75,(guess>1)?guess:1);
+                
+                // load bar with a duration of .5 seconds
+                growProgress(.5);
 
                 // create a new Form data object
                 var fd = new FormData();
@@ -2028,7 +1927,7 @@ $(document).ready(function(){
                                 triggerDownload(url,filename);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
-                                hideProgress();
+                                setInterval(hideProgress,500);
                             });
                         }
                     }).catch((err) =>{

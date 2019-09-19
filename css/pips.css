@@ -204,8 +204,11 @@ svg{
     cursor:nesw-resize;
 }
 
-li{
-    
+line{
+    pointer-events: none;
+}
+
+li{  
     padding-top:.5rem;
     padding-bottom: .5rem;
     right: 80%;
