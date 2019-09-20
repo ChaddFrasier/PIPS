@@ -6,6 +6,8 @@
  * 
  * @since 09/17/19
  * 
+ * @requires Jquery 2.0.0
+ * 
  * @fileoverview this file will hold all the javascript used to submit the files for upload to the server
  *              from the index.ejs file
  * 

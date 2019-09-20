@@ -3,7 +3,9 @@
  * 
  * @author Chadd Frasier
  * 
- * @since 09/17/19
+ * @since 09/20/19
+ * 
+ * @requires Jquery 2.0.0
  * 
  * @fileoverview This file is for all of the writer functionality in the writer.ejs file
  * 

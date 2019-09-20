@@ -1,7 +1,7 @@
 /**
  * @file imageEditor.js
  * 
- * @since 09/17/19
+ * @since 09/20/19
  *
  * @author Chadd Frasier
  * @version 1.0
