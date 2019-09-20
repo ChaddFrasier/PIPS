@@ -203,4 +203,35 @@ module.exports = class Cube{
     
         }
     }
+
+    
+    getCubeDimensions(){
+        var cubeObj = this;
+        return new Promise(function(resolve,reject){
+            var fs = require("fs"),
+                path = require("path");
+
+            fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
+                if(err){
+                    reject(err);
+                }else{
+                    var bufferArray = data.subarray(0, data.length/10).toString().split("\n");
+
+                    for(let index=0; index< bufferArray.length;index++){
+                        if(bufferArray[index].indexOf("Group = Dimensions") > -1){
+                        
+                            var samples = Number(bufferArray[index + 1].split("=")[1]);
+                            var lines = Number(bufferArray[index + 2].split("=")[1]);
+    
+                            var dim = {"w":samples,"h":lines};
+
+                            
+                            resolve(JSON.stringify(dim));
+                        }
+                    }
+                    reject();
+                }    
+            });
+        });
+    }
 }

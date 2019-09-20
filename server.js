@@ -27,7 +27,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/16/19
+ * @summary  09/20/19
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
  *  by auto generating the size of the other dimensions when not given.
@@ -67,14 +67,14 @@
  * 
  *     Exporting has change completly, instead of the user saving the inline svg from the browser, the
  *  export button now sends a request to the server with the svg data and the users filename for the download
- *  and the server uses the node-canvas module to convert the image data from svg to the output type and
- *  send the download directly to the user. This helps the download process by speeding up image processing
+ *  and the server uses the svg2img module to convert the image data from svg to the output type and
+ *  sends the download directly to the user. This helps the download process by speeding up image processing
  *  and allowing chrome users to see a progress bar instead of having to wait for the download to finish.
  * 
  *      A progress bar has been added to the image editor for when users are downloading the figure.
  *  This is a better interface for users when a download is occuring rather than just a spinning animation.
  *  The progress bar guesses how long the download will take and it runs a css animation for that duration
- *  to show a rough estiate of how long the download will take.
+ *  to show a rough estimate of how long the download will take.
  * 
  * ----------------------------------------------------------------------------------------------------------
 *                                          Last Notes for Coders
@@ -103,12 +103,10 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const path = require('path');
-const jimp = require('jimp');
 const exec = require('child_process').exec;
 const fs = require('fs');
 const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
-const {performance} = require('perf_hooks');
 const bodyParser = require("body-parser");
 const svg2img = require("svg2img");
 
@@ -141,7 +139,6 @@ app.use("/images" , express.static("images"));
 app.use("/csv" , express.static("csv"));
 app.use("/js" , express.static("js"));
 app.use("/tpl" , express.static("tpl"));
-app.use("/jimp", express.static("jimp"));
 app.use("/pvl " , express.static("pvl"));
 
 
@@ -151,7 +148,6 @@ app.set('view engine', 'ejs');
 // erase uneeded files before server startup
 try{
     exec('rm ./images/*.pgw');
-    exec('rm ./jimp/*');
     exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
     exec('rm ./csv/*.csv');
@@ -685,47 +681,43 @@ app.get('/imageEditor', function(request, response){
             var w,
                 h;
 
-            // get the hight and width of the image and render the page with all needed variables
-            jimp.read(imagepath).then(function(img){
-                w = img.bitmap.width;
-                h = img.bitmap.height;
+            
+            userObject.getCubeDimensions().then(dimensions => {
+                dimensions = JSON.parse(dimensions);
+                w = dimensions.w;
+                h = dimensions.h;
                 // check and calculate user dimensions if needed
                 if(userObject.userDim[0] === -1){
                     let factor = userObject.userDim[1]/h;
-
+    
                     userObject.userDim = [w*factor,userObject.userDim[1]];
                 }
                 else if(userObject.userDim[1] === -1){
                     let factor = userObject.userDim[0]/w;
-
+    
                     userObject.userDim = [userObject.userDim[0],h*factor];
                 
                 }
+    
                 var userDim = userObject.userDim;
-                let resolution = util.getPixelResolution(userObject);
+                var rawCube = util.getRawCube(userObject.name,userObject.userNum);
                 var isMapProjected = util.isMapProjected(userObject.data),
                     rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
-                
-
+    
                 // calculate image width in meters
                 if(resolution !== -1){
-                    // calculate the image width in meters using the px width and the meters/px value
                     var imageMeterWidth = util.calculateWidth(resolution, w);
-
-                    // if the imageWidth is non-false
+    
                     if(imageMeterWidth > -1){
-                        // get log base 10 of the image width 
-                        // (dividing by 2 because there is two sides to the scalebar)
+                        // same as above for calculating scale bar
                         let x = Math.log10(imageMeterWidth/2);
-                        // get the whole value of the base
                         let a = Math.floor(x);
-                        // get the decimal half of the base
                         let b = x - a;
-
+    
                         // if the decimal is 75% or more closer to a whole 10 set the base to 5
                         // check if 35% or greater, set base 2
-                        // if the value is very close to a whole base on the 
-                        //   low side set base to 5 and decrement the 10 base
+                        // if the value is very close to a whole base on the low side 
+                        //      set base to 5 and decrement the 10 base
                         // (this is to keep text from leaving image)
                         // default to 1
                         if(b >= 0.75){
@@ -736,15 +728,14 @@ app.get('/imageEditor', function(request, response){
                             a -= 1;
                             b = 5;
                         }else{
-                            b = 1;
+                            b=1;
                         }
-
-                        // get the width that the scalebar will display on both halves
+    
                         var scalebarMeters = b*Math.pow(10,a);
-
+    
                         var scalebarLength,
                             scalebarUnits="";
-                        // if the length is less than 1KM return length in meters else return legth in km
+                        // if the length is less than 1KM return length in meters
                         if(imageMeterWidth/1000 < 1){
                             scalebarLength = scalebarMeters;
                             var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
@@ -752,12 +743,13 @@ app.get('/imageEditor', function(request, response){
                             scalebarUnits = "m";
                         }
                         else{
+                            
                             scalebarLength = scalebarMeters/1000;
                             var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                             console.log(scalebarLength + " km");
                             scalebarUnits = "km";
                         }
-
+    
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -767,15 +759,14 @@ app.get('/imageEditor', function(request, response){
                                 tagField: data,
                                 displayCube:rawCube,
                                 isMapProjected: isMapProjected,
-                                rotationOffset:rotationOffset ,
-                                origW: w,origH: h,
-                                w: userDim[0],h: userDim[1],
+                                rotationOffset:rotationOffset,
+                                origW: w,origH: h, w: userDim[0], h: userDim[1],
                                 scalebarLength: scalebarLength,
-                                scalebarPx: scalebarPx,
+                                scalebarPx: scalebarPx, 
                                 scalebarUnits: scalebarUnits
                             });
                         }else{
-                            response.render("imagePage.ejs",
+                            response.render("imagePage.ejs", 
                             {
                                 image:imagepath,
                                 tagField: data,
@@ -788,7 +779,6 @@ app.get('/imageEditor', function(request, response){
                                 scalebarUnits: scalebarUnits
                             });
                         }
-
                     }else{
                         console.log("Image Width in Meters Failed to Calculate");
                     }
@@ -796,22 +786,22 @@ app.get('/imageEditor', function(request, response){
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs",
+                        response.render("imagePage.ejs", 
                         {
-                            image:imagepath, 
+                            image:imagepath,
                             tagField: data,
                             displayCube:rawCube,
                             isMapProjected: isMapProjected,
-                            rotationOffset:rotationOffset, 
+                            rotationOffset:rotationOffset,
                             origW: w, origH: h, w: userDim[0], h: userDim[1],
                             scalebarLength: 'none',
                             scalebarPx: 'none',
                             scalebarUnits: scalebarUnits
                         });
                     }else{
-                        response.render("imagePage.ejs",
+                        response.render("imagePage.ejs", 
                         {
-                            image:imagepath, 
+                            image:imagepath,
                             tagField: data,
                             displayCube:rawCube,
                             isMapProjected: isMapProjected,
@@ -822,7 +812,10 @@ app.get('/imageEditor', function(request, response){
                             scalebarUnits: scalebarUnits
                         });
                     }
-
+                }
+            }).catch(err => {
+                if(err){
+                    console.log("ERROR: " + err);
                 }
             });
         }else{
@@ -879,11 +872,10 @@ app.post('/imageEditor', function(request, response){
         var w,
             h;
 
-        // get the height and width of the image and render the page with all needed variables
-        jimp.read(imagepath).then(function(img){
-            // get raw width and height from the image file
-            w = img.bitmap.width;
-            h = img.bitmap.height;
+        userObject.getCubeDimensions().then(dimensions => {
+            dimensions = JSON.parse(dimensions);
+            w = dimensions.w;
+            h = dimensions.h;
             // check and calculate user dimensions if needed
             if(userObject.userDim[0] === -1){
                 let factor = userObject.userDim[1]/h;
@@ -901,8 +893,6 @@ app.post('/imageEditor', function(request, response){
             var rawCube = util.getRawCube(userObject.name,userObject.userNum);
             var isMapProjected = util.isMapProjected(userObject.data),
                 rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
-
-            
 
             // calculate image width in meters
             if(resolution !== -1){
@@ -1012,9 +1002,12 @@ app.post('/imageEditor', function(request, response){
                         scalebarUnits: scalebarUnits
                     });
                 }
-
             }
-        });
+        }).catch(err => {
+            if(err){
+                console.log("ERROR: " + err);
+            }
+        });          
     }
 });
 
@@ -1022,187 +1015,6 @@ app.post("/pow",function(request, response){
     // TODO: POW connection link
 });
 
-
-/**
- * GET '/crop'
- * 
- * Undoes the previous cropped image by uniform naming and 
- * array parsing after recieveing ajax get request
- */
-app.get('/crop',async function(request, response){
-    console.log(request.url + 'from GET');
-
-    var currentImage = request.query.currentImage;
-
-    var uid = request.cookies['userId'];
-
-    let cubeObj = util.getObjectFromArray(uid, cubeArray);
-
-    if(uid !== undefined){
-        var baseImg = util.findImageLocation(cubeObj.name.replace('.cub','.png'));
-    }else if(currentImage === undefined || !uid){
-        response.redirect("/?alertCode=4");
-        response.end();
-    }
-    var newImage;
-
-    console.log(baseImg + ' = baseimage and: ' + currentImage + ' IS THE CURRENT');
-    
-    // check return value for the function
-    var data = (cubeObj === -1) ? 'None' : cubeObj.impData;
-
-    // if spliting on _ equals legth 2
-    if(currentImage.split('_').length === 2){
-        // remove current file
-        await fs.unlinkSync(currentImage.split('?')[0]);
-
-        // get new Image b/c we know its a default
-        newImage = util.findImageLocation(cubeObj.name);
-
-        // render with variables
-        var w;
-        var h;
-        // read in new image and dimensions
-        jimp.read(newImage).then(function(img){
-            w = img.bitmap.width;
-            h = img.bitmap.height;
-            // render image page with needed data
-            if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
-            response.end();
-        }).catch(function(err){
-            console.log(err);
-        });
-    }
-    // if the legth is greater than 2
-    else if(currentImage.split('_').length > 2){
-        // check for base image and remove if not equal
-        if(currentImage !== baseImg){
-            console.log('current image is: ' + currentImage);
-            await fs.unlinkSync(currentImage.split('?')[0]);
-        }
-        // remove the timestring query
-        let imageLink = currentImage.split('?')[0];
-        // split name on underscore
-        let strArray = imageLink.split('_');
-
-        // set second to last string equal to the last and rejoin after popping the end off
-        strArray[strArray.length - 2] += '.' + 
-        strArray[strArray.length-1].split('.')[strArray[strArray.length-1].split('.').length - 1];
-        strArray.pop();
-        newImage = strArray.join('_');
-        
-        // check to see of the new image name is the base name
-        if(newImage.split("/")[1] === cubeObj.name.replace('.cub','.png')){
-            var w;
-            var h;
-            // if yes read the base image back in
-            jimp.read(baseImg).then(function(img){
-                w = img.bitmap.width;
-                h = img.bitmap.height;
-                // render image page with needed data
-                if(isWindows){ baseImg = baseImg.replace("\\","/");}
-                response.render("imagePage.ejs", {image:baseImg, tagField: data, w: w, h: h});
-                response.end();
-            }).catch(function(err){
-                console.log('ERROR 1: ' + err);
-            });
-        }else{
-            // else read the new image in
-            var w;
-            var h;
-            // read heigth and width
-            jimp.read(newImage).then(function(img){
-                w = img.bitmap.width;
-                h = img.bitmap.height;
-                // render image page with needed data
-                if(isWindows){ newImage = newImage.replace("\\","/");}
-                response.render("imagePage.ejs", {image:newImage, tagField: data, w: w, h: h});
-                response.end();
-            }).catch(function(err){
-                console.log('ERROR 2: ' + err);
-            
-            });
-        }
-    }
-    else{
-        var w;
-        var h;
-        jimp.read(cubeObj.name).then(function(img){
-            w = img.bitmap.width;
-            h = img.bitmap.height;
-            // render image page with needed data
-            if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render("imagePage.ejs", {image:cubeObj.name, tagField: data, w: w, h: h});
-            response.end();
-        }).catch(function(err){
-            console.log('ERROR 3: ' + err);
-        });
-    }
-});
-
-
-/**
- * POST '/crop'
- * 
- * this handles the actual jimp crop functionality
- */
-
-app.post('/crop', async function(request,response){
-    console.log(request.url);
-
-    // retrieve all parts from the request queries and cookie
-    let arrayString = request.query.cropArray;
-
-    let pxArray = arrayString.split(',');
-    var croppedImage = request.query.currentImage.split('?')[0];
-    var userid = request.cookies['userId'];
-
-    let cubeObj = util.getObjectFromArray(userid, cubeArray);
-
-    // if the data val is an error code then fail otherwise return important data string
-    var data = (cubeObj < 1) ? 'NONE': cubeObj.impData;
-    
-    // set header to html
-    response.setHeader("Content-Type", "text/html","charset=utf-8");
-
-    // if the cropped image is the original image location
-    if(userid !== undefined && croppedImage === util.findImageLocation(cubeObj.name)){
-        // do the basic crop action
-        var imageLocation = croppedImage;
-
-        console.log('image location is: ' + imageLocation);
-        // get the pixel crop locations by calculating width and height
-        pxArray = util.calculateCrop(pxArray);
-        // await on the jimp crop function
-        await util.cropImage(imageLocation, pxArray).then( async function(newImage){
-            // return the new image and its width and height
-            if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render('imagePage.ejs',
-            {
-                image:newImage + '?t='+ performance.now(),
-                tagField: data, h: pxArray[3], w: pxArray[2]
-            });
-        });
-
-    }
-    // we know the current image is already cropped before
-    else{
-        // calulate the crop array like before and get the image location from the queryString
-        pxArray = util.calculateCrop(pxArray);
-        imageLocation = util.parseQuery(croppedImage);
-
-        // await on the crop function like before
-        await util.cropImage(imageLocation, pxArray).then( async function(newImage){
-            if(isWindows){newImage = newImage.replace("\\","/");}
-            response.render('imagePage.ejs',
-            {
-                image:newImage + '?t='+ performance.now(),
-                tagField: data, h: pxArray[3], w: pxArray[2]
-            });
-        });
-    }
-});
 
 /**
  * 

@@ -18,7 +18,6 @@
 // require dependencies
 var spawn = require('child_process').spawn;
 var path = require('path');
-var jimp = require('jimp');
 var Promises = require('bluebird');
 
 // exportable functions
@@ -341,10 +340,11 @@ module.exports = {
 
 
     /**
+     * @todo probably will change this function later if cropping is brought back in
      * 
      * @param {number array} cropArray click location of the user 
      * 
-     * @returns {number array} the array of Numbers needed to crop the image using jimp js
+     * @returns {number array} the array of Numbers needed to crop the image
      * 
      * @description this function calculates the height and width of the new image and store
      *              the x,y coordinates (index 0 and 1) and the height and width of the crop
@@ -361,55 +361,6 @@ module.exports = {
         cropArray[3] = heigth;
 
         return cropArray;
-    },
-
-
-    /**
-     * 
-     * @param {string} imageLink the path to the image that jimp is going to be cropping
-     * @param {number array} cropArray the array of the coordinate that jimp needs in order to crop
-     *                       the given image 
-     * 
-     * @returns {string} the path to the newly created image
-     * 
-     * @description this function asyncrounously calls the crop function from jimp module and 
-     *              awaits for its response befor passing the string back
-     */
-    cropImage: async function(imageLink,cropArray){
-        const cubeImage = await jimp.read(imageLink);
-        var returnImage;
-
-        await cubeImage.crop(
-                            parseInt(cropArray[0]),
-                            parseInt(cropArray[1]),
-                            parseInt(cropArray[2]),
-                            parseInt(cropArray[3]),
-                            function(err){
-                                if(err) throw err;
-                                returnImage = newImageName(imageLink);
-
-                            }).write(returnImage);
-        return returnImage;
-    },
-
-
-    /**
-     * 
-     * @param {string} newImage path to the image to be analyzed
-     * 
-     * @returns {number array} the width and height of the image as a Number array
-     * 
-     * @description uses the jimp module to pull out the width and height of the image in pxls 
-     */
-    getDimensions: async function(newImage){
-        await jimp.read(newImage).then(function(img){
-            console.log('fails after READ');
-            var w = img.bitmap.width;
-            var h = img.bitmap.height;
-
-            console.log("wifdth: " + w + "And height" + h);
-            return [w,h];
-        });
     },
 
 
@@ -739,7 +690,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile){
         promises.push(imageExtraction(imagename,filepath,imagePath,logToFile));                       
 
         // this block will pass and run when all isis commands are finished
-        Promise.all(promises).then(function(){
+        Promises.all(promises).then(function(){
             resolve();
         }).catch(function(code){
             if(code === -1){
@@ -976,19 +927,4 @@ var processFile = function(inputFile){
             resolve(JSON.stringify(cubeData));
         });    
     });
-}
-
-/**
- * 
- * @param {string} imageLink link to the image file
- * 
- * @returns {string} string to new jimp/ path of the image 
- * 
- * @description created the url for the new jimp image
- */
-var newImageName = function(imageLink){
-    let imagename = imageLink.split('/');
-    imagename = imagename[imagename.length-1];
-    let newImageName = imagename.replace('.png','_crop') + '.png';
-    return path.join('jimp',newImageName);
 }
