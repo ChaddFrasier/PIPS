@@ -387,7 +387,7 @@ function makeDraggable(event){
         // reset growing factor if needed
         if( elementOver && elementOver.parentElement 
             && elementOver.parentElement.classList.contains("textbox")){
-            growingFactor *= 10;
+            growingFactor *= 5;
         }
         else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
             growingFactor *=2.5;
@@ -592,7 +592,7 @@ function makeDraggable(event){
                 || selectedElement.id === "eyePosition"){
                 if(dx && dy){
                     // set the new translate
-                    transform.setTranslate(dx,dy);
+                    transform.setTranslate(parseInt(dx),parseInt(dy));
                 }
             }
                 
@@ -1448,6 +1448,7 @@ function triggerDownload(imgURI,filename){
     a.dispatchEvent(event);
 }
 
+
 /** ----------------------------- End Helper Function ---------------------------------------------------- */
 
 /** --------------------------------- Draw Functions ----------------------------------------------------- */
@@ -1683,13 +1684,13 @@ $(document).ready(function(){
     + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
 
-    + '<text id="scalebarText" x="3950" y="150" font-family="sans-serif"'
+    + '<text id="scalebarText" x="3975" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
-    + '<text id="scalebar1" x="50" y="150" font-family="sans-serif"'
+    + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
-    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="125"'
+    + '<text id="scalebarHalf" x="1100" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white"></text>'
-    + '<text id="scalebar0" x="2100" y="150" font-family="sans-serif" font-size="125"'
+    + '<text id="scalebar0" x="2125" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white">0</text></g>';
 
 
@@ -1731,15 +1732,6 @@ $(document).ready(function(){
     makeDraggable(svg);
 
 
-    /* myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', imageSrc);
-        
-
-    // default all transforms
-    myImage.setAttribute("x","0");
-    myImage.setAttribute("y","0");
-    myImage.setAttribute("transform","scale(1)");
- */
-
     // load the users base image as base64 to embed in the svg element
     loadImageAsURL(imageSrc, function(data){
         
@@ -1754,7 +1746,6 @@ $(document).ready(function(){
         myImage.setAttribute("transform","scale(1)");
 
     });
-
 
     // if the scale bar is not none
     if(scalePX !== 'none' && !isNaN(scalePX)){
@@ -1841,13 +1832,6 @@ $(document).ready(function(){
             // read the file extenson TODO: may not be needed soon because of the fetch to server
             var fileExt = filename.split(".")[filename.split(".").length - 1];
 
-            // TODO: huge refactor here for the fetch to server for download
-
-            console.log("STARTING TIMER");
-            let time = createTimer();
-            // get the canvas information
-            canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
             // encode the svg to a string
             var data = (new XMLSerializer()).serializeToString(svg); 
 
@@ -2270,6 +2254,7 @@ $(document).ready(function(){
             g.setAttribute("y",0);
             text.setAttribute("x",0);
             text.setAttribute("y",15);
+            text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
             text.style.fontSize = "15";
             g.setAttribute("height",0);
             g.setAttribute("width",0);
@@ -2334,6 +2319,8 @@ $(document).ready(function(){
 
             // set the stroke of the text and append the elements
             text.setAttribute("stroke-width","1");
+            
+           
             svg.appendChild(g);
             let bbox = g.getBBox();
             
@@ -2341,8 +2328,6 @@ $(document).ready(function(){
                 rect3.setAttribute("x",bbox.width - 1);
                 rect4.setAttribute("x",bbox.width - 1);
             }
-            
-        
 
             textBoxArray.push(g);
             if(textBoxArray.length > 0){

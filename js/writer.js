@@ -279,9 +279,10 @@ function output(){
     var tempArr = tempText.split(' ');
     for(var i=0; i<tempArr.length; i++){
 
+        
         // get the val of the tag
-        tempArr[i] = getMetadataVal(tempArr[i]);
-
+        tempArr[i] = getMetadataVal(tempArr[i].trim());
+        
         if(hasUnits(tempArr[i])){
             tempArr[i] = removeUnits(tempArr[i]);
         }
