@@ -18,48 +18,25 @@
         <script src="js/imageEditor.js"></script>
     </head>
     <body>
-        <!-- Page Header Block-->
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto"
-            style="margin: 0%; padding: 0%">
-        <!-- Loading GIF-->
-        <div id="loading" class="float-md-right text-center lead loading">
+        <div class="container mainbox-left" style="width:15%; height: 100%;">
+            <!-- Page Header Block-->
+            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto"
+                style="margin: 1%; padding: 0%">
+        </div>
+        <div class="container mainbox-right" style="width: 15%; height:100%;">
+            <!-- Loading GIF-->
+            <div id="loading" class="float-md-right text-center lead loading">
                 <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
                 <h3 id="loadingText" style="text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
-        <div class="container" 
-        style="background: #e7c492; height: 12rem; padding: 2rem; border: 1px solid black;">
-            <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
-            <div class="jumbotron text-center" 
-            style="border: 1px solid black; background: #f3d6b0; height:7rem; padding: 0;">
-                <h2>Edit Cube Image</h2> 
-                <h4 id="imageName"></h4>  
-                <h5><%=w%> &times; <%=h%> px</h5>   
-                <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" 
-                style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;">
-                    View Caption
-                </button>
-                <a class="btn btn-primary btn-lg float-right" 
-                style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;" 
-                href="/" role="button">New Upload</a>
-            </div>
-        </div>
-        <br/>
-        <!-----------------------Editor Box----------------------------------------------->
-        <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"
-        xmlns:xlink="http://www.w3.org/1999/xlink" class="image-image" viewBox="0 0 <%=w%> <%=h%>" 
-        style="fill:rgb(1, 1, 1);" width='<%=w%>' height='<%=h%>'> 
-            <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
-            <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" 
-                transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
-        </svg>
 
-        <!--------------------------- Help Box ------------------------->
-        <div class="help-box-right" id="help-box" style="visibility: hidden;">
-            <button class="float-right helpBtn" id="hideBtn" 
-            style="width: auto; height:auto; border-radius: 5px; 
-            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-            background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
+            <!--------------------------- Help Box ------------------------->
+            <div class="help-box-right" id="help-box" style="visibility: hidden;">
+                <button class="float-right helpBtn" id="hideBtn" 
+                style="width: auto; height:auto; border-radius: 5px; 
+                border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+                background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke;font-size: 2rem;">Help</div>
                 <div class="row lead">1. Add Icons with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
@@ -72,7 +49,7 @@
                 <br/>
                 <div class="row lead">4. Draw lines using the Pencil Tool.  
                     <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.
-                         Use Esc key to remove the head after the first click)</p> 
+                            Use Esc key to remove the head after the first click)</p> 
                 </div>
                 <div class="row lead">5. Use the color pickers to change the color of the adjacent object.  
                         <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
@@ -87,34 +64,56 @@
                 </div>
                 <br/>
                 <div class="row lead">8. Click the 'Export Figure' button to save the new figure as an accepted format
-                       <p class="small-text">(Accepted Formats: png, svg, jpeg, or jpg)</p>
+                        <p class="small-text">(Accepted Formats: png, svg, jpeg, or jpg)</p>
                 </div>
             </div>
+        </div>
+        
 
-        <!-- Button Interface-->
-        <div class="container float-left" style=" top: 9%; width: 20%; height: 5%; position: absolute;
-                                                 padding: 2%; margin-left: auto; left: auto; right: auto;
-                                                 border-right: 0%; margin-right: auto;">
-            <br/>
-            <div class="image-controls">
-                <h2 class="text-right float-left" style="position: inherit; left: 8rem;">Tools</h2>
+        <div class="mainbox-center" style="width: 70%;">
+                <div class="container" 
+                style="background: #e7c492; height: 12rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black;">
+                    <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn"/>
+                    <div class="jumbotron text-center" 
+                    style="border: 1px solid black; background: #f3d6b0; height:7rem; padding: 0;">
+                        <h2>Edit Cube Image</h2> 
+                        <h4 id="imageName"></h4>  
+                        <h5><%=w%> &times; <%=h%> px</h5>   
+                        <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()" 
+                        style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;">
+                            View Caption
+                        </button>
+                        <a class="btn btn-primary btn-lg float-right" 
+                        style="border: 2px solid black; width: auto; height: 2.5rem; padding:5;" 
+                        href="/" role="button">New Upload</a>
+                    </div>
+                </div>
                 <br/>
-                <table style="width: 10rem; height:100%; table-layout:auto;">
-                    <tr>
-                        <th colspan="2" class="text-left float-center">
-        <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
-    <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
-                            
-                            <li style="margin-top:.5rem; border-top: 4px solid black">
+                <!-- Button Interface-->
+                <div class="container float-left" style=" top: 10%; width: 15%; height: 90%;
+                padding: 0%; margin-left: 0%; left: auto; right: auto;
+                border-right: 0%; margin-right: auto;">
+                
+                <h2 class="text-left" style="margin:0; margin-left: 25%; margin-right:auto;">Tools</h2>
+                
+                <div class="image-controls">
+                    
+                    <table style="width: 3%; height:30rem; table-layout:auto; margin-left: 0%; margin-right:auto;
+                                top: 0; margin-bottom: auto; margin-top: 0%;">
+                        <tr>
+                            <th colspan="2" class="text-left float-left">
+                <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
+                <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
+
+                            <li style="margin-top:0rem; border-top: 4px solid black">
                                 <p class="float-left" style="margin-right:.5rem;">North<br/>Azimuthal<br/>Direction</p>
                                 <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
-                                
+
                                 <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
                                     Toggle Color
                                 </label>
                                 <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
-                                style="visibility: hidden; top:6rem; left: 17rem;">
-                                
+                                style="visibility: hidden;">
                             </li>
                             <li>
                                 <p class="float-left" style="margin-right: .5rem;">Sun<br/>Azimuthal<br/>Direction</p>
@@ -128,7 +127,7 @@
                                     Toggle Color
                                 </label>
                                 <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
-                                style="top: 11rem; left: 17rem; visibility: hidden;">
+                                style="visibility: hidden;">
                             </li>
                             <li>
                                 <p class="float-left" style="margin-right: .5rem;">
@@ -139,7 +138,7 @@
                                     Toggle Color
                                 </label>
                                 <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
-                                style="top: 15.5rem; left: 17rem; visibility: hidden;">
+                                style="visibility: hidden;">
                             </li>
                             <li>
                                 <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
@@ -165,7 +164,7 @@
                                         <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
                                         stroke="black" stroke-width=".75"/>
                                         <path id="scalebarVert30th" d="M 5 0 L 5 4" stroke="black" stroke-width=".75"/>
-                                      
+
                                         <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
                                         stroke="black" stroke-width=".75"/>
                                         <path id="scalebarVert50th" d="M 10 0 L 10 4"
@@ -181,19 +180,19 @@
                                 <label id="scaleCheckboxLabel" for="scaleCheckbox"
                                 style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
                                 <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
-                                style="top: 25.75rem; left: 16rem; visibility: hidden;">
+                                style="visibility: hidden; left: 2rem; top:.25rem;">
                             </li>
                             <li>
                                 <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">
                                     Outline<br/>Box
                                 </p>
                                 <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
-                                <svg viewBox="0 0 2 1.5">
-                                    <rect x="0" y="0" width="2" height="1.5" 
-                                    stroke="white" stroke-width=".5" fill="transparent"></rect>
-                                </svg>
+                                    <svg viewBox="0 0 2 1.5">
+                                        <rect x="0" y="0" width="2" height="1.5" 
+                                        stroke="white" stroke-width=".5" fill="transparent"></rect>
+                                    </svg>
                                 </button>
-                                
+
                                 <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
                                 <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">
                                     Undo
@@ -202,11 +201,11 @@
                             <li>
                                 <p class="float-left" style="margin-right: 2rem; padding-top:.5rem;">Text<br/>Tool</p>
                                 <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
-                                <svg viewBox="0 0 20 8">
-                                    <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
-                                    fill="transparent"></rect>
-                                    <text x="3" y="7" font-size="9">Aa</text>
-                                </svg>
+                                    <svg viewBox="0 0 20 8">
+                                        <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
+                                        fill="transparent"></rect>
+                                        <text x="3" y="7" font-size="9">Aa</text>
+                                    </svg>
                                 </button>
                                 <input type="color" id="textColorPicker" 
                                 style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
@@ -214,20 +213,20 @@
                                     Undo
                                 </button>
                             </li>
-                            <li style="height: 12rem; width: auto; padding: 0; padding-top: 0rem; padding-left: 1rem;">
+                            <li style="height: 12rem; padding: 0; padding-top: 0rem; padding-left: 1rem;">
                                 <h2 class="text-left" style="padding-left: .5rem; color: white;"> Pad Image</h2>
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
-                                        <div class="col" style="padding:0; margin-right: 1rem;">
-                                            <input class="form-control form-control-lg"
-                                            style="width: 10rem; border: 1px solid lightgrey;"
-                                            id="paddingInput" type="text" placeholder="Pad Pixels"/>
-                                        </div>
-                                        <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
-                                            <button  style="left: 15rem; top: 0rem;"
-                                             class="btn btn-danger btn-md button" id="resetPaddingBtn">Reset</button>
-                                        </div>
+                                    <div class="col" style="padding:0; margin-right: 1rem;">
+                                        <input class="form-control form-control-lg"
+                                        style="width: 10rem; border: 1px solid lightgrey;"
+                                        id="paddingInput" type="text" placeholder="Pad Pixels"/>
+                                    </div>
+                                    <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
+                                        <button  style="left: 15rem; top: 0rem;"
+                                            class="btn btn-danger btn-md button" id="resetPaddingBtn">Reset</button>
+                                    </div>
                                 </div>
-                            
+
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
                                     <div class="col" style="top:0; padding: 0; left: 0rem;">
                                         <button class="btn button btn-md" id="topPaddingBtn"> Top </button> 
@@ -235,7 +234,7 @@
                                     <div class="col" style="top:0rem; padding: 0; left: 0rem;">
                                         <button class="btn button btn-md" id="bottomPaddingBtn"> Bottom </button>
                                     </div>
-                                
+
                                     <div class="col"style="top:0rem;padding: 0; left: 0rem;">
                                         <button class="btn button btn-md" id="leftPaddingBtn"> Left </button> 
                                     </div>
@@ -248,7 +247,7 @@
                                 <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
                                     <div class="col" style="padding: 0; top: 0rem">
                                         <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">
-                                            Save<br/>Figure
+                                        Save<br/>Figure
                                         </p>
                                         <button class="btn btn-primary btn-lg button" 
                                         style="width: 4rem;" id="exportBtn" >
@@ -267,12 +266,26 @@
                                     </div>
                                 </div>
                             </li>
-                        </th>
-                    </tr>
-                </table>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
             </div>
-        </div>
+            <!-----------------------Editor Box----------------------------------------------->
+            <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"
+            xmlns:xlink="http://www.w3.org/1999/xlink" class="image-image" viewBox="0 0 <%=w%> <%=h%>" 
+            style="fill:rgb(1, 1, 1);" width='<%=w%>' height='<%=h%>'> 
+                <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+                <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" 
+                    transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
+            </svg>
+
+            <!--  Progress bar -->
+            <div id="progressBar" style="visibility: hidden;">
+                <div id="mainBar"></div>
+            </div> 
         
+        </div>
         <br/>
         <!-- Hidden Tags for data parsing-->
         <div id="metadata" style="display:none;"  class="text-center green-border-focus">
@@ -291,15 +304,6 @@
                 style="resize: vertical; font-size: 22px;"></textarea>
             </div>
 
-            <!--  Progress bar -->
-            <div id="progressBar" style="visibility: hidden;">
-                <div id="mainBar"></div>
-              </div> 
-
-              <!--TODO: may not be needed later -->
-            <!-- Canvas for extracting inline svg-->
-            <canvas id="canvas" width="<%=w%>" height="<%=h%>" 
-                style="display:none; border: 5px solid black; fill: rgb(255, 255, 255);" ></canvas>
 
         <div id="imageDimensions" style="display: none;">
             <p id="width"><%=w%></p>
