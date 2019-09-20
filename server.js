@@ -10,17 +10,13 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/16/19
+ * @updated 09/19/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that.
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
  *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
- * 
- * @todo 11 '/figureDownload' will need to create an image of the correct type for the filename
- * @todo 12 it will need to then send the new image to the user for download
- * 
  * 
  * 
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
@@ -114,7 +110,7 @@ const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const {performance} = require('perf_hooks');
 const bodyParser = require("body-parser");
-const svg2img = require('svg2img');
+const svg2img = require("svg2img");
 
 // include custom utility functions
 const util = require('./util.js');
