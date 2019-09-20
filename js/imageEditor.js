@@ -986,9 +986,7 @@ function setImagePadding(val,location){
             // adjust the height and set the width to what it should be
             bg.setAttribute("height", imageH);
             bg.setAttribute("width",w);
-            // same with canvas to allow exporting the padding
-            canvas.setAttribute("height", imageH);
-            canvas.setAttribute("width",w);
+    
             // fix the svg to properly export all content
             svg.setAttribute("height", imageH);
             svg.setAttribute("width",w);
@@ -1008,9 +1006,7 @@ function setImagePadding(val,location){
             
             // set the viewbox values 
             svg.setAttribute("viewBox", "0 " + String(val*-1) + " " + w + " " + imageH);
-            // same with canvas to allow exporting the padding
-            canvas.setAttribute("height", imageH);
-            canvas.setAttribute("width",w);
+            
             // fix the svg to properly export all content
             svg.setAttribute("height", imageH);
             svg.setAttribute("width",w);
@@ -1030,9 +1026,7 @@ function setImagePadding(val,location){
             
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 "  + imageW + " " + h);
-            // same with canvas to allow exporting the padding
-            canvas.setAttribute("width", imageW);
-            canvas.setAttribute("height",h);
+            
             // fix the svg to properly export all content
             svg.setAttribute("width", imageW);
             svg.setAttribute("height",h);
@@ -1053,9 +1047,7 @@ function setImagePadding(val,location){
             
             // set the viewbox values 
             svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " " + h);
-            // same with canvas to allow exporting the padding
-            canvas.setAttribute("width", imageW);
-            canvas.setAttribute("height",h);
+            
             // fix the svg to properly export all content
             svg.setAttribute("width", imageW);
             svg.setAttribute("height",h);
@@ -1074,9 +1066,7 @@ function setImagePadding(val,location){
 
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-            // same with canvas to allow exporting the padding
-            canvas.setAttribute("width", w);
-            canvas.setAttribute("height",h);
+            
             // fix the svg to properly export all content
             svg.setAttribute("width", w);
             svg.setAttribute("height",h);
@@ -1531,8 +1521,7 @@ $(document).ready(function(){
 
 
     // get padding input box and other important DOM elements for export
-    var paddingBoxInput = document.getElementById("paddingInput"),
-        canvas = document.getElementById("canvas");
+    var paddingBoxInput = document.getElementById("paddingInput");
 
     bg = document.getElementById("svgBackground");
     
