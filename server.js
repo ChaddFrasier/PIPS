@@ -270,8 +270,6 @@ app.get('/captionWriter',function(request,response){
         }else{
             response.redirect("/?alertCode=4");
         }
-
-
     }
 });
 
@@ -353,7 +351,6 @@ app.post('/captionWriter', async function(request, response){
                    
             }
 
-
             // save the cube upload to upload folder
             await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
@@ -414,7 +411,7 @@ app.post('/captionWriter', async function(request, response){
                 }
             }else{
                 // otherwise ignore and default
-                cubeObj.userDim = [0,0];
+                cubeObj.userDim = [900,900];
             }
             
             // reset server tif val because conversion completed
