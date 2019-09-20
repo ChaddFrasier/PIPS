@@ -26,7 +26,7 @@ text{
 .mainbox-center{
     float: center;
     height: auto;
-    border: 10px solid grey;
+    border: 10px;
     margin-left: 15%;
     margin-right: auto;
 }
