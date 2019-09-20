@@ -915,6 +915,32 @@ getNameWithVal = function(val){
     }
 }
 
+
+/**
+ * this code can be used to render a loading bar for the image as it is being sent from the server
+ * Although since the ISIS Reduce call shrinks the size of the cube file, a loading bar in not really that necessary
+ */
+
+Image.prototype.load = function(url){
+    var thisImg = this;
+    var xmlHTTP = new XMLHttpRequest();
+    xmlHTTP.open('GET', url,true);
+    xmlHTTP.responseType = 'arraybuffer';
+    xmlHTTP.onload = function(e) {
+        var blob = new Blob([this.response]);
+        thisImg.src = window.URL.createObjectURL(blob);
+    };
+    xmlHTTP.onprogress = function(e) {
+        thisImg.completedPercentage = parseInt((e.loaded / e.total) * 100);
+    };
+    xmlHTTP.onloadstart = function() {
+        thisImg.completedPercentage = 0;
+    };
+    xmlHTTP.send();
+};
+
+Image.prototype.completedPercentage = 0;
+
 /**
  * @function loadImageAsURL
  * 
@@ -1728,13 +1754,16 @@ $(document).ready(function(){
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', data);
         
-
         // default all transforms
         myImage.setAttribute("x","0");
         myImage.setAttribute("y","0");
         myImage.setAttribute("transform","scale(1)");
 
     });
+
+/*  // This is how you can have a progress bar for the loading of an image onto the server
+    var loadingImg = new Image();
+    loadingImg.load(imageSrc); */
 
     // if the scale bar is not none
     if(scalePX !== 'none' && !isNaN(scalePX)){
