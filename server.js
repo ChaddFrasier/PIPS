@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/19/19
+ * @updated 09/20/19
  *
  * 
  * @todo 8 log the isis returns to a file if the user wants that.
@@ -322,7 +322,6 @@ app.post('/captionWriter', async function(request, response){
                 // create a random 23 character user id
                 uid = util.createUserID(23);
                 // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) 
-                // TODO: (TEST SERVER USING SHORT EXPIRE TIMES)
                 response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
             }
 
@@ -1018,7 +1017,6 @@ app.post("/pow",function(request, response){
  * 
  * 
  */
-// TODO: get svg image src working somehow (probably after install from IT)
 app.post("/figureDownload", async function(request, response){
     console.log(request.url);
     // get the filename that the user entered

@@ -13,8 +13,6 @@
  * @todo file loging for isis calls
  */
 
-//TODO: include fs here
-
 // require dependencies
 var spawn = require('child_process').spawn;
 var path = require('path');
@@ -170,7 +168,6 @@ module.exports = {
      * 
      * @description converts tiff to cube for later processing 
      * 
-     * @todo this will need a log to file flag
      */
     tiffToCube: function(tiffName, logToFile) {
         return new Promise(function(resolve, reject){

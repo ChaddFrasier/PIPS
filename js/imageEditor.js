@@ -751,7 +751,6 @@ function captionHandler(){
     }
 }
 
-//TODO: finish the logic in this function
 /**
  * @function growProgress
  * 
@@ -1825,7 +1824,6 @@ $(document).ready(function(){
 
 
     /** ------------------------------- Export Functions ------------------------------------------------- */
-    //TODO: this needs to be commented and finished
     /**
      * @function exportBtn 'click' event handler
      * 
@@ -1847,7 +1845,7 @@ $(document).ready(function(){
 
         // if the file is not null
         if(filename !== null){
-            // read the file extenson TODO: may not be needed soon because of the fetch to server
+            // read the file extenson
             var fileExt = filename.split(".")[filename.split(".").length - 1];
 
             // encode the svg to a string
