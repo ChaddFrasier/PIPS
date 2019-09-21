@@ -31,7 +31,7 @@ uploads when the user should already have the file.
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
 to a whole new scope of users and data.
 
-[Current Edit Page](https://i.imgur.com/M3qjZwt.png)
+![Current Edit Page](https://i.imgur.com/M3qjZwt.png)
 
 ## Developing
 
