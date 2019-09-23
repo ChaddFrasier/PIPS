@@ -71,38 +71,42 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 1%;">
-                <div class="container float-left" 
-                style="width: 50%; max-width: none; border: 0 solid blue; margin-left: 0; margin-right: auto;"> 
-                    <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
-                        <label for="template-text-output">
-                            <h3 class="display-5 alert alert-secondary" 
-                            style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
-                        </label>
-                        <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
-                            style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
-                            <br/>
+                <div class="col-6">
+                    <div class="container float-left" 
+                    style="width: 100%; max-width: none; border: 0 solid blue; margin-left: 0; margin-right: auto;"> 
+                        <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
+                            <label for="template-text-output">
+                                <h3 class="display-5 alert alert-secondary" 
+                                style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
+                            </label>
+                            <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
+                                style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
+                                <br/>
 
-                        <form class="lg-form text-center float-left" style="margin: 0;">
-                            <div class="form-group">
-                                <a class="btn button text-white btn-lg" 
-                                style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
-                                id="link" download="<%=outputName%>">
-                                    Download Caption
-                                </a>
-                            </div>
-                        </form>
+                            <form class="lg-form text-center float-left" style="margin: 0;">
+                                <div class="form-group">
+                                    <a class="btn button text-white btn-lg" 
+                                    style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
+                                    id="link" download="<%=outputName%>">
+                                        Download Caption
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <br/>
-                <!-- Editing Box-->
-                <div id="template" class="float-right text-center form-group" style="margin-left: auto; margin-right: 0; width: 50%;">
-                    <label for="template-text">
-                        <h3 class="display-5 alert alert-secondary" 
-                        style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
-                    </label>
-                    <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                        style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
-                    </textarea>
+                <div class="col-6">
+                    <!-- Editing Box-->
+                    <div id="template" class="float-right text-center form-group" style="margin-left: auto; margin-right: 0; width: 100%;">
+                        <label for="template-text">
+                            <h3 class="display-5 alert alert-secondary" 
+                            style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
+                        </label>
+                        <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
+                            style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
+                        </textarea>
+                    </div>
                 </div>
             </div>
             <div style="margin-left: auto; margin-right:auto;">
