@@ -14,85 +14,154 @@
         <script src="js/writer.js"></script>
     </head>
     <body>
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" 
-        style="margin: 0%; padding: 0%">
-        <br>
-        <div id="loading" class="float-md-right text-center lead loading">
-            <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
+        <div class="mainbox-left">
+            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto" 
+            style="margin: 0%; padding: 0%">
             <br>
-            <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
         </div>
-        
-        <div class="container" 
-        style="height: 11rem; width: 75%; padding: 0; border-top: 1px; border-left: 1px; 
-        border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
-            <div class="jumbotron text-center" 
-            style="height: 68%; padding: 2rem; border: 1px solid black; padding-top: 1rem; 
-            padding-bottom:0;background-color: #e7c492;">
-                <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
-                <h1 class="display-5" style="margin: 0;float: center;">Upload Successful</h1>
-                <p class="lead" style="margin-bottom:2rem; color: black;">Edit in the bottom box using tags in the middle box</p>
-                <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
-                style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
+            
+        <div class="mainbox-right">
+            <div id="loading" class="text-center loading">
+                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
+                <br>
+                <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
+            </div>
 
-                <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
-                    <div class="form-group">
-                        <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
-                        style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
-                        onclick="loaderActivate()" />
-                    </div>
-                </form>
+
+            <div class="help-box" id="help-box" style="visibility: hidden; margin-right: 2%; margin-left: auto;">
+                <button class="float-right button" id="hideBtn" 
+                style="width: auto; height:auto; border-radius: 5px; 
+                background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+                background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
+                </button>
+                <div class="container title" style="background: whitesmoke; ">Help</div>
+                <div class="row lead"> 1. Type your caption in the bottom box</div>
+                <br/>
+                <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
+                <br/>
+                <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags
+                    <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
+                </div>
+                <br/>
+                <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
             </div>
         </div>
+
+        <div class="mainbox-center">
+            <div class="container" 
+            style="height: 11rem; max-width: none; padding: 0; border-top: 1px; border-left: 1px; 
+            border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
+                <div class="jumbotron text-center" 
+                style="height: 68%; padding: 2rem; width: inherit; border: 1px solid black; padding-top: 1rem; 
+                padding-bottom:0;background-color: #e7c492;">
+                    <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
+                    <h1 class="display-5" style="margin: 0;float: center;">Upload Successful</h1>
+                    <p class="lead" style="margin-bottom:2rem; color: black;">Edit in the bottom box using tags in the middle box</p>
+                    <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
+                    style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
+    
+                    <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
+                        <div class="form-group">
+                            <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
+                            <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
+                            style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
+                            onclick="loaderActivate()" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 1%;">
+                <div class="container float-left" 
+                style="width: 50%; max-width: none; border: 0 solid blue; margin-left: 0; margin-right: auto;"> 
+                    <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
+                        <label for="template-text-output">
+                            <h3 class="display-5 alert alert-secondary" 
+                            style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
+                        </label>
+                        <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
+                            style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
+                            <br/>
+
+                        <form class="lg-form text-center float-left" style="margin: 0;">
+                            <div class="form-group">
+                                <a class="btn button text-white btn-lg" 
+                                style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
+                                id="link" download="<%=outputName%>">
+                                    Download Caption
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br/>
+                <!-- Editing Box-->
+                <div id="template" class="float-right text-center form-group" style="margin-left: auto; margin-right: 0; width: 50%;">
+                    <label for="template-text">
+                        <h3 class="display-5 alert alert-secondary" 
+                        style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
+                    </label>
+                    <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
+                        style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
+                    </textarea>
+                </div>
+            </div>
+            <div style="margin-left: auto; margin-right:auto;">
+                <div class="row">
+                    <!-- Active Tag Box -->
+                    <div class="col-2"></div>
+                    
+                    <div class="col-8" style="text-align: center;">
+                        <label for="test" class="float-center text-center" style="margin: 0; position: relative; padding: 0;">
+                            <h3 class="display-5 alert alert-secondary" 
+                            style="border: 2px solid black; margin-left: 0; margin-right: auto; background: #63585e; color: white;">
+                                Usable Tags
+                            </h3>
+                        </label>
+                    </div>
+                    <div class="col-2"></div>
+                </div>
+            <div class="row" style="width: 100%;"> 
+                <div class="col-2" style="height:100%; margin-top: auto; margin-bottom: auto;">
+                    <div class="float-center" style="text-align:center; width:75%; margin-left: auto; margin-right:auto;  margin-bottom: auto;">
+                        <label for="filterInput" class="alert alert-light float-left" 
+                        style="color:black; width: auto; height:10%; padding:3px;">
+                            <h4>Search for keywords</h4>
+                        </label>
+                        <br/>
+                        <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Search" 
+                        style="background-color: rgba(255,255,255); text-align: inherit; margin-left: auto; margin-right: auto; color:black;
+                            border: 1.5px solid black;">
+                        <br/>
+                        <br/>
+                        <button id="button-more-tags" class="btn btn-md button float-left" 
+                        style=" border: 2px solid black; margin-left: auto; margin-right:auto; margin-top:2%; width: auto;" 
+                        onclick="showMoreTags()">Show Important Tags</button>
+                    </div> 
+                </div>
+                <div class="col-8" style="width: 100%;">
+                    <textarea readonly id="test" class="form-control bg-white text-dark metadata"
+                        style="resize: vertical; font-size: 23px; border: 2px solid black; width: 100%;" rows="7"></textarea>
+                </div>
+                <div class="col-2" style="width: 5%; margin-top: auto; margin-bottom: auto;">
+                    <form action="/csv" method='POST' class="lg-form text-center float-left" 
+                    style="margin: 0;  margin-top:1rem;">
+                        <div class="lg-form text-center" style="margin: 0;">
+                            <input type="hidden" value="<%= wholeData %>" id="passedTXT">
+                            <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
+                            <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
+                            style="width: 13rem; border: 2px solid black; padding: 7px;" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        
         <!-- for passing server vaiables to the script -->
         <div id="pageVariables" style="display: none;">
             <p id="outputName"><%=outputName%></p>
         </div>
-        
-        <div class="help-box" id="help-box" style="visibility: hidden;">
-            <button class="float-right helpBtn" id="hideBtn" 
-            style="width: auto; height:auto; border-radius: 5px; 
-            background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-            background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
-            </button>
-            <div class="container title" style="background: whitesmoke; ">Help</div>
-            <div class="row lead"> 1. Type your caption in the bottom box</div>
-            <br/>
-            <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
-            <br/>
-            <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags
-                <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
-            </div>
-            <br/>
-            <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
-        </div>
-
-        <div class="container float-center" 
-        style="width: 75%; border: 0 solid blue; margin:0; margin-left: auto; margin-right:auto;"> 
             
-            <div id="template-output" class="text-center form-group metadata" style="margin: 0;">
-                <label for="template-text-output">
-                    <h3 class="display-5 alert alert-secondary" 
-                    style="border: 2px solid black; background: #63585e; color: white;">Template Text Output</h2>
-                </label>
-                <textarea readonly id="template-text-output" class="form-control bg-white text-dark metadata"
-                    style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
-                    <br/>
-
-                <form class="lg-form text-center float-right" style="margin: 0;">
-                    <div class="form-group">
-                        <a class="btn button text-white btn-lg" 
-                        style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
-                        id="link" download="<%=outputName%>">
-                            Download Caption
-                        </a>
-                    </div>
-                </form>
-            </div>
-
-            <br/>
-            <br/>
             <!-- Invisible Boxes -->
             <div id="metadata" style = "display: none;" class="text-center green-border-focus">
                 <label for="metadata-text">
@@ -129,54 +198,5 @@
             <!-- End Invisible Boxes -->
 
             <br/>
-            <!-- Active Tag Box -->
-            <div id="test-metadata" class="text-center float-center form-group" style="margin-top: 0;">
-                <label for="test" class="float-center" style="margin: 0;">
-                    <h3 class="display-5 alert alert-secondary" 
-                    style="border: 2px solid black; margin: inherit; background: #63585e; color: white;">
-                        Usable Tags
-                    </h3>
-                </label>
-                <br/>
-                <div class="float-left" style="text-align:center; margin: 0; margin-bottom: 1rem;">
-                    <label for="filterInput" class="alert alert-light" 
-                    style="color:black; width: auto; height:40px; padding:3px;">
-                        <h4>Search for keywords</h4>
-                    </label>
-                    <br/>
-                    <input id="filterInput" class="form-control-md" type="text" placeholder="Search" 
-                    style="background-color: rgba(255,255,255); text-align: inherit; margin:inherit; color:black;
-                        border: 1.5px solid black;">
-                </div>
-                <br/>
-                <textarea readonly id="test" class="form-control bg-white text-dark metadata"
-                    style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
-                <button id="button-more-tags" class="btn btn-md button float-left" 
-                    style=" border: 2px solid black; margin: 0; margin-top:1rem; width: auto;" 
-                    onclick="showMoreTags()">Show Important Tags</button>
-                
-                <form action="/csv" method='POST' class="lg-form text-center float-right" 
-                style="margin: 0;  margin-top:1rem;">
-                    <div class="lg-form text-center" style="margin: 0;">
-                        <input type="hidden" value="<%= wholeData %>" id="passedTXT">
-                        <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                        <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
-                        style="width: 13rem; border: 2px solid black; padding: 7px;" />
-                    </div>
-                </form>
-            </div>
-            <br/>
-            <br/>
-            <!-- Editing Box-->
-            <div id="template" class="float-center text-center form-group" style="margin-top: 1;">
-                <label for="template-text">
-                    <h3 class="display-5 alert alert-secondary" 
-                    style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h2>
-                </label>
-                <textarea id="template-text" class="form-control bg-white text-dark" rows="7"
-                    style="resize: vertical; font-size: 22px; border: 2px solid black;"><%= templateText %>
-                </textarea>
-            </div>
-        </div>
     </body>
 </html>
