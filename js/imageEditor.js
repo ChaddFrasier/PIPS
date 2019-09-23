@@ -2264,18 +2264,28 @@ $(document).ready(function(){
             
             var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-
+            // draggable group 
             g.setAttribute("class","draggable confine textbox");
             g.setAttribute("x",0);
             g.setAttribute("y",0);
+            // text attributes start location
             text.setAttribute("x",0);
             text.setAttribute("y",15);
+            // text offset location
+            text.setAttribute("dx",0);
+            text.setAttribute("dy",0);
+            // text font family to fix issue #66
+            text.setAttribute("font-family","sans-serif");
+            // default the letter spacing for all browsers
             text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
+            // font size
             text.style.fontSize = "15";
+            // set draggable group defaults
             g.setAttribute("height",0);
             g.setAttribute("width",0);
             g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize*2 + ")");
 
+            // create rectangles on all corners for scaling the text
             var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect.setAttribute("x",0);
             rect.setAttribute("y",13);
@@ -2283,7 +2293,6 @@ $(document).ready(function(){
             rect.setAttribute("height", 5);
             rect.style.visibility = "hidden";
             rect.setAttribute("class","resize bottom-left");
-
 
             var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect2.setAttribute("x",0);
@@ -2310,12 +2319,11 @@ $(document).ready(function(){
             rect4.setAttribute("fill","blue");
             rect4.style.visibility = "hidden";
             rect4.setAttribute("class","resize bottom-right");
-            
-
-            
-            g.style.pointerEvents = "visible"
+            // default pointer events
+            g.style.pointerEvents = "all"
+            // set the innerHTML of the text element to user input
             text.innerHTML = textboxVal;
-            // append the scaleing corners
+            // append the scaleing corners and text to the group in sopecific order
             g.appendChild(text);
             g.appendChild(rect);
             g.appendChild(rect2);
@@ -2336,19 +2344,22 @@ $(document).ready(function(){
             // set the stroke of the text and append the elements
             text.setAttribute("stroke-width","1");
             
-           
+            // append the finished group graphic to the svg
             svg.appendChild(g);
             let bbox = g.getBBox();
-            
+            // set the scaling boxes x value to the end of the bbox
+            // this auto finds the relative length of the text element
             if(strlength > 1){
                 rect3.setAttribute("x",bbox.width - 1);
                 rect4.setAttribute("x",bbox.width - 1);
             }
-
+            // track the new text element
             textBoxArray.push(g);
+            // set the visiblity of the undo btn
             if(textBoxArray.length > 0){
                 document.getElementById("undoText").style.visibility = "visible";
             }
+            // reset the draggable functions
             makeDraggable(svg);
         }
     });
