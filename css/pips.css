@@ -156,11 +156,12 @@ input[type=color]:hover{
 
 svg{ 
     position: relative;
-    float: center; 
+    float: center;
+    align-content: right; 
     top: 0; 
     left: auto;
-    right: auto;
-    margin-right: auto;
+    right: 0;
+    margin-right: 0;
     margin-left: auto;
     border: 0%; 
 }

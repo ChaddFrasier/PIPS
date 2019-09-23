@@ -89,202 +89,207 @@
                     </div>
                 </div>
                 <br/>
-                <!-- Button Interface-->
-                <div class="container float-left" style=" top: 10%; width: 15%; height: 90%;
-                padding: 0%; margin-left: 0%; left: auto; right: auto;
-                border-right: 0%; margin-right: auto;">
-                
-                <h2 class="text-left" style="margin:0; margin-left: 25%; margin-right:auto;">Tools</h2>
-                
-                <div class="image-controls">
-                    
-                    <table style="width: 3%; height:30rem; table-layout:auto; margin-left: 0%; margin-right:auto;
-                                top: 0; margin-bottom: auto; margin-top: 0%;">
-                        <tr>
-                            <th colspan="2" class="text-left float-left">
-                <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
-                <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
+                <div class="row">
+                    <div class="col-2">
+                        <!-- Button Interface-->
+                        <div class="container float-left" style=" top: 10%; width: 15%; height: 90%;
+                        padding: 0%; margin-left: 0%; left: auto; right: auto;
+                        border-right: 0%; margin-right: auto;">
+                        
+                        <h2 class="text-left" style="margin:0; margin-left: 25%; margin-right:auto;">Tools</h2>
+                        
+                        <div class="image-controls">
+                            
+                            <table style="width: 3%; height:30rem; table-layout:auto; margin-left: 0%; margin-right:auto;
+                                        top: 0; margin-bottom: auto; margin-top: 0%;">
+                                <tr>
+                                    <th colspan="2" class="text-left float-left">
+                        <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
+                        <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
 
-                            <li style="margin-top:0rem; border-top: 4px solid black">
-                                <p class="float-left" style="margin-right:.5rem;">North<br/>Azimuthal<br/>Direction</p>
-                                <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
+                                    <li style="margin-top:0rem; border-top: 4px solid black">
+                                        <p class="float-left" style="margin-right:.5rem;">North<br/>Azimuthal<br/>Direction</p>
+                                        <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
 
-                                <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
-                                    Toggle Color
-                                </label>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
-                                style="visibility: hidden;">
-                            </li>
-                            <li>
-                                <p class="float-left" style="margin-right: .5rem;">Sun<br/>Azimuthal<br/>Direction</p>
-                                <svg class="btn btn-lg button" height="10" 
-                                viewBox="0 0 50 50"role="button" id="sunIconFlag">
-                                    <circle cx="25" cy="25" r="5" stroke="black"></circle>
-                                    <circle cx="25" cy="25" r="20" stroke="black" fill="transparent" stroke-width="5">
-                                    </circle>
-                                </svg>
-                                <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">
-                                    Toggle Color
-                                </label>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
-                                style="visibility: hidden;">
-                            </li>
-                            <li>
-                                <p class="float-left" style="margin-right: .5rem;">
-                                    Observer<br/>Azimuthal<br/>Direction
-                                </p>
-                                <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
-                                <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">
-                                    Toggle Color
-                                </label>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
-                                style="visibility: hidden;">
-                            </li>
-                            <li>
-                                <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
-                                <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">
-                                    Drawing<br/>Tool
-                                </p>
-                                <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
-                                <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">
-                                    Undo
-                                </button>
-                            </li>
-                            <li>
-                                <p class="float-left" style="margin-right: .5rem; padding-top: .5rem;">Scalebar</p>
-                                <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
-                                    <svg viewBox= "0 0 25 4">
-                                        <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
-                                        stroke="black" fill="white" ></rect>
-                                        <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert" d="M 15 0 L 15 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
-                                        <path id="scalebarLine10th" d="M 0 2 L 2.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert30th" d="M 5 0 L 5 4" stroke="black" stroke-width=".75"/>
-
-                                        <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 10 0 L 10 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine70th" d="M 5 2 L 7.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine90th" d="M 10 2 L 12.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                    </svg>
-                                </button>
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox"
-                                style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
-                                style="visibility: hidden; left: 2rem; top:.25rem;">
-                            </li>
-                            <li>
-                                <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">
-                                    Outline<br/>Box
-                                </p>
-                                <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
-                                    <svg viewBox="0 0 2 1.5">
-                                        <rect x="0" y="0" width="2" height="1.5" 
-                                        stroke="white" stroke-width=".5" fill="transparent"></rect>
-                                    </svg>
-                                </button>
-
-                                <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">
-                                    Undo
-                                </button>
-                            </li>
-                            <li>
-                                <p class="float-left" style="margin-right: 2rem; padding-top:.5rem;">Text<br/>Tool</p>
-                                <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
-                                    <svg viewBox="0 0 20 8">
-                                        <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
-                                        fill="transparent"></rect>
-                                        <text x="3" y="7" font-size="9">Aa</text>
-                                    </svg>
-                                </button>
-                                <input type="color" id="textColorPicker" 
-                                style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">
-                                    Undo
-                                </button>
-                            </li>
-                            <li style="height: 12rem; padding: 0; padding-top: 0rem; padding-left: 1rem;">
-                                <h2 class="text-left" style="padding-left: .5rem; color: white;"> Pad Image</h2>
-                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
-                                    <div class="col" style="padding:0; margin-right: 1rem;">
-                                        <input class="form-control form-control-lg"
-                                        style="width: 10rem; border: 1px solid lightgrey;"
-                                        id="paddingInput" type="text" placeholder="Pad Pixels"/>
-                                    </div>
-                                    <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
-                                        <button  style="left: 15rem; top: 0rem;"
-                                            class="btn btn-danger btn-md button" id="resetPaddingBtn">Reset</button>
-                                    </div>
-                                </div>
-
-                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
-                                    <div class="col" style="top:0; padding: 0; left: 0rem;">
-                                        <button class="btn button btn-md" id="topPaddingBtn"> Top </button> 
-                                    </div>
-                                    <div class="col" style="top:0rem; padding: 0; left: 0rem;">
-                                        <button class="btn button btn-md" id="bottomPaddingBtn"> Bottom </button>
-                                    </div>
-
-                                    <div class="col"style="top:0rem;padding: 0; left: 0rem;">
-                                        <button class="btn button btn-md" id="leftPaddingBtn"> Left </button> 
-                                    </div>
-                                    <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;">
-                                        <button class="btn button btn-md" id="rightPaddingBtn"> Right </button> 
-                                    </div>
-                                </div>
-                            </li>
-                            <li style="border-bottom: 4px solid black;">
-                                <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
-                                    <div class="col" style="padding: 0; top: 0rem">
-                                        <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">
-                                        Save<br/>Figure
+                                        <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
+                                            Toggle Color
+                                        </label>
+                                        <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
+                                        style="visibility: hidden;">
+                                    </li>
+                                    <li>
+                                        <p class="float-left" style="margin-right: .5rem;">Sun<br/>Azimuthal<br/>Direction</p>
+                                        <svg class="btn btn-lg button" height="10" 
+                                        viewBox="0 0 50 50"role="button" id="sunIconFlag">
+                                            <circle cx="25" cy="25" r="5" stroke="black"></circle>
+                                            <circle cx="25" cy="25" r="20" stroke="black" fill="transparent" stroke-width="5">
+                                            </circle>
+                                        </svg>
+                                        <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem; visibility: hidden;">
+                                            Toggle Color
+                                        </label>
+                                        <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
+                                        style="visibility: hidden;">
+                                    </li>
+                                    <li>
+                                        <p class="float-left" style="margin-right: .5rem;">
+                                            Observer<br/>Azimuthal<br/>Direction
                                         </p>
-                                        <button class="btn btn-primary btn-lg button" 
-                                        style="width: 4rem;" id="exportBtn" >
-                                            <svg viewBox="0 0 20 25">
-                                                <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
-                                                <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
-                                                L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
-                                                fill="white" stroke="white"></path>
-                                                <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 
-                                                L 12 5" stroke="black" fill="black"></path>
-                                                <path d="M 2 17 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 17 
-                                                a1,1 0 0 0 -1,-1 L 3 16 a1,1 0 0 0 -1,1"
-                                                fill="white" stroke="white"></path>
+                                        <img class="btn btn-lg button" id="eyeFlag"  src="/images/eye_symbol.png"></img>
+                                        <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top: 20rem; visibility: hidden;">
+                                            Toggle Color
+                                        </label>
+                                        <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
+                                        style="visibility: hidden;">
+                                    </li>
+                                    <li>
+                                        <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
+                                        <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">
+                                            Drawing<br/>Tool
+                                        </p>
+                                        <input id="colorPickerLine"type="color" name="lineColor"  value="#ffffff"/> 
+                                        <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;">
+                                            Undo
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <p class="float-left" style="margin-right: .5rem; padding-top: .5rem;">Scalebar</p>
+                                        <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black">
+                                            <svg viewBox= "0 0 25 4">
+                                                <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
+                                                stroke="black" fill="white" ></rect>
+                                                <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert" d="M 15 0 L 15 4"  stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
+                                                <path id="scalebarLine10th" d="M 0 2 L 2.5 2"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert30th" d="M 5 0 L 5 4" stroke="black" stroke-width=".75"/>
+
+                                                <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert50th" d="M 10 0 L 10 4"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarLine70th" d="M 5 2 L 7.5 2"
+                                                stroke="black" stroke-width=".75"/>
+                                                <path id="scalebarLine90th" d="M 10 2 L 12.5 2"
+                                                stroke="black" stroke-width=".75"/>
                                             </svg>
                                         </button>
-                                    </div>
-                                </div>
-                            </li>
-                            </th>
-                        </tr>
-                    </table>
+                                        <label id="scaleCheckboxLabel" for="scaleCheckbox"
+                                        style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
+                                        <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
+                                        style="visibility: hidden; left: 2rem; top:.25rem;">
+                                    </li>
+                                    <li>
+                                        <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">
+                                            Outline<br/>Box
+                                        </p>
+                                        <button class="btn btn-lg button" id="outlineBtn" style="width:4.5rem; color: black">
+                                            <svg viewBox="0 0 2 1.5">
+                                                <rect x="0" y="0" width="2" height="1.5" 
+                                                stroke="white" stroke-width=".5" fill="transparent"></rect>
+                                            </svg>
+                                        </button>
+
+                                        <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"/> 
+                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox">
+                                            Undo
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <p class="float-left" style="margin-right: 2rem; padding-top:.5rem;">Text<br/>Tool</p>
+                                        <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
+                                            <svg viewBox="0 0 20 8">
+                                                <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
+                                                fill="transparent"></rect>
+                                                <text x="3" y="7" font-size="9">Aa</text>
+                                            </svg>
+                                        </button>
+                                        <input type="color" id="textColorPicker" 
+                                        style="top: 48.5rem; left: 16rem;" value="#FFFFFF">
+                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText">
+                                            Undo
+                                        </button>
+                                    </li>
+                                    <li style="height: 12rem; padding: 0; padding-top: 0rem; padding-left: 1rem;">
+                                        <h2 class="text-left" style="padding-left: .5rem; color: white;"> Pad Image</h2>
+                                        <div class="row" style="padding:0; padding-left: 1rem; width: 20rem; height: 4rem;">
+                                            <div class="col" style="padding:0; margin-right: 1rem;">
+                                                <input class="form-control form-control-lg"
+                                                style="width: 10rem; border: 1px solid lightgrey;"
+                                                id="paddingInput" type="text" placeholder="Pad Pixels"/>
+                                            </div>
+                                            <div class="col" style="padding:0; padding-left: 1rem; padding-top: 1%">
+                                                <button  style="left: 15rem; top: 0rem;"
+                                                    class="btn btn-danger btn-md button" id="resetPaddingBtn">Reset</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
+                                            <div class="col" style="top:0; padding: 0; left: 0rem;">
+                                                <button class="btn button btn-md" id="topPaddingBtn"> Top </button> 
+                                            </div>
+                                            <div class="col" style="top:0rem; padding: 0; left: 0rem;">
+                                                <button class="btn button btn-md" id="bottomPaddingBtn"> Bottom </button>
+                                            </div>
+
+                                            <div class="col"style="top:0rem;padding: 0; left: 0rem;">
+                                                <button class="btn button btn-md" id="leftPaddingBtn"> Left </button> 
+                                            </div>
+                                            <div class="col"style="text-outline: 0rem; padding: 0; left: 0rem;">
+                                                <button class="btn button btn-md" id="rightPaddingBtn"> Right </button> 
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li style="border-bottom: 4px solid black;">
+                                        <div class="row" style="padding:0; padding-left: 1rem; width: 20rem;">
+                                            <div class="col" style="padding: 0; top: 0rem">
+                                                <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">
+                                                Save<br/>Figure
+                                                </p>
+                                                <button class="btn btn-primary btn-lg button" 
+                                                style="width: 4rem;" id="exportBtn" >
+                                                    <svg viewBox="0 0 20 25">
+                                                        <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
+                                                        <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
+                                                        L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
+                                                        fill="white" stroke="white"></path>
+                                                        <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 
+                                                        L 12 5" stroke="black" fill="black"></path>
+                                                        <path d="M 2 17 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 17 
+                                                        a1,1 0 0 0 -1,-1 L 3 16 a1,1 0 0 0 -1,1"
+                                                        fill="white" stroke="white"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-10">
+                    <!-----------------------Editor Box----------------------------------------------->
+                    <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"
+                    xmlns:xlink="http://www.w3.org/1999/xlink" class="image-image" viewBox="0 0 <%=w%> <%=h%>" 
+                    style="fill:rgb(1, 1, 1);" width='<%=w%>' height='<%=h%>'> 
+                        <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
+                        <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" 
+                            transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
+                    </svg>
+
+                    <!--  Progress bar -->
+                    <div id="progressBar" style="visibility: hidden;">
+                        <div id="mainBar"></div>
+                    </div> 
                 </div>
             </div>
-            <!-----------------------Editor Box----------------------------------------------->
-            <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" fill="black"
-            xmlns:xlink="http://www.w3.org/1999/xlink" class="image-image" viewBox="0 0 <%=w%> <%=h%>" 
-            style="fill:rgb(1, 1, 1);" width='<%=w%>' height='<%=h%>'> 
-                <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
-                <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0" 
-                    transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>  
-            </svg>
-
-            <!--  Progress bar -->
-            <div id="progressBar" style="visibility: hidden;">
-                <div id="mainBar"></div>
-            </div> 
-        
         </div>
         <br/>
         <!-- Hidden Tags for data parsing-->
