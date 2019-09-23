@@ -173,7 +173,7 @@ catch(err){
 
 // read the config file to get only important tags for webpage
 const importantTagArr = util.configServer(fs.readFileSync(
-    path.join('.','cfg', 'config1.cnf'), {encoding: 'utf-8'}));
+    path.join('.','cfg', 'config1.xml'), {encoding: 'utf-8'}));
 
 
 // HTTP Handling Functions
