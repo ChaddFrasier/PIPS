@@ -19,8 +19,6 @@ var outputName,
 
 // punctuation to be ignored
 let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'","<",">"];
-
-
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 
 /**
@@ -64,8 +62,7 @@ function filterTags(){
  */
 function setOutput(){
     let getTemplate = document.getElementById("template-text").value;
-    document.getElementById("template-text-output").innerHTML = getTemplate;
-    output();
+    output(getTemplate);
 }
             
 /**
@@ -119,72 +116,6 @@ function keyToTag(key){
 }
 
 /**
- * @function removePunctuation
- * 
- * @param {string} key the key value to remove the puncuation from
- * 
- * @description returns true if punctuation needs to be parsed out false if there is no punctuation  
- */ 
-function removePunctuation(key){
-    for(index in unwantedPunc){
-        if(key[key.length - 1] === unwantedPunc[index] || key[0] === unwantedPunc[index]){
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * @function exchangeData
- * 
- * @param {string} keyString complete string that needs to be parsed
- * 
- * @description parses out the data key and adds back the puctuation that was removed
-*/
-function exchangeData(keyString){
-    let Farr =[],
-        Barr = [],
-        key;
-    // parse front to back until non-punctuation value is found then stop
-    for(let i = 0; i<keyString.length; i++){
-        if(unwantedPunc.includes(keyString[i])){
-            Farr.push(keyString[i]);
-        }
-        else{
-            break;
-        }
-    }
-    // parse back to front until non-punctuation value is found then stop
-    for(let i = keyString.length-1; i>0; i++){
-        if(unwantedPunc.includes(keyString[i])){
-            Barr.push(keyString[i]);
-        }
-        else{
-            break;
-        }
-    }
-    // use the length of the arrays to substring out the key value
-    key = keyString.substring(Farr.length,keyString.length - Barr.length);
-    // get the actual value
-    let val = getMetadataVal(key);
-
-    // if the key is the same as val then it isn't a data value
-    if(key !== val){
-        if(hasUnits(val)){
-            val = removeUnits(val);
-        }
-        // join arrays and add the new data value in between
-        return Farr.join("") + val + Barr.join("");
-    }
-    else{
-        // just return the string
-        return keyString;
-    }
-
-
-}
-
-/**
  * @function getMetadataVal
  * 
  * @param {string} key the key value in the metadata object
@@ -205,19 +136,15 @@ function getMetadataVal(key){
             //trim the data and return the result
             return allMetaData[datakey].trim();
         } 
-        // if the key has puncuation in it
-        else if(removePunctuation(key)){
-            // remove the punctuation from the ends and add it back after the data is added
-            return exchangeData(key);
-        }
     }
     return key;
 }
 
 /**
- * TODO: this function might be able to be used instead of parsing out the punctiation in loops
  * @function replaceAll
  *
+ * @author Brandon Kindrick
+ * 
  * @param {string} find the substring to replace
  * @param {string} replace the value to replace the substring with
  * 
@@ -274,30 +201,32 @@ function removeUnits(str){
  * 
  * @description set the output of the template to the caption area
 */
-function output(){
-    var tempText = document.getElementById("template-text").value;
+function output(rawText){
+    var outputArea = document.getElementById("template-text-output");
 
-    //Find values of keys one by one, replace "[[...]]" with their value
-    var tempArr = tempText.split(' ');
-    for(var i=0; i<tempArr.length; i++){
+    // get both data objects
+    var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
+    var impData = JSON.parse(document.getElementById("metadata-text").value);
 
-        
-        // get the val of the tag
-        tempArr[i] = getMetadataVal(tempArr[i].trim());
-        
-        if(hasUnits(tempArr[i])){
-            tempArr[i] = removeUnits(tempArr[i]);
+    // combine the JSONs into 1 object
+    allMetaData = Object.assign(allMetaData,impData);
+    
+
+    for(key in allMetaData){
+        if(rawText.indexOf(key.trim()) > -1){
+            let val = getMetadataVal(key);
+            if(hasUnits(val)){
+                val = removeUnits(val);
+            }
+            rawText = rawText.replaceAll(key,val);
         }
-        
     }
-    
-    tempText = tempArr.join(' ');
-    
+
     //set the innerHTML for the last(output) textarea
-    var output = document.getElementById("template-text-output").innerHTML = tempText;
+    outputArea.innerHTML = rawText;
 
     //update the download link to the new text
-    var finalResult = output;
+    var finalResult = outputArea;
     var tpl = document.getElementById("link");
     tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
     tpl.target = '_blank';
@@ -358,6 +287,7 @@ function initTags(){
     // write default to tag section
     showMoreTags();
 }
+
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
 
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
@@ -410,6 +340,7 @@ $(document).ready(function(){
     $("#filterInput").keyup(function(){
         filterTags();
     });
+
 }); // end document ready
 
 /**
@@ -429,5 +360,6 @@ $(window).bind('pageshow', function(event){
     getMetadata();
     getAllTags();
     initTags();
+
 });
 /** ----------------------------------------- End Jquery Functions --------------------------------------- */
