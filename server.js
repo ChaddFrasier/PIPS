@@ -27,7 +27,8 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/20/19
+ * @summary  09/20/19           Planetary Image Publication Server
+ *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
  *  by auto generating the size of the other dimensions when not given.

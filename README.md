@@ -45,8 +45,9 @@ __if you are on company servers you will need IT to install it for you because y
 ISIS install can be achieved by following the instructions 
 for installation [here](https://github.com/USGS-Astrogeology/ISIS3).
 
-You will need to obtain working versions of Cairo, Pango, libjpeg-dev and librsvg2-dev
-On Linux run: `sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev librsvg2-dev`
+You will need to obtain working versions of Cairo, Pango, libjpeg-dev and librsvg2-dev.
+On Linux run: 
+`sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev librsvg2-dev`
 
 Once those are installed and environment variables have been set properly for 
 ISIS you can pull down the server code and run.
