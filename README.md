@@ -31,8 +31,6 @@ uploads when the user should already have the file.
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
 to a whole new scope of users and data.
 
-![Current Edit Page](https://imgur.com/m2vYsAs)
-
 ## Developing
 
 In order to develop on this project you will first need to install ISIS3, and Node.js/npm.
@@ -78,8 +76,9 @@ This server is created to streamline the figure creation process for researchers
 Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
 key value pairs of the data that is held in the Cube headers. 
 
-![Index Page](https://imgur.com/heJsyM4)
-![Writer Page](https://imgur.com/GTBFFIC)
+![Index Page](https://i.imgur.com/heJsyM4.png)
+![Writer Page](https://i.imgur.com/GTBFFIC.png)
+![Current Edit Page](https://i.imgur.com/m2vYsAs.png)
 
 Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
