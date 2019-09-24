@@ -13,7 +13,9 @@
  * @updated 09/20/19
  *
  * 
- * @todo 8 log the isis returns to a file if the user wants that.
+ * @todo 8 log the isis returns to a file then send it to the user if they ask for it
+ * 
+ * 
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
  *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
