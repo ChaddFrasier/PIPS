@@ -66,10 +66,10 @@ a:link{
 a:visited{
     text-decoration: none;
 }
+
 a:hover{
-    text-decoration: none;
-    background-color: black;
-    color: white;
+    background-color: rgba(0, 0, 0, 0.726);
+    color: rgb(244, 244, 244);
 }
 .stroke-wide{
     -webkit-text-stroke: 2px black;

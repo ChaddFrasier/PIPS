@@ -212,7 +212,6 @@ function output(rawText){
     allMetaData = Object.assign(allMetaData, impData);
     
     for(key in allMetaData){
-        console.log(key);
         if(rawText.indexOf(key.trim()) > -1){
             let val = getMetadataVal(key);
             if(hasUnits(val)){
@@ -231,8 +230,6 @@ function output(rawText){
     tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
     tpl.target = '_blank';
     tpl.download = outputName;
-
-    console.log(tpl.href);
 }
 
 /**
