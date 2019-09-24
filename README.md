@@ -31,7 +31,7 @@ uploads when the user should already have the file.
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
 to a whole new scope of users and data.
 
-![Current Edit Page](https://i.imgur.com/M3qjZwt.png)
+![Current Edit Page](https://imgur.com/m2vYsAs)
 
 ## Developing
 
@@ -71,6 +71,17 @@ consent from the repository managers.
 Post and issue if you wish to become a contributor stating who you are 
 and why you feel you could benefit the project. 
 Also feel post issues if you find bugs or have suggestions to better the project.
+
+## Manual
+
+This server is created to streamline the figure creation process for researchers of Astrogeology. 
+Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
+key value pairs of the data that is held in the Cube headers. 
+
+![Index Page](https://imgur.com/heJsyM4)
+![Writer Page](https://imgur.com/GTBFFIC)
+
+Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
 ## Licensing
 
