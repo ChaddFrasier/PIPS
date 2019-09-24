@@ -199,6 +199,8 @@ function removeUnits(str){
 /**
  * @function output
  * 
+ * @param {string} rawText the raw text of the output before data has been exchanged 
+ * 
  * @description set the output of the template to the caption area
 */
 function output(rawText){

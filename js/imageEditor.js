@@ -1943,8 +1943,7 @@ $(document).ready(function(){
             hideProgress();
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
-        }
-       
+        }   
     });
 
 
@@ -2117,7 +2116,6 @@ $(document).ready(function(){
 
     // ------------------------------ End Color Pickers -----------------------------------------------------
         
-
     // -------------------------------- Undo Button UI ------------------------------------------------------
     /**
      * @function undoLine 'mousedown' event handler

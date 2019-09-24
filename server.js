@@ -6,7 +6,7 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.2
+ * @version 3.7.3
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
@@ -27,7 +27,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/20/19           Planetary Image Publication Server
+ * @summary  09/24/19           Planetary Image Publication Server
  *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
@@ -78,8 +78,8 @@
  *  to show a rough estimate of how long the download will take.
  * 
  * ----------------------------------------------------------------------------------------------------------
-*                                          Last Notes for Coders
-*                                          ---------------------
+ *                                          Last Notes for Coders
+ *                                          ---------------------
  * 
  *     Comment your code and include an 'author' tag for any functions you write to the server. 
  * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
