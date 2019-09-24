@@ -189,6 +189,19 @@ $(document).ready(function(){
             alertCode = pageVariable.children[i].innerHTML;
         }
     }
+
+
+    /**
+     * @function helpBtn 'mousedown' event handler
+     * 
+     * @description hide the help box div
+    */
+   $("#hideBtn").mousedown(function(){
+        // hide the help box
+        document.getElementById("help-box").style.visibility = "hidden";
+        document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
+    });
+
 });
 
 /**

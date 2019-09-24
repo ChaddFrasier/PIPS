@@ -209,10 +209,10 @@ function output(rawText){
     var impData = JSON.parse(document.getElementById("metadata-text").value);
 
     // combine the JSONs into 1 object
-    allMetaData = Object.assign(allMetaData,impData);
+    allMetaData = Object.assign(allMetaData, impData);
     
-
     for(key in allMetaData){
+        console.log(key);
         if(rawText.indexOf(key.trim()) > -1){
             let val = getMetadataVal(key);
             if(hasUnits(val)){
@@ -226,11 +226,13 @@ function output(rawText){
     outputArea.innerHTML = rawText;
 
     //update the download link to the new text
-    var finalResult = outputArea;
+    var finalResult = outputArea.value;
     var tpl = document.getElementById("link");
     tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
     tpl.target = '_blank';
     tpl.download = outputName;
+
+    console.log(tpl.href);
 }
 
 /**
