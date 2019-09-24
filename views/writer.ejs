@@ -12,6 +12,7 @@
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <script src="js/writer.js"></script>
+      
     </head>
     <body>
         <div class="mainbox-left">
@@ -24,39 +25,41 @@
             <div id="loading" class="text-center loading">
                 <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
-                <h3 style="text-align: center; margin-left: 1rem;">Loading</h3>
+                <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
 
 
-            <div class="help-box" id="help-box" style="visibility: hidden; margin-right: 2%; margin-left: auto;">
+            <div class="help-box-right" id="help-box" style="visibility: hidden; margin-right: 2%; margin-left: auto; padding-bottom: 0;">
                 <button class="float-right button" id="hideBtn" 
                 style="width: auto; height:auto; border-radius: 5px; 
                 background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
                 background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
                 </button>
-                <div class="container title" style="background: whitesmoke; ">Help</div>
-                <div class="row lead"> 1. Type your caption in the bottom box</div>
+                <div class="container title" style="background: whitesmoke;"><u>Help</u></div>
+                <div class="row lead" style="display: inline"> 1. <u>Edit</u> your caption in the right box.</div>
                 <br/>
-                <div class="row lead"> 2. Copy & Paste tags from the middle box into your caption. </div>
                 <br/>
-                <div class="row lead"> 3. Use the tag search bar to find tags with a keyword from the current set of tags
+                <div class="row lead" style="display: inline"> 2. <u>Copy & Paste</u> tags from the middle box into your caption. </div>
+                <br/>
+                <br/>
+                <div class="row lead" style="display: inline"> 3. <u>Search</u> for key words in the current tags by typing in the search bar.
                     <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
                 </div>
-                <br/>
-                <div class="row lead"> 4. Export the text you created or export the data as a csv </div> 
+                <div class="row lead" style="display: inline"> 4. <u>Export</u> the text you created or export the data as a csv </div> 
             </div>
         </div>
 
-        <div class="mainbox-center">
+        <div class="mainbox-center" style="width: 65%; background-color: rgba(99,88,94,0.65); padding: 2rem;
+        border: 3px solid rgba(255, 255,255, .65);padding:0; border-top: 0;">
             <div class="container" 
-            style="height: 11rem; max-width: none; padding: 0; border-top: 1px; border-left: 1px; 
-            border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: #f3d6b0;"> 
+            style="height: 11rem; max-width: none; padding: 0; padding-top: 0;
+            border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: rgba(99, 88, 94, 0.746)"> 
                 <div class="jumbotron text-center" 
-                style="height: 68%; padding: 2rem; width: inherit; border: 1px solid black; padding-top: 1rem; 
-                padding-bottom:0;background-color: #e7c492;">
+                style="height: 68%; padding: 2rem; width: inherit; padding-top: 1rem; 
+                padding-bottom:0;background-color: rgba(243, 214, 176, 0.856); border: 2px solid black"> 
                     <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
-                    <h1 class="display-5" style="margin: 0;float: center;">Upload Successful</h1>
-                    <p class="lead" style="margin-bottom:2rem; color: black;">Edit in the bottom box using tags in the middle box</p>
+                    <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;">Write Figure Caption</h1>
+                    <p class="lead text-stroke-small stroke-dark" style="margin-bottom:2rem;">Edit the text in the right box using the tags in the bottom box</p>
                     <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
                     style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
     
@@ -126,7 +129,7 @@
                     </div>
                     <div class="col-2"></div>
                 </div>
-            <div class="row" style="width: 100%;"> 
+            <div class="row" style="width: 100%; margin-bottom:1rem;"> 
                 <div class="col-2" style="height:100%; margin-top: auto; margin-bottom: auto;">
                     <div class="float-center" style="text-align:center; width:75%; margin-left: auto; margin-right:auto;  margin-bottom: auto;">
                         <label for="filterInput" class="alert alert-light float-left" 
@@ -141,7 +144,7 @@
                         <br/>
                         <br/>
                         <button id="button-more-tags" class="btn btn-md button float-left" 
-                        style=" border: 2px solid black; margin-left: auto; margin-right:auto; margin-top:2%; width: 100%;" 
+                        style=" border: 2px solid black; margin-left: auto; margin-right:auto; margin-top:2%; width: auto; min-width: 100%;" 
                         onclick="showMoreTags()">Show Important Tags</button>
                     </div> 
                 </div>

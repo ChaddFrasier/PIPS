@@ -1,8 +1,9 @@
 body,html{
-    background-image: url('../images/webAppBackground.jpg');
+    background-image: url('../images/mars-background.jpg');
     background-repeat: repeat-y;
     backface-visibility: visible;
     background-size: cover; 
+    -webkit-text-size-adjust:100%; /* Disable mobile safari autozoom */
     width: 100%;
     height: 100%;
     margin: 0%;
@@ -29,8 +30,56 @@ text{
     height: auto;
     width: 70%;
     border: 10px;
-    margin-left: 15%;
+    margin-left: auto;
     margin-right: auto;
+}
+.text-stroke{
+    -webkit-text-stroke: 1px black;
+    color: white;
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,  
+        -1px 1px 0 #000,
+        1px 1px 0 #000"
+}
+
+.text-stroke-small{
+    -webkit-text-stroke: .25px black;
+    color: white;
+    text-shadow:
+        -.25px -.25px 0 #000,
+        .25px -.25px 0 #000,  
+        -.25px .25px 0 #000,
+        .25px .25px 0 #000"
+}
+
+.stroke-dark{
+    -webkit-text-stroke-color: white;
+    color: black;
+    text-shadow:white;
+}
+
+a:link{
+    text-decoration: none;
+}
+
+a:visited{
+    text-decoration: none;
+}
+a:hover{
+    text-decoration: none;
+    background-color: black;
+    color: white;
+}
+.stroke-wide{
+    -webkit-text-stroke: 2px black;
+    color: white;
+    text-shadow:
+        3px 3px 0 #000,
+        -1px -1px 0 #000,  
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000"
 }
 .title{
     border-top: 0cm;
@@ -179,12 +228,14 @@ svg{
     border: 5px solid black;
     background: whitesmoke;
     padding: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 0;
     text-align: left;
     box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
     width: 15%;
-    height: 60%;
+    height: 50%;
     overflow-y: auto;
 }
 
@@ -200,7 +251,9 @@ svg{
     border-left: 0;
     border: 5px solid black;
     background: whitesmoke;
-    padding: 1rem;
+    padding: 2rem;
+    padding-top: 1rem;
+    padding-bottom: 0;
     text-align: left;
     box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
     font-family: 'Times New Roman', Times, serif;
@@ -212,6 +265,8 @@ svg{
 
 .small-text{
     font-size: 75%;
+    margin: 0;
+    padding-bottom: 1rem;
     color: black;
 }
 
@@ -256,7 +311,7 @@ li{
     border-bottom: 2px solid black;
     border-top: 2px solid black;
     margin-left: 1rem;
-    background: #63585e;
+    background: rgba(99, 88, 94, 0.692);
     text-align: left;
 }
 .btnList{

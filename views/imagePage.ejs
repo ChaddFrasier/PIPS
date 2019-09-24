@@ -18,10 +18,10 @@
         <script src="js/imageEditor.js"></script>
     </head>
     <body>
-        <div class="container mainbox-left" style="width:15%; height: 100%;">
+        <div class="mainbox-left">
             <!-- Page Header Block-->
             <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto"
-                style="margin: 1%; padding: 0%">
+                style="margin: 0%; padding: 0%">
         </div>
         <div class="container mainbox-right" style="width: 15%; height:100%;">
             <!-- Loading GIF-->
@@ -37,45 +37,52 @@
                 style="width: auto; height:auto; border-radius: 5px; 
                 border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
                 background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                <div class="container title" style="background: whitesmoke;font-size: 200%;"><u>Help</u></div>
-                <div class="row lead" style="font-size: 175%;">1. Add Icons with the corresponding buttons.
+                <div class="container title" style="background: whitesmoke;"><u>Help</u></div>
+                <div class="row lead" style="font-size: 175%; display: inline;">1. <u>Toggle icons</u> on and off with the corresponding buttons.
                     <p class="small-text">(North Arrow, Sun Azimuthal Direction, Observer Direction, Scalebar)</p>
-                    <p class="small-text">(Remove any icon by clicking the same button)</p>
                 </div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">2. Drag icons around the image with the mouse</div>
+                <div class="row lead" style="font-size: 175%; display: inline;">2. <u>Drag icons</u> around the image with the mouse.</div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">3. Scale all icons and text by mousing over the corners of the object</div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">4. Draw lines using the Pencil Tool.  
-                    <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.
-                            Use Esc key to remove the head after the first click)</p> 
+                <div class="row lead" style="font-size: 175%; display: inline;">3. <u>Scale</u> any icons and text by mousing over the corners of the object.</div>
+                <br/>
+                <br/>
+                <div class="row lead" style="font-size: 175%; display: inline;">4. <u>Draw</u> lines using the Pencil Tool.  
+                    <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.)</p> 
                 </div>
-                <div class="row lead" style="font-size: 175%;">5. Use the color pickers to change the color of the adjacent object.  
+                <br/>
+                <div class="row lead" style="font-size: 175%; display: inline; ">5. Use the <u>Esc key</u> to remove the head after the first click when using the pencil tool. 
+                </div>
+                <br/>
+                <br/>
+                <div class="row lead" style="font-size: 175%; display: inline;">6. Use the <u>Color Pickers</u> to change the color of the adjacent objects.  
                         <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
                 </div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">6. Add text to the image by clicking on the text box button and typing your text. 
+                <div class="row lead" style="font-size: 175%; display: inline;">7. <u>Add text</u> to the image by clicking on the text box button and typing your text. 
                         <p class="small-text">(Undo a text element by clicking the red button.)</p>  
                 </div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">7. Padding can be added to the image by typing the amount 
+                <div class="row lead" style="font-size: 175%; display: inline;">8. <u>Padding</u> can be added to the image by typing the amount 
                     of pixels you want to add, and then selecting a location.  
                 </div>
                 <br/>
-                <div class="row lead" style="font-size: 175%;">8. Click the 'Export Figure' button to save the new figure as an accepted format
+                <br/>
+                <div class="row lead" style="font-size: 175%; display: inline;">9. Click the <u>'Save Figure'</u> button to save the new figure in an accepted format
                         <p class="small-text">(Accepted Formats: png, svg, jpeg, or jpg)</p>
                 </div>
             </div>
         </div>
         
 
-        <div class="mainbox-center" style="width: 70%;">
+        <div class="mainbox-center" style="width: 70%;background-color: rgba(99,88,94,0.65);
+        border: 3px solid rgba(255, 255,255, .65);padding: 0;">
                 <div class="container text-center" 
-                style="background: #e7c492; height: 12rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black;">
+                style="background: rgba(99, 88, 94, 0.692); height: 12rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black; margin: 0;">
                     <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" style="position: absolute; left: auto; right: 16.5%;"/>
                     <div class="jumbotron text-center" 
-                    style="border: 1px solid black; margin-left: auto; margin-right: auto; background: #f3d6b0; height:7rem; padding: 0;">
+                    style="border: 1px solid black; margin-left: auto; margin-right: auto; background: rgba(243, 214, 176, 0.856); height:7rem; padding: 0;">
                         <h2>Edit Cube Image</h2> 
                         <h4 id="imageName"></h4>  
                         <h5><%=w%> &times; <%=h%> px</h5>   
@@ -88,15 +95,14 @@
                         href="/" role="button">New Upload</a>
                     </div>
                 </div>
-                <br/>
-                <div class="row">
+                <div class="row" style="margin-top:1rem; margin-bottom: 1rem; padding:0;">
                     <div class="col-2" style="z-index: 10;">
                         <!-- Button Interface-->
                         <div class="container float-left" style=" top: 10%; width: 15%; height: 90%;
                         padding: 0%; margin-left: 0%; left: auto; right: auto;
                         border-right: 0%; margin-right: auto;">
                         
-                        <h2 class="text-left" style="margin:0; margin-left: 9rem; margin-right:auto;">Tools</h2>
+                        <h2 class="text-left" style="color:white; margin:0; margin-left: 9rem; margin-right:auto;">Tools</h2>
                         
                         <div class="image-controls">
                             

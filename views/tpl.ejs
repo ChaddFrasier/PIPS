@@ -14,7 +14,7 @@
     <body>
         <div class="jumbotron jumbotron-fluid text-center" style="padding: 0%;padding-top:1%; background:transparent;">
             <h1 class="display-6"> Template Files</h1>
-            <p class="lead">(.tpl files)</p>
+            <p class="lead" style="color: black;">(.tpl files)</p>
             <p class="lead">
                 <a class="btn button btn-md" style="color: white;" href="/"
                     role="button">Back</a>
@@ -26,11 +26,9 @@
             <div class="row">
                 <div class="col-2"></div>
                 <div class="col-8 lead jumbotron float-center" id="textbox" style="padding:2%;border:2px solid black;">
-                    A template for the PIP Server is a simple text file that has data names from 
-                    ISIS mixed inbetween the actual figure description. They use the name of the ISIS data
-                    those data names then get processed and exchanged with the data if they are found. The purpose of 
-                    this is to allow users to reuse captions for multiple figures and this allows users to
-                    use ISIS data in figure captions much faster than before. 
+                    A template for the PIP Server is a text file that has ISIS3 data keys or names inside
+                    the actual figure description. The server reads in the tpl file and exchanges all the data keys with the
+                    actual data values from the ISIS3 header. 
                 </div>
             </div>
             <div class="row">
@@ -60,9 +58,9 @@
                          <b class="font-weight-bold">LUNAR RECONNAISSANCE ORBITER CAMERA</b> on 
                          <b class="font-weight-bold">2018-12-09T01:23:44.494</b>.
                         This image shows a scale of 
-                        <b class="font-weight-bold">0.80618609186356 &lt;meters/pixel&gt;</b> 
+                        <b class="font-weight-bold">0.80618609186356</b> 
                         and was taken at an altitude of 
-                        <b class="font-weight-bold">53.787952344855 &lt;km&gt;</b> above the surface of the surface.
+                        <b class="font-weight-bold">53.787952344855</b> above the surface of the surface.
                 </div> 
             </div>
         </div>

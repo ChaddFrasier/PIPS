@@ -19,141 +19,169 @@
         <script src="js/index.js"></script>
     </head>
 
-    <body>  
-        <img src="../images/usgsLogo.png" class="float-md-left" width="15%" height="auto" 
-        style="margin: 0%; padding: 0%"><br>
-        <div id="loading" class="float-right lead loading">
-            <img src="../images/loading.gif" height="100%" weight="auto"/>
+    <body>
+        <!-- left -->
+        <div class="mainbox-left" style="width: 15%; height: 100%; padding:0;">
+
+            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto" 
+            style="margin: 0%; padding: 0%">
             <br>
-            <h3 style="text-align: left; margin-right: 1rem;">Loading</h3>
-        </div>
-        <div class="text-center" style="border: 0px solid black; padding:20%; padding-top: 0; padding-bottom: 0;">
-            <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1> 
-            <h4 class="display-5">
-                <a href="https://isis.astrogeology.usgs.gov/index.html" style="color: black;">
-                    Powered by ISIS3
-                </a>
-            </h4>
-        </div>
-        <br/>
-        <div class="title text-center" style="width: auto; background: #f3d6b0;">
-            <p class="lead" style="margin-left: auto; margin-right: auto; font-size: 2rem; color: black;">
-                You can upload .cub file and .tpl file 
-            </p>
-            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" 
-            onclick="showHelp(this)">Help</a>
-            <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" href= '/tpl'
-                role="button">What is a TPL file?
-            </a>
-        </div>
- 
-        <div id="help-box" class="help-box float-left" style="visibility: hidden; width:20%;">
-            <div class="container title" style="background: whitesmoke; ">Help</div>
-            <div class="row lead"> 1. Select the cube file you would like to use in your figure.</div>
-            <br/>
-            <div class="row lead"> 2. Input your desired output dimensions (W&times;H)in pixels. 
-                Input Width or Height to have the other dimension calculated for you. (W&times;_) or (_&times;H)<br/>
-                <p class="small-text"> (Leave both boxes blank to default to 300dpi at 3 inches)</p>
-            </div>
-            <br/>
-            <div class="row lead"> 3. Select a template file to use. <br/>
-                <p class="small-text"> (leave it blank to start with a server preset)</p>
-            </div>
-            <br/>
-            <div class="row lead"> 4. Click Upload </div>
-        </div>
-        <br/>
-        <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
-            <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
-            enctype="multipart/form-data">
-                <div class="btn btn-dark btn-lg form-group" 
-                style="color:black; width:25rem;display:inline-block; background:#e7c492; border: 2px solid black;">
-                    <label for="cubUpload" style="font-size: x-large;">Choose an ISIS Cube File</label>
-                    <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
-                    type="file" class="form-control-file" />
-
-                    <div class="form-group float-center" 
-                    style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;color: black;">
-                        <input class="form-control form-control-sm text-center" type="text" id="widthInput" 
-                        name="desiredWidth" placeholder="Output Width (Px)" />
-                        <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
-                        name="desiredHeight" placeholder="Output Height (Px)" />
-                    </div>
-                </div>
-
-                <hr class="style5">
-                <div class="btn btn-dark btn-lg form-group" 
-                style="color: black; background: #e7c492; border: 2px solid black;">
-                    <label for="tplUpload" style="font-size: larger;">Choose a Template File</label>
-                    <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
+            <div id="help-box" class="help-box float-left" 
+            style="visibility: hidden; width:15%; bottom: 10%; position: absolute; margin-left: 1%; margin-right:0;">
+                <button class="float-right button" id="hideBtn" 
+                style="width: auto; height:auto; border-radius: 5px; padding:2%; text-align: center;
+                background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+                background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
+                </button>
+                <div class="container title" style="background: whitesmoke; "><u>Help</u></div>
+                <div class="row lead"> 1. Select the cube file you would like to use in your figure. (No Larger than 2GB)</div>
+                <br/>
+                <div class="row lead" style="display: inline;"> 2. Input your desired output dimensions (W&times;H)in pixels.<br/><br/>
+                                       2a. Input Width <u>or</u> Height to have the other dimension calculated for you. (W&times;_) or (_&times;H) <br/> 
+                    <p class="small-text">It's suggested that you don't use a pixel dimension larger than your monitor.</p>
+                                       2b. Leave both boxes blank to default to 300dpi at 3 inches.
                 </div>
                 <br/>
-                <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                    style="width: 10rem; border: 1px solid black;" onclick="loaderActivate()" />
-            </form>
+                <br/>
+                <div class="row lead"> 3. Select a template file to use. <br/>
+                    <p class="small-text"> (leave it blank to start with a server preset)</p>
+                </div>
+                <br/>
+                <div class="row lead"> 4. Click Upload </div>
+            </div>
         </div>
 
-        <div id="pageVariable">
+
+
+        <!-- center -->
+        <div class="mainbox-center" style="width: 65%; background-color: rgba(99,88,94,0.65); padding: 1rem; margin: 0 0 0 15%;
+         border: 3px solid rgba(255, 255,255, .65)">
+            <div class="text-center stroke-wide" style="border: 0px solid black; padding:0%; padding-top: 0; padding-bottom: 0;">
+                <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1> 
+                <h4 class="display-5" style="color: white">
+                    <a href="https://isis.astrogeology.usgs.gov/index.html" class="text-stroke">
+                        Powered by ISIS3
+                    </a>
+                </h4>
+            </div>
+            <br/>
+            <div class="title text-center" style="width: 75%; border: 5px solid black; background: #e7c492;
+             padding-left: 0; padding-right:0; margin:auto auto;">
+                <p class="lead" style="margin-left: auto; margin-right: auto; width:100%;padding:0;font-size: 2rem; color: black;">
+                    You can upload .cub file and .tpl file 
+                </p>
+                <a id="helpBtn" class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" 
+                onclick="showHelp(this)">Help</a>
+                <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" href= '/tpl'
+                    role="button">What is a TPL file?
+                </a>
+            </div>
+    
+            
+            <br/>
+            <div class="container float-center" style="margin: 0; margin-left:auto; margin-right: auto;">
+                <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
+                enctype="multipart/form-data">
+                    <div class="btn btn-dark btn-lg form-group" 
+                    style="color:black; width:25rem; display:inline-block; background:#e7c492; border: 5px solid black;">
+                        <label for="cubUpload" style="font-size: x-large; color:black;">Choose an ISIS Cube File</label>
+                        <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
+                        type="file" class="form-control-file" />
+
+                        <div class="form-group float-center" 
+                        style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;color: black;">
+                            <input class="form-control form-control-sm text-center" type="text" id="widthInput" 
+                            name="desiredWidth" placeholder="Output Width (Px)" />
+                            <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
+                            name="desiredHeight" placeholder="Output Height (Px)" />
+                        </div>
+                    </div>
+
+                    <hr class="style5">
+                    <div class="btn btn-dark btn-lg form-group" 
+                    style="color: black; background: #e7c492; border: 5px solid black; width:25rem;">
+                        <label for="tplUpload" style="font-size: larger; color:black;">Choose a Template File</label>
+                        <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
+                    </div>
+                    <br/>
+                    <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
+                        style="width: 10rem; border: 1px solid black;" onclick="loaderActivate()" />
+                </form>
+            </div>
+        </div>
+        
+        <div id="pageVariable" style="display: none;">
             <p id="alertCode"><%= alertCode %></p>
         </div>
 
-        <div id="info-alert" style= "visibility:hidden; position:absolute; top: 50%;" 
-        class = "alert alert-warning text-center alertBoxes">
-            <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                &times;
-            </button>
-            Upload a .cub file
-        </div>
-        
-        <div id="fail-alert" style= "visibility:hidden;position:absolute; top: 59%; right: 0%;" 
-        class = "alert alert-primary text-center">
-            <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                &times;
-            </button>
-            Previous User has no server data. Start with Upload.
-        </div>
-        <div id="fail-image" style= "visibility:hidden;position:absolute; top: 65%;" 
-        class = "alert alert-danger text-center">
-            <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                &times;
-            </button>
-            Failed to create image from Upload.
-        </div>
-        <div id="fail-upload" style= "visibility:hidden;position:absolute; top: 58%;" 
-        class = "alert alert-danger text-center">
-            <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                &times;
-            </button>
-            Failed to Upload.
-        </div>
-        <div id="tplAlert" style= 'visibility:hidden; position:absolute; top: 75%;' 
-        class = "alert alert-warning text-center" role="alert">
-            <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
-            onclick="setNotVisible(this)">
-                &times;
-            </button>
-                    
-            Template must be (.tpl) or left blank.
-        </div>
 
-        <div id="server-timeout" style= 'visibility:hidden;position:absolute; top: 75%; right: 0%;' 
-        class = "alert alert-primary text-center" role="alert">
-                <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+        <!-- right-->
+        <div class="mainbox-right" style="width: 25%;">
+            <div id="loading" class="float-right lead loading" style="margin: 0; top:0;">
+                <img src="../images/loading.gif" height="200%" weight="auto"/>
+                <br>
+                <h3 style="color:white; text-align: center; margin-right: 0%; margin-left:auto;">Loading</h3>
+            </div>
+            <div id="info-alert" style= "visibility:hidden; position:absolute; right: 0; top: 45%;" 
+            class = "alert alert-success text-center alertBoxes">
+                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                    &times;
+                </button>
+                Upload a .cub file
+            </div>
+            
+            <div id="fail-alert" style= "visibility:hidden; position:absolute; top: 66%; right: 0%;" 
+            class = "alert alert-primary text-center">
+                <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                    &times;
+                </button>
+                Previous User has no server data. Start with Upload.
+            </div>
+            <div id="fail-image" style= "visibility:hidden; position:absolute; right:0; top: 59%;" 
+            class = "alert alert-danger text-center">
+                <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                    &times;
+                </button>
+                Failed to create image from Upload.
+            </div>
+            <div id="fail-upload" style= "visibility:hidden; position:absolute; right: 0; top: 59%;" 
+            class = "alert alert-danger text-center">
+                <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                    &times;
+                </button>
+                Failed to Upload.
+            </div>
+            <div id="tplAlert" style= 'visibility:hidden; position:absolute;right: 0; top: 52%;' 
+            class = "alert alert-success text-center" role="alert">
+                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
                 onclick="setNotVisible(this)">
-                &times;
+                    &times;
                 </button>
                         
-                Unknown User: Please Upload a Cube to Begin.
+                Template must be (.tpl) or left blank.
             </div>
-
-        <div id="server-isis" style= 'visibility:hidden;position:absolute; top: 8%; right: 0%;' 
-        class = "alert alert-dark text-center" role="alert">
-            <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
-            onclick="setNotVisible(this)">
-                &times;
-            </button>
-                    
-            Server Error: ISIS3 is not running.
+    
+            <div id="server-timeout" style= 'visibility:hidden; position:absolute; top: 66%; right: 0%;' 
+            class = "alert alert-primary text-center" role="alert">
+                    <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+                    onclick="setNotVisible(this)">
+                    &times;
+                    </button>
+                            
+                    Unknown User: Please Upload a Cube to Begin.
+                </div>
+    
+            <div id="server-isis" style= 'visibility:hidden; position:absolute; top: 8%; right: 0%;' 
+            class = "alert alert-dark text-center" role="alert">
+                <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+                onclick="setNotVisible(this)">
+                    &times;
+                </button>
+                        
+                Server Error: ISIS3 is not running.
+            </div>
         </div>
+
+
     </body>
 </html>
