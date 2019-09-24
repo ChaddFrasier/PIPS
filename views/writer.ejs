@@ -50,28 +50,28 @@
         </div>
 
         <div class="mainbox-center" style="width: 65%; background-color: rgba(99,88,94,0.65); padding: 2rem;
-        border: 3px solid rgba(255, 255,255, .65);padding:0; border-top: 0;">
+        border: 3px solid rgba(255, 255,255, .65);padding:0;">
             <div class="container" 
-            style="height: 11rem; max-width: none; padding: 0; padding-top: 0;
+            style="height: 14rem; max-width: none; padding: 1rem; padding-top: 0; padding-bottom: 2rem;
             border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: rgba(99, 88, 94, 0.746)"> 
                 <div class="jumbotron text-center" 
-                style="height: 68%; padding: 2rem; width: inherit; padding-top: 1rem; 
-                padding-bottom:0;background-color: rgba(243, 214, 176, 0.856); border: 2px solid black"> 
+                style="height: 60%; padding: 2rem; width: inherit; padding-top: 1rem; margin-top: 2rem; margin-bottom: 1rem;
+                padding-bottom:0;background-color: rgba(243, 214, 176, 0.698); border: 2px solid black"> 
                     <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
                     <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;">Write Figure Caption</h1>
-                    <p class="lead text-stroke-small stroke-dark" style="margin-bottom:2rem;">Edit the text in the right box using the tags in the bottom box</p>
-                    <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
-                    style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;">Upload New File</a>
-    
-                    <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
-                        <div class="form-group">
-                            <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                            <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
-                            style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
-                            onclick="loaderActivate()" />
-                        </div>
-                    </form>
+                    <p class="lead text-stroke-small stroke-dark" style="margin-bottom:2.5rem; margin-top:0%;">Edit the text in the right box using the tags in the bottom box</p>
                 </div>
+                <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
+                    style="width: auto; height: 2.5rem; padding:5; border: 1.5px solid black; margin:0;">Upload New File</a>
+    
+                <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
+                    <div class="form-group">
+                        <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
+                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
+                        style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
+                        onclick="loaderActivate()" />
+                    </div>
+                </form>
             </div>
             <div class="row">
                 <div class="col-6">
@@ -98,8 +98,12 @@
                         </div>
                     </div>
                 </div>
+                
                 <br/>
                 <div class="col-6">
+                        <svg viewBox="0 0 30 30" width="30" height="30" style="position:absolute; top:45%; right:auto; left:-2%;">
+                            <path d="M 0 15 L 15 30 L 15 20 L 30 20 L 30 10 L 15 10 L 15 0 L0 15"></path>
+                        </svg>
                     <div class="container float-right">
                         <!-- Editing Box-->
                         <div id="template" class="float-right text-center form-group" style="margin-left: auto; margin-right: auto; width: 100%;">
