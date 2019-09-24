@@ -77,6 +77,12 @@
  *  The progress bar guesses how long the download will take and it runs a css animation for that duration
  *  to show a rough estimate of how long the download will take.
  * 
+ *     TODO: finsih the logging system and finish version 3.8.0
+ *      Log System is in testing now and should be finished soon. 
+ * 
+ *      With a button on the writer page the user can download the ISIS3 Log file that explains all
+ *  the functions run on the cube and their outputs either an error code and message or the std output
+ *  of the spawn function.
  * ----------------------------------------------------------------------------------------------------------
  *                                          Last Notes for Coders
  *                                          ---------------------
