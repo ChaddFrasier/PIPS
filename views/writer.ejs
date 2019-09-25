@@ -21,7 +21,7 @@
         </div>
             
         <!-- Right Box-->
-        <div class="mainbox-right">
+        <div class="mainbox-right" style=" height:75%;">
             <!-- Loading Gif-->
             <div id="loading" class="text-center loading">
                 <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
@@ -30,12 +30,11 @@
             </div>
 
             <!-- Help Box -->
-            <div class="help-box-right" id="help-box" style="visibility: hidden; margin-right: 2%; margin-left: auto; padding-bottom: 0;">
-                <button class="float-right button" id="hideBtn" 
-                style="width: auto; height:auto; border-radius: 5px; 
-                background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-                background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
-                </button>
+            <div class="help-box-right" id="help-box" style="visibility: hidden; margin-right: 2%; margin-top: 10%; padding-bottom: 0;">
+                    <button class="float-right button" id="hideBtn" 
+                    style="width: auto; height:auto; border-radius: 5px; 
+                    border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+                    background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke;"><u>Help</u></div>
                 <div class="row lead" style="display: inline"> 1. <u>Edit</u> your caption in the right box.</div>
                 <br/>
@@ -59,10 +58,10 @@
             border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; background: rgba(99, 88, 94, 0.746)"> 
                 <div class="jumbotron text-center" 
                 style="height: 60%; padding: 2rem; width: inherit; padding-top: 1rem; margin-top: 2rem; margin-bottom: 1rem;
-                padding-bottom:0;background-color: rgba(243, 214, 176, 0.698); border: 2px solid black"> 
-                    <img src="/images/help.jpg" class="float-left helpBtn" id="helpBtn"/>
+                padding-bottom:0; padding-left:9rem; background-color: rgba(243, 214, 176, 0.698); border: 2px solid black"> 
+                    <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" style="margin: 0;"/>
                     <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;">Write Figure Caption</h1>
-                    <p class="lead text-stroke-small stroke-dark" style="margin-bottom:2.5rem; margin-top:0%;">Edit the text in the right box using the tags in the bottom box</p>
+                    <p class="lead text-stroke-small stroke-dark" style=" margin:0; margin-bottom:2.5rem;">Edit the text in the right box using the tags in the bottom box</p>
                 </div>
                 <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
                     style="width: auto; height: 2.5rem; padding:5; border: 1.5px solid black; margin:0;">Upload New File</a>
