@@ -10,10 +10,8 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/20/19
+ * @updated 09/25/19
  *
- * 
- * @todo 8 log the isis returns to a file then send it to the user if they ask for it
  * 
  * 
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
@@ -29,7 +27,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/24/19           Planetary Image Publication Server
+ * @summary  09/25/19           Planetary Image Publication Server
  *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
@@ -147,7 +145,9 @@ app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
 app.use("/csv" , express.static("csv"));
 app.use("/js" , express.static("js"));
+app.use("/log" , express.static("log"));
 app.use("/tpl" , express.static("tpl"));
+app.use("/tmp" , express.static("tmp"));
 app.use("/pvl " , express.static("pvl"));
 
 
@@ -162,6 +162,8 @@ try{
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
     exec('rm ./tmp/*');
+    exec('rm ./log/*');
+    
     
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
@@ -397,11 +399,24 @@ app.post('/captionWriter', async function(request, response){
                 templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
             }
             
-            //convert tiff to cube
+            if(request.body.logToFile){
+                cubeObj.logFlag = true;
+            }
+            else{
+                cubeObj.logFlag = false;
+            }
 
-            /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
+            // create the log file if needed
+            if(cubeObj.logFlag){
+                let result = util.createLogFile(cubeObj.userId + ".log");
+                if(result >= 0){
+                    fs.appendFileSync(path.join("log",cubeObj.userId + ".log"),"FILE_UPLOAD:\n\n");
+                }
+            }
+            
+            //convert tiff to cube
             if(isTiff){
-                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag));
+                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log"));
             }
 
             // if the desired width and height are both given set that to be the user dimensions 
@@ -445,7 +460,6 @@ app.post('/captionWriter', async function(request, response){
                     if(err){
                         console.log("READING ERROR: " + err);
                     }else{
-                        console.log("gets here");
                         let bufferArray = data.subarray(0,data.length/10).toString().split("\n");
                         for(let index=0; index< bufferArray.length;index++){
                             if(bufferArray[index].indexOf("Group = Dimensions") > -1){
@@ -453,15 +467,15 @@ app.post('/captionWriter', async function(request, response){
                                 samples = Number(bufferArray[index + 1].split("=")[1]);
                                 lines = Number(bufferArray[index + 2].split("=")[1]);
 
-                                console.log("This cube file is " + samples + " samples by " + lines + " lines");
+                                
                                 // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
                                 scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1] : samples/cubeObj.userDim[0];
                                 break;
                             }
                         }
-
+                
                         if(scaleFactor > 1){
-                            promises.push(util.reduceCube(cubeObj.name, scaleFactor, cubeObj.logFlag));
+                            promises.push(util.reduceCube(cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
@@ -480,11 +494,14 @@ app.post('/captionWriter', async function(request, response){
                              * 
                              * setting last input of function to true (hard coded)
                             */
+                            
+
                             promises.push(util.makeSystemCalls(cubeObj.name,
                                 path.join('.','uploads',cubeObj.name),
                                 path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                                 'images',
-                                cubeObj.logFlag));
+                                cubeObj.logFlag,
+                                cubeObj.userId + ".log"));
                         
                         
                             // when isis is done read the pvl file
@@ -492,6 +509,10 @@ app.post('/captionWriter', async function(request, response){
                                 //reset promises array
                                 promises = [];
 
+                                if(cubeObj.logFlag){
+                                    util.endProcessRun(cubeObj.userId + ".log");
+                                }
+                                
                                 // make new promise on the data extraction functions
                                 promises.push(util.readPvltoStruct(cubeObj.name));
 

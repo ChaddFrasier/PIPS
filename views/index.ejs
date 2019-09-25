@@ -48,7 +48,9 @@
                     <p class="small-text"> (leave it blank to start with a server preset)</p>
                 </div>
                 <br/>
-                <div class="row lead"> 4. Click Upload </div>
+                <div class="row lead"> 4. If you would like to view the ISIS Process outputs check the box to Log To File </div>
+                <br/>
+                <div class="row lead"> 5. Click Upload </div>
             </div>
         </div>
 
@@ -96,6 +98,19 @@
                             <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
                             name="desiredHeight" placeholder="Output Height (Px)" />
                         </div>
+                        <div class="form-group float-center">
+                            <div class="row">
+                                <div class="col">
+                                    <label id="logCheckboxLabel" for="logCheckbox" style="color: black;margin-top:auto; margin-bottom:auto;">
+                                        Log ISIS Output to File?
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input largeBox" name="logToFile" type="checkbox" id="logCheckbox"
+                                    style="margin-left: -20%; margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <hr class="style5">
@@ -117,11 +132,12 @@
 
 
         <!-- right-->
-        <div class="mainbox-right" style="width: 15%;">
-            <div id="loading" class="float-right lead loading" style="margin: 0; top:0;">
-                <img src="../images/loading.gif" height="200%" weight="auto"/>
+        <div class="mainbox-right">
+            <!-- Loading Gif-->
+            <div id="loading" class="text-center loading">
+                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
-                <h3 style="color:white; text-align: center; margin-right: 0%; margin-left:auto;">Loading</h3>
+                <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
             <div id="info-alert" style= "visibility:hidden; position:absolute; right: 0; top: 45%;" 
             class = "alert alert-success text-center alertBoxes">
