@@ -3,7 +3,7 @@
  * 
  * @author Chadd Frasier
  * @since 06/03/19
- * @update 09/16/19
+ * @update 09/26/19
  * @version 2.5.1
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
@@ -30,17 +30,19 @@ module.exports = {
      * @param {string} returnPath path to return the values from ISIS3
      * @param {string} imagePath path where the image should be saved
      * @param {boolean} logToFile true or false should the server log to a file
+     * @param {string} logFileName the name of the user's log file
+     * @param {string} logCubeName the name of the file the user uploaded to use in log
      * 
      * @returns {Promise}
      * 
      * @description calls the isis commands using promises to ensure the processes are finished
      */
-    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath, logToFile, logFileName){
+    makeSystemCalls: function(cubeName, filepath, returnPath, imagePath, logToFile, logFileName, logCubeName){
         return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
             // call the isis commands
-            promises.push(callIsis(cubeName, filepath, returnPath, imagePath,logToFile, logFileName));
+            promises.push(callIsis(cubeName, filepath, returnPath, imagePath,logToFile, logFileName, logCubeName));
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
@@ -172,7 +174,7 @@ module.exports = {
      * @description converts tiff to cube for later processing 
      * 
      */
-    tiffToCube: function(tiffName, logToFile,logFileName) {
+    tiff2Cube: function(tiffName, logToFile,logFileName, logTiffName) {
         return new Promise(function(resolve, reject){
             // variables for proper isis call
             var isisCall = 'std2isis';
@@ -217,11 +219,11 @@ module.exports = {
                 
                 tiffName = tiffName.replace("uploads/","");
 
-                if(![cubeName, isisCall, statusCode,command, output].includes(undefined)){
-                    logProcess([tiffName, isisCall, statusCode,command, output], logFileName);
+                if(![logTiffName, isisCall, statusCode,command, output].includes(undefined)){
+                    logProcess([logTiffName, isisCall, statusCode,command, output], logFileName);
                 }else{
-                    if(![tiffName, isisCall, statusCode,command].includes(undefined)){
-                        logProcess([tiffName, isisCall, statusCode,command, "none\n"], logFileName);
+                    if(![logTiffName, isisCall, statusCode,command].includes(undefined)){
+                        logProcess([logTiffName, isisCall, statusCode,command, "none\n"], logFileName);
                     }
                     
                 }
@@ -252,14 +254,20 @@ module.exports = {
     /**
      * @function reduceCube
      * 
+     * @param {string} logCubeName the name of the file the user uploaded to use in log
      * @param {string} cubeName the name of the cube file to reduce
      * @param {number} scaleFactor the factor to reduce by (4 = 1/4th actual size) 
+     * @param {boolean} logToFile tells the function either true to log to file
+     *                   or false to log to console 
+     * @param {string} logFileName the name of the users log file
+     * 
      *
      * @description shrink the size of the cube file using isis3 reduce function 
      */
-    reduceCube: function(cubeName, scaleFactor, logToFile, logFileName){
+    reduceCube: function(logCubeName,cubeName, scaleFactor, logToFile, logFileName){
         return new Promise(function(resolve, reject){
            
+            console.log(cubeName);
             var isisCall = "reduce";
             var from = path.join(".","uploads",cubeName);
             var to = path.join(".","uploads",cubeName.replace("u-","r-"));
@@ -302,8 +310,8 @@ module.exports = {
                     console.log(isisCall + ' Exited with code: ' + code + "\n");
                 }
                 
-                if(![cubeName, isisCall, statusCode, command, output].includes(undefined)){
-                    logProcess([cubeName, isisCall, statusCode,command, output], logFileName);
+                if(![logCubeName, isisCall, statusCode, command, output].includes(undefined)){
+                    logProcess([logCubeName, isisCall, statusCode,command, output], logFileName);
                 }
 
 
@@ -668,7 +676,7 @@ module.exports = {
                     "       U.S. Geological Survey Cloud Publication Services\n" +
                     "                          <URL>\n\n" +
                     "             Planetary Image Publication Server (PIPS)\n\n" +
-                    "         Contact Information: cfrasier@contractor.usgs.gov\n" +
+                    "    Questions & Concerns:https://github.com/ChaddFrasier/PIPS/issues\n" +
                     "___________________________________________________________________\n\n" +
                     "UPLOAD_INFORMATION:\n\n" +
                     "\tUPLOAD KEY: " + logFileName.replace(".log","") + "\n" + 
@@ -767,6 +775,7 @@ var shortenName = function(name){
  * @param {string} returnPath path to return file on server
  * @param {string} imagePath path to image on server
  * @param {boolean} logToFile true or false should the server log to a file
+ * @param {string} logCubeName the name of the file the user uploaded to use in log
  *
  * @returns {Promise}
  * @return {number} error codes
@@ -774,12 +783,13 @@ var shortenName = function(name){
  * @description this function runs all isis commands and populates an array of 
  * promises to ensure the PVL file is full created before processing continues
  */
-var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,logFileName){
+var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,logFileName, logCubeName){
     return new Promise(function(resolve,reject){
         // variables for proper isis calls
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
 
+        console.log(typeof(logCubeName))
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
@@ -787,10 +797,10 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
         for(var i=0;i<isisCalls.length;i++){
             // push command calls
             console.log(isisCalls[i] + ' Starting Now\n');
-            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile,logFileName));
+            promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile,logFileName, logCubeName));
         }
         // call and push image command
-        promises.push(imageExtraction(imagename,filepath,imagePath,logToFile,logFileName));                       
+        promises.push(imageExtraction(imagename,filepath,imagePath,logToFile,logFileName, logCubeName));                       
 
         // this block will pass and run when all isis commands are finished
         Promises.all(promises).then(function(){
@@ -808,8 +818,8 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
 
 // TODO: this needs to be commented 
 var logProcess = function(args, logFileName){
-    console.log("LOGGING OPERATION");
     try{
+        
         let appendString = "";
         for(let i = 0; i<args.length; i++){
             switch(i){
@@ -836,13 +846,13 @@ var logProcess = function(args, logFileName){
                     break;
             }
         }
-
         fs.appendFileSync(path.join("log",logFileName),appendString);
     }
     catch(err){
         if(err){console.log(err)}
     }
 }
+
 
 /**
  * @function replaceAll
@@ -887,20 +897,21 @@ var parseIsisInput = function(array){
  * @param {string} filepath path to the cube file on the server
  * @param {string} imagePath path where image should be saved
  * @param {boolean} logToFile true or false should the server log to a file
+ * @param {string} logFileName the name of the user's log file
+ * @param {string} logCubeName the name of the file the user uploaded to use in log
  * 
  * @returns {Promise}
  * 
  * @description calls the isis image conversion on the given cube
  */
-var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFileName){
+var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFileName, logCubeName){
     console.log('Running isis2std for image now \n');
     return new Promise(function(resolve,reject){
         // execute the isis2std function
         
         var command = undefined,
             statusCode =  undefined,
-            output = undefined,
-            cubeName = path.basename(filepath);
+            output = undefined;
 
         var isis2std = spawn('isis2std',['from=', filepath, "to=", path.join(imagePath,imagename)]);
 
@@ -935,8 +946,8 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
 
             if(code === 0){
 
-                if(![cubeName, statusCode, command, output].includes(undefined)){
-                    logProcess([cubeName, "isis2std", statusCode,command, output], logFileName);
+                if(![logCubeName, statusCode, command, output].includes(undefined)){
+                    logProcess([logCubeName, "isis2std", statusCode,command, output], logFileName);
                 }
 
                 resolve();
@@ -962,37 +973,45 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
  * @param {string} returnPath path to the return pvl
  * @param {string} isisCall isis command that is going to be run
  * @param {boolean} logToFile true or false should the server log to a file
+ * @param {string} logFileName the name of the user's log file
+ * @param {string} logCubeName the name of the file the user uploaded to use in log
  * 
  * @returns {Promise}
  * 
  * @description makes the exec call to run isis commands
  */
-var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileName){
+var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileName, logCubeName){
     return new Promise(function(resolve,reject){
         // execute the isis2std function
         
         var command = undefined,
             statusCode =  undefined,
-            output = undefined,
-            cubeName = path.basename(filepath);
+            output = "";
 
-        var isisSpawn = spawn(isisCall,['from=', filepath,"to=",returnPath,"append=",'true']);
+        var isisSpawn = spawn(isisCall,['from=', filepath]);
         
         command = isisSpawn.spawnargs;
 
         isisSpawn.stdout.on('data', function(data){
             if(logToFile){
-                output = data.toString();
+                output += data.toString();
             }
             else{
                 console.log(isisCall + ' stdout: ' + data.toString() + "\n");
-            }  
+            } 
+            
+            fs.appendFile(returnPath,data,function(err){
+                if(err){console.log("Writing Error: ${err}");}
+                else{
+                    console.log("Wrote to File");
+                }
+            })
         });
 
 
         isisSpawn.stderr.on('data', function(data){
             if(logToFile){
-                output = data.toString();
+                output += data.toString();
             }
             else{
                 console.log(isisCall + ' Error: ' + data.toString() + "\n");
@@ -1008,11 +1027,11 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
                 console.log(isisCall + ' Exited with code: ' + code + "\n");
             }
   
-            if(![cubeName, isisCall, statusCode, command, output].includes(undefined)){
-                logProcess([cubeName, isisCall, statusCode,command, output], logFileName);
+            if(![logCubeName, isisCall, statusCode, command, output].includes(undefined)){
+                logProcess([logCubeName, isisCall, statusCode,command, output], logFileName);
             }else{
-                if(![cubeName, isisCall, statusCode, command].includes(undefined)){
-                    logProcess([cubeName, isisCall, statusCode,command, "none\n"], logFileName);
+                if(![logCubeName, isisCall, statusCode, command].includes(undefined)){
+                    logProcess([logCubeName, isisCall, statusCode,command, "none\n"], logFileName);
                 }
             }
             resolve();
