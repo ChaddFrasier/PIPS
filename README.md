@@ -95,13 +95,13 @@ Keys      | Command
 
 Keys      | Command
 ----------|----------------------------------------  
-`Shift + Alt + N` | `Toggle North Azimuthal Indicator`
-`Shift + Alt + L` | `Start Line Drawing Tool`
-`Shift + Alt + O` | `Toggle Observer Azimuthal Indicator`
-`Shift + Alt + T` | `Start Text Tool`
-`Shift + Alt + S` | `Toggle Sun Azimuthal Indicator`
-`Shift + Alt + B` | `Add 1 Outline Box`
-`Shift + Alt + R` | `Toggle Scalebar`
+`Shift + Alt + N` | `Toggle Color of North Azimuthal Indicator`
+`Shift + Alt + L` | `Undo Last Drawn Line`
+`Shift + Alt + O` | `Toggle Color of Observer Azimuthal Indicator`
+`Shift + Alt + T` | `Undo Last Added Text`
+`Shift + Alt + S` | `Toggle Color of Sun Azimuthal Indicator`
+`Shift + Alt + B` | `Undo Last Outline Box`
+`Shift + Alt + R` | `Toggle Color of Scalebar`
 
 ## Licensing
 
