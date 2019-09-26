@@ -2747,7 +2747,6 @@ $(document).ready(function(){
         }
 
         if(keys[0] === 18 && keys.length === 2){
-            console.log(keys);
             event.preventDefault();
             if(keys[1] === 76){
                 $("#pencilIconFlag").mousedown(); 
@@ -2770,6 +2769,60 @@ $(document).ready(function(){
             }
             else if(keys[1] === 82){
                 $("#scaleBarButton").mousedown();
+            }
+        }
+        else if(keys[0] === 16 && keys[1] === 18 && keys.length === 3){
+            event.preventDefault();
+            if(keys[2] === 76){
+                if(lineArr.length > 0){
+                    $("#undoLine").mousedown(); 
+                }
+            }
+            else if(keys[2] === 79){
+                $("#eyeCheckbox").change();
+                if(document.getElementById("eyeCheckbox").checked){
+                    document.getElementById("eyeCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("eyeCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 66){
+                if(highlightBoxArray.length !== 0){
+                    $("#undoBox").mousedown(); 
+                }
+            }
+            else if(keys[2] === 78){
+                $("#northCheckbox").change();
+                if(document.getElementById("northCheckbox").checked){
+                    document.getElementById("northCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("northCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 83){
+                $("#sunCheckbox").change();
+                if(document.getElementById("sunCheckbox").checked){
+                    document.getElementById("sunCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("sunCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 84){
+                if(textBoxArray.length > 0){
+                    $("#undoText").mousedown();
+                }
+            }
+            else if(keys[2] === 82){
+                $("#scaleCheckbox").change();
+                if(document.getElementById("scaleCheckbox").checked){
+                    document.getElementById("scaleCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("scaleCheckbox").checked = true;
+                }
             }
         }
         

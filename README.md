@@ -83,8 +83,8 @@ key value pairs of the data that is held in the Cube headers.
 Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
 #### Hot Keys
-Key       | Command
-----------|---------------------------------------------
+Keys      | Command
+----------|----------------------------------------  
 `Alt + N` | `Toggle North Azimuthal Indicator`
 `Alt + L` | `Start Line Drawing Tool`
 `Alt + O` | `Toggle Observer Azimuthal Indicator`
@@ -92,6 +92,16 @@ Key       | Command
 `Alt + S` | `Toggle Sun Azimuthal Indicator`
 `Alt + B` | `Add 1 Outline Box`
 `Alt + R` | `Toggle Scalebar`
+
+Keys      | Command
+----------|----------------------------------------  
+`Shift + Alt + N` | `Toggle North Azimuthal Indicator`
+`Shift + Alt + L` | `Start Line Drawing Tool`
+`Shift + Alt + O` | `Toggle Observer Azimuthal Indicator`
+`Shift + Alt + T` | `Start Text Tool`
+`Shift + Alt + S` | `Toggle Sun Azimuthal Indicator`
+`Shift + Alt + B` | `Add 1 Outline Box`
+`Shift + Alt + R` | `Toggle Scalebar`
 
 ## Licensing
 
