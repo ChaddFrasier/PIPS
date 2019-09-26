@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/25/19
+ * @updated 09/26/19
  *
  * 
  * 
@@ -244,6 +244,28 @@ app.get('/tpl',function(request, response){
     
 });
 
+app.get("/log/*",function(request, response){
+    console.log(request.url);
+
+    var id = request.url.split("/")[request.url.split("/").length -1];
+
+    if(fs.existsSync(path.join("log",id+".log"))){
+        response.download(path.join("log",id+".log"),function(err){
+            if(err){
+                console.log("DOWNLOAD FAILED: " + err);
+                response.status(500).send("File Failed to Send").end();
+            }
+            else{
+                console.log("Download Sent");
+            }
+        })
+    }
+    else{
+        response.status(403).send("File Not Found").end();
+    }
+    
+
+});
 
 /**
  * GET '/captionWriter'
@@ -416,7 +438,8 @@ app.post('/captionWriter', async function(request, response){
             
             //convert tiff to cube
             if(isTiff){
-                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log"));
+                let logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
+                promises.push(util.tiff2Cube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log", logCubeName));
             }
 
             // if the desired width and height are both given set that to be the user dimensions 
@@ -475,7 +498,8 @@ app.post('/captionWriter', async function(request, response){
                         }
                 
                         if(scaleFactor > 1){
-                            promises.push(util.reduceCube(cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
@@ -495,13 +519,16 @@ app.post('/captionWriter', async function(request, response){
                              * setting last input of function to true (hard coded)
                             */
                             
+                            var logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
+                            console.log(logCubeName);
 
                             promises.push(util.makeSystemCalls(cubeObj.name,
                                 path.join('.','uploads',cubeObj.name),
                                 path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                                 'images',
                                 cubeObj.logFlag,
-                                cubeObj.userId + ".log"));
+                                cubeObj.userId + ".log",
+                                logCubeName));
                         
                         
                             // when isis is done read the pvl file
