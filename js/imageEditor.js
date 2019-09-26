@@ -2741,6 +2741,13 @@ $(document).ready(function(){
 
     var keys = [];
 
+    /**
+     * @function document.keydown
+     * 
+     * @param {event} event the key press event
+     * 
+     * @description  Hot Key Handler
+     */
     $(document).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
@@ -2827,10 +2834,16 @@ $(document).ready(function(){
         }
         
     });
+    /** 
+     * @function document.keyup
+     * 
+     * @param {event} event key event
+     * 
+     * @description helps track keys being held
+     */
     $(document).keyup(function(event){
         if(keys.length > 0){
             keys = removeKey(keys, event.keyCode);
-            console.log("NEW ARRAY IS: " + keys);
         }
         
     });

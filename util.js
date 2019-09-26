@@ -816,10 +816,16 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
     });
 }
 
-// TODO: this needs to be commented 
+/**
+ * @function logProcess
+ * 
+ * @param {array} args 
+ * @param {string} logFileName 
+ * 
+ * @description logs a single isis run to the specified log file
+ */
 var logProcess = function(args, logFileName){
     try{
-        
         let appendString = "";
         for(let i = 0; i<args.length; i++){
             switch(i){

@@ -338,7 +338,7 @@ $(document).ready(function(){
         }
     }
 
-
+    // try fetching the log file for the user and dont display if fetch fails to locate it
     fetch("/log/" + getCookie("userId"),{method:"GET"})
         .then(function(response){
             if(Number(response.status) !== 200){
@@ -414,18 +414,27 @@ $(document).ready(function(){
         }
     });
 
+    // download the log file using fetch api
     $("#logDownloadBtn").mousedown(function(event){
-        fetch("log/" + getCookie("userId"), {method:"GET"}).then(function(response){
-            response.blob().then((blob) => {
-                var a = document.createElement('a');
-
-                a.download = getCookie("userId") + ".log";
-                a.href = URL.createObjectURL(blob);
-                a.target = "__blank";
-                document.body.appendChild(a);
-
-                a.click();
-            });
+        fetch("log/" + getCookie("userId"), {method:"GET"})
+            .then(function(response){
+                // convert response to blob
+                response.blob()
+                .then((blob) => {
+                    // create the download link
+                    var a = document.createElement('a');
+                    // set the file name
+                    a.download = getCookie("userId") + ".log";
+                    // set the href to the object url
+                    a.href = URL.createObjectURL(blob);
+                    a.target = "__blank";
+                    // add the link
+                    document.body.appendChild(a);
+                    // start download
+                    a.click();
+                    // remove link
+                    a.remove();
+                });
         }).catch(function(err){
             if(err){
                 console.log(err);

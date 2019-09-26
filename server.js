@@ -731,10 +731,12 @@ app.get('/imageEditor', function(request, response){
             imagepath = 'images/' + image;
             var rawCube = util.getRawCube(userObject.name,userObject.userNum);
 
+            // get resolution value
+            var resolution = util.getPixelResolution(userObject);
+
             var w,
                 h;
-
-            
+                
             userObject.getCubeDimensions().then(dimensions => {
                 dimensions = JSON.parse(dimensions);
                 w = dimensions.w;
