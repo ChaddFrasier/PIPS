@@ -760,9 +760,9 @@ function captionHandler(){
  * 
 */
 function growProgress(duration){
-    //document.getElementById("mainBar").className = "growBar";
+    
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
-    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
+    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s infinite";
 }
 
 /**
@@ -776,6 +776,7 @@ function showProgress(){
     var elem = document.getElementById("progressBar");
     elem.style.visibility = "visible";
 }
+
 /**
  * @function hideProgress
  * 
@@ -786,8 +787,10 @@ function showProgress(){
 function hideProgress(){
     var elem = document.getElementById("progressBar");
     // stop the animation
+
     document.getElementById("mainBar").style.animation = "";
     document.getElementById("mainBar").style.webkitAnimation = "";
+    
     // hide the bar
     elem.style.visibility = "hidden";
 }
@@ -1842,7 +1845,8 @@ $(document).ready(function(){
             var filename = prompt("Save File as png svg or jpeg","");
         }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
                                                                                         .test(filename))
-
+    // load bar with a duration of .5 seconds
+    growProgress(.5);
         // if the file is not null
         if(filename !== null){
             // read the file extenson
@@ -1866,9 +1870,7 @@ $(document).ready(function(){
                 return;
             }else{
                 
-                // load bar with a duration of .5 seconds
-                growProgress(.5);
-
+                
                 // create a new Form data object
                 var fd = new FormData();
                 // append a new file to the form. 
@@ -1887,6 +1889,7 @@ $(document).ready(function(){
                         method:'POST',
                         body: fd
                     }).then((response) =>{
+                        growProgress(.5);
                         // if the response is an error code
                         if(response.status !== 200){
                             // read the response as text
@@ -1919,15 +1922,15 @@ $(document).ready(function(){
                         }
                         else{
                             // server sent back a 200
-                            console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
+                            
                             response.blob().then((blob)=>{
                                 console.log(blob);
                                 url = DOMURL.createObjectURL(blob);
 
                                 triggerDownload(url,filename);
+                                setInterval(hideProgress,500);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
-                                setInterval(hideProgress,500);
                             });
                         }
                     }).catch((err) =>{
