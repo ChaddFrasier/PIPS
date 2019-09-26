@@ -10,10 +10,10 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/20/19
+ * @updated 09/26/19
  *
  * 
- * @todo 8 log the isis returns to a file if the user wants that.
+ * 
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
  *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
@@ -27,7 +27,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/24/19           Planetary Image Publication Server
+ * @summary  09/25/19           Planetary Image Publication Server
  *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
@@ -77,6 +77,12 @@
  *  The progress bar guesses how long the download will take and it runs a css animation for that duration
  *  to show a rough estimate of how long the download will take.
  * 
+ *     TODO: finsih the logging system and finish version 3.8.0
+ *      Log System is in testing now and should be finished soon. 
+ * 
+ *      With a button on the writer page the user can download the ISIS3 Log file that explains all
+ *  the functions run on the cube and their outputs either an error code and message or the std output
+ *  of the spawn function.
  * ----------------------------------------------------------------------------------------------------------
  *                                          Last Notes for Coders
  *                                          ---------------------
@@ -139,7 +145,9 @@ app.use("/css" , express.static("css"));
 app.use("/images" , express.static("images"));
 app.use("/csv" , express.static("csv"));
 app.use("/js" , express.static("js"));
+app.use("/log" , express.static("log"));
 app.use("/tpl" , express.static("tpl"));
+app.use("/tmp" , express.static("tmp"));
 app.use("/pvl " , express.static("pvl"));
 
 
@@ -154,6 +162,8 @@ try{
     exec('rm ./csv/*.csv');
     exec('rm ./print.prt');
     exec('rm ./tmp/*');
+    exec('rm ./log/*');
+    
     
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
@@ -234,6 +244,28 @@ app.get('/tpl',function(request, response){
     
 });
 
+app.get("/log/*",function(request, response){
+    console.log(request.url);
+
+    var id = request.url.split("/")[request.url.split("/").length -1];
+
+    if(fs.existsSync(path.join("log",id+".log"))){
+        response.download(path.join("log",id+".log"),function(err){
+            if(err){
+                console.log("DOWNLOAD FAILED: " + err);
+                response.status(500).send("File Failed to Send").end();
+            }
+            else{
+                console.log("Download Sent");
+            }
+        })
+    }
+    else{
+        response.status(403).send("File Not Found").end();
+    }
+    
+
+});
 
 /**
  * GET '/captionWriter'
@@ -389,11 +421,25 @@ app.post('/captionWriter', async function(request, response){
                 templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
             }
             
-            //convert tiff to cube
+            if(request.body.logToFile){
+                cubeObj.logFlag = true;
+            }
+            else{
+                cubeObj.logFlag = false;
+            }
 
-            /** TODO: ---- WILL NEED TO TEST THIS LOG SYSTEM -------- */
+            // create the log file if needed
+            if(cubeObj.logFlag){
+                let result = util.createLogFile(cubeObj.userId + ".log");
+                if(result >= 0){
+                    fs.appendFileSync(path.join("log",cubeObj.userId + ".log"),"FILE_UPLOAD:\n\n");
+                }
+            }
+            
+            //convert tiff to cube
             if(isTiff){
-                promises.push(util.tiffToCube('uploads/' + cubeObj.name, cubeObj.logFlag));
+                let logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
+                promises.push(util.tiff2Cube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log", logCubeName));
             }
 
             // if the desired width and height are both given set that to be the user dimensions 
@@ -437,7 +483,6 @@ app.post('/captionWriter', async function(request, response){
                     if(err){
                         console.log("READING ERROR: " + err);
                     }else{
-                        console.log("gets here");
                         let bufferArray = data.subarray(0,data.length/10).toString().split("\n");
                         for(let index=0; index< bufferArray.length;index++){
                             if(bufferArray[index].indexOf("Group = Dimensions") > -1){
@@ -445,15 +490,16 @@ app.post('/captionWriter', async function(request, response){
                                 samples = Number(bufferArray[index + 1].split("=")[1]);
                                 lines = Number(bufferArray[index + 2].split("=")[1]);
 
-                                console.log("This cube file is " + samples + " samples by " + lines + " lines");
+                                
                                 // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
                                 scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1] : samples/cubeObj.userDim[0];
                                 break;
                             }
                         }
-
+                
                         if(scaleFactor > 1){
-                            promises.push(util.reduceCube(cubeObj.name, scaleFactor, cubeObj.logFlag));
+                            var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
@@ -472,11 +518,17 @@ app.post('/captionWriter', async function(request, response){
                              * 
                              * setting last input of function to true (hard coded)
                             */
+                            
+                            var logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
+                            console.log(logCubeName);
+
                             promises.push(util.makeSystemCalls(cubeObj.name,
                                 path.join('.','uploads',cubeObj.name),
                                 path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
                                 'images',
-                                cubeObj.logFlag));
+                                cubeObj.logFlag,
+                                cubeObj.userId + ".log",
+                                logCubeName));
                         
                         
                             // when isis is done read the pvl file
@@ -484,6 +536,10 @@ app.post('/captionWriter', async function(request, response){
                                 //reset promises array
                                 promises = [];
 
+                                if(cubeObj.logFlag){
+                                    util.endProcessRun(cubeObj.userId + ".log");
+                                }
+                                
                                 // make new promise on the data extraction functions
                                 promises.push(util.readPvltoStruct(cubeObj.name));
 
@@ -675,10 +731,12 @@ app.get('/imageEditor', function(request, response){
             imagepath = 'images/' + image;
             var rawCube = util.getRawCube(userObject.name,userObject.userNum);
 
+            // get resolution value
+            var resolution = util.getPixelResolution(userObject);
+
             var w,
                 h;
-
-            
+                
             userObject.getCubeDimensions().then(dimensions => {
                 dimensions = JSON.parse(dimensions);
                 w = dimensions.w;

@@ -760,9 +760,9 @@ function captionHandler(){
  * 
 */
 function growProgress(duration){
-    //document.getElementById("mainBar").className = "growBar";
+    
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
-    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
+    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s infinite";
 }
 
 /**
@@ -776,6 +776,7 @@ function showProgress(){
     var elem = document.getElementById("progressBar");
     elem.style.visibility = "visible";
 }
+
 /**
  * @function hideProgress
  * 
@@ -786,8 +787,10 @@ function showProgress(){
 function hideProgress(){
     var elem = document.getElementById("progressBar");
     // stop the animation
+
     document.getElementById("mainBar").style.animation = "";
     document.getElementById("mainBar").style.webkitAnimation = "";
+    
     // hide the bar
     elem.style.visibility = "hidden";
 }
@@ -1513,6 +1516,22 @@ function svgPoint(element, x, y) {
         the browsers coordinate matrix */
     return pt.matrixTransform(element.getScreenCTM().inverse());    
 }
+
+function removeKey(keysArr, key){
+    if(!keysArr.includes(key)){return false;}
+    else{
+        var returnArr = [];
+        for(var i = 0; i < keysArr.length; i++){
+            if(key === keysArr[i]){
+                keysArr[i] = null;
+            }
+            else{
+                returnArr.push(keysArr[i]);
+            }
+        }
+        return returnArr;
+    }
+}
 /** --------------------------------- End Draw Functions ------------------------------------------------- */
 
 
@@ -1842,7 +1861,8 @@ $(document).ready(function(){
             var filename = prompt("Save File as png svg or jpeg","");
         }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
                                                                                         .test(filename))
-
+    // load bar with a duration of .5 seconds
+    growProgress(.5);
         // if the file is not null
         if(filename !== null){
             // read the file extenson
@@ -1866,9 +1886,7 @@ $(document).ready(function(){
                 return;
             }else{
                 
-                // load bar with a duration of .5 seconds
-                growProgress(.5);
-
+                
                 // create a new Form data object
                 var fd = new FormData();
                 // append a new file to the form. 
@@ -1887,6 +1905,7 @@ $(document).ready(function(){
                         method:'POST',
                         body: fd
                     }).then((response) =>{
+                        growProgress(.5);
                         // if the response is an error code
                         if(response.status !== 200){
                             // read the response as text
@@ -1919,15 +1938,15 @@ $(document).ready(function(){
                         }
                         else{
                             // server sent back a 200
-                            console.log("GOOD RESPONSE: IMAGE SHOULD DOWNLOAD");
+                            
                             response.blob().then((blob)=>{
                                 console.log(blob);
                                 url = DOMURL.createObjectURL(blob);
 
                                 triggerDownload(url,filename);
+                                setInterval(hideProgress,500);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
-                                setInterval(hideProgress,500);
                             });
                         }
                     }).catch((err) =>{
@@ -2720,6 +2739,114 @@ $(document).ready(function(){
         
     });
 
+    var keys = [];
+
+    /**
+     * @function document.keydown
+     * 
+     * @param {event} event the key press event
+     * 
+     * @description  Hot Key Handler
+     */
+    $(document).keydown(function(event){
+        if(!keys.includes(event.keyCode)){
+            keys.push(event.keyCode);
+        }
+
+        if(keys[0] === 18 && keys.length === 2){
+            event.preventDefault();
+            if(keys[1] === 76){
+                $("#pencilIconFlag").mousedown(); 
+            }
+            else if(keys[1] === 79){
+                $("#eyeFlag").click(); 
+            }
+            else if(keys[1] === 66){
+                $("#outlineBtn").mousedown(); 
+            }
+            else if(keys[1] === 78){
+                $("#northIconFlag").mousedown(); 
+            }
+            else if(keys[1] === 83){
+                $("#sunIconFlag").click(); 
+            }
+            else if(keys[1] === 84){
+                $("#textBtn").mousedown();
+                keys = [];
+            }
+            else if(keys[1] === 82){
+                $("#scaleBarButton").mousedown();
+            }
+        }
+        else if(keys[0] === 16 && keys[1] === 18 && keys.length === 3){
+            event.preventDefault();
+            if(keys[2] === 76){
+                if(lineArr.length > 0){
+                    $("#undoLine").mousedown(); 
+                }
+            }
+            else if(keys[2] === 79){
+                $("#eyeCheckbox").change();
+                if(document.getElementById("eyeCheckbox").checked){
+                    document.getElementById("eyeCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("eyeCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 66){
+                if(highlightBoxArray.length !== 0){
+                    $("#undoBox").mousedown(); 
+                }
+            }
+            else if(keys[2] === 78){
+                $("#northCheckbox").change();
+                if(document.getElementById("northCheckbox").checked){
+                    document.getElementById("northCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("northCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 83){
+                $("#sunCheckbox").change();
+                if(document.getElementById("sunCheckbox").checked){
+                    document.getElementById("sunCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("sunCheckbox").checked = true;
+                } 
+            }
+            else if(keys[2] === 84){
+                if(textBoxArray.length > 0){
+                    $("#undoText").mousedown();
+                }
+            }
+            else if(keys[2] === 82){
+                $("#scaleCheckbox").change();
+                if(document.getElementById("scaleCheckbox").checked){
+                    document.getElementById("scaleCheckbox").checked = false;
+                }
+                else{
+                    document.getElementById("scaleCheckbox").checked = true;
+                }
+            }
+        }
+        
+    });
+    /** 
+     * @function document.keyup
+     * 
+     * @param {event} event key event
+     * 
+     * @description helps track keys being held
+     */
+    $(document).keyup(function(event){
+        if(keys.length > 0){
+            keys = removeKey(keys, event.keyCode);
+        }
+        
+    });
     // ---------------------------------- End Button Handlers -----------------------------------------------
         
     // ---------------------------------- Click & Text Input Handlers ---------------------------------------

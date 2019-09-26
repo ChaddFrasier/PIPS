@@ -1,0 +1,561 @@
+       U.S. Geological Survey Cloud Publication Services
+                          <URL>
+
+             Planetary Image Publication Server (PIPS)
+
+    Questions & Concerns:https://github.com/ChaddFrasier/PIPS/issues
+___________________________________________________________________
+
+UPLOAD_INFORMATION:
+
+	UPLOAD KEY: 839XOb6duFNZdkRqjztFzMy
+	UPLOAD DATE: 2019-8-26 15:0
+	ISIS VERSION: 3.9.0
+___________________________________________________________________
+
+FILE_UPLOAD:
+
+	File: K08_056540_0912_XI_88S135W.crop.lev2.cub
+		Process: catoriglab
+			Status: 0 Success
+			Command: catoriglab from=uploads/u-0K08_056540_0912_XI_88S135W.crop.lev2.cub 
+			Output: 
+				PDS_VERSION_ID               = PDS3
+				FILE_NAME                    = K08_056540_0912_XI_88S135W.IMG
+				RECORD_TYPE                  = FIXED_LENGTH
+				RECORD_BYTES                 = 5056
+				FILE_RECORDS                 = 18433
+				LABEL_RECORDS                = 1
+				^IMAGE                       = 2
+				SPACECRAFT_NAME              = MARS_RECONNAISSANCE_ORBITER
+				INSTRUMENT_NAME              = "CONTEXT CAMERA"
+				INSTRUMENT_HOST_NAME         = "MARS RECONNAISSANCE ORBITER"
+				MISSION_PHASE_NAME           = ESP
+				TARGET_NAME                  = MARS
+				INSTRUMENT_ID                = CTX
+				PRODUCER_ID                  = MRO_CTX_TEAM
+				DATA_SET_ID                  = MRO-M-CTX-2-EDR-L0-V1.0
+				PRODUCT_CREATION_TIME        = 2019-01-08T21:22:47
+				SOFTWARE_NAME                = "makepds05 $Revision: 1.16 $"
+				UPLOAD_ID                    = UNK
+				ORIGINAL_PRODUCT_ID          = 4A_04_111F01DA00
+				PRODUCT_ID                   = K08_056540_0912_XI_88S135W
+				START_TIME                   = 2018-08-19T02:11:16.832
+				STOP_TIME                    = 2018-08-19T02:11:51.424
+				SPACECRAFT_CLOCK_START_COUNT = 1219111926:238
+				SPACECRAFT_CLOCK_STOP_COUNT  = N/A
+				FOCAL_PLANE_TEMPERATURE      = 298.3 <K>
+				SAMPLE_BIT_MODE_ID           = SQROOT
+				OFFSET_MODE_ID               = 197/218/211
+				LINE_EXPOSURE_DURATION       = 1.877 <MSEC>
+				SAMPLING_FACTOR              = 1
+				SAMPLE_FIRST_PIXEL           = 0
+				RATIONALE_DESC               = "South polar residual cap spring mosaic
+				                                campaign"
+				DATA_QUALITY_DESC            = OK
+				ORBIT_NUMBER                 = 56540
+				
+				Object = IMAGE
+				  LINES             = 18432
+				  LINE_SAMPLES      = 5056
+				  LINE_PREFIX_BYTES = 0
+				  LINE_SUFFIX_BYTES = 0
+				  SAMPLE_TYPE       = UNSIGNED_INTEGER
+				  SAMPLE_BITS       = 8
+				  SAMPLE_BIT_MASK   = 2#11111111#
+				  CHECKSUM          = 16#EF0A01E4#
+				End_Object
+				End
+				
+	File: K08_056540_0912_XI_88S135W.crop.lev2.cub
+		Process: catlab
+			Status: 0 Success
+			Command: catlab from=uploads/u-0K08_056540_0912_XI_88S135W.crop.lev2.cub 
+			Output: 
+				Object = IsisCube
+				  Object = Core
+				    StartByte   = 65537
+				    Format      = Tile
+				    TileSamples = 128
+				    TileLines   = 128
+				
+				    Group = Dimensions
+				      Samples = 4398
+				      Lines   = 4388
+				      Bands   = 1
+				    End_Group
+				
+				    Group = Pixels
+				      Type       = Real
+				      ByteOrder  = Lsb
+				      Base       = 0.0
+				      Multiplier = 1.0
+				    End_Group
+				  End_Object
+				
+				  Group = Instrument
+				    SpacecraftName        = Mars_Reconnaissance_Orbiter
+				    InstrumentId          = CTX
+				    TargetName            = Mars
+				    MissionPhaseName      = ESP
+				    StartTime             = 2018-08-19T02:11:16.832
+				    SpacecraftClockCount  = 1219111926:238
+				    OffsetModeId          = 197/218/211
+				    LineExposureDuration  = 1.877 <MSEC>
+				    FocalPlaneTemperature = 298.3 <K>
+				    SampleBitModeId       = SQROOT
+				    SpatialSumming        = 1
+				    SampleFirstPixel      = 0
+				  End_Group
+				
+				  Group = Archive
+				    DataSetId           = MRO-M-CTX-2-EDR-L0-V1.0
+				    ProductId           = K08_056540_0912_XI_88S135W
+				    ProducerId          = MRO_CTX_TEAM
+				    ProductCreationTime = 2019-01-08T21:22:47
+				    OrbitNumber         = 56540
+				  End_Group
+				
+				  Group = BandBin
+				    FilterName = BroadBand
+				    Center     = 0.65 <micrometers>
+				    Width      = 0.15 <micrometers>
+				  End_Group
+				
+				  Group = Kernels
+				    NaifFrameCode             = -74021
+				    LeapSecond                = $base/kernels/lsk/naif0012.tls
+				    TargetAttitudeShape       = $base/kernels/pck/pck00009.tpc
+				    TargetPosition            = (Table, $base/kernels/spk/de405.bsp)
+				    InstrumentPointing        = (Table,
+				                                 $mro/kernels/ck/mro_sc_psp_180814_180820.bc,
+				                                 $mro/kernels/fk/mro_v15.tf)
+				    Instrument                = Null
+				    SpacecraftClock           = $mro/kernels/sclk/MRO_SCLKSCET.00081.65536.tsc
+				    InstrumentPosition        = (Table, $mro/kernels/spk/mro_psp48.bsp)
+				    InstrumentAddendum        = $mro/kernels/iak/mroctxAddendum005.ti
+				    ShapeModel                = $base/dems/molaMarsPlanetaryRadius0005.cub
+				    InstrumentPositionQuality = Reconstructed
+				    InstrumentPointingQuality = Reconstructed
+				    CameraVersion             = 1
+				  End_Group
+				
+				  Group = Radiometry
+				    FlatFile = /usgs/cpkgs/isis3/data/mro/calibration/ctxFlat_0002.cub
+				    iof      = 1.46287460032551e-04
+				  End_Group
+				
+				  Group = Mapping
+				    ProjectionName     = PolarStereographic
+				    CenterLongitude    = 212.87526241978
+				    TargetName         = Mars
+				    EquatorialRadius   = 3396190.0 <meters>
+				    PolarRadius        = 3376200.0 <meters>
+				    LatitudeType       = Planetocentric
+				    LongitudeDirection = PositiveEast
+				    LongitudeDomain    = 360
+				    MinimumLatitude    = -88.897312388455
+				    MaximumLatitude    = -88.508895658789
+				    MinimumLongitude   = 204.33571682071
+				    MaximumLongitude   = 221.41480801886
+				    UpperLeftCornerX   = -11041.62603756 <meters>
+				    UpperLeftCornerY   = 87801.258604624 <meters>
+				    PixelResolution    = 5.2132323123515 <meters/pixel>
+				    Scale              = 11303.123029108 <pixels/degree>
+				    CenterLatitude     = -90.0
+				  End_Group
+				
+				  Group = AlphaCube
+				    AlphaSamples        = 5000
+				    AlphaLines          = 18432
+				    AlphaStartingSample = 99.5
+				    AlphaStartingLine   = 10999.5
+				    AlphaEndingSample   = 3599.5
+				    AlphaEndingLine     = 12999.5
+				    BetaSamples         = 3500
+				    BetaLines           = 2000
+				  End_Group
+				End_Object
+				
+				Object = Label
+				  Bytes = 65536
+				End_Object
+				
+				Object = Table
+				  Name      = "Ctx Prefix Dark Pixels"
+				  StartByte = 80347137
+				  Bytes     = 1769472
+				  Records   = 18432
+				  ByteOrder = Lsb
+				
+				  Group = Field
+				    Name = DarkPixels
+				    Type = Integer
+				    Size = 24
+				  End_Group
+				End_Object
+				
+				Object = Table
+				  Name                = InstrumentPointing
+				  StartByte           = 82116609
+				  Bytes               = 20544
+				  Records             = 321
+				  ByteOrder           = Lsb
+				  TimeDependentFrames = (-74000, -74900, 1)
+				  ConstantFrames      = (-74021, -74020, -74699, -74690, -74000)
+				  ConstantRotation    = (0.99999956087984, -1.51960241928036e-05,
+				                         9.37021451059404e-04, 1.52765520753568e-05,
+				                         0.99999999619106, -8.59331791187956e-05,
+				                         -9.3702014164768e-04, 8.59474558407972e-05,
+				                         0.99999955730305)
+				  CkTableStartTime    = 587916746.01498
+				  CkTableEndTime      = 587916780.61185
+				  CkTableOriginalSize = 18433
+				  FrameTypeCode       = 3
+				  Description         = "Created by spiceinit"
+				  Kernels             = ($mro/kernels/ck/mro_sc_psp_180814_180820.bc,
+				                         $mro/kernels/fk/mro_v15.tf)
+				
+				  Group = Field
+				    Name = J2000Q0
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q1
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q2
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q3
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV1
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV2
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV3
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = ET
+				    Type = Double
+				    Size = 1
+				  End_Group
+				End_Object
+				
+				Object = Table
+				  Name                 = InstrumentPosition
+				  StartByte            = 82137153
+				  Bytes                = 392
+				  Records              = 7
+				  ByteOrder            = Lsb
+				  CacheType            = HermiteSpline
+				  SpkTableStartTime    = 587916746.01498
+				  SpkTableEndTime      = 587916780.61185
+				  SpkTableOriginalSize = 18433.0
+				  Description          = "Created by spiceinit"
+				  Kernels              = $mro/kernels/spk/mro_psp48.bsp
+				
+				  Group = Field
+				    Name = J2000X
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Y
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Z
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000XV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000YV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000ZV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = ET
+				    Type = Double
+				    Size = 1
+				  End_Group
+				End_Object
+				
+				Object = Table
+				  Name                = BodyRotation
+				  StartByte           = 82137545
+				  Bytes               = 128
+				  Records             = 2
+				  ByteOrder           = Lsb
+				  TimeDependentFrames = (10014, 1)
+				  CkTableStartTime    = 587916746.01498
+				  CkTableEndTime      = 587916780.61185
+				  CkTableOriginalSize = 2
+				  FrameTypeCode       = 2
+				  PoleRa              = (317.68143, -0.1061, 0.0)
+				  PoleDec             = (52.8865, -0.0609, 0.0)
+				  PrimeMeridian       = (176.63, 350.89198226, 0.0)
+				  Description         = "Created by spiceinit"
+				  Kernels             = ($base/kernels/spk/de405.bsp,
+				                         $base/kernels/pck/pck00009.tpc)
+				  SolarLongitude      = 233.15722000519
+				
+				  Group = Field
+				    Name = J2000Q0
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q1
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q2
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Q3
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV1
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV2
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = AV3
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = ET
+				    Type = Double
+				    Size = 1
+				  End_Group
+				End_Object
+				
+				Object = Table
+				  Name                 = SunPosition
+				  StartByte            = 82137673
+				  Bytes                = 112
+				  Records              = 2
+				  ByteOrder            = Lsb
+				  CacheType            = Linear
+				  SpkTableStartTime    = 587916746.01498
+				  SpkTableEndTime      = 587916780.61185
+				  SpkTableOriginalSize = 2.0
+				  Description          = "Created by spiceinit"
+				  Kernels              = $base/kernels/spk/de405.bsp
+				
+				  Group = Field
+				    Name = J2000X
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Y
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000Z
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000XV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000YV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = J2000ZV
+				    Type = Double
+				    Size = 1
+				  End_Group
+				
+				  Group = Field
+				    Name = ET
+				    Type = Double
+				    Size = 1
+				  End_Group
+				End_Object
+				
+				Object = History
+				  Name      = IsisCube
+				  StartByte = 82139568
+				  Bytes     = 3719
+				End_Object
+				
+				Object = NaifKeywords
+				  BODY499_RADII                        = (3396.19, 3396.19, 3376.2)
+				  BODY_FRAME_CODE                      = 10014
+				  INS-74021_FOCAL_LENGTH               = 352.9271664
+				  INS-74021_PIXEL_PITCH                = 0.007
+				  CLOCK_ET_-74_1219111926:238_COMPUTED = f9ea01e57285c141
+				  INS-74021_TRANSX                     = (0.0, 0.0, 0.007)
+				  INS-74021_TRANSY                     = (0.0, 0.007, 0.0)
+				  INS-74021_ITRANSS                    = (0.0, 0.0, 142.85714285714)
+				  INS-74021_ITRANSL                    = (0.0, 142.85714285714, 0.0)
+				  INS-74021_BORESIGHT_SAMPLE           = 2543.46099
+				  INS-74021_BORESIGHT_LINE             = 0.430442527
+				  INS-74021_OD_K                       = (-0.0073433925920055,
+				                                          2.83758786362417e-05,
+				                                          1.28419891240271e-08)
+				End_Object
+				
+				Object = OriginalLabel
+				  Name      = IsisCube
+				  StartByte = 82137785
+				  Bytes     = 1783
+				End_Object
+				End
+				
+	File: K08_056540_0912_XI_88S135W.crop.lev2.cub
+		Process: campt
+			Status: 0 Success
+			Command: campt from=uploads/u-0K08_056540_0912_XI_88S135W.crop.lev2.cub 
+			Output: 
+				Group = GroundPoint
+				  Filename                   = uploads/u-0K08_056540_0912_XI_88S135W.crop.lev-
+				                               2.cub
+				  Sample                     = 2199.0
+				  Line                       = 2194.0
+				  PixelValue                 = 0.17666546
+				  RightAscension             = 359.72240151467 <DEGREE>
+				  Declination                = 66.440285587336 <DEGREE>
+				  PlanetocentricLatitude     = -88.704066444301 <DEGREE>
+				  PlanetographicLatitude     = -88.719272199647 <DEGREE>
+				  PositiveEast360Longitude   = 213.19012495323 <DEGREE>
+				  PositiveEast180Longitude   = -146.80987504677 <DEGREE>
+				  PositiveWest360Longitude   = 146.80987504677 <DEGREE>
+				  PositiveWest180Longitude   = 146.80987504677 <DEGREE>
+				  BodyFixedCoordinate        = (-63.994904715812, -41.861341264322,
+				                                -3380.3300245361) <km>
+				  LocalRadius                = 3381194.8767414 <meters>
+				  SampleResolution           = 5.2945343442685 <meters/pixel>
+				  LineResolution             = 5.2945343442685 <meters/pixel>
+				  ObliqueDetectorResolution  = 5.7768564566696 <meters>
+				  ObliquePixelResolution     = 5.7768564566696 <meters/pix>
+				  ObliqueLineResolution      = 5.7768564566696 <meters>
+				  ObliqueSampleResolution    = 5.7768564566696 <meters>
+				
+				  # Spacecraft Information
+				  SpacecraftPosition         = (-90.222524289166, -149.40381339219,
+				                                -3623.2375663555) <km>
+				  SpacecraftAzimuth          = 315.44206280979 <DEGREE>
+				  SlantDistance              = 266.94071479002 <km>
+				  TargetCenterDistance       = 3627.4387748927 <km>
+				  SubSpacecraftLatitude      = -87.242175477235 <DEGREE>
+				  SubSpacecraftLongitude     = 238.8729073431 <DEGREE>
+				  SpacecraftAltitude         = 246.41027704896 <km>
+				  OffNadirAngle              = 21.893088520246 <DEGREE>
+				  SubSpacecraftGroundAzimuth = 45.127201108615 <DEGREE>
+				
+				  # Sun Information
+				  SunPosition                = (-97904248.270157, 168772665.98517,
+				                                -70698781.329475) <km>
+				  SubSolarAzimuth            = 176.77469885067 <DEGREE>
+				  SolarDistance              = 1.3872297382656 <AU>
+				  SubSolarLatitude           = -19.917786966665 <DEGREE>
+				  SubSolarLongitude          = 120.11782336338 <DEGREE>
+				  SubSolarGroundAzimuth      = 266.45983672433 <DEGREE>
+				
+				  # Illumination and Other
+				  Phase                      = 88.355278777384 <DEGREE>
+				  Incidence                  = 70.156896600507 <DEGREE>
+				  Emission                   = 23.579221203276 <DEGREE>
+				  NorthAzimuth               = 270.31486253302 <DEGREE>
+				
+				  # Time
+				  EphemerisTime              = 587916768.54686 <seconds>
+				  UTC                        = 2018-08-19T02:11:39.3639971
+				  LocalSolarTime             = 18.20482010599 <hour>
+				  SolarLongitude             = 233.15722000519 <DEGREE>
+				
+				  # Look Direction Unit Vectors in Body Fixed, J2000, and Camera Coordinate Systems.
+				  LookDirectionBodyFixed     = (26.227619573354, 107.54247212787,
+				                                242.90754181941)
+				  LookDirectionJ2000         = (106.69618578458, -0.51694787252741,
+				                                244.68960320481)
+				  LookDirectionCamera        = (-0.0022937753351044, -3.8036685942485,
+				                                266.91361395135)
+				End_Group
+				
+	File: K08_056540_0912_XI_88S135W.crop.lev2.cub
+		Process: isis2std
+			Status: 0 Success
+			Command: isis2std from=uploads/u-0K08_056540_0912_XI_88S135W.crop.lev2.cub to=images/u-0K08_056540_0912_XI_88S135W.crop.lev2.png 
+			Output: 
+				Group = Results
+				  OutputFileName = images/u-0K08_056540_0912_XI_88S135W.crop.lev2.png
+				  InputMinimum   = 0.12896292819996
+				  InputMaximum   = 0.19080873501092
+				End_Group
+				
+END_UPLOAD
+

@@ -171,6 +171,40 @@ function hasUnits(str){
     }
 }
 
+
+/**
+ * @function getCookie
+ * 
+ * @param {string} cname the name of the cookie value to find
+ * 
+ * @description reads all browser cookies and finds the cookie value with the given name
+ * 
+*/
+function getCookie(cname){
+    // atach the '=' to the name
+    var name = cname + "=";
+    // get the string version of the object
+    var decodedCookie = decodeURIComponent(document.cookie);
+    // get array of every cookie found
+    var cookieArr = decodedCookie.split(';');
+    // loop through the cookies and match the name
+    for(var i = 0; i < cookieArr.length; i++){
+        var cookie = cookieArr[i];
+        // if the first character is a space, find the start of the cookie name
+        while (cookie.charAt(0) == ' '){
+            // get a substring of the cookie with the ' ' removed
+            cookie = cookie.substring(1);
+        }
+        // if the cookie string contains the cname+'='
+        if (cookie.indexOf(name) == 0){
+            // return that cookie
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    // not found
+    return "";
+}
+
 /**
  * @function removeUnits
  * 
@@ -304,6 +338,18 @@ $(document).ready(function(){
         }
     }
 
+    // try fetching the log file for the user and dont display if fetch fails to locate it
+    fetch("/log/" + getCookie("userId"),{method:"GET"})
+        .then(function(response){
+            if(Number(response.status) !== 200){
+                document.getElementById("logDownloadBtn").style.display = "none";  
+            }
+        }).catch(function(err){
+            console.log(err);       
+        });
+
+
+
     /**
      * @function helpBtn 'mousedown' event handler
      * 
@@ -367,6 +413,34 @@ $(document).ready(function(){
             return false;
         }
     });
+
+    // download the log file using fetch api
+    $("#logDownloadBtn").mousedown(function(event){
+        fetch("log/" + getCookie("userId"), {method:"GET"})
+            .then(function(response){
+                // convert response to blob
+                response.blob()
+                .then((blob) => {
+                    // create the download link
+                    var a = document.createElement('a');
+                    // set the file name
+                    a.download = getCookie("userId") + ".log";
+                    // set the href to the object url
+                    a.href = URL.createObjectURL(blob);
+                    a.target = "__blank";
+                    // add the link
+                    document.body.appendChild(a);
+                    // start download
+                    a.click();
+                    // remove link
+                    a.remove();
+                });
+        }).catch(function(err){
+            if(err){
+                console.log(err);
+            }
+        })
+    })
 }); // end document ready
 
 /**

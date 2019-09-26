@@ -29,13 +29,14 @@
             <br>
             <div id="help-box" class="help-box float-left" 
             style="visibility: hidden; width:15%; bottom: 10%; position: absolute; margin-left: 1%; margin-right:0;">
-                <button class="float-right button" id="hideBtn" 
-                style="width: auto; height:auto; border-radius: 5px; padding:2%; text-align: center;
-                background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-                background-color: rgba(39, 109, 200); color: darkred; border: 1px solid red;">&times;
-                </button>
+            <button class="float-right button" id="hideBtn" 
+            style="width: auto; height:auto; border-radius: 5px; 
+            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+            background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
                 <div class="container title" style="background: whitesmoke; "><u>Help</u></div>
-                <div class="row lead"> 1. Select the cube file you would like to use in your figure. (No Larger than 2GB)</div>
+                <div class="row lead"> 1. Select the cube or tif file you would like to use in your figure. (No Larger than 2GB)
+                    <p class="small-text">Uploading a .tif file will take longer than a cube</p>
+                </div>
                 <br/>
                 <div class="row lead" style="display: inline;"> 2. Input your desired output dimensions (W&times;H)in pixels.<br/><br/>
                                        2a. Input Width <u>or</u> Height to have the other dimension calculated for you. (W&times;_) or (_&times;H) <br/> 
@@ -44,15 +45,15 @@
                 </div>
                 <br/>
                 <br/>
-                <div class="row lead"> 3. Select a template file to use. <br/>
+                <div class="row lead"> 3. Select a template file to use. <a href="/tpl">What is a Template File?</a> <br/>
                     <p class="small-text"> (leave it blank to start with a server preset)</p>
                 </div>
                 <br/>
-                <div class="row lead"> 4. Click Upload </div>
+                <div class="row lead"> 4. If you would like to view the ISIS Process outputs check the 'Log To File' box. </div>
+                <br/>
+                <div class="row lead"> 5. Click Upload.</div>
             </div>
         </div>
-
-
 
         <!-- center -->
         <div class="mainbox-center" style="width: 75%; background-color: rgba(99,88,94,0.65); padding: 1rem; margin: 0 0 0 15%;
@@ -96,6 +97,19 @@
                             <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
                             name="desiredHeight" placeholder="Output Height (Px)" />
                         </div>
+                        <div class="form-group float-center">
+                            <div class="row">
+                                <div class="col">
+                                    <label id="logCheckboxLabel" for="logCheckbox" style="color: black;margin-top:auto; margin-bottom:auto;">
+                                        Log ISIS Output to File?
+                                    </label>
+                                </div>
+                                <div class="col">
+                                    <input class="form-check-input largeBox" name="logToFile" type="checkbox" id="logCheckbox"
+                                    style="margin-left: -20%; margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <hr class="style5">
@@ -117,11 +131,12 @@
 
 
         <!-- right-->
-        <div class="mainbox-right" style="width: 15%;">
-            <div id="loading" class="float-right lead loading" style="margin: 0; top:0;">
-                <img src="../images/loading.gif" height="200%" weight="auto"/>
+        <div class="mainbox-right">
+            <!-- Loading Gif-->
+            <div id="loading" class="text-center loading">
+                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
                 <br>
-                <h3 style="color:white; text-align: center; margin-right: 0%; margin-left:auto;">Loading</h3>
+                <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
             </div>
             <div id="info-alert" style= "visibility:hidden; position:absolute; right: 0; top: 45%;" 
             class = "alert alert-success text-center alertBoxes">
