@@ -45,7 +45,13 @@
                 <div class="row lead" style="display: inline"> 3. <u>Search</u> for key words in the current tags by typing in the search bar.
                     <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
                 </div>
+                <br/>
                 <div class="row lead" style="display: inline"> 4. <u>Export</u> the text you created or export the data as a csv </div> 
+                <br/>
+                <br/>
+                <div class="row lead" style="display: inline"> 5. <u>Save ISIS Logs</u> by clicking the 'Save ISIS Logs' Button in the center of the top bar.
+                    <p class="small-text">(If there is no 'Save ISIS Logs' button, that is because there is no log for you on the server)</p>
+                </div>
             </div>
         </div>
 
@@ -63,17 +69,27 @@
                     <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;">Write Figure Caption</h1>
                     <p class="lead text-stroke-small stroke-dark" style=" margin:0; margin-bottom:2.5rem;">Edit the text in the right box using the tags in the bottom box</p>
                 </div>
-                <a class="btn btn-primary btn-lg float-left" href="/" role="button" 
-                    style="width: auto; height: 2.5rem; padding:5; border: 1.5px solid black; margin:0;">Upload New File</a>
-    
-                <form method="POST" action="/imageEditor" class="lg-form text-center float-right" style="margin: 0;">
-                    <div class="form-group">
-                        <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                        <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
-                        style="width: auto; height: 2.5rem; padding:5;border: 1.5px solid black;"
-                        onclick="loaderActivate()" />
+                <div class="row text-center">
+                    <div class="col-4">
+                        <a class="btn btn-primary btn-lg" href="/" role="button" 
+                            style="width: auto; height: auto; padding:5; border: 1.5px solid black;">Upload New File</a>
                     </div>
-                </form>
+                    <div class="col-4">
+                        <button role="button" class="btn btn-primary btn-lg" 
+                        style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                        id="logDownloadBtn">Save ISIS Logs</button>
+                    </div>
+                    <div class="col-4">
+                        <form method="POST" action="/imageEditor" class="lg-form text-center" style="margin: 0;">
+                            <div class="form-group">
+                                <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
+                                <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
+                                style="width: auto; height: auto; padding:5;border: 1.5px solid black;"
+                                onclick="loaderActivate()" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-6">
