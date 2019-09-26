@@ -82,6 +82,17 @@ key value pairs of the data that is held in the Cube headers.
 
 Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
+#### Hot Keys
+Key       | Command
+----------|---------------------------------------------
+`Alt + N` | `Toggle North Azimuthal Indicator`
+`Alt + L` | `Start Line Drawing Tool`
+`Alt + O` | `Toggle Observer Azimuthal Indicator`
+`Alt + T` | `Start Text Tool`
+`Alt + S` | `Toggle Sun Azimuthal Indicator`
+`Alt + B` | `Add 1 Outline Box`
+`Alt + R` | `Toggle Scalebar`
+
 ## Licensing
 
 Right now PIPS is holding a GPLv3 for the reason that this project could be kept up 

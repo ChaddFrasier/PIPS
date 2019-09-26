@@ -1516,6 +1516,22 @@ function svgPoint(element, x, y) {
         the browsers coordinate matrix */
     return pt.matrixTransform(element.getScreenCTM().inverse());    
 }
+
+function removeKey(keysArr, key){
+    if(!keysArr.includes(key)){return false;}
+    else{
+        var returnArr = [];
+        for(var i = 0; i < keysArr.length; i++){
+            if(key === keysArr[i]){
+                keysArr[i] = null;
+            }
+            else{
+                returnArr.push(keysArr[i]);
+            }
+        }
+        return returnArr;
+    }
+}
 /** --------------------------------- End Draw Functions ------------------------------------------------- */
 
 
@@ -2723,6 +2739,48 @@ $(document).ready(function(){
         
     });
 
+    var keys = [];
+
+    $(document).keydown(function(event){
+        if(!keys.includes(event.keyCode)){
+            keys.push(event.keyCode);
+        }
+
+        if(keys[0] === 18 && keys.length === 2){
+            console.log(keys);
+            event.preventDefault();
+            if(keys[1] === 76){
+                $("#pencilIconFlag").mousedown(); 
+            }
+            else if(keys[1] === 79){
+                $("#eyeFlag").click(); 
+            }
+            else if(keys[1] === 66){
+                $("#outlineBtn").mousedown(); 
+            }
+            else if(keys[1] === 78){
+                $("#northIconFlag").mousedown(); 
+            }
+            else if(keys[1] === 83){
+                $("#sunIconFlag").click(); 
+            }
+            else if(keys[1] === 84){
+                $("#textBtn").mousedown();
+                keys = [];
+            }
+            else if(keys[1] === 82){
+                $("#scaleBarButton").mousedown();
+            }
+        }
+        
+    });
+    $(document).keyup(function(event){
+        if(keys.length > 0){
+            keys = removeKey(keys, event.keyCode);
+            console.log("NEW ARRAY IS: " + keys);
+        }
+        
+    });
     // ---------------------------------- End Button Handlers -----------------------------------------------
         
     // ---------------------------------- Click & Text Input Handlers ---------------------------------------
