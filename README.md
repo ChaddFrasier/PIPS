@@ -83,7 +83,7 @@ key value pairs of the data that is held in the Cube headers.
 
 Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
-####Hot Keys
+#### Hot Keys
 
 Keys      | Command
 ----------|----------------------------------------  
