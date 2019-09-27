@@ -6,11 +6,11 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.3
+ * @version 3.7.4
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/26/19
+ * @updated 09/27/19
  *
  * 
  * 
@@ -27,7 +27,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/25/19           Planetary Image Publication Server
+ * @summary  09/27/19           Planetary Image Publication Server
  *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
@@ -77,16 +77,27 @@
  *  The progress bar guesses how long the download will take and it runs a css animation for that duration
  *  to show a rough estimate of how long the download will take.
  * 
- *     TODO: finsih the logging system and finish version 3.8.0
- *      Log System is in testing now and should be finished soon. 
+ *      The Log system right now allows for a single log file for each user id. This could change to 
+ *  having a long for each individual file, but for now I am appending the logs to one file. 
+ *  It works by passing a flag and the file to write to. The ISIS spawn commands changed a bit. Instead
+ *  of writing directly to a .pvl file from the shell stdout, I am forcing the function output to be on 
+ *  command line and I'm capturing the output and then appending it to the pvl file. After it either
+ *  logs to file or prints to console. The format of the log file was copy catted from the 
+ *  U.S. Geological Survey's Processing Cloud return log. POW returns a similar format and I wanted
+ *  consistency.  
  * 
  *      With a button on the writer page the user can download the ISIS3 Log file that explains all
  *  the functions run on the cube and their outputs either an error code and message or the std output
- *  of the spawn function.
+ *  of the spawn function. These logs could help new users better understand ISIS3 usage and experienced 
+ *  ISIS users can better understand what goes ISIS programs go into creating the project.
+ * 
+ *      Hotkeys have been added to the Image Editor. The hotkeys can be found at this link(). The hotkeys
+ *  were added after responses from the first rounds of user testing. There are hotkeys for adding each 
+ *  object onto the image as well as removing it or toggling colors. Alt is the action key for all the
+ *  commands and Shift + Alt is for the secondary command.
  * ----------------------------------------------------------------------------------------------------------
  *                                          Last Notes for Coders
  *                                          ---------------------
- * 
  *     Comment your code and include an 'author' tag for any functions you write to the server. 
  * Try your best to follow commenting paradigms which includes using param, return, and desc tags for your
  * functions on the server's javascript files (not on the webpages).
@@ -224,12 +235,10 @@ app.get('/', function(request, response){
             response.status(500);
             break;
         default:
-            response.status(200);
-                
+            response.status(200);  
     }  
     // render the index page w/ proper code 
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
-    
 });
  
 
@@ -241,9 +250,15 @@ app.get('/', function(request, response){
 app.get('/tpl',function(request, response){
     // render the data
     response.render('tpl.ejs');
-    
+
 });
 
+/**
+ * GET 'log/{anything}'
+ * 
+ * Checks to see if the file is currently on the server and sends the 
+ * file for downloads it to the client
+ */
 app.get("/log/*",function(request, response){
     console.log(request.url);
 
@@ -263,8 +278,6 @@ app.get("/log/*",function(request, response){
     else{
         response.status(403).send("File Not Found").end();
     }
-    
-
 });
 
 /**
@@ -420,28 +433,28 @@ app.post('/captionWriter', async function(request, response){
                 // tpl is null set default
                 templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
             }
-            
+            // check to see if the log flag is true and set outcome
             if(request.body.logToFile){
                 cubeObj.logFlag = true;
-            }
-            else{
-                cubeObj.logFlag = false;
             }
 
             // create the log file if needed
             if(cubeObj.logFlag){
                 let result = util.createLogFile(cubeObj.userId + ".log");
-                if(result >= 0){
+                if(result >= 0){ // check for bad createLogFile return
+                    // if it already exists then append a new file upload line
                     fs.appendFileSync(path.join("log",cubeObj.userId + ".log"),"FILE_UPLOAD:\n\n");
                 }
             }
             
             //convert tiff to cube
             if(isTiff){
+                // promise on the tiff conversion
                 let logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
                 promises.push(util.tiff2Cube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log", logCubeName));
             }
 
+            // TODO: add max image sizes
             // if the desired width and height are both given set that to be the user dimensions 
             if(Number(request.body.desiredWidth) > 50 || Number(request.body.desiredHeight)> 50){
                 if(Number(request.body.desiredHeight) === 0){
@@ -468,12 +481,14 @@ app.post('/captionWriter', async function(request, response){
 
                 // if the return array legth is not 0 extract the new cubefile name
                 if(cubeName.length > 0){
+                    // remove the tif file that was uploaded
                     fs.unlinkSync(cubeName[0].replace(".cub",".tif"));
+                    // get cube file name
                     cubeObj.name = path.basename(cubeName[0]);
-
                 }
                 // reset the promises array
                 promises = [];
+                // vars for reducing
                 var lines,
                     samples,
                     scaleFactor;
@@ -483,45 +498,41 @@ app.post('/captionWriter', async function(request, response){
                     if(err){
                         console.log("READING ERROR: " + err);
                     }else{
+                        // get an array of the first 10% and the data (where the lines and sample data is located)
                         let bufferArray = data.subarray(0,data.length/10).toString().split("\n");
+                        // for each thing in the array
                         for(let index=0; index< bufferArray.length;index++){
+                            // if the array index is the start of the dimensions group
                             if(bufferArray[index].indexOf("Group = Dimensions") > -1){
-                            
-                                samples = Number(bufferArray[index + 1].split("=")[1]);
-                                lines = Number(bufferArray[index + 2].split("=")[1]);
+                                // capture the next lines which are lines and samples 
+                                samples = Number(bufferArray[index + 1].split("=")[1]); // width of image
+                                lines = Number(bufferArray[index + 2].split("=")[1]); // height of image
 
-                                
                                 // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
                                 scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1] : samples/cubeObj.userDim[0];
                                 break;
                             }
                         }
-                
+                        
+                        // if the image needs to be reduced
                         if(scaleFactor > 1){
+                            // promise on the reduce call
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
                             promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
-                            
+                            // if function resolved with a return
                             if(cubeName.length > 0){
+                                // set the name to the returning cube
                                 cubeObj.name = cubeName[0];
                             }
-                            
+                            // reset promise array
                             promises = [];
 
-                            // TODO: this is where i can test the loging functions also this is the functions that
-                            //  '/pow' will need to run
-                            // make promise on the isis function calls
-
-                            /** ========Testing log system ========
-                             * 
-                             * setting last input of function to true (hard coded)
-                            */
-                            
+                            // get the cube name with no loading tag
                             var logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
-                            console.log(logCubeName);
-
+                            // make promise on the isis function call
                             promises.push(util.makeSystemCalls(cubeObj.name,
                                 path.join('.','uploads',cubeObj.name),
                                 path.join('.','pvl',cubeObj.name.replace('.cub','.pvl')),
@@ -535,7 +546,7 @@ app.post('/captionWriter', async function(request, response){
                             Promise.all(promises).then(function(){
                                 //reset promises array
                                 promises = [];
-
+                                // if the log flag is true log the end of the ISIS calls
                                 if(cubeObj.logFlag){
                                     util.endProcessRun(cubeObj.userId + ".log");
                                 }
@@ -586,7 +597,6 @@ app.post('/captionWriter', async function(request, response){
                                     response.end();
                                 });
                             }).catch(function(errcode){
-
                                 if(errcode === -1){
                                     // alert 8 which happens when the server is no configured properly 
                                     // (ISIS is not running)
@@ -722,9 +732,11 @@ app.get('/imageEditor', function(request, response){
         response.redirect('/?alertCode=7');
 
     }else{
+        // get the user instance
         let userObject = util.getObjectFromArray(userid,cubeArray),
             data = userObject.impData;
 
+        // if no error code
         if(typeof(userObject)==="object"){
             // get image name
             let image = util.getimagename(userObject.name, 'png');
@@ -736,75 +748,114 @@ app.get('/imageEditor', function(request, response){
 
             var w,
                 h;
-                
-            userObject.getCubeDimensions().then(dimensions => {
-                dimensions = JSON.parse(dimensions);
-                w = dimensions.w;
-                h = dimensions.h;
-                // check and calculate user dimensions if needed
-                if(userObject.userDim[0] === -1){
-                    let factor = userObject.userDim[1]/h;
-    
-                    userObject.userDim = [w*factor,userObject.userDim[1]];
-                }
-                else if(userObject.userDim[1] === -1){
-                    let factor = userObject.userDim[0]/w;
-    
-                    userObject.userDim = [userObject.userDim[0],h*factor];
-                
-                }
-    
-                var userDim = userObject.userDim;
-                var rawCube = util.getRawCube(userObject.name,userObject.userNum);
-                var isMapProjected = util.isMapProjected(userObject.data),
-                    rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
-    
-                // calculate image width in meters
-                if(resolution !== -1){
-                    var imageMeterWidth = util.calculateWidth(resolution, w);
-    
-                    if(imageMeterWidth > -1){
-                        // same as above for calculating scale bar
-                        let x = Math.log10(imageMeterWidth/2);
-                        let a = Math.floor(x);
-                        let b = x - a;
-    
-                        // if the decimal is 75% or more closer to a whole 10 set the base to 5
-                        // check if 35% or greater, set base 2
-                        // if the value is very close to a whole base on the low side 
-                        //      set base to 5 and decrement the 10 base
-                        // (this is to keep text from leaving image)
-                        // default to 1
-                        if(b >= 0.75){
-                            b = 5;
-                        }else if(b >= 0.35){
-                            b = 2;
-                        }else if(b<.05){
-                            a -= 1;
-                            b = 5;
+            // get the cube dimensions 
+            userObject.getCubeDimensions()
+                .then(dimensions => {
+                    // capture dimensions in local vars
+                    dimensions = JSON.parse(dimensions);
+                    w = dimensions.w;
+                    h = dimensions.h;
+
+                    // check and calculate user dimensions if needed
+                    if(userObject.userDim[0] === -1){
+                        // if dimension needs to be auto generated
+                        // calculate the scale factor
+                        let factor = userObject.userDim[1]/h;
+                        // set the output dimensions
+                        userObject.userDim = [w*factor,userObject.userDim[1]];
+                    }
+                    else if(userObject.userDim[1] === -1){
+                        // get scale factor
+                        let factor = userObject.userDim[0]/w;
+                        // set output dimensions
+                        userObject.userDim = [userObject.userDim[0],h*factor];
+                    }
+        
+                    // set render variables
+                    var userDim = userObject.userDim;
+                    var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+                    var isMapProjected = util.isMapProjected(userObject.data),
+                        rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+        
+                    // calculate image width in meters
+                    if(resolution !== -1){
+                        var imageMeterWidth = util.calculateWidth(resolution, w);
+        
+                        if(imageMeterWidth > -1){
+                            // same as above for calculating scale bar
+                            let x = Math.log10(imageMeterWidth/2);
+                            let a = Math.floor(x);
+                            let b = x - a;
+        
+                            // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                            // check if 35% or greater, set base 2
+                            // if the value is very close to a whole base on the low side 
+                            //      set base to 5 and decrement the 10 base
+                            // (this is to keep text from leaving image)
+                            // default to 1
+                            if(b >= 0.75){
+                                b = 5;
+                            }else if(b >= 0.35){
+                                b = 2;
+                            }else if(b<.05){
+                                a -= 1;
+                                b = 5;
+                            }else{
+                                b=1;
+                            }
+        
+                            var scalebarMeters = b*Math.pow(10,a);
+        
+                            var scalebarLength,
+                                scalebarUnits="";
+                            // if the length is less than 1KM return length in meters
+                            if(imageMeterWidth/1000 < 1){
+                                scalebarLength = scalebarMeters;
+                                var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                                console.log(scalebarLength + " m");
+                                scalebarUnits = "m";
+                            }
+                            else{
+                                
+                                scalebarLength = scalebarMeters/1000;
+                                var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                                console.log(scalebarLength + " km");
+                                scalebarUnits = "km";
+                            }
+        
+                            // render image page with needed data
+                            if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                            if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                                response.render("imagePage.ejs", 
+                                {
+                                    image:imagepath,
+                                    tagField: data,
+                                    displayCube:rawCube,
+                                    isMapProjected: isMapProjected,
+                                    rotationOffset:rotationOffset,
+                                    origW: w,origH: h, w: userDim[0], h: userDim[1],
+                                    scalebarLength: scalebarLength,
+                                    scalebarPx: scalebarPx, 
+                                    scalebarUnits: scalebarUnits
+                                });
+                            }else{
+                                response.render("imagePage.ejs", 
+                                {
+                                    image:imagepath,
+                                    tagField: data,
+                                    displayCube:rawCube,
+                                    isMapProjected: isMapProjected,
+                                    rotationOffset:rotationOffset,
+                                    w: w, h: h, origW: w,origH: h,
+                                    scalebarLength: scalebarLength,
+                                    scalebarPx: scalebarPx,
+                                    scalebarUnits: scalebarUnits
+                                });
+                            }
                         }else{
-                            b=1;
+                            console.log("Image Width in Meters Failed to Calculate");
                         }
-    
-                        var scalebarMeters = b*Math.pow(10,a);
-    
-                        var scalebarLength,
-                            scalebarUnits="";
-                        // if the length is less than 1KM return length in meters
-                        if(imageMeterWidth/1000 < 1){
-                            scalebarLength = scalebarMeters;
-                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
-                            console.log(scalebarLength + " m");
-                            scalebarUnits = "m";
-                        }
-                        else{
-                            
-                            scalebarLength = scalebarMeters/1000;
-                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                            console.log(scalebarLength + " km");
-                            scalebarUnits = "km";
-                        }
-    
+                    }else{
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -815,9 +866,9 @@ app.get('/imageEditor', function(request, response){
                                 displayCube:rawCube,
                                 isMapProjected: isMapProjected,
                                 rotationOffset:rotationOffset,
-                                origW: w,origH: h, w: userDim[0], h: userDim[1],
-                                scalebarLength: scalebarLength,
-                                scalebarPx: scalebarPx, 
+                                origW: w, origH: h, w: userDim[0], h: userDim[1],
+                                scalebarLength: 'none',
+                                scalebarPx: 'none',
                                 scalebarUnits: scalebarUnits
                             });
                         }else{
@@ -829,50 +880,17 @@ app.get('/imageEditor', function(request, response){
                                 isMapProjected: isMapProjected,
                                 rotationOffset:rotationOffset,
                                 w: w, h: h, origW: w,origH: h,
-                                scalebarLength: scalebarLength,
-                                scalebarPx: scalebarPx,
+                                scalebarLength: 'none',
+                                scalebarPx: 'none',
                                 scalebarUnits: scalebarUnits
                             });
                         }
-                    }else{
-                        console.log("Image Width in Meters Failed to Calculate");
                     }
-                }else{
-                    // render image page with needed data
-                    if(isWindows){ imagepath = imagepath.replace("\\","/");}
-                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                        response.render("imagePage.ejs", 
-                        {
-                            image:imagepath,
-                            tagField: data,
-                            displayCube:rawCube,
-                            isMapProjected: isMapProjected,
-                            rotationOffset:rotationOffset,
-                            origW: w, origH: h, w: userDim[0], h: userDim[1],
-                            scalebarLength: 'none',
-                            scalebarPx: 'none',
-                            scalebarUnits: scalebarUnits
-                        });
-                    }else{
-                        response.render("imagePage.ejs", 
-                        {
-                            image:imagepath,
-                            tagField: data,
-                            displayCube:rawCube,
-                            isMapProjected: isMapProjected,
-                            rotationOffset:rotationOffset,
-                            w: w, h: h, origW: w,origH: h,
-                            scalebarLength: 'none',
-                            scalebarPx: 'none',
-                            scalebarUnits: scalebarUnits
-                        });
+                }).catch(err => {
+                    if(err){
+                        console.log("ERROR: " + err);
                     }
-                }
-            }).catch(err => {
-                if(err){
-                    console.log("ERROR: " + err);
-                }
-            });
+                });
         }else{
             response.redirect("/?alertCode=4");
             response.end();
@@ -926,24 +944,26 @@ app.post('/imageEditor', function(request, response){
    }else{
         var w,
             h;
-
+        // get user dimensions of cube
         userObject.getCubeDimensions().then(dimensions => {
+            // save dimensions into local variables
             dimensions = JSON.parse(dimensions);
             w = dimensions.w;
             h = dimensions.h;
             // check and calculate user dimensions if needed
             if(userObject.userDim[0] === -1){
+                // get scale factor and set the output w = auto
                 let factor = userObject.userDim[1]/h;
-
                 userObject.userDim = [w*factor,userObject.userDim[1]];
             }
             else if(userObject.userDim[1] === -1){
+                // get scale factor and set the output with h = auto
                 let factor = userObject.userDim[0]/w;
-
                 userObject.userDim = [userObject.userDim[0],h*factor];
             
             }
 
+            // set variables for ejs rendering
             var userDim = userObject.userDim;
             var rawCube = util.getRawCube(userObject.name,userObject.userNum);
             var isMapProjected = util.isMapProjected(userObject.data),
@@ -1072,9 +1092,9 @@ app.post("/pow",function(request, response){
 
 
 /**
+ * GET '/figureDownload 
  * 
- * 
- * 
+ * handler for downloading a jpg, jpeg or png image from the server
  */
 app.post("/figureDownload", async function(request, response){
     console.log(request.url);
@@ -1089,33 +1109,42 @@ app.post("/figureDownload", async function(request, response){
             console.log("Server Error on saving");
         }else{
             console.log("saved successfully");
-
+            // if the file is a png
             if(fileExt === "png"){
+                // use svg2img Module to convert to png
                 svg2img("./tmp/"+request.files.upl.name,function(err,buffer){
                     if(err){
                         console.log(err);
                     }else{
+                        // write file from buffer
                         fs.writeFileSync("./tmp/" + filename,buffer);
+                        // send the new file for download
                         response.download("./tmp/" + filename,filename,function(err){
                             if(err){
                                 console.log(err);
                             }else{
                                 console.log("download sent");
+                                // remove the filenow
+                                fs.unlinkSync("./tmp/" + filename);
                             }
                         });
                     }
                 });
             }else{
+                // Otherwise it will be a jpg or jpeg which are the same
                 svg2img("./tmp/"+request.files.upl.name, {format:'jpg'}, function(err,buffer){
                     if(err){
                         console.log(err);
                     }else{
+                        // write file from buffer
                         fs.writeFileSync("./tmp/" + filename,buffer);
+                        // send file for download
                         response.download("./tmp/" + filename,filename,function(err){
                             if(err){
                                 console.log(err);
                             }else{
                                 console.log("download sent");
+                                // remove the filenow
                                 fs.unlinkSync("./tmp/" + filename);
                             }
                         });

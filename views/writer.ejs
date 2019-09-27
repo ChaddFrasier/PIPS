@@ -65,17 +65,17 @@
                 <div class="jumbotron text-center" 
                 style="height: 60%; padding: 2rem; width: inherit; padding-top: 1rem; margin-top: 2rem; margin-bottom: 1rem;
                 padding-bottom:0; padding-left:9rem; background-color: rgba(243, 214, 176, 0.698); border: 2px solid black"> 
-                    <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" style="margin: 0;"/>
+                    <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" style="margin: 0;" title="Help!"/>
                     <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;">Write Figure Caption</h1>
                     <p class="lead text-stroke-small stroke-dark" style=" margin:0; margin-bottom:2.5rem;">Edit the text in the right box using the tags in the bottom box</p>
                 </div>
                 <div class="row text-center">
                     <div class="col-4">
-                        <a class="btn btn-primary btn-lg" href="/" role="button" 
+                        <a class="btn btn-primary btn-lg" href="/" role="button" title="Upload New File"
                             style="width: auto; height: auto; padding:5; border: 1.5px solid black;">Upload New File</a>
                     </div>
                     <div class="col-4">
-                        <button role="button" class="btn btn-primary btn-lg" 
+                        <button role="button" class="btn btn-primary btn-lg" title="ISIS Log File"
                         style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
                         id="logDownloadBtn">Save ISIS Logs</button>
                     </div>
@@ -83,7 +83,7 @@
                         <form method="POST" action="/imageEditor" class="lg-form text-center" style="margin: 0;">
                             <div class="form-group">
                                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                                <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" 
+                                <input type="submit" value="Edit Image" class="btn btn-primary btn-lg" title="Image Editor"
                                 style="width: auto; height: auto; padding:5;border: 1.5px solid black;"
                                 onclick="loaderActivate()" />
                             </div>
@@ -108,7 +108,7 @@
                             <!-- Download Button -->
                             <form class="lg-form text-center float-left" style="margin: 0;">
                                 <div class="form-group">
-                                    <a class="btn button text-white btn-lg" 
+                                    <a class="btn button text-white btn-lg" title="Download Figure Caption"
                                     style="width: 12rem; padding: 7px; border: 2px solid black;" role="button" 
                                     id="link" download="<%=outputName%>">
                                         Download Caption
@@ -165,11 +165,11 @@
                         <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Search" 
                         style="background-color: rgba(255,255,255);  width: 100%; height:auto;
                         text-align: inherit; margin-left: auto; margin-right: auto; color:black;
-                            border: 1.5px solid black;">
+                            border: 1.5px solid black;" title="Filter Tags">
                         <br/>
                         <br/>
                         <!-- Show All Button-->
-                        <button id="button-more-tags" class="btn btn-md button float-left" 
+                        <button id="button-more-tags" class="btn btn-md button float-left" title="Change Visible Tags"
                         style=" border: 2px solid black; margin-left: auto; margin-right:auto; margin-top:2%; width: auto; min-width: 100%;" 
                         onclick="showMoreTags()">Show Important Tags</button>
                     </div> 
@@ -187,7 +187,7 @@
                             <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                             <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
                             <input type="submit" value="Save Metadata CSV" class="btn button btn-lg" 
-                            style="width: 13rem; border: 2px solid black; padding: 7px;" />
+                            style="width: 13rem; border: 2px solid black; padding: 7px;" title="Download Data CSV" />
                         </div>
                     </form>
                 </div>

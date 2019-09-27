@@ -61,7 +61,7 @@
             <div class="text-center stroke-wide" style="border: 0px solid black; padding:0%; padding-top: 0; padding-bottom: 0;">
                 <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1> 
                 <h4 class="display-5" style="color: white">
-                    <a href="https://isis.astrogeology.usgs.gov/index.html" class="text-stroke" style="font-size: 125%; color: white">
+                    <a href="https://isis.astrogeology.usgs.gov/index.html" class="text-stroke" title="Learn More" style="background-color: transparent; font-size: 125%; color: white">
                         Powered by ISIS3
                     </a>
                 </h4>
@@ -72,9 +72,9 @@
                 <p class="lead" style="margin-left: auto; margin-right: auto; width:100%;padding:0;font-size: 2rem; color: black;">
                     You can upload .cub file and .tpl file 
                 </p>
-                <a id="helpBtn" class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" role="button" 
+                <a id="helpBtn" class="btn btn-primary btn-lg" title="Get Started" style="border: 2px solid black; color: white;" role="button" 
                 onclick="showHelp(this)">Help</a>
-                <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" href= '/tpl'
+                <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" title="Template File" href= '/tpl'
                     role="button">What is a TPL file?
                 </a>
             </div>
@@ -93,9 +93,9 @@
                         <div class="form-group float-center" 
                         style="padding-left: 7rem; padding-right:0;padding-top: -1rem; width: 17rem;color: black;">
                             <input class="form-control form-control-sm text-center" type="text" id="widthInput" 
-                            name="desiredWidth" placeholder="Output Width (Px)" />
+                            name="desiredWidth" placeholder="Output Width (Px)" title="Output Width"/>
                             <input class="form-control form-control-sm text-center" type="text" id="heightInput" 
-                            name="desiredHeight" placeholder="Output Height (Px)" />
+                            name="desiredHeight" placeholder="Output Height (Px)" title="Output Height"/>
                         </div>
                         <div class="form-group float-center">
                             <div class="row">
@@ -105,7 +105,7 @@
                                     </label>
                                 </div>
                                 <div class="col">
-                                    <input class="form-check-input largeBox" name="logToFile" type="checkbox" id="logCheckbox"
+                                    <input title="Log ISIS Output to File?" class="form-check-input largeBox" name="logToFile" type="checkbox" id="logCheckbox"
                                     style="margin-left: -20%; margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
                                 </div>
                             </div>
@@ -120,7 +120,7 @@
                     </div>
                     <br/>
                     <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                        style="width: 10rem; border: 1px solid black;" onclick="loaderActivate()" />
+                        style="width: 10rem; border: 1px solid black;" title="Submit Upload" onclick="loaderActivate()" />
                 </form>
             </div>
         </div>

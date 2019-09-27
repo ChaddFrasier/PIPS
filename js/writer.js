@@ -171,7 +171,6 @@ function hasUnits(str){
     }
 }
 
-
 /**
  * @function getCookie
  * 
@@ -389,9 +388,9 @@ $(document).ready(function(){
     });
 
     /** 
-     * @function
+     * @function template-text 'keydown' listener
      * 
-     * @description
+     * @description this listener allows the user to insert tab characters into the form field without moving to the next field
      */
     $("#template-text").keydown(function(e){
         if(e.keyCode === 9) { // tab was pressed
@@ -414,7 +413,12 @@ $(document).ready(function(){
         }
     });
 
-    // download the log file using fetch api
+    /**
+     * @function logDownloadBtn 'mousedown' listener
+     * 
+     * @description fetch and download a file by passing the file back as a download 
+     *          and then converting the file into to a blob
+     */
     $("#logDownloadBtn").mousedown(function(event){
         fetch("log/" + getCookie("userId"), {method:"GET"})
             .then(function(response){

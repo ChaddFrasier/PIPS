@@ -138,7 +138,6 @@ function showHelp(btn){
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
 
-
 /**
  * @function checkInput
  * 

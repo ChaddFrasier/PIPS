@@ -3,14 +3,13 @@
  * 
  * @author Chadd Frasier
  * @since 06/03/19
- * @update 09/26/19
- * @version 2.5.1
+ * @update 09/27/19
+ * @version 2.6.0
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
  * 
  * @see {server.js} Read the header before editing
  * 
- * @todo file loging for isis calls
  * @todo comment all new functions
  */
 
@@ -22,8 +21,8 @@ const fs = require('fs');
 
 // exportable functions
 module.exports = {
-
     /**
+     * @function makeSystemCalls
      * 
      * @param {string} cubeName name of the file for analysis
      * @param {string} filepath the path to said file
@@ -62,6 +61,7 @@ module.exports = {
 
 
     /**
+     * @function readPvltoStruct
      * 
      * @param {string} cubeName name of the cube to be analyzed
      * 
@@ -87,6 +87,7 @@ module.exports = {
 
 
     /**
+     * @function getPixelResolution
      * 
      * @param {object} cubeObj the current cube object being manipulated
      * 
@@ -113,6 +114,7 @@ module.exports = {
 
 
     /**
+     * @function calculateWidth
      * 
      * @param {string} resStr the resolution of the image in meters/pixel 
      * @param {number} w width of the image to be displayed in pixels
@@ -132,6 +134,7 @@ module.exports = {
 
 
     /**
+     * @function createUserID
      * 
      * @param {number} lengthOfID the length of the output
      * 
@@ -162,8 +165,7 @@ module.exports = {
 
 
     /**
-     * 
-     * @todo log to file if needed else log to console
+     * @function tiff2Cube
      * 
      * @param {string} tiffName name of the tiff to be converted to a .cub
      * @param {boolean} logToFile true or false should the server log to a file
@@ -178,27 +180,29 @@ module.exports = {
         return new Promise(function(resolve, reject){
             // variables for proper isis call
             var isisCall = 'std2isis';
-            
+            // get the cube output name
             var cubeName = tiffName.replace(".tif",".cub");
-
+            // default the outputs
             var command = undefined,
                 statusCode =  undefined,
-                output = undefined;
+                output = "";
          
             console.log('running std2isis\n');
+            // spwan a sub process console
             var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
-
+            // save the command args array to recreate the command in the log
             command = std2isis.spawnargs;
 
+            // capture std out either to log file or to console
             std2isis.stdout.on('data', function(data){
                 if(logToFile){
-                    output = data.toString();
+                    output += data.toString();
                 }else{
                     console.log('stdout: ' + data.toString() + "\n");
                 }
             });
 
-
+            // on an error log the error to the output log or console
             std2isis.stderr.on('data', function(data){
                 if(logToFile){
                     output = data.toString();
@@ -209,6 +213,8 @@ module.exports = {
                 
             });
 
+            // when the spawn is exiting log to output code 
+            //      and append the proces output to the file if needed
             std2isis.on('exit',function(code){
                 if(logToFile){
                     statusCode = code;
@@ -220,25 +226,27 @@ module.exports = {
                 tiffName = tiffName.replace("uploads/","");
 
                 if(![logTiffName, isisCall, statusCode,command, output].includes(undefined)){
+                    // log the ISIS call to log file
                     logProcess([logTiffName, isisCall, statusCode,command, output], logFileName);
                 }else{
                     if(![logTiffName, isisCall, statusCode,command].includes(undefined)){
+                        // log output as none
                         logProcess([logTiffName, isisCall, statusCode,command, "none\n"], logFileName);
                     }
                     
                 }
-
+                // if the output code is 0 resolve as success
                 if(code === 0){
                     console.log('std2isis finised successfully \n');
-
                     resolve(cubeName);
                 }
                 else{
+                    // otherwise reject with the error message
                     reject(isisCall + 'Error: ' + code.toString() + "\n");
                 }
                 
             });
-
+            // on calling error, tell user ISIS is not working
             std2isis.on("error",function(err){
                 console.log("std2isis Failed: -1\n");
                 reject(-1);
@@ -246,9 +254,14 @@ module.exports = {
         });
     },
 
+    /**
+     * @function endProcessRun
+     * 
+     * @param {string} filename the name of the log file to end the end tag to
+     */
     endProcessRun: function(filename){
         fs.appendFileSync(path.join("log",filename),
-        "END_UPLOAD\n\n");
+        "END_UPLOAD\n");
     },
 
     /**
@@ -266,21 +279,22 @@ module.exports = {
      */
     reduceCube: function(logCubeName,cubeName, scaleFactor, logToFile, logFileName){
         return new Promise(function(resolve, reject){
-           
-            console.log(cubeName);
+            // spawn variables
             var isisCall = "reduce";
             var from = path.join(".","uploads",cubeName);
             var to = path.join(".","uploads",cubeName.replace("u-","r-"));
-
+            // log variables
             var command = undefined,
                 statusCode =  undefined,
                 output = undefined;
 
+            // start child process
             var reduceCall = spawn(isisCall, ['from=',from,"to=",to,
                                             "sscale=",scaleFactor,"lscale=",scaleFactor]);
-
+            // capture the args array
             command = reduceCall.spawnargs;
 
+            // log stderr to console or file
             reduceCall.stderr.on("data",function(data){
                 if(logToFile){
                     output = data.toString()
@@ -290,7 +304,7 @@ module.exports = {
                 }
             });
 
-
+            // log stdout to file or console
             reduceCall.stdout.on("data",function(data){
                 if(logToFile){
                     output = data.toString()
@@ -298,10 +312,9 @@ module.exports = {
                 else{
                     console.log(isisCall + " stdout: " + data.toString() + "\n");
                 }
-               
             });
 
-
+            // on exit log the output code and log to output file is needed
             reduceCall.on("exit",function(code){
                 if(logToFile){
                     statusCode = code;
@@ -309,13 +322,13 @@ module.exports = {
                 else{
                     console.log(isisCall + ' Exited with code: ' + code + "\n");
                 }
-                
+
+                // log to the file
                 if(![logCubeName, isisCall, statusCode, command, output].includes(undefined)){
                     logProcess([logCubeName, isisCall, statusCode,command, output], logFileName);
                 }
 
-
-
+                // resolve or reject on code
                 if(code === 0){
                     resolve(cubeName.replace("u-","r-"));
                 }
@@ -324,6 +337,7 @@ module.exports = {
                 }
             });
 
+            // notify if ISIS is not running
             reduceCall.on("error",function(err){
                 console.log("std2isis Failed: -1\n");
                 reject(-1);
@@ -333,6 +347,7 @@ module.exports = {
 
 
     /**
+     * @function getRawCube
      * 
      * @param {string} cubeName name of users cube 
      * @param {number} userNum the number given to the user by the server
@@ -344,14 +359,15 @@ module.exports = {
     getRawCube: function(cubeName, userNum){
         if(cubeName.indexOf("u-" + userNum) > -1){
             return cubeName.split("u-" + userNum)[1]; 
-        }else{
+        }
+        else{
             return cubeName.split("r-" + userNum)[1]; 
         }
-        
     },
 
 
     /**
+     * @function isMapProjected
      * 
      * @param {string} cubeData a string version of the raw cube data
      * 
@@ -372,6 +388,7 @@ module.exports = {
 
 
     /**
+     * @function getRotationOffset
      * 
      * @param {boolean} isProjected if the image is map projected 
      * @param {string} cubeData stringified cube data to parse if needed 
@@ -391,12 +408,12 @@ module.exports = {
                 }
             }
         }
-
         return 0;
     },
 
 
     /**
+     * @function findImageLocation
      * 
      * @param {string} cookieval this variable will be the cookie value of the user
      * 
@@ -411,6 +428,8 @@ module.exports = {
 
 
     /**
+     * @function calculateCrop
+     * 
      * @todo probably will change this function later if cropping is brought back in
      * 
      * @param {number array} cropArray click location of the user 
@@ -436,6 +455,7 @@ module.exports = {
 
 
     /**
+     * @function addCubeToArray
      * 
      * @param {object} cubeObj cube object to be added
      * @param {array} cubeArray array of cube objects.
@@ -467,6 +487,7 @@ module.exports = {
 
 
     /**
+     * @function getObjectFromArray  
      * 
      * @param {string} userId user instance to be searched for
      * @param {object array} cubeArray array to be searched
@@ -498,6 +519,7 @@ module.exports = {
 
 
     /**
+     * @function getCSV
      * 
      * @param {object string} cubeData the stringify'ed version of the data to be converted
      * 
@@ -520,6 +542,7 @@ module.exports = {
 
 
     /**
+     * @function configServer
      * 
      * @param {string} cfgString the whole config file string
      * 
@@ -544,6 +567,7 @@ module.exports = {
 
 
     /**
+     * @function importantData
      * 
      * @param {object string} cubeFileData stringify'ed version of cube data
      * @param {array} importantTagArr important tags array that need to be filled
@@ -579,18 +603,16 @@ module.exports = {
 
 
     /**
+     * @function base64_encode
      * 
      * @param {string} file the path to the file that should be converted into raw base64 data 
      * 
      * @returns {string} a string representing the raw base64 data of the image file
      * 
-     * @requires fs
-     * 
      * @description takes in a file and reads it using 
      * fileSystem and then uses a buffer to change it into a base64 string
      */
     base64_encode: function(file){
-        var fs = require('fs');
         // read binary data
         var bitmap = fs.readFileSync(file);
         // convert binary data to base64 encoded string
@@ -599,18 +621,16 @@ module.exports = {
 
 
     /**
+     * @function base64_decode
      * 
      * @param {string} base64str the data that need to be written to file
      * @param {string} file the filename to write the data to
      * 
      * @returns {void} 
      * 
-     * @requires fs
-     * 
      * @description takes in a data string and writes it to the file that is given
      */
     base64_decode: function(base64str, file) {
-        var fs = require('fs');
         // create buffer object from base64 encoded string, it is important to tell the
         // constructor that the string is base64 encoded
         var bitmap = Buffer.from(base64str, 'base64');
@@ -621,6 +641,7 @@ module.exports = {
 
 
     /**
+     * @function getimagename
      * 
      * @param {string} cubeName name of the cube file
      * @param {string} format format that the image should be generated to
@@ -640,6 +661,8 @@ module.exports = {
 
 
     /**
+     * @function parseQuery
+     * 
      * @param {string} the name of the string that is being parsed by the server
      * 
      * @returns {string} the image name with no time string query attached
@@ -651,8 +674,10 @@ module.exports = {
         try{return imageName.split('?')[0];}
         catch(err){return imageName;}
     },
+
     /**
-     *  
+     * @function createLogFile 
+     * 
      * @param {string} cubeName 
      * 
      * @returns {boolean} true on success false otherwise
@@ -660,34 +685,39 @@ module.exports = {
      * @description this function is meant to initialize a log file using the given cube name
      */
     createLogFile: function(logFileName){
-
+        // try reading
         try{
+            // read sync the log file
             let result = fs.readFileSync(path.join("log",logFileName));
-
+            // if the result doesnt error out then return 0 because it already exists
             if(result){
                 return 0;
             }
         }
         catch(err){
+            // if the file does not exist then create it and write the header from the server
             if(err){
                 try{
+                    // get date of upload
                     let date = new Date();
+                    // write the header to the new file
                     fs.writeFileSync(path.join("log",logFileName),
                     "       U.S. Geological Survey Cloud Publication Services\n" +
                     "                          <URL>\n\n" +
                     "             Planetary Image Publication Server (PIPS)\n\n" +
                     "    Questions & Concerns:https://github.com/ChaddFrasier/PIPS/issues\n" +
                     "___________________________________________________________________\n\n" +
-                    "UPLOAD_INFORMATION:\n\n" +
-                    "\tUPLOAD KEY: " + logFileName.replace(".log","") + "\n" + 
-                    "\tUPLOAD DATE: " + date.getFullYear() +"-"+date.getMonth()+"-"+date.getDate()
+                    "INSTANCE_INFORMATION:\n\n" +
+                    "\tUSER KEY: " + logFileName.replace(".log","") + "\n" + 
+                    "\tINSTANCE DATE: " + date.getFullYear() +"-"+date.getMonth()+"-"+date.getDate()
                                         + " " + date.getHours() + ":" + date.getMinutes() + "\n"+ 
                     "\tISIS VERSION: 3.9.0\n"+
                     "___________________________________________________________________\n\n");
-                    
+                    // return true to tell it was created
                     return 1;
                 }
                 catch(err){
+                    // error when writing return negative
                     if(err){
                         console.log(err);
                         return -1;
@@ -700,6 +730,7 @@ module.exports = {
 
 // -------------------------------------- local functions ---------------------------------------------------
 /**
+ * @function testHeader
  * 
  * @param {string} testValue  value to check if it a cube hearder keyword
  * 
@@ -721,6 +752,7 @@ var testHeader = function(testValue){
 
 
 /**
+ * @function combineName
  * 
  * @param {string} name  name of the current tag
  * @param {string} str string to add to the tag
@@ -744,6 +776,7 @@ var combineName = function(name, str=undefined){
 
 
 /**
+ * @function shortenName
  * 
  * @param {string} name current name to be shortened by 1 string
  * 
@@ -769,6 +802,7 @@ var shortenName = function(name){
 
 
 /**
+ * @function callIsis
  * 
  * @param {string} cubeName name of the cube file 
  * @param {string} filepath path to the cube file on server
@@ -895,9 +929,7 @@ var parseIsisInput = function(array){
 
 
 /**
- * 
- * @todo log to output file
- * 
+ * @function imageExtraction
  * 
  * @param {string} imagename name of the image
  * @param {string} filepath path to the cube file on the server
@@ -913,8 +945,7 @@ var parseIsisInput = function(array){
 var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFileName, logCubeName){
     console.log('Running isis2std for image now \n');
     return new Promise(function(resolve,reject){
-        // execute the isis2std function
-        
+        // execute the isis2std function with same logic as other ISIS calls
         var command = undefined,
             statusCode =  undefined,
             output = undefined;
@@ -931,8 +962,6 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
                 console.log('isis2std stdout: ' + data.toString() + "\n");
             }
         });
-
-
         isis2std.stderr.on('data', function(data){
             if(logToFile){
                 output = data.toString();
@@ -941,7 +970,6 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
                 console.log('isis2std Error: ' + data.toString() + "\n");
             }
         });
-
         isis2std.on('exit',function(code){
             if(logToFile){
                 statusCode = code;
@@ -949,19 +977,15 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
             else{
                 console.log('isis2std Exited with code: ' + code + "\n");
             }
-
             if(code === 0){
-
                 if(![logCubeName, statusCode, command, output].includes(undefined)){
                     logProcess([logCubeName, "isis2std", statusCode,command, output], logFileName);
                 }
-
                 resolve();
             }else{
                 reject('isis2std Error: ' + code.toString + "\n");
             }
         });
-
         isis2std.on("error",function(err){
             reject(-1);
         });
@@ -971,9 +995,7 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
 
 
 /**
- * 
- * @todo log stdour stderr to log file
- * @todo this will need a log to file flag
+ * @function makeIsisCall
  * 
  * @param {string} filepath path to the cube file
  * @param {string} returnPath path to the return pvl
@@ -989,23 +1011,18 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
 var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileName, logCubeName){
     return new Promise(function(resolve,reject){
         // execute the isis2std function
-        
         var command = undefined,
             statusCode =  undefined,
             output = "";
-
         var isisSpawn = spawn(isisCall,['from=', filepath]);
-        
         command = isisSpawn.spawnargs;
-
         isisSpawn.stdout.on('data', function(data){
             if(logToFile){
                 output += data.toString();
             }
             else{
                 console.log(isisCall + ' stdout: ' + data.toString() + "\n");
-            } 
-            
+            }   
             fs.appendFile(returnPath,data,function(err){
                 if(err){console.log("Writing Error: ${err}");}
                 else{
@@ -1013,8 +1030,6 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
                 }
             })
         });
-
-
         isisSpawn.stderr.on('data', function(data){
             if(logToFile){
                 output += data.toString();
@@ -1023,27 +1038,24 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
                 console.log(isisCall + ' Error: ' + data.toString() + "\n");
             } 
         });
-
         isisSpawn.on('exit',function(code){
-
             if(logToFile){
                 statusCode = code;
             }
             else{
                 console.log(isisCall + ' Exited with code: ' + code + "\n");
             }
-  
+
             if(![logCubeName, isisCall, statusCode, command, output].includes(undefined)){
                 logProcess([logCubeName, isisCall, statusCode,command, output], logFileName);
-            }else{
+            }
+            else{
                 if(![logCubeName, isisCall, statusCode, command].includes(undefined)){
                     logProcess([logCubeName, isisCall, statusCode,command, "none\n"], logFileName);
                 }
             }
             resolve();
         });
-
-
         isisSpawn.on('error',function(code){
             console.log(isisCall + " Failed: -1\n");
             reject(-1);
@@ -1054,6 +1066,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
 
 
 /**
+ * @function endTag
  * 
  * @param {string} nameString tag to be checked for End keywords
  * 
@@ -1072,15 +1085,17 @@ var endTag = function(nameString){
     return false;
 }
 
-
 /**
+ * @function processFile
  * 
  * @param {string} inputFile string value representing a link to cube file to open.
  * 
  * @returns {Promise}
  * @returns {object string} JSON string of the data from pvl
  * 
- * @requires fs, instream, outstream, and readline.
+ * @requires instream
+ * @requires outstream
+ * @requires readline
  * 
  * @description this function reads a file line by line parseing into a JSON format.
  */
