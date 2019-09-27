@@ -1,7 +1,13 @@
 ![USGS](https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png)
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
-[Hotkeys](#Hot-Keys)
+- [Introduction](#Introduction)
+- [Developing](#Developing)
+- [Contributing](#Contributing)
+- [Manual](#Manual)
+- [Hotkeys](#Hot-Keys)
+- [Licensing](#Licensing)
+- [Links](#Links)
 -------------------------------------------------------------------------------------------------------------
 ### Introduction
 
@@ -75,13 +81,59 @@ Also feel post issues if you find bugs or have suggestions to better the project
 
 This server is created to streamline the figure creation process for researchers of Astrogeology. 
 Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
-key value pairs of the data that is held in the Cube headers. 
+key value pairs of the data that is held in the Cube headers. Help buttons are at the top right of all
+pages to guide you if you become confused.  
 
+1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
+the server. You can optionally upload a template file for the server if you have used it before.
+Hit the 'What is a TPL File?' button to read all about what a template file for the server is. The 
+upload also asks for a width and height value to be entered which will be the output dimensions of the figure.
+The server can create log files for all the uploads, just check the Log ISIS Output check box to have the server
+generate a log file of the ISIS outputs that were recieved on the server run.
 ![Index Page](https://i.imgur.com/heJsyM4.png)
-![Writer Page](https://i.imgur.com/GTBFFIC.png)
-![Current Edit Page](https://i.imgur.com/m2vYsAs.png)
 
-Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
+2. Next you will be greeted with three boxes. Two on the top row, and one on the bottom row. 
+The left box is the caption output which is the resulting caption with data from ISIS embedded. The right
+box is the editing box where you can type your caption and paste data tags to use ISIS data directly
+from the cube header. The bottom box is where the tags from the usable ISIS data will be displayed with
+there value. Copy and paste the tags into your editing box to switch the keys with the data values. The 'Show All Tags'
+button will show every peice of data that could be extracted from the cube, so if you are looking for something 
+specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
+words in the data by typeing in the search box to the left.
+
+You can save several things from this page, you can download the finsihed caption with the embedded
+ISIS data, you can download the log file which contains the results from the ISIS program calls executed
+on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
+Logs' button in the center of the title box then you have no log file on the server.
+![Writer Page](https://i.imgur.com/GTBFFIC.png)
+
+3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
+Add a North Arrow, a Sun azimuthal Direction indicator, a scalebar for the image ,and an observer
+direction arrow by clicking the buttons with the icons. Swap colors of the icons using the check box
+next to each of the icons. Every icon other than the scalebar can be scaled up and down using the mouse. 
+Mouse over the corners of the object and clicking and dragging when promted to by the mouse pointer. All icons can be dragged around the screen to be placed where ever you would like.
+__(checkboxes are only visible when icons are on screen)__.
+
+Draw over icons and the image using the pencil tool. Click the pencil button and click once to place one 
+end of the line, and then click a second time to place the other end of the line. Change colors of the
+line by using the color picker box next to the button. Once at least 1 line is on the screen,
+a 'Undo Line' will appear on screen. Use this to remove the last line that you drew. 
+
+Add outline boxes to the figure by clicking the box button and then dragging the box around the image.
+Scale the box larger and smaller by mouseing over the corners of the icon and click dragging the icon
+when prompted. Again a color picker is given to allow you to change the color of the box, and again an
+'Undo Box' button will appear if there are any on screen to allow you to remove the last added box.
+
+Text boxes work the exact same way, with the color picker and undo button, but the only difference is 
+when you first click the button, the webpage will prompt you to type what you want the box to say.
+
+You can add padding to the image at one of the four sides, type the numbr of pixels you would like to
+pad the image and a location to place the pixels. To remove the padding either delete the numbers
+in the text box or hit the reset button.
+
+And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
+Accepted file export types include svg, png, jpg, and jpeg.
+![Current Edit Page](https://i.imgur.com/m2vYsAs.png)
 
 #### Hot Keys
 
@@ -95,8 +147,8 @@ Keys      | Command
 `Alt + B` | `Add 1 Outline Box`
 `Alt + R` | `Toggle Scalebar`
 
-Keys      | Command
-----------|----------------------------------------  
+Keys              | Command
+------------------|----------------------------------------  
 `Shift + Alt + N` | `Toggle Color of North Azimuthal Indicator`
 `Shift + Alt + L` | `Undo Last Drawn Line`
 `Shift + Alt + O` | `Toggle Color of Observer Azimuthal Indicator`
