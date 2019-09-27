@@ -1,6 +1,7 @@
 ![USGS](https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png)
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
+[Hotkeys](#Hot-Keys)
 -------------------------------------------------------------------------------------------------------------
 ### Introduction
 
@@ -82,7 +83,7 @@ key value pairs of the data that is held in the Cube headers.
 
 Once finished editing the caption move to the Photo Editor to add icons and annotation to the cube image.
 
-#### Hot Keys
+####Hot Keys
 Keys      | Command
 ----------|----------------------------------------  
 `Alt + N` | `Toggle North Azimuthal Indicator`
