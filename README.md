@@ -92,6 +92,7 @@ The server can create log files for all the uploads, just check the Log ISIS Out
 generate a log file of the ISIS outputs that were recieved on the server run.
 ![Index Page](https://i.imgur.com/heJsyM4.png)
 
+
 2. Next you will be greeted with three boxes. Two on the top row, and one on the bottom row. 
 The left box is the caption output which is the resulting caption with data from ISIS embedded. The right
 box is the editing box where you can type your caption and paste data tags to use ISIS data directly
@@ -105,6 +106,7 @@ ISIS data, you can download the log file which contains the results from the ISI
 on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
 Logs' button in the center of the title box then you have no log file on the server.
 ![Writer Page](https://i.imgur.com/GTBFFIC.png)
+
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
 Add a North Arrow, a Sun azimuthal Direction indicator, a scalebar for the image ,and an observer
