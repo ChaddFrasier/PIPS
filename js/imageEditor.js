@@ -2844,9 +2844,9 @@ $(document).ready(function(){
     $(document).keyup(function(event){
         if(keys.length > 0){
             keys = removeKey(keys, event.keyCode);
-        }
-        
+        } 
     });
+    
     // ---------------------------------- End Button Handlers -----------------------------------------------
         
     // ---------------------------------- Click & Text Input Handlers ---------------------------------------

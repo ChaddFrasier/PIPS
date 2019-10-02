@@ -240,6 +240,12 @@ svg{
     overflow-y: auto;
 }
 
+cite {
+    text-decoration: underline;
+    font-style: inherit;
+    margin: 1;
+}
+
 .help-box-right{
     float: right;
     color: black;
@@ -267,8 +273,12 @@ svg{
 .small-text{
     font-size: 75%;
     margin: 0;
-    padding-bottom: 0rem;
+    padding: 0;
     color: black;
+    padding-left: 2%;
+    padding-right: 2%;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .draggable{
