@@ -261,7 +261,7 @@ module.exports = {
      */
     endProcessRun: function(filename){
         fs.appendFileSync(path.join("log",filename),
-        "END_UPLOAD\n");
+        "END_UPLOAD\n\n");
     },
 
     /**
@@ -864,23 +864,23 @@ var logProcess = function(args, logFileName){
         for(let i = 0; i<args.length; i++){
             switch(i){
                 case 0:
-                    appendString += "\tFile: " + args[i] + "\n";
+                    appendString += "\tSTART_COMMAND\n\t\tFile: " + args[i] + "\n";
                     break;
                 case 1: 
-                    appendString += "\t\tProcess: " + args[i] + "\n";
+                    appendString += "\t\t\tProcess: " + args[i] + "\n";
                     break;
                 case 2: 
-                    appendString += "\t\t\tStatus: " + ((args[i] === 0) ? (args[i] + " Success") : (args[i] + " Failure")) + "\n";
+                    appendString += "\t\t\t\tStatus: " + ((args[i] === 0) ? (args[i] + " Success") : (args[i] + " Failure")) + "\n";
                     break;
                 case 3: 
-                    appendString += "\t\t\tCommand: " + parseIsisInput(args[i]) + "\n";
+                    appendString += "\t\t\t\tCommand: " + parseIsisInput(args[i]) + "\n";
                     break;
                 case 4:
-                    if(args[i].replaceAll("\n","\n\t\t\t\t").trim() === ""){
-                        appendString += "\t\t\tOutput: \n\t\t\t\t" + "none\n";
+                    if(args[i].replaceAll("\n","\n\t\t\t\t\t").trim() === ""){
+                        appendString += "\t\t\t\tOutput: \n\t\t\t\t\t" + "none\n";
                     }
                     else{
-                        appendString += "\t\t\tOutput: \n\t\t\t\t" + args[i].replaceAll("\n","\n\t\t\t\t") + "\n";
+                        appendString += "\t\t\t\tOutput: \n\t\t\t\t\t" + args[i].replaceAll("\n","\n\t\t\t\t\t").trim() + "\n\tEND_COMMAND\n\n";
                     }
                     
                     break;
