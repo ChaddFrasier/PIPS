@@ -1,9 +1,9 @@
 /**
- * @file server.js 
+ * @file server.js
  * @alias server
- * @run node server 
+ * @run node server
  * 
- * @author Chadd Frasier 
+ * @author Chadd Frasier
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
  * @version 3.8.0
@@ -12,15 +12,14 @@
  * @since 05/31/19
  * @updated 10/2/19
  *
- * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
+ * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
- * 
  * 
  * @requires ./util.js {this needs to be in root of application because of ISIS Commands}
  * @requires ./js/cubeObj.js
  * 
- * Note: This server is only capable of running on a linux or mac operating systems due to ISIS3 
+ * Note: This server is only capable of running on a linux or mac operating systems due to ISIS3
  */
 
 /** READ ME BEFORE EDITING
@@ -112,7 +111,6 @@
  *                2. Document the 'author' and 'function' and 'description' for each javascript function
  *                                  (Use Javadoc format like in util.js)
  *                3. lines should not exceed 110 characters for server files and 120 for view files
- * 
 */
 
 // require dependencies
@@ -172,8 +170,7 @@ try{
     exec('rm ./print.prt');
     exec('rm ./tmp/*');
     exec('rm ./log/*');
-    
-    
+
     // get the list of files in the images dir
     let fileArr = fs.readdirSync("./images");
     // loop throught then and delete the file if it matchest this regexp
@@ -193,7 +190,6 @@ catch(err){
 // read the config file to get only important tags for webpage
 const importantTagArr = util.configServer(fs.readFileSync(
     path.join('.','cfg', 'config1.xml'), {encoding: 'utf-8'}));
-
 
 // HTTP Handling Functions
 /**

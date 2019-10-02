@@ -1791,7 +1791,6 @@ $(document).ready(function(){
             // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
             textSize = (scalePX/4000)* 21 * (h/origH);
         }
-
         // if half the bar is less than 1 km then give it the decimal
         if(half < 1){
             document.getElementById("scalebarHalf").innerHTML = half;
@@ -1800,10 +1799,8 @@ $(document).ready(function(){
         else{
             document.getElementById("scalebarHalf").innerHTML = parseInt(half);
         }
-
         document.getElementById("scalebarText").innerHTML = scalebarLength + scalebarUnits;
         document.getElementById("scalebar1").innerHTML = scalebarLength;
-
     }
     else{
         // if the scalebarPx is none disable the button
