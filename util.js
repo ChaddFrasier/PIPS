@@ -45,7 +45,7 @@ module.exports = {
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
-                console.log('isis calls finished successfully\n');
+                console.log('All Calls  Finished\n');
                 resolve();
             }).catch(function(code){
                 if(code === -1){
@@ -636,7 +636,6 @@ module.exports = {
         var bitmap = Buffer.from(base64str, 'base64');
         // write buffer to file
         fs.writeFileSync(file, bitmap);
-        console.log('******** File created from base64 encoded string ********');
     },
 
 
@@ -823,7 +822,6 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
         var isisCalls = ['campt','catlab','catoriglab'];
         var promises = [];
 
-        console.log(typeof(logCubeName))
         // get the filename from interior export 
         var imagename = require(__filename).getimagename(cubeName,'png');
 
@@ -1026,7 +1024,7 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
             fs.appendFile(returnPath,data,function(err){
                 if(err){console.log("Writing Error: ${err}");}
                 else{
-                    console.log("Wrote to File");
+                    console.log(isisCall + " Output Wrote to File");
                 }
             })
         });

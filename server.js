@@ -812,14 +812,11 @@ app.get('/imageEditor', function(request, response){
                             if(imageMeterWidth/1000 < 1){
                                 scalebarLength = scalebarMeters;
                                 var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
-                                console.log(scalebarLength + " m");
                                 scalebarUnits = "m";
                             }
                             else{
-                                
                                 scalebarLength = scalebarMeters/1000;
                                 var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                                console.log(scalebarLength + " km");
                                 scalebarUnits = "km";
                             }
         
@@ -1004,14 +1001,11 @@ app.post('/imageEditor', function(request, response){
                     if(imageMeterWidth/1000 < 1){
                         scalebarLength = scalebarMeters;
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
-                        console.log(scalebarLength + " m");
                         scalebarUnits = "m";
                     }
                     else{
-                        
                         scalebarLength = scalebarMeters/1000;
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                        console.log(scalebarLength + " km");
                         scalebarUnits = "km";
                     }
 
@@ -1108,7 +1102,6 @@ app.post("/figureDownload", async function(request, response){
             // log any errors
             console.log("Server Error on saving");
         }else{
-            console.log("saved successfully");
             // if the file is a png
             if(fileExt === "png"){
                 // use svg2img Module to convert to png
