@@ -120,7 +120,7 @@
                         <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
                         <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
 
-                                    <li style="margin-top:0rem; border-top: 4px solid black" title="Toggle North Azimuthal Direction">
+                                    <li style="margin-top:0rem; border-top: 4px solid black" title="Alt + N">
                                         <p class="float-left" style="margin-right:.5rem;">North<br/>Azimuthal<br/>Direction</p>
                                         <img class="btn btn-lg button" id="northIconFlag" src="/images/north.png"></img>
 
@@ -128,9 +128,9 @@
                                             Toggle Color
                                         </label>
                                         <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
-                                        style="visibility: hidden;"  title="Toggle Color">
+                                        style="visibility: hidden;"  title="Shift + Alt + N">
                                     </li>
-                                    <li title="Toggle Sun Azimuthal Direction">
+                                    <li title="Alt + S">
                                         <p class="float-left" style="margin-right: .5rem;">Sun<br/>Azimuthal<br/>Direction</p>
                                         <svg class="btn btn-lg button" height="10" 
                                         viewBox="0 0 50 50"role="button" id="sunIconFlag">
@@ -142,9 +142,9 @@
                                             Toggle Color
                                         </label>
                                         <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
-                                        style="visibility: hidden;" title="Toggle Color">
+                                        style="visibility: hidden;" title="Shift + Alt + S">
                                     </li>
-                                    <li title="Toggle Observer Azimuthal Direction">
+                                    <li title="Alt + O">
                                         <p class="float-left" style="margin-right: .5rem;">
                                             Observer<br/>Azimuthal<br/>Direction
                                         </p>
@@ -153,19 +153,19 @@
                                             Toggle Color
                                         </label>
                                         <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
-                                        style="visibility: hidden;" title="Toggle Color">
+                                        style="visibility: hidden;" title="Shift + Alt + O">
                                     </li>
-                                    <li title="Draw Lines">
+                                    <li title="Alt + L">
                                         <img class="btn btn-lg button" id="pencilIconFlag" src="/images/pencil.png"></img>
                                         <p class="float-left" style="margin-right: 1.25rem; padding-top: .5rem;">
                                             Drawing<br/>Tool
                                         </p>
                                         <input id="colorPickerLine"type="color" title="Change Color"name="lineColor"  value="#ffffff"/> 
-                                        <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;" title="Undo Line">
+                                        <button class="btn btn-danger btn-sm" id="undoLine" style="visibility: hidden;" title="Shift + Alt + L">
                                             Undo
                                         </button>
                                     </li>
-                                    <li title="Toggle Scalebar">
+                                    <li title="Alt + R">
                                         <p class="float-left" style="margin-right: .5rem; padding-top: .5rem;">Scalebar</p>
                                         <button class="btn btn-lg button" id="scaleBarButton" style="width:9rem; color: black"> 
                                             <svg viewBox= "0 0 25 4">
@@ -195,9 +195,9 @@
                                         <label id="scaleCheckboxLabel" for="scaleCheckbox"
                                         style="visibility: hidden; margin-top:.5rem; margin-bottom: 0;">Toggle Color</label>
                                         <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
-                                        style="visibility: hidden; left: 2rem; top:.25rem;" title="Toggle Color">
+                                        style="visibility: hidden; left: 2rem; top:.25rem;" title="Shift + Alt + R">
                                     </li>
-                                    <li title="Add Outline Box">
+                                    <li title="Alt + B">
                                         <p class="float-left" style="margin-right: 1rem; padding-top: .5rem;">
                                             Outline<br/>Box
                                         </p>
@@ -209,11 +209,11 @@
                                         </button>
 
                                         <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff" title="Change Color"/> 
-                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox" title="Undo Box">
+                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoBox" title="Shift + Alt + B">
                                             Undo
                                         </button>
                                     </li>
-                                    <li title="Add Text to Image">
+                                    <li title="Alt + T">
                                         <p class="float-left" style="margin-right: 2rem; padding-top:.5rem;">Text<br/>Tool</p>
                                         <button class="btn btn-lg button" id="textBtn" style="width:6rem; color: black">
                                             <svg viewBox="0 0 20 8">
@@ -224,7 +224,7 @@
                                         </button>
                                         <input type="color" id="textColorPicker" 
                                         style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
-                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText" title="Undo Text Element">
+                                        <button class="btn btn-danger btn-sm" style="visibility: hidden;" id="undoText" title="Shift + Alt + T">
                                             Undo
                                         </button>
                                     </li>
