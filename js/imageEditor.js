@@ -2746,7 +2746,7 @@ $(document).ready(function(){
      * 
      * @param {event} event the key press event
      * 
-     * @description  Hot Key Handler
+     * @description  Hotkey Handler
      */
     $(document).keydown(function(event){
         if(!keys.includes(event.keyCode)){
@@ -2778,7 +2778,7 @@ $(document).ready(function(){
                 $("#scaleBarButton").mousedown();
             }
         }
-        else if(keys[0] === 16 && keys[1] === 18 && keys.length === 3){
+        else if(((keys[0] === 16 && keys[1] === 18) || (keys[1] === 16 && keys[0] === 18)) && keys.length === 3){
             event.preventDefault();
             if(keys[2] === 76){
                 if(lineArr.length > 0){
