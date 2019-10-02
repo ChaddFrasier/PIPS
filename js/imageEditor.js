@@ -32,7 +32,8 @@ var toggleScalebar = true,
 
 //create clickArray
 var clickArray = [],
-    lineArr = [];
+    lineArr = [], 
+    keys = [];
 
 // set values for calculating outline box size 
 var mouseX,
@@ -760,7 +761,6 @@ function captionHandler(){
  * 
 */
 function growProgress(duration){
-    
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
     document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s infinite";
 }
@@ -828,8 +828,6 @@ function setOpposite(colorString){
     if(colorString === "black"){ return "white"; }
     else{ return "black"; }
 }
-
-
 
  /**
  * @function drawLine
@@ -1131,7 +1129,6 @@ function prepareCrop(clickArray){
             clickArray[2] = endX + (startX - endX);
         }
         else{
-            
             clickArray[1] = startY - (startY - endY);
             clickArray[3] = endY + (startY - endY);
         }
@@ -1371,7 +1368,6 @@ function captureClick(x,y){
 */
 function createTimer(){
     let startTime = new Date();
-
     return [startTime.getHours(),startTime.getMinutes(),startTime.getSeconds()];
 }
 
@@ -1415,7 +1411,6 @@ function getCookie(cname){
  * @param {array} startTime the array of time values to calculate the difference [hrs,mins,secs]
  * 
  * @description captures he current time and figures out how long it has been since the passed startTime
- * 
 */
 function peekTimer(startTime){
     // get the end data values and calculate the difference in the startTime
@@ -1447,7 +1442,6 @@ function peekTimer(startTime){
  * 
  * @description create a new mouse event for a download 
  *              and create an anchor to click on that forces a download
- * 
 */
 function triggerDownload(imgURI,filename){
     // create a click event
@@ -1517,6 +1511,14 @@ function svgPoint(element, x, y) {
     return pt.matrixTransform(element.getScreenCTM().inverse());    
 }
 
+/**
+ * @function removeKey
+ * 
+ * @param {array} keysArr the array of all keys 
+ * @param {string} key the key to be removed from the array 
+ * 
+ * @description remove the value from the array, this is for the hotkey tracking
+ */
 function removeKey(keysArr, key){
     if(!keysArr.includes(key)){return false;}
     else{
@@ -1563,7 +1565,6 @@ $(document).ready(function(){
         rightBtn = document.getElementById("rightPaddingBtn"),
         leftBtn = document.getElementById("leftPaddingBtn");
 
-
     // get padding input box and other important DOM elements for export
     var paddingBoxInput = document.getElementById("paddingInput");
 
@@ -1572,7 +1573,6 @@ $(document).ready(function(){
     // init the padding value
     paddingBoxInput.value = '';
         
-
     // set all flags to false to start
     var sunIconPlaced = false,
         northIconPlaced = false,
@@ -1637,7 +1637,6 @@ $(document).ready(function(){
     + '<rect class="resize bottom-left"x="0" y="200" width="100" height="100"'
     + 'style="visibility: hidden;"fill="yellow"/></g>';
 
-
     var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
     + 'transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7"'
     + 'style="border:0; padding:0; pointer-events:all;">'
@@ -1654,7 +1653,6 @@ $(document).ready(function(){
     + 'style="visibility: hidden;"fill="green"/>'
     + '<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"'
     + 'fill="blue"/></g>'
-
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
     + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
@@ -1700,23 +1698,18 @@ $(document).ready(function(){
     + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="50"/>'
-
     + '<path id="scalebarVert20th" d="M 550 200 L 550 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarVert30th" d="M 750 200 L 750 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="50"/>'
-
     + '<path id="scalebarVert40th" d="M 950 200 L 950 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarVert50th" d="M 1150 200 L 1150 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="50"/>'
-
     + '<path id="scalebarVert60th" d="M 1350 200 L 1350 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarVert70th" d="M 1550 200 L 1550 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="50"/>'
-
     + '<path id="scalebarVert80th" d="M 1750 200 L 1750 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
     + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
-
     + '<text id="scalebarText" x="3975" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
     + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
@@ -1837,10 +1830,9 @@ $(document).ready(function(){
 
     // sets the display name
     document.getElementById("imageName").innerHTML = displayCube;
+
     // set the arrow directions and recieve the data
-
     getMetadata();
-
 
     /** ------------------------------- Export Functions ------------------------------------------------- */
     /**
@@ -1861,8 +1853,10 @@ $(document).ready(function(){
             var filename = prompt("Save File as png svg or jpeg","");
         }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
                                                                                         .test(filename))
-    // load bar with a duration of .5 seconds
-    growProgress(.5);
+
+        // load bar with a duration of .5 seconds
+        growProgress(.5);
+
         // if the file is not null
         if(filename !== null){
             // read the file extenson
@@ -1884,9 +1878,8 @@ $(document).ready(function(){
                 document.getElementById("loadingText").innerHTML = "Loading";
                 setTimeout(hideProgress,500);
                 return;
-            }else{
-                
-                
+            }
+            else{
                 // create a new Form data object
                 var fd = new FormData();
                 // append a new file to the form. 
@@ -1938,7 +1931,6 @@ $(document).ready(function(){
                         }
                         else{
                             // server sent back a 200
-                            
                             response.blob().then((blob)=>{
                                 console.log(blob);
                                 url = DOMURL.createObjectURL(blob);
@@ -1962,7 +1954,7 @@ $(document).ready(function(){
             hideProgress();
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
-        }   
+        }
     });
 
 
@@ -2050,7 +2042,6 @@ $(document).ready(function(){
                     children[index].setAttribute("fill",
                                                     setOpposite(children[index].getAttribute("fill")));
                 }
-        
             }
         }
     });
@@ -2062,7 +2053,6 @@ $(document).ready(function(){
      * 
     */
     $("#scaleCheckbox").on("change",function(){
-        
         var children = scaleBarIcon.childNodes;
 
         for(index in children){
@@ -2075,7 +2065,6 @@ $(document).ready(function(){
                     children[index].setAttribute("fill",
                                                     setOpposite(children[index].getAttribute("fill")));
                 }
-        
             }
         }
     });
@@ -2087,7 +2076,6 @@ $(document).ready(function(){
      * 
     */
     $("#eyeCheckbox").on("change",function(){
-        
         let children = eyeImage.childNodes;
         
         for(index in children){
@@ -2103,6 +2091,7 @@ $(document).ready(function(){
             }
         }
     });
+
     /**
      * @function colorPickerLine 'change' event handler
      * 
@@ -2157,11 +2146,9 @@ $(document).ready(function(){
             alert("No lines drawn");
         }
 
-
         if(lineArr.length === 0){
             document.getElementById("undoLine").style.visibility = "hidden";
         }
-
     });
 
     /**
@@ -2193,6 +2180,7 @@ $(document).ready(function(){
         else{
             alert("There are no boxes placed yet");
         }
+
         if(highlightBoxArray.length === 0){
             document.getElementById("undoBox").style.visibility = "hidden";
         }
@@ -2205,13 +2193,13 @@ $(document).ready(function(){
      * 
     */
     $("#undoText").on("mousedown",function(){
-        
         if(textBoxArray.length > 0){
             textBoxArray.pop().remove();
         }
         else{
             alert("text has not been added");
         }
+
         if(textBoxArray.length === 0){
             document.getElementById("undoText").style.visibility = "hidden";
         }
@@ -2363,9 +2351,10 @@ $(document).ready(function(){
             
             // append the finished group graphic to the svg
             svg.appendChild(g);
-            let bbox = g.getBBox();
+
             // set the scaling boxes x value to the end of the bbox
             // this auto finds the relative length of the text element
+            let bbox = g.getBBox();
             if(strlength > 1){
                 rect3.setAttribute("x",bbox.width - 1);
                 rect4.setAttribute("x",bbox.width - 1);
@@ -2503,14 +2492,11 @@ $(document).ready(function(){
                 document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
                 document.getElementById("northCheckbox").style.visibility = "hidden";
                 document.getElementById("northCheckboxLabel").style.visibility = "hidden";
-                
-                
                 northFlag = !northFlag;
             }
             
             // otherwise set the other flags to false and adjust their html
             if(northFlag){
-                
                 /* cropFlag = false;
                 document.getElementById('cropFlag').innerHTML = "Crop Image"; */
                 outlineBox.remove();
@@ -2528,8 +2514,7 @@ $(document).ready(function(){
                 document.getElementById("northCheckboxLabel").style.visibility = "visible";
             }
             clickArray = [];
-        }
-        
+        }   
     }); 
 
     /**
@@ -2598,7 +2583,6 @@ $(document).ready(function(){
         if(highlightBoxArray.length > 0){
             document.getElementById("undoBox").style.visibility = "visible";
         }
-
     });
 
     /**
@@ -2609,15 +2593,13 @@ $(document).ready(function(){
     $("#bottomPaddingBtn").on('click',function(event){
         if(!isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(parseInt(paddingBoxInput.value),'bottom');
-            padBottom = true;
-            padLeft = false, padRight = false, padTop = false;
+            padBottom = true, padLeft = false, padRight = false, padTop = false;
 
             bottomBtn.className = 'btn btn-danger button btn-md disabled';
 
             leftBtn.className = 'btn button btn-md';
             rightBtn.className = 'btn button btn-md';
             topBtn.className = 'btn button btn-md';
-
         }
         else{
             setImagePadding(parseInt(0),"none"); 
@@ -2637,9 +2619,7 @@ $(document).ready(function(){
     $("#topPaddingBtn").on('click',function(event){
         if(!isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(parseInt(paddingBoxInput.value),'top');
-            padTop = true;
-
-            padLeft = false, padRight = false, padBottom = false;
+            padTop = true, padLeft = false, padRight = false, padBottom = false;
             
             topBtn.className = 'btn btn-danger button btn-md disabled';
 
@@ -2650,7 +2630,6 @@ $(document).ready(function(){
         else{
             setImagePadding(parseInt(0),"none"); 
             topBtn.className = 'btn button btn-md';
-
             leftBtn.className = 'btn button btn-md';
             rightBtn.className = 'btn button btn-md';
             bottomBtn.className = 'btn button btn-md';
@@ -2667,11 +2646,7 @@ $(document).ready(function(){
         
         if(!isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(parseInt(paddingBoxInput.value),'right');
-            padRight = true;
-            
-            padLeft = false,
-            padBottom = false,
-            padTop = false;
+            padRight = true, padLeft = false, padBottom = false, padTop = false;
 
             rightBtn.className = 'btn btn-danger button btn-md disabled';
 
@@ -2682,7 +2657,6 @@ $(document).ready(function(){
         else{
             setImagePadding(parseInt(0),"none"); 
             rightBtn.className = 'btn button btn-md'; 
-
             leftBtn.className = 'btn button btn-md';
             bottomBtn.className = 'btn button btn-md';
             topBtn.className = 'btn button btn-md';
@@ -2699,10 +2673,7 @@ $(document).ready(function(){
         
         if(!isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(parseInt(paddingBoxInput.value),'left');
-            padLeft = true;
-            padBottom = false,
-            padRight=false, 
-            padTop = false;
+            padLeft = true, padBottom = false, padRight=false, padTop = false;
             
             leftBtn.className = 'btn btn-danger button btn-md disabled';
             
@@ -2726,7 +2697,6 @@ $(document).ready(function(){
      * @description on click resets UI and padding to 0
     */
     $("#resetPaddingBtn").on('click',function(event){
-        
         setImagePadding(parseInt(0),"none"); 
         paddingBoxInput.value = "";  
         
@@ -2735,11 +2705,8 @@ $(document).ready(function(){
         bottomBtn.className = 'btn button btn-md';
         leftBtn.className = 'btn button btn-md';
         rightBtn.className = 'btn button btn-md';
-        topBtn.className = 'btn button btn-md';
-        
+        topBtn.className = 'btn button btn-md'; 
     });
-
-    var keys = [];
 
     /**
      * @function document.keydown
@@ -2832,7 +2799,6 @@ $(document).ready(function(){
                 }
             }
         }
-        
     });
     /** 
      * @function document.keyup
@@ -2947,7 +2913,8 @@ $(document).ready(function(){
                     
                 }
             });
-        }else{
+        }
+        else{
             // if the current image is the base image then alert the user
             loadInvisible();
             alert('Base Image:\nCannot Be Undone');
@@ -2977,7 +2944,8 @@ $(document).ready(function(){
 
             document.getElementById('cropFlag').innerHTML = "Cancel?";
             
-        }else{
+        }
+        else{
             clickArray = [];
             document.getElementById('cropFlag').innerHTML = "Crop Image";
             outlineBox.style.visibility = 'hidden';
@@ -3237,7 +3205,8 @@ $(document).ready(function(){
                 captureClick(x,y);
                 // check click array
                 console.log(clickArray);
-            }else if(clickArray.length === 2){
+            }
+            else if(clickArray.length === 2){
                 
                 captureClick(x,y);
                 prepareCrop(clickArray);

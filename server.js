@@ -6,14 +6,12 @@
  * @author Chadd Frasier 
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.7.4
+ * @version 3.8.0
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/19
- * @updated 09/27/19
+ * @updated 10/2/19
  *
- * 
- * 
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based 
  *         on preset defaults and a data file for input.
  * @todo 10 '/pow will need to set the log flag in the user instance
@@ -297,7 +295,8 @@ app.get('/captionWriter',function(request,response){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
 
-    }else{
+    }
+    else{
         //retrieve the last found file for the user if it is there
         // otherwise render index with an alert that the session timed out and they should upload again
         var userObject = util.getObjectFromArray(userid, cubeArray);
@@ -313,7 +312,8 @@ app.get('/captionWriter',function(request,response){
                     csvString: util.getCSV(userObject.data),
                     outputName: userObject.name.replace('.cub','_PIPS_Caption.txt')
                 });
-        }else{
+        }
+        else{
             response.redirect("/?alertCode=4");
         }
     }
@@ -359,7 +359,8 @@ app.post('/captionWriter', async function(request, response){
             // set tiff flag
             if(cubeFile.name.indexOf('.tif') !== -1){
                 isTiff = true;
-            }else{
+            }
+            else{
                 isTiff = false;
             }
 
@@ -376,7 +377,8 @@ app.post('/captionWriter', async function(request, response){
                 // create new instance
                 var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
                 cubeObj.userNum = numUsers++;
-            }else{
+            }
+            else{
                 // loop through the active cubes and search for the user instance
                 for(i in cubeArray){
                     if(cubeArray[i].userId === uid){
@@ -468,7 +470,8 @@ app.post('/captionWriter', async function(request, response){
                 else{
                     cubeObj.userDim = [Number(request.body.desiredWidth),Number(request.body.desiredHeight)];
                 }
-            }else{
+            }
+            else{
                 // otherwise ignore and default
                 cubeObj.userDim = [900,900];
             }
@@ -497,7 +500,8 @@ app.post('/captionWriter', async function(request, response){
                 fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
                     if(err){
                         console.log("READING ERROR: " + err);
-                    }else{
+                    }
+                    else{
                         // get an array of the first 10% and the data (where the lines and sample data is located)
                         let bufferArray = data.subarray(0,data.length/10).toString().split("\n");
                         // for each thing in the array
@@ -603,7 +607,8 @@ app.post('/captionWriter', async function(request, response){
                                     response.redirect('/?alertCode=8');
                                     // end response
                                     response.end();
-                                }else{
+                                }
+                                else{
                                     // alert 6 which happens when isis failed to create an image form the cube
                                     response.redirect('/?alertCode=6');
                                     // end response
@@ -616,7 +621,8 @@ app.post('/captionWriter', async function(request, response){
                                 response.redirect('/?alertCode=8');
                                 // end response
                                 response.end();
-                            }else{
+                            }
+                            else{
                                 console.log("Reduce ERROR: " + err)
                             }
                         });
@@ -628,13 +634,13 @@ app.post('/captionWriter', async function(request, response){
                     response.redirect('/?alertCode=8');
                     // end response
                     response.end();
-                }else{
+                }
+                else{
                     // alert 5 which happens when isis fails to convert a tif
                     response.redirect('/?alertCode=5');
                     // end response
                     response.end();
                 }
-
             });
         }
         else{
@@ -643,7 +649,7 @@ app.post('/captionWriter', async function(request, response){
             response.redirect('/?alertCode=1');
             // end response
             response.end();
-            }
+        }
     }catch(err){
         console.log('FATAL ERROR ON SERVER UPLOAD: ');
         console.log(err);
@@ -672,13 +678,15 @@ app.post('/csv', function(request,response){
         response.download(path.join('csv',cubeObj.name.replace('.cub','.csv')),function(err){
             if(err){
                 console.log('file was not sent successfully');
-            }else{
+            }
+            else{
                 // file sent
                 response.status(200);
                 response.end();
             }
         });
-    }else{
+    }
+    else{
         response.redirect("/?alertCode=4");
     }
     
@@ -697,7 +705,8 @@ app.get('/csv', function(request, response){
     if(userId === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
-    }else{
+    }
+    else{
         // return the index if not found
         let userObject = util.getObjectFromArray(userId,cubeArray);
 
@@ -705,13 +714,15 @@ app.get('/csv', function(request, response){
             response.download(path.join('csv',userObject.name.replace('.cub','.csv')),function(err){
                 if(err){
                     console.log('file was not sent successfully');
-                }else{
+                }
+                else{
                     // file sent
                     response.status(200);
                     response.end();
                 }
             });
-        }else{
+        }
+        else{
             response.redirect('/?alertCode=4');
         }
     }
@@ -731,7 +742,8 @@ app.get('/imageEditor', function(request, response){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
 
-    }else{
+    }
+    else{
         // get the user instance
         let userObject = util.getObjectFromArray(userid,cubeArray),
             data = userObject.impData;
@@ -795,12 +807,15 @@ app.get('/imageEditor', function(request, response){
                             // default to 1
                             if(b >= 0.75){
                                 b = 5;
-                            }else if(b >= 0.35){
+                            }
+                            else if(b >= 0.35){
                                 b = 2;
-                            }else if(b<.05){
+                            }
+                            else if(b<.05){
                                 a -= 1;
                                 b = 5;
-                            }else{
+                            }
+                            else{
                                 b=1;
                             }
         
@@ -835,7 +850,8 @@ app.get('/imageEditor', function(request, response){
                                     scalebarPx: scalebarPx, 
                                     scalebarUnits: scalebarUnits
                                 });
-                            }else{
+                            }
+                            else{
                                 response.render("imagePage.ejs", 
                                 {
                                     image:imagepath,
@@ -849,10 +865,12 @@ app.get('/imageEditor', function(request, response){
                                     scalebarUnits: scalebarUnits
                                 });
                             }
-                        }else{
+                        }
+                        else{
                             console.log("Image Width in Meters Failed to Calculate");
                         }
-                    }else{
+                    }
+                    else{
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -868,7 +886,8 @@ app.get('/imageEditor', function(request, response){
                                 scalebarPx: 'none',
                                 scalebarUnits: scalebarUnits
                             });
-                        }else{
+                        }
+                        else{
                             response.render("imagePage.ejs", 
                             {
                                 image:imagepath,
@@ -888,7 +907,8 @@ app.get('/imageEditor', function(request, response){
                         console.log("ERROR: " + err);
                     }
                 });
-        }else{
+        }
+        else{
             response.redirect("/?alertCode=4");
             response.end();
         }
@@ -921,7 +941,8 @@ app.post('/imageEditor', function(request, response){
             // if the data val is an error code then fail
             if(userObject < 1){
                 data = 'NONE';
-            }else{
+            }
+            else{
                
                 // get resolution value
                 var resolution = util.getPixelResolution(userObject);
@@ -930,7 +951,8 @@ app.post('/imageEditor', function(request, response){
                 data = userObject.impData;
             }
         } 
-    }else{
+    }
+    else{
         // image path could not be found
         imagepath = 'none';
     }
@@ -938,7 +960,8 @@ app.post('/imageEditor', function(request, response){
    if(imagepath === 'none' || typeof(userObject)!== "object"){
        response.redirect("/?alertCode=4");
        return response.end();
-   }else{
+   }
+   else{
         var w,
             h;
         // get user dimensions of cube
@@ -984,12 +1007,15 @@ app.post('/imageEditor', function(request, response){
                     // default to 1
                     if(b >= 0.75){
                         b = 5;
-                    }else if(b >= 0.35){
+                    }
+                    else if(b >= 0.35){
                         b = 2;
-                    }else if(b<.05){
+                    }
+                    else if(b<.05){
                         a -= 1;
                         b = 5;
-                    }else{
+                    }
+                    else{
                         b=1;
                     }
 
@@ -1024,7 +1050,8 @@ app.post('/imageEditor', function(request, response){
                             scalebarPx: scalebarPx, 
                             scalebarUnits: scalebarUnits
                         });
-                    }else{
+                    }
+                    else{
                         response.render("imagePage.ejs", 
                         {
                             image:imagepath,
@@ -1038,10 +1065,12 @@ app.post('/imageEditor', function(request, response){
                             scalebarUnits: scalebarUnits
                         });
                     }
-                }else{
+                }
+                else{
                     console.log("Image Width in Meters Failed to Calculate");
                 }
-            }else{
+            }
+            else{
                 // render image page with needed data
                 if(isWindows){ imagepath = imagepath.replace("\\","/");}
                 if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -1057,7 +1086,8 @@ app.post('/imageEditor', function(request, response){
                         scalebarPx: 'none',
                         scalebarUnits: scalebarUnits
                     });
-                }else{
+                }
+                else{
                     response.render("imagePage.ejs", 
                     {
                         image:imagepath,
@@ -1101,21 +1131,24 @@ app.post("/figureDownload", async function(request, response){
         if(err){
             // log any errors
             console.log("Server Error on saving");
-        }else{
+        }
+        else{
             // if the file is a png
             if(fileExt === "png"){
                 // use svg2img Module to convert to png
                 svg2img("./tmp/"+request.files.upl.name,function(err,buffer){
                     if(err){
                         console.log(err);
-                    }else{
+                    }
+                    else{
                         // write file from buffer
                         fs.writeFileSync("./tmp/" + filename,buffer);
                         // send the new file for download
                         response.download("./tmp/" + filename,filename,function(err){
                             if(err){
                                 console.log(err);
-                            }else{
+                            }
+                            else{
                                 console.log("download sent");
                                 // remove the filenow
                                 fs.unlinkSync("./tmp/" + filename);
@@ -1123,19 +1156,22 @@ app.post("/figureDownload", async function(request, response){
                         });
                     }
                 });
-            }else{
+            }
+            else{
                 // Otherwise it will be a jpg or jpeg which are the same
                 svg2img("./tmp/"+request.files.upl.name, {format:'jpg'}, function(err,buffer){
                     if(err){
                         console.log(err);
-                    }else{
+                    }
+                    else{
                         // write file from buffer
                         fs.writeFileSync("./tmp/" + filename,buffer);
                         // send file for download
                         response.download("./tmp/" + filename,filename,function(err){
                             if(err){
                                 console.log(err);
-                            }else{
+                            }
+                            else{
                                 console.log("download sent");
                                 // remove the filenow
                                 fs.unlinkSync("./tmp/" + filename);

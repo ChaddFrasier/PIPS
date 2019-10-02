@@ -200,7 +200,6 @@ module.exports = class Cube{
     set impData(data){
         if(typeof(data) === "object"){
             this._impData = data;
-    
         }
     }
 
@@ -214,7 +213,8 @@ module.exports = class Cube{
             fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
                 if(err){
                     reject(err);
-                }else{
+                }
+                else{
                     var bufferArray = data.subarray(0, data.length/10).toString().split("\n");
 
                     for(let index=0; index< bufferArray.length;index++){

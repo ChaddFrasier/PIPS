@@ -117,7 +117,8 @@ function loaderActivate(){
             loader.style.visibility = 'visible';
             document.uploadForm.submit();
 
-        }else{
+        }
+        else{
             loader.style.visibility = 'visible';
             document.uploadForm.submit();
         }

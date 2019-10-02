@@ -10,7 +10,6 @@
  * 
  * @see {server.js} Read the header before editing
  * 
- * @todo comment all new functions
  */
 
 // require dependencies
@@ -51,7 +50,8 @@ module.exports = {
                 if(code === -1){
                     console.log("ISIS IS NOT RUNNING\n");
                     reject(-1);
-                }else{
+                }
+                else{
                     console.log('image extraction failed to create image\n');
                     reject();
                 }
@@ -107,7 +107,8 @@ module.exports = {
 
         if(resolution !== undefined){
             return resolution;
-        }else{
+        }
+        else{
             return -1;
         }
     },
@@ -127,7 +128,8 @@ module.exports = {
         let resFloat = parseFloat(resStr);
         if(resFloat){
             return resFloat * w;
-        }else{
+        }
+        else{
             return -1;
         }
     },
@@ -197,7 +199,8 @@ module.exports = {
             std2isis.stdout.on('data', function(data){
                 if(logToFile){
                     output += data.toString();
-                }else{
+                }
+                else{
                     console.log('stdout: ' + data.toString() + "\n");
                 }
             });
@@ -228,7 +231,8 @@ module.exports = {
                 if(![logTiffName, isisCall, statusCode,command, output].includes(undefined)){
                     // log the ISIS call to log file
                     logProcess([logTiffName, isisCall, statusCode,command, output], logFileName);
-                }else{
+                }
+                else{
                     if(![logTiffName, isisCall, statusCode,command].includes(undefined)){
                         // log output as none
                         logProcess([logTiffName, isisCall, statusCode,command, "none\n"], logFileName);
@@ -840,7 +844,8 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
         }).catch(function(code){
             if(code === -1){
                 reject(code);
-            }else{
+            }
+            else{
                 reject();
             }
 
@@ -980,7 +985,8 @@ var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFil
                     logProcess([logCubeName, "isis2std", statusCode,command, output], logFileName);
                 }
                 resolve();
-            }else{
+            }
+            else{
                 reject('isis2std Error: ' + code.toString + "\n");
             }
         });
