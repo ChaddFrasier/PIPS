@@ -112,8 +112,8 @@ function loaderActivate(){
         // otherwise show loader and submit the form based on input
         if(heightInputBox.value === "" && widthInputBox.value === ""){
             // 300dpi at 3 inches (300px/in)
-            heightInputBox.value = 900;
-            widthInputBox.value = 900;
+            heightInputBox.value = 1500;
+            widthInputBox.value = 1500;
             loader.style.visibility = 'visible';
             document.uploadForm.submit();
 
@@ -152,11 +152,11 @@ function checkInput(){
     // alert of the are too large
     // the flag is used to only alert the user 1 time
     if(!alerted){
-        if(width >= window.screen.width - window.screen.width*.5 && width !== "900"){
+        if(width >= window.screen.width - window.screen.width*.5 && width !== "1500"){
             alert("Warning: The selected width is too larger \n    Continuing will cause redering issues");
             alerted = true;
         }
-        else if(height >= window.screen.height - window.screen.height*.5 && height !== "900"){
+        else if(height >= window.screen.height - window.screen.height*.5 && height !== "1500"){
             alert("Warning: The selected height is too larger \n   Continuing will cause redering issues");
             alerted = true;
         }

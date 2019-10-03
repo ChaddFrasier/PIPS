@@ -32,7 +32,7 @@
  * 
  *     Ex: If given a height OR a width and the other box is left blank, 
  *         the server now calculates the other dimension preserving the aspect ratio of the image.
- *         Uploading a 900 x 900 image with a desire width of 500 will auto calculate the height
+ *         Uploading a 1500 x 1500 image with a desire width of 500 will auto calculate the height
  *         of 500 for the user.
  * 
  *     Or the user can specify an exact output size of the figures (width AND height).
@@ -122,7 +122,7 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const bodyParser = require("body-parser");
-const svg2img = require("svg2img");
+const sharp = require("sharp");
 
 // include custom utility functions
 const util = require('./util.js');
@@ -469,7 +469,7 @@ app.post('/captionWriter', async function(request, response){
             }
             else{
                 // otherwise ignore and default
-                cubeObj.userDim = [900,900];
+                cubeObj.userDim = [1500,1500];
             }
             
             // reset server tif val because conversion completed
@@ -967,17 +967,7 @@ app.post('/imageEditor', function(request, response){
             w = dimensions.w;
             h = dimensions.h;
             // check and calculate user dimensions if needed
-            if(userObject.userDim[0] === -1){
-                // get scale factor and set the output w = auto
-                let factor = userObject.userDim[1]/h;
-                userObject.userDim = [w*factor,userObject.userDim[1]];
-            }
-            else if(userObject.userDim[1] === -1){
-                // get scale factor and set the output with h = auto
-                let factor = userObject.userDim[0]/w;
-                userObject.userDim = [userObject.userDim[0],h*factor];
-            
-            }
+            userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
 
             // set variables for ejs rendering
             var userDim = userObject.userDim;
@@ -1130,51 +1120,35 @@ app.post("/figureDownload", async function(request, response){
         }
         else{
             // if the file is a png
-            if(fileExt === "png"){
-                // use svg2img Module to convert to png
-                svg2img("./tmp/"+request.files.upl.name,function(err,buffer){
-                    if(err){
-                        console.log(err);
-                    }
-                    else{
-                        // write file from buffer
-                        fs.writeFileSync("./tmp/" + filename,buffer);
-                        // send the new file for download
-                        response.download("./tmp/" + filename,filename,function(err){
+            if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
+                // use sharp Module to convert to png
+                sharp("./tmp/"+request.files.upl.name)
+                    .png()
+                    .toFile(path.join("tmp",filename))
+                    .then(function(info){
+                        response.download(path.join("tmp",filename),function(err){
                             if(err){
                                 console.log(err);
                             }
-                            else{
-                                console.log("download sent");
-                                // remove the filenow
-                                fs.unlinkSync("./tmp/" + filename);
-                            }
                         });
-                    }
-                });
+                    }).catch(function(err){
+                        console.log(err);
+                    })
             }
             else{
                 // Otherwise it will be a jpg or jpeg which are the same
-                svg2img("./tmp/"+request.files.upl.name, {format:'jpg'}, function(err,buffer){
-                    if(err){
-                        console.log(err);
-                    }
-                    else{
-                        // write file from buffer
-                        fs.writeFileSync("./tmp/" + filename,buffer);
-                        // send file for download
-                        response.download("./tmp/" + filename,filename,function(err){
+                sharp("./tmp/"+request.files.upl.name)
+                    .tiff()
+                    .toFile(path.join("tmp",filename))
+                    .then(function(info){
+                        response.download(path.join("tmp",filename),function(err){
                             if(err){
                                 console.log(err);
                             }
-                            else{
-                                console.log("download sent");
-                                // remove the filenow
-                                fs.unlinkSync("./tmp/" + filename);
-                            }
                         });
-                    }
-                });
+                    }).catch(function(err){
+                        console.log(err);
+                    })
             }
         }
     });

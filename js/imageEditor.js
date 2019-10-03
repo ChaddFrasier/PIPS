@@ -762,7 +762,7 @@ function captionHandler(){
 */
 function growProgress(duration){
     document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
-    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s infinite";
+    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
 }
 
 /**
@@ -1848,7 +1848,7 @@ $(document).ready(function(){
         do{
             // read in a filename with prompt
             var filename = prompt("Save File as png svg or jpeg","");
-        }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg)$/gm
+        }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
                                                                                         .test(filename))
 
         // load bar with a duration of .5 seconds

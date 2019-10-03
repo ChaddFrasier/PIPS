@@ -322,6 +322,15 @@ function initTags(){
     showMoreTags();
 }
 
+
+function hide(alert){
+    alert.style.animation = "fadeOut 2s linear";
+    alert.style.webkitAnimation = "fadeOut 2s linear";
+    setTimeout(
+        function(){
+            alert.remove();
+        },2000);
+}
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
 
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
@@ -348,7 +357,6 @@ $(document).ready(function(){
         });
 
 
-
     /**
      * @function helpBtn 'mousedown' event handler
      * 
@@ -357,6 +365,39 @@ $(document).ready(function(){
     $("#helpBtn").on("mousedown",function(){
         // show the help box
         document.getElementById("help-box").style.visibility = "visible";
+    });
+
+    /**
+     * @function copyBtn 'mousedown' event handlers
+     * 
+     * @description copy the output box text to the clipboard
+     */
+    $("#copyBtn").on("mousedown",function(){
+        // get the output field
+        var output = document.getElementById("template-text-output");
+        // call the select function
+        output.select();
+        // select for touch screens
+        output.setSelectionRange(0,99999);
+
+        // call the copy function
+        document.execCommand("copy");
+
+        // set up the alert to inform the user
+        var alert = document.createElement("div");
+        alert.className = "alert alert-success";
+        alert.style.position = "absolute";
+        alert.style.top = "25%";
+        alert.style.width = "17%";
+        alert.style.fontSize = "1.5rem";
+        alert.style.left = "1%";
+        alert.innerHTML = "Output has been copied to clipboard";
+        alert.style.opacity = 1;
+
+        // add the alert
+        document.body.appendChild(alert);
+        // set the fade timeout
+        setTimeout(hide, 2000,alert);
     });
 
     /**

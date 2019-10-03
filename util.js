@@ -134,6 +134,37 @@ module.exports = {
         }
     },
 
+    setImageDimensions: function(imgDimensions, userDimensions){
+        if(userDimensions.includes(-1)){
+            if(userDimensions[0] === -1){
+                // scale of height
+                let scale = userDimensions[1]/imgDimensions[1];
+
+                if(scale*imgDimensions[0] > 5000){
+                    userDimensions[0] = 5000;
+                    userDimensions[1] = (userDimensions[0]/imgDimensions[0]) * userDimensions[1];
+                }
+                else{
+                    userDimensions[0] = scale*imgDimensions[0];
+                }
+            }
+            else if(userDimensions[1] === -1){
+                // scale of height
+                let scale = userDimensions[0]/imgDimensions[0];
+
+                if(scale*imgDimensions[1] > 5000){
+                    userDimensions[1] = 5000;
+                    userDimensions[0] = (userDimensions[1]/imgDimensions[1]) * userDimensions[0];
+                }
+                else{
+                    userDimensions[1] = scale*imgDimensions[1];
+                }
+            }
+            console.log(userDimensions);
+        }
+        return userDimensions;
+    },
+
 
     /**
      * @function createUserID
