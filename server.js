@@ -154,7 +154,7 @@ app.use("/csv" , express.static("csv"));
 app.use("/js" , express.static("js"));
 app.use("/log" , express.static("log"));
 app.use("/tpl" , express.static("tpl"));
-app.use("/tmp" , express.static("tmp"));
+app.use("/tmp" , express.static('tmp'));
 app.use("/pvl " , express.static("pvl"));
 
 
@@ -290,7 +290,6 @@ app.get('/captionWriter',function(request,response){
     if(userid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
-
     }
     else{
         //retrieve the last found file for the user if it is there
@@ -1112,46 +1111,55 @@ app.post("/figureDownload", async function(request, response){
     var filename = request.body.downloadName,
         fileExt = filename.split(".")[filename.split(".").length - 1];
 
+    response.header("Cache-Control", "max-age=0");
     // save the file in the formdata to the server so it can be read
-    await request.files.upl.mv("./tmp/" + request.files.upl.name, function(err){
-        if(err){
-            // log any errors
-            console.log("Server Error on saving");
-        }
-        else{
-            // if the file is a png
-            if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
-                // use sharp Module to convert to png
-                sharp("./tmp/"+request.files.upl.name)
-                    .png()
-                    .toFile(path.join("tmp",filename))
-                    .then(function(info){
-                        response.download(path.join("tmp",filename),function(err){
-                            if(err){
-                                console.log(err);
-                            }
-                        });
-                    }).catch(function(err){
-                        console.log(err);
-                    })
+    await request.files.upl.mv("./tmp/" + request.files.upl.name);
+
+    if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
+        // use sharp Module to convert to png
+        sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+        .png()
+        .toFile(path.join("tmp",filename),function(err, info){
+            console.log("Wrote to file")
+            if(err){
+                console.log(err);
             }
             else{
-                // Otherwise it will be a jpg or jpeg which are the same
-                sharp("./tmp/"+request.files.upl.name)
-                    .tiff()
-                    .toFile(path.join("tmp",filename))
-                    .then(function(info){
-                        response.download(path.join("tmp",filename),function(err){
-                            if(err){
-                                console.log(err);
-                            }
-                        });
-                    }).catch(function(err){
+                response.download(path.join("tmp",filename),function(err){
+                    if(err){
                         console.log(err);
-                    })
+                    }
+                    else{
+                        
+                        //fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                    }
+                });
             }
-        }
-    });
+        }).end();
+    }
+    else{
+        // Otherwise it will be a jpg or jpeg which are the same
+        // use sharp Module to convert to png
+        sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+        .tiff()
+        .toFile(path.join("tmp",filename),function(err, info){
+            console.log("Wrote to file")
+            if(err){
+                console.log(err);
+            }
+            else{
+                response.download(path.join("tmp",filename),function(err){
+                    if(err){
+                        console.log(err);
+                    }
+                    else{
+                        
+                        //fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                    }
+                });
+            }
+        }).end();
+    }
 });
 
 /**

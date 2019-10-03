@@ -122,9 +122,7 @@ function loaderActivate(){
             loader.style.visibility = 'visible';
             document.uploadForm.submit();
         }
-        
     }
-
 }
 
 /**
@@ -138,32 +136,6 @@ function showHelp(btn){
     document.getElementById("help-box").style.visibility = "visible";
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
-
-/**
- * @function checkInput
- * 
- * @description constantly check input values of the width and height and notify
- *      the user 1 time if it gets too large
-*/
-function checkInput(){
-    let width = widthInputBox.value;
-    let height = heightInputBox.value;
-
-    // alert of the are too large
-    // the flag is used to only alert the user 1 time
-    if(!alerted){
-        if(width >= window.screen.width - window.screen.width*.5 && width !== "1500"){
-            alert("Warning: The selected width is too larger \n    Continuing will cause redering issues");
-            alerted = true;
-        }
-        else if(height >= window.screen.height - window.screen.height*.5 && height !== "1500"){
-            alert("Warning: The selected height is too larger \n   Continuing will cause redering issues");
-            alerted = true;
-        }
-    }
-}
-// interval for the function above =  1.5 seconds
-setInterval(checkInput,1500);
 
 /** ------------------------------------------ End Functions --------------------------------------------- */
 
@@ -202,6 +174,112 @@ $(document).ready(function(){
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#journalOption1").mousedown(function(event){
+        if(document.getElementById("j1Option1").style.visibility === "hidden"){
+            document.getElementById("journalOption1").className = "btn btn-lg button btn-secondary";
+            document.getElementById("j1Option1").style.visibility = "visible";
+            document.getElementById("j1Option2").style.visibility = "visible";
+            document.getElementById("j1Option3").style.visibility = "visible";
+            if(document.getElementById("j2Option1").style.visibility === "visible"){
+                document.getElementById("j2Option1").style.visibility = "hidden";
+                document.getElementById("j2Option2").style.visibility = "hidden";
+                document.getElementById("j2Option3").style.visibility = "hidden";
+                document.getElementById("journalOption2").className = "btn btn-lg button";
+            } 
+        }
+        else{
+            document.getElementById("j1Option1").style.visibility = "hidden";
+            document.getElementById("j1Option2").style.visibility = "hidden";
+            document.getElementById("j1Option3").style.visibility = "hidden";
+            document.getElementById("journalOption1").className = "btn btn-lg button";
+        }
+    });
+
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#journalOption2").mousedown(function(event){
+        if(document.getElementById("j2Option1").style.visibility === "hidden"){
+            document.getElementById("journalOption2").className = "btn btn-lg button btn-secondary";
+            document.getElementById("j2Option1").style.visibility = "visible";
+            document.getElementById("j2Option2").style.visibility = "visible";
+            document.getElementById("j2Option3").style.visibility = "visible";
+            if(document.getElementById("j1Option1").style.visibility === "visible"){
+                document.getElementById("j1Option1").style.visibility = "hidden";
+                document.getElementById("j1Option2").style.visibility = "hidden";
+                document.getElementById("j1Option3").style.visibility = "hidden";
+                document.getElementById("journalOption1").className = "btn btn-lg button";
+            }   
+        }
+        else{
+            document.getElementById("j2Option1").style.visibility = "hidden";
+            document.getElementById("j2Option2").style.visibility = "hidden";
+            document.getElementById("j2Option3").style.visibility = "hidden";
+            document.getElementById("journalOption2").className = "btn btn-lg button";
+        }
+    });
+
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j1Option1").mousedown(function(event){
+        widthInputBox.value = 1772;
+        heightInputBox.value = 1772;
+    });
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j1Option2").mousedown(function(event){
+        widthInputBox.value = 2756;
+        heightInputBox.value = 2756;
+    });
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j1Option3").mousedown(function(event){
+        widthInputBox.value = 3740;
+        heightInputBox.value = 3740;
+    });
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j2Option1").mousedown(function(event){
+        widthInputBox.value = 1870;
+        heightInputBox.value = 2264;
+    });
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j2Option2").mousedown(function(event){
+        widthInputBox.value = 1870;
+        heightInputBox.value = 4528;
+    });
+    /**
+     * @function
+     * 
+     * @description
+     */
+    $("#j2Option3").mousedown(function(event){
+        widthInputBox.value = 3740;
+        heightInputBox.value = 4528;
+    });
 });
 
 /**

@@ -1865,20 +1865,22 @@ $(document).ready(function(){
             //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
                 // creates a blob from the encoded svg and sets the type of the blob to and image svg
             var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-            // creates an object url for the download
-            var url = DOMURL.createObjectURL(svgBlob);
+            
 
             if(fileExt === "svg"){
                 growProgress(.25);
+                // creates an object url for the download
+                var url = DOMURL.createObjectURL(svgBlob);
                 triggerDownload(url,filename);
                 loader.style.visibility = "hidden";
                 document.getElementById("loadingText").innerHTML = "Loading";
                 setTimeout(hideProgress,500);
+                DOMURL.revokeObjectURL(url);
                 return;
             }
             else{
                 // create a new Form data object
-                var fd = new FormData();
+                let fd = new FormData();
                 // append a new file to the form. 
                 // upl = name of the file upload
                 // svgBlob is the raw blob image
@@ -1888,12 +1890,17 @@ $(document).ready(function(){
                 fd.append("w",w);
                 fd.append("h",h);
                 fd.append("downloadName",filename);
+                var headers = new Headers();
+                headers.append("pragma","no-cache");
+                headers.append("cache-control", "no-cache");
 
                 // send a post request to the server attaching the formData as the body of the request
                 fetch('/figureDownload',
                     {
                         method:'POST',
-                        body: fd
+                        body: fd,
+                        headers: headers,
+                        referrerPolicy: "no-referrer"
                     }).then((response) =>{
                         growProgress(.5);
                         // if the response is an error code
@@ -1929,13 +1936,13 @@ $(document).ready(function(){
                         else{
                             // server sent back a 200
                             response.blob().then((blob)=>{
-                                console.log(blob);
-                                url = DOMURL.createObjectURL(blob);
+                                var url = DOMURL.createObjectURL(blob);
 
                                 triggerDownload(url,filename);
                                 setInterval(hideProgress,500);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
+                                DOMURL.revokeObjectURL(url);
                             });
                         }
                     }).catch((err) =>{
@@ -2340,7 +2347,6 @@ $(document).ready(function(){
             else{
                 text.setAttribute("stroke","white");
                 text.setAttribute("fill","white");
-            
             }
 
             // set the stroke of the text and append the elements
@@ -2362,8 +2368,7 @@ $(document).ready(function(){
             if(textBoxArray.length > 0){
                 document.getElementById("undoText").style.visibility = "visible";
             }
-            // reset the draggable functions
-            makeDraggable(svg);
+            
         }
     });
       
