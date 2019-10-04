@@ -1013,9 +1013,7 @@ function setImagePadding(val,location){
             bg.setAttribute("height", imageH);
             bg.setAttribute("width",w);
     
-            // fix the svg to properly export all content
-            svg.setAttribute("height", imageH);
-            svg.setAttribute("width",w);
+    
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1033,9 +1031,7 @@ function setImagePadding(val,location){
             // set the viewbox values 
             svg.setAttribute("viewBox", "0 " + String(val*-1) + " " + w + " " + imageH);
             
-            // fix the svg to properly export all content
-            svg.setAttribute("height", imageH);
-            svg.setAttribute("width",w);
+            
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1053,9 +1049,7 @@ function setImagePadding(val,location){
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 "  + imageW + " " + h);
             
-            // fix the svg to properly export all content
-            svg.setAttribute("width", imageW);
-            svg.setAttribute("height",h);
+            
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1073,10 +1067,7 @@ function setImagePadding(val,location){
             
             // set the viewbox values 
             svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " " + h);
-            
-            // fix the svg to properly export all content
-            svg.setAttribute("width", imageW);
-            svg.setAttribute("height",h);
+           
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1093,9 +1084,6 @@ function setImagePadding(val,location){
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
             
-            // fix the svg to properly export all content
-            svg.setAttribute("width", w);
-            svg.setAttribute("height",h);
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
     }

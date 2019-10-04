@@ -190,7 +190,7 @@ label{
     overflow: hidden;
     margin-top: auto;
     margin-bottom: auto;
-    min-width: 5rem;
+    min-width: 4.5rem;
 }
 
 .button:hover {
