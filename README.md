@@ -89,30 +89,33 @@ the server. You can optionally upload a template file for the server if you have
 Hit the 'What is a TPL File?' button to read all about what a template file for the server is. The 
 upload also asks for a width and height value to be entered which will be the output dimensions of the figure.
 The server can create log files for all the uploads, just check the Log ISIS Output check box to have the server
-generate a log file of the ISIS outputs that were recieved on the server run.
-![Index Page](https://i.imgur.com/heJsyM4.png)
+generate a log file of the ISIS outputs that were recieved on the server run. The option box at the bottom
+is where users can choose what journal figure type they would like to use.
+![Index Page](https://i.imgur.com/omEEpuR.png)
 
 
-2. Next you will be greeted with three boxes. Two on the top row, and one on the bottom row. 
-The left box is the caption output which is the resulting caption with data from ISIS embedded. The right
+2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
+The top box is the caption output which is the resulting caption with data from ISIS embedded. The bottom right
 box is the editing box where you can type your caption and paste data tags to use ISIS data directly
-from the cube header. The bottom box is where the tags from the usable ISIS data will be displayed with
+from the cube header. The bottom left box is where the tags from the usable ISIS data will be displayed with
 there value. Copy and paste the tags into your editing box to switch the keys with the data values. The 'Show All Tags'
 button will show every peice of data that could be extracted from the cube, so if you are looking for something 
 specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
 words in the data by typeing in the search box to the left.
-You can save several things from this page, you can download the finsihed caption with the embedded
+You can save several things from this page, you can download the finished caption with the embedded
 ISIS data, you can download the log file which contains the results from the ISIS program calls executed
 on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
-Logs' button in the center of the title box then you have no log file on the server.
-![Writer Page](https://i.imgur.com/GTBFFIC.png)
+Logs' button in the center of the title box then you have no log file on the server. Lasty, you can copy all the 
+text in the output box by clicking the save to clipboard button, then just paste the text wherever it needs to live.
+![Writer Page](https://i.imgur.com/VVfFlw0.png)
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
 Add a North Arrow, a Sun azimuthal Direction indicator, a scalebar for the image ,and an observer
 direction arrow by clicking the buttons with the icons. Swap colors of the icons using the check box
 next to each of the icons. Every icon other than the scalebar can be scaled up and down using the mouse. 
-Mouse over the corners of the object and clicking and dragging when promted to by the mouse pointer. All icons can be dragged around the screen to be placed where ever you would like.
+Mouse over the corners of the object and clicking and dragging when promted to by the mouse pointer.
+All icons can be dragged around the screen to be placed where ever you would like.
 __(checkboxes are only visible when icons are on screen)__.
 Draw over icons and the image using the pencil tool. Click the pencil button and click once to place one 
 end of the line, and then click a second time to place the other end of the line. Change colors of the
@@ -128,7 +131,7 @@ You can add padding to the image at one of the four sides, type the numbr of pix
 pad the image and a location to place the pixels. To remove the padding either delete the numbers
 in the text box or hit the reset button.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
-Accepted file export types include svg, png, jpg, and jpeg.
+Accepted file export types include svg, tiff, png, jpg, and jpeg.
 ![Current Edit Page](https://i.imgur.com/m2vYsAs.png)
 
 #### Hot Keys
@@ -161,7 +164,7 @@ must be approved prior to submitting pull requests.
 
 ### Links
 
-Project Home: [Github](https://github.com/ChaddFrasier/PIPS), [DockerHub](https://hub.docker.com/r/chaddfrasier/pips-usgs)
+Project Home:[Github](https://github.com/ChaddFrasier/PIPS),[DockerHub](https://hub.docker.com/r/chaddfrasier/pips-usgs)
 
 Issue Tracker: [Issues/Bugs](https://github.com/ChaddFrasier/PIPS/issues)
 

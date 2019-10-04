@@ -6,11 +6,11 @@
  * @author Chadd Frasier
  *      @link https://www.cefns.nau.edu/~cmf339/ChaddFrasier/
  * 
- * @version 3.8.0
+ * @version 3.8.1
  * @description This is the main handler for the PIP Server  by USGS.
  * 
- * @since 05/31/19
- * @updated 10/2/19
+ * @since 05/31/2019
+ * @updated 10/03/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -24,7 +24,7 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  09/27/19           Planetary Image Publication Server
+ * @summary  10/04/19           Planetary Image Publication Server
  *                             ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
@@ -36,6 +36,14 @@
  *         of 500 for the user.
  * 
  *     Or the user can specify an exact output size of the figures (width AND height).
+ * 
+ *     Max Image dimension is 5000px. If the user uploads an image with default dimensions of
+ *  1000 x 3000px, and the user wants an output dimension of 2000 px wide. That would make the height
+ *  over 5000px in which case the server sends back an image that is (5000/3000)*1000 x 5000 px.
+ *  This preserves the aspect ratio of the image and caps the largest dimensions of the image at 5000px.
+ * 
+ *     Now the index page allows users to choose which journal they will be publishing in and they can
+ *  select a figure size based on the journal's accepted size formats. 
  * 
  *     The user can now add icons with the proper rotation and invert any of the icons' color 
  *  using a check box. Scalebars are working and will be disabled if it's not possible to calculate.
@@ -65,9 +73,11 @@
  * 
  *     Exporting has change completly, instead of the user saving the inline svg from the browser, the
  *  export button now sends a request to the server with the svg data and the users filename for the download
- *  and the server uses the svg2img module to convert the image data from svg to the output type and
+ *  and the server uses the sharp module to convert the image data from svg to the output type and
  *  sends the download directly to the user. This helps the download process by speeding up image processing
  *  and allowing chrome users to see a progress bar instead of having to wait for the download to finish.
+ * 
+ *                      (Exporting can be done in png, jpeg, svg, or tiff)
  * 
  *      A progress bar has been added to the image editor for when users are downloading the figure.
  *  This is a better interface for users when a download is occuring rather than just a spinning animation.
@@ -92,6 +102,7 @@
  *  were added after responses from the first rounds of user testing. There are hotkeys for adding each 
  *  object onto the image as well as removing it or toggling colors. Alt is the action key for all the
  *  commands and Shift + Alt is for the secondary command.
+ * 
  * ----------------------------------------------------------------------------------------------------------
  *                                          Last Notes for Coders
  *                                          ---------------------
@@ -1103,7 +1114,7 @@ app.post("/pow",function(request, response){
 /**
  * GET '/figureDownload 
  * 
- * handler for downloading a jpg, jpeg or png image from the server
+ * handler for downloading a tiff, jpg, jpeg or png image from the server
  */
 app.post("/figureDownload", async function(request, response){
     console.log(request.url);
@@ -1111,12 +1122,14 @@ app.post("/figureDownload", async function(request, response){
     var filename = request.body.downloadName,
         fileExt = filename.split(".")[filename.split(".").length - 1];
 
+    // set response header
     response.header("Cache-Control", "max-age=0");
-    // save the file in the formdata to the server so it can be read
+
+    // save the file in the form data to the server so it can be read
     await request.files.upl.mv("./tmp/" + request.files.upl.name);
 
     if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
-        // use sharp Module to convert to png
+        // use sharp Module to convert to png from data buffer
         sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
         .png()
         .toFile(path.join("tmp",filename),function(err, info){
@@ -1130,16 +1143,17 @@ app.post("/figureDownload", async function(request, response){
                         console.log(err);
                     }
                     else{
-                        
-                        //fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                        // remove the files from temp
+                        fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                        fs.unlinkSync(path.join("tmp",filename));
                     }
                 });
             }
         }).end();
     }
     else{
-        // Otherwise it will be a jpg or jpeg which are the same
-        // use sharp Module to convert to png
+        // Otherwise it will be a tiff
+        // use sharp Module to convert to tiff from data buffer
         sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
         .tiff()
         .toFile(path.join("tmp",filename),function(err, info){
@@ -1153,8 +1167,10 @@ app.post("/figureDownload", async function(request, response){
                         console.log(err);
                     }
                     else{
-                        
-                        //fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                        // remove files from tmp
+                        fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                        fs.unlinkSync(path.join("tmp",filename));
+
                     }
                 });
             }

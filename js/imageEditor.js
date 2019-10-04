@@ -1,10 +1,11 @@
 /**
  * @file imageEditor.js
  * 
- * @since 09/20/19
- * @updated 09/27/19
  * @author Chadd Frasier
- * @version 1.0
+ * @version 2.0
+ * 
+ * @since 09/20/2019
+ * @updated 10/04/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1825,7 +1826,6 @@ $(document).ready(function(){
      * 
      * @description gets a filename for the download and sends a 
      *              request to the server to download the figure image
-     * 
     */
     exportBtn.addEventListener('click', function (event) {
         // prevent event defaults
@@ -1835,10 +1835,9 @@ $(document).ready(function(){
         // and it passes the file extension check
         do{
             // read in a filename with prompt
-            var filename = prompt("Save File as png svg or jpeg","");
+            var filename = prompt("Save File as png, svg, tiff, or jpeg","");
         }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
                                                                                         .test(filename))
-
         // load bar with a duration of .5 seconds
         growProgress(.5);
 

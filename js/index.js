@@ -4,7 +4,8 @@
  * @author Chadd Frasier
  * @version 1.0
  * 
- * @since 09/17/19
+ * @since 09/17/2019
+ * @updated 10/04/2019
  * 
  * @requires Jquery 2.0.0
  * 

@@ -2,9 +2,11 @@
  * Utility JS for PIPS
  * 
  * @author Chadd Frasier
- * @since 06/03/19
- * @update 09/27/19
  * @version 2.6.0
+ * 
+ * @since 06/03/2019
+ * @update 09/27/2019
+ * 
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
  * 
@@ -134,24 +136,38 @@ module.exports = {
         }
     },
 
+    /**
+     * @function setImageDimensions
+     * 
+     * @param {array} imgDimensions the normal dimensions of the image
+     * @param {array} userDimensions the expected output dimensions
+     * 
+     * @description Calculates the output dimensions when they need to be auto generated
+     */
     setImageDimensions: function(imgDimensions, userDimensions){
+        // if the output dimensions need to be auto generated
         if(userDimensions.includes(-1)){
+            // if the width needs auto generating
             if(userDimensions[0] === -1){
                 // scale of height
                 let scale = userDimensions[1]/imgDimensions[1];
-
+                // if the new width is greater than the limit
                 if(scale*imgDimensions[0] > 5000){
+                    // set the output to max
                     userDimensions[0] = 5000;
+                    // calculate the new height in relation to the max width
                     userDimensions[1] = (userDimensions[0]/imgDimensions[0]) * userDimensions[1];
                 }
                 else{
+                    // set the output
                     userDimensions[0] = scale*imgDimensions[0];
                 }
             }
+            // same idea but with height being auto generated
             else if(userDimensions[1] === -1){
                 // scale of height
                 let scale = userDimensions[0]/imgDimensions[0];
-
+                // check for maxs
                 if(scale*imgDimensions[1] > 5000){
                     userDimensions[1] = 5000;
                     userDimensions[0] = (userDimensions[1]/imgDimensions[1]) * userDimensions[0];
@@ -160,7 +176,6 @@ module.exports = {
                     userDimensions[1] = scale*imgDimensions[1];
                 }
             }
-            console.log(userDimensions);
         }
         return userDimensions;
     },
@@ -904,7 +919,8 @@ var logProcess = function(args, logFileName){
                     appendString += "\t\t\tProcess: " + args[i] + "\n";
                     break;
                 case 2: 
-                    appendString += "\t\t\t\tStatus: " + ((args[i] === 0) ? (args[i] + " Success") : (args[i] + " Failure")) + "\n";
+                    appendString += "\t\t\t\tStatus: " +
+                             ((args[i] === 0)?(args[i] + " Success"):(args[i] + " Failure")) + "\n";
                     break;
                 case 3: 
                     appendString += "\t\t\t\tCommand: " + parseIsisInput(args[i]) + "\n";
@@ -914,7 +930,8 @@ var logProcess = function(args, logFileName){
                         appendString += "\t\t\t\tOutput: \n\t\t\t\t\t" + "none\n";
                     }
                     else{
-                        appendString += "\t\t\t\tOutput: \n\t\t\t\t\t" + args[i].replaceAll("\n","\n\t\t\t\t\t").trim() + "\n\tEND_COMMAND\n\n";
+                        appendString += "\t\t\t\tOutput: \n\t\t\t\t\t" + 
+                        args[i].replaceAll("\n","\n\t\t\t\t\t").trim() + "\n\tEND_COMMAND\n\n";
                     }
                     
                     break;
@@ -926,7 +943,6 @@ var logProcess = function(args, logFileName){
         if(err){console.log(err)}
     }
 }
-
 
 /**
  * @function replaceAll
@@ -943,6 +959,13 @@ String.prototype.replaceAll = function(find, replace){
     return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 }
 
+/**
+ * @function parseIsisInput
+ * 
+ * @param {array} array an array of command peices used to call isis
+ * 
+ * @description this function contructs the isis command that has been run
+ */
 var parseIsisInput = function(array){
     let returnStr = "";
     for(let i=0; i<array.length;i++){
@@ -959,8 +982,6 @@ var parseIsisInput = function(array){
     }
     return returnStr;
 }
-
-
 
 /**
  * @function imageExtraction

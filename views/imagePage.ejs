@@ -94,7 +94,7 @@
         </div>
         
         <!-- Center Box-->
-        <div class="mainbox-center" style="width: 70%;background-color: rgba(99,88,94,0.65);
+        <div class="mainbox-center" style="width: 70%; background-color: rgba(99,88,94,0.65);
         border: 3px solid rgba(255, 255,255, .65);padding: 0;">
             <!-- Center Title Box -->
             <div class="container text-center" style="background: rgba(99, 88, 94, 0.692);
@@ -208,7 +208,7 @@
                                 <br/>
                                 <br/>
                                 <button class="btn btn-danger btn-sm" id="undoLine" 
-                                style="visibility: hidden; width: 100%;" title="Shift + Alt + L">
+                                style="visibility: hidden; width: 100%; margin-bottom: 5%;" title="Shift + Alt + L">
                                     Undo
                                 </button>
                             </div>
@@ -219,7 +219,8 @@
                                 <p class="float-left">Scalebar</p>
                             </div>
                             <div class="col-7" style="padding-left:15%; margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="scaleBarButton"style="width:100%; color: black;">
+                                <button class="btn btn-lg button" id="scaleBarButton"
+                                style="width:100%; padding:5%; padding-top:6%; color: black;">
                                     <svg viewBox= "0 0 25 4">
                                         <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
                                         stroke="black" fill="white" ></rect>
@@ -261,9 +262,10 @@
                                 </p>
                             </div>
                             <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="outlineBtn" style="width:115%;color: black;">
-                                    <svg viewBox="0 0 4 1.5">
-                                        <rect x="1" y="0" width="2" height="1.5" 
+                                <button class="btn btn-lg button" id="outlineBtn" 
+                                style="width:100%; color:black; padding:1%; padding-top: 10%;">
+                                    <svg viewBox="0 0 4 2">
+                                        <rect x="1" y="0" width="2" height="2" 
                                         stroke="white" stroke-width=".5" fill="transparent"></rect>
                                     </svg>
                                 </button>
@@ -273,8 +275,9 @@
                                 title="Change Color"/> 
                                 <br/>
                                 <br/>
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden; width: 100%" 
-                                id="undoBox" title="Shift + Alt + B">
+                                <button class="btn btn-danger btn-sm" 
+                                style="visibility: hidden; width: 100%;margin-bottom: 5%;" id="undoBox" 
+                                title="Shift + Alt + B">
                                     Undo
                                 </button>
                             </div>
@@ -285,9 +288,10 @@
                                 <p class="float-left" style="padding-top:.5rem; margin: auto auto;">Text Tool</p>
                             </div>
                             <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="textBtn" style="width:115%; color: black">
-                                    <svg viewBox="0 0 20 8">
-                                        <rect x="0" y="0" width="20" height="8" stroke="white" stroke-width="1"
+                                <button class="btn btn-lg button" id="textBtn" 
+                                style="width:100%; color: black; padding: 10%; padding-top: 15%;">
+                                    <svg viewBox="0 0 20 10" width="100%">
+                                        <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
                                         fill="transparent"></rect>
                                         <text x="3" y="7" font-size="9">Aa</text>
                                     </svg>
@@ -298,7 +302,8 @@
                                 style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
                                 <br/>
                                 <br/>
-                                <button class="btn btn-danger btn-sm" style="visibility: hidden; width: 100%;"
+                                <button class="btn btn-danger btn-sm" 
+                                style="margin-bottom: 5%;visibility: hidden; width: 100%;"
                                  id="undoText" title="Shift + Alt + T">
                                     Undo
                                 </button>
@@ -307,7 +312,7 @@
                         <!-- Pad Image Interface -->
                         <div class="row" role="table" title="Pad Image Border">
                             <div class="row text-center">
-                                <h2 class="text-center" style="padding-left: 2rem; font-size: large; color: white;">
+                                <h2 class="text-center" style="padding-left: 2rem; font-size: 100%; color: white;">
                                     Pad Image
                                 </h2>
                             </div>
@@ -315,11 +320,11 @@
                             <div class="row" style="width:100%;">
                                 <div class="col-6" style="padding-left:2rem; margin-bottom: 2%;">
                                     <input class="form-control form-control-lg"
-                                    style="width: 10rem; border: 1px solid lightgrey;"
+                                    style="width: 100%; border: 1px solid lightgrey; font-size: 14px;"
                                     id="paddingInput" type="text" placeholder="Pad Pixels"/>
                                 </div>
                                 <div class="col-6" style="padding-left:15%;">
-                                    <button  style="left: 15rem; top: 0rem;" class="btn btn-danger btn-md button"
+                                    <button  style=" width: 100%;" class="btn btn-danger btn-md button"
                                     id="resetPaddingBtn" title="Reset Padding">
                                         Reset
                                     </button>
@@ -327,25 +332,25 @@
                             </div>
                             <div class="row" style="width: 100%; padding: .5%; margin: 1px;">
                                 <div class="col-3" style="padding: 0;">
-                                    <button class="btn button btn-sm" style="max-width: 1rem;" id="topPaddingBtn"
+                                    <button class="btn button btn-sm" style="width:100%" id="topPaddingBtn"
                                      title="Top of Image">
                                       Top 
                                     </button> 
                                 </div>
                                 <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="max-width: 1rem;" id="bottomPaddingBtn"
+                                    <button class="btn button btn-sm" style="width:100%" id="bottomPaddingBtn"
                                      title="Bottom of Image">
                                       Bottom 
                                     </button>
                                 </div>
                                 <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="max-width: 1rem;" id="leftPaddingBtn"
+                                    <button class="btn button btn-sm" style="width:100%" id="leftPaddingBtn"
                                      title="Left Side of Image">
                                       Left 
                                     </button> 
                                 </div>
                                 <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="max-width: 1rem;" id="rightPaddingBtn"
+                                    <button class="btn button btn-sm" style="width:100%" id="rightPaddingBtn"
                                      title="Right Side of Image">
                                       Right 
                                     </button> 
