@@ -67,11 +67,13 @@
                         </a>
                     </h4>
                 </div>
+            </div>
+            <div class="row">
                 <br/>
                 <div class="title text-center" style="width: 75%; border: 5px solid black; background: #e7c492;
                 padding-left: 0; padding-right:0; margin:auto auto;">
                     <p class="lead" style="margin-left: auto; margin-right: auto; width:100%;padding:0;font-size: 2rem; color: black;">
-                        You can upload .cub file and .tpl file 
+                        Upload a .cub or .tif file to begin.<p class="small-text" style="font-size: 65%">(.tpl upload is optional)</p>  
                     </p>
                     <a id="helpBtn" class="btn btn-primary btn-lg" title="Get Started" style="border: 2px solid black; color: white;" role="button" 
                     onclick="showHelp(this)">Help</a>
@@ -89,7 +91,7 @@
                         <div class="row">
                             <div class="btn btn-dark btn-lg form-group" 
                             style="color:black; margin: auto auto; display:inline-block; background:#e7c492; border: 5px solid black;">
-                                <label for="cubUpload" style="font-size: x-large; color:black;">Choose an ISIS Cube File</label>
+                                <label for="cubUpload" style="font-size: x-large; color:black;">Choose an ISIS Cube or TIFF File</label>
                                 <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
                                 type="file" class="form-control-file" />
 
@@ -122,19 +124,19 @@
                                 <div class="col-4"></div>    
                             </div>
                             <div class="row" style="width: 100%;">
-                                <div class="col-2" style="border: 1px solid blue;">
+                                <div class="col-2">
                                     <label id="logCheckboxLabel" for="logCheckbox" style="color: black;margin-top:0; margin-bottom:auto;">
                                         Log ISIS Output to File?
                                     </label>
                                     <input title="Log ISIS Output to File?" class="form-check-input largeBox" name="logToFile" type="checkbox" id="logCheckbox"
-                                    style="margin-left: -20%; margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
+                                    style=" margin-right:auto; position: relative; top:10%; margin-bottom:auto;">
                                 </div>
-                                <div class="col-10" style="border: 1px solid red">
+                                <div class="col-10">
                                     <div class="row" style="text-align: center; width: 90%; margin: auto auto;">
-                                        <div class="col-3">
+                                        <div class="col" style="margin-right: 2%; width: 25%;">
                                             <h5>Journal</h5>
-                                        </div>
-                                        <div class="col-9" style="text-align: center; border-bottom: 1px solid black; padding-left: 0; padding-right: 0; margin-bottom: 1%;">
+                                        </div> 
+                                        <div class="col-10" style=" margin-left:2%; text-align: center; width: 75%; border-bottom: 1px solid black; padding-right: 0; left: 4%; margin-bottom: 1%;">
                                             <h5>Figure Size</h5>
                                         </div>
                                     </div>
@@ -170,10 +172,9 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                                
+                            </div>   
                         </div>
-
+                        <br/>
                         <div class="row">
                             <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
                                 style="width: 10%; margin:auto auto; border: 1px solid black;" title="Submit Upload" onclick="loaderActivate()" />
