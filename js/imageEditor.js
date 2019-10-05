@@ -644,7 +644,6 @@ function makeDraggable(event){
         selectedElement = null;
     }
 
-
     /**
      * @function findLimit
      * 
@@ -1346,7 +1345,6 @@ function captureClick(x,y){
     clickArray.push(y);
 }       
       
-
 /**
  * @function createTimer
  * 
@@ -1359,7 +1357,6 @@ function createTimer(){
     let startTime = new Date();
     return [startTime.getHours(),startTime.getMinutes(),startTime.getSeconds()];
 }
-
 
 /**
  * @function getCookie
@@ -1448,7 +1445,6 @@ function triggerDownload(imgURI,filename){
     // activate the event
     a.dispatchEvent(event);
 }
-
 
 /** ----------------------------- End Helper Function ---------------------------------------------------- */
 

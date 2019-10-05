@@ -4,7 +4,8 @@
  * @class ISIS3 Cubes 
  * @alias Cube
  * 
- * @update 08/26/19
+ * @since 07/30/2019
+ * @updated 10/03/2019
  * 
  * @constructor cubeName, userId
  * 
@@ -203,7 +204,14 @@ module.exports = class Cube{
         }
     }
 
-    
+    /**
+     * @function getCubeDimensions
+     * 
+     * @returns {promise} a promise for the lines and samples as an array
+     * 
+     * @description This function parses out the first 10th of the cube
+     *      file header to read out the lines and sample of the image
+     */
     getCubeDimensions(){
         var cubeObj = this;
         return new Promise(function(resolve,reject){
@@ -215,17 +223,17 @@ module.exports = class Cube{
                     reject(err);
                 }
                 else{
+                    // grab first tenth of the buffer
                     var bufferArray = data.subarray(0, data.length/10).toString().split("\n");
 
-                    for(let index=0; index< bufferArray.length;index++){
+                    for(let index=0; index < bufferArray.length; index++){
+                        // find the dimensions of the image group in the header
                         if(bufferArray[index].indexOf("Group = Dimensions") > -1){
-                        
+                            // get lines and samples
                             var samples = Number(bufferArray[index + 1].split("=")[1]);
                             var lines = Number(bufferArray[index + 2].split("=")[1]);
-    
-                            var dim = {"w":samples,"h":lines};
-
-                            
+                            // set the dimensions object and return as a string
+                            var dim = {"w":samples, "h":lines};
                             resolve(JSON.stringify(dim));
                         }
                     }

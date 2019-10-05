@@ -22,7 +22,6 @@ var outputName,
 // punctuation to be ignored
 let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'","<",">"];
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
-
 /**
  * @function filterTags
  * 

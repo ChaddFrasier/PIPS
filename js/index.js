@@ -163,22 +163,32 @@ $(document).ready(function(){
         }
     }
 
-
     /**
      * @function helpBtn 'mousedown' event handler
      * 
      * @description hide the help box div
     */
-   $("#hideBtn").mousedown(function(){
+    $("#hideBtn").mousedown(function(){
         // hide the help box
         document.getElementById("help-box").style.visibility = "hidden";
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
+
+    $("#cubUpload").change(function(){
+        var optionBox = document.getElementById("optionBox");
+        if(this.value === ""){
+            optionBox.style.display = "none";
+        }
+        else{
+            optionBox.style.display = "block";
+        }
+    });
+
     /**
-     * @function
+     * @function journalOption1 'mousedown' event listener
      * 
-     * @description
+     * @description show and hide the button options base on which button is currently clicked
      */
     $("#journalOption1").mousedown(function(event){
         if(document.getElementById("j1Option1").style.visibility === "hidden"){
@@ -191,20 +201,21 @@ $(document).ready(function(){
                 document.getElementById("j2Option2").style.visibility = "hidden";
                 document.getElementById("j2Option3").style.visibility = "hidden";
                 document.getElementById("journalOption2").className = "btn btn-lg button";
-            } 
+            }
         }
         else{
             document.getElementById("j1Option1").style.visibility = "hidden";
             document.getElementById("j1Option2").style.visibility = "hidden";
             document.getElementById("j1Option3").style.visibility = "hidden";
+            document.getElementById("dimensionInput").style.display = "none";
             document.getElementById("journalOption1").className = "btn btn-lg button";
         }
     });
 
     /**
-     * @function
+     * @function journalOption2 'mousedown' event listener
      * 
-     * @description
+     * @description show and hide the button options base on which button is currently clicked
      */
     $("#journalOption2").mousedown(function(event){
         if(document.getElementById("j2Option1").style.visibility === "hidden"){
@@ -217,69 +228,76 @@ $(document).ready(function(){
                 document.getElementById("j1Option2").style.visibility = "hidden";
                 document.getElementById("j1Option3").style.visibility = "hidden";
                 document.getElementById("journalOption1").className = "btn btn-lg button";
-            }   
+            }
         }
         else{
             document.getElementById("j2Option1").style.visibility = "hidden";
             document.getElementById("j2Option2").style.visibility = "hidden";
             document.getElementById("j2Option3").style.visibility = "hidden";
             document.getElementById("journalOption2").className = "btn btn-lg button";
+            document.getElementById("dimensionInput").style.display = "none";
         }
     });
 
     /**
-     * @function
+     * @function j1Option1 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j1Option1").mousedown(function(event){
         widthInputBox.value = 1772;
         heightInputBox.value = 1772;
+        document.getElementById("dimensionInput").style.display = "block";
     });
     /**
-     * @function
+     * @function j1Option2 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j1Option2").mousedown(function(event){
         widthInputBox.value = 2756;
         heightInputBox.value = 2756;
+        document.getElementById("dimensionInput").style.display = "block";
     });
     /**
-     * @function
+     * @function j1Option3 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j1Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 3740;
+        document.getElementById("dimensionInput").style.display = "block";
     });
     /**
-     * @function
+     * @function j2Option1 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j2Option1").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 2264;
+        document.getElementById("dimensionInput").style.display = "block";
     });
     /**
-     * @function
+     * @function j2Option2 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j2Option2").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 4528;
+        document.getElementById("dimensionInput").style.display = "block";
     });
     /**
-     * @function
+     * @function j2Option3 'mousedown' event listener
      * 
-     * @description
+     * @description change the default image output dimensions
      */
     $("#j2Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 4528;
+        document.getElementById("dimensionInput").style.display = "block";
     });
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "pips",
-  "version": "3.7.1",
+  "version": "3.8.0",
   "description": "Planetary Image Publication Server w/ ISIS3",
   "main": "server.js",
   "scripts": {

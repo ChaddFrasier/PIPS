@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Caption Writer Page of PIP Server">
 
-        <link rel="stylesheet" type="text/css" href="css/pips.css">
+        <link rel="stylesheet" type="text/css" href="/css/pips.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -37,29 +37,26 @@
                     style="width: auto; height:auto; min-width: 2rem; border-radius: 5px; 
                     border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
                     background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                <div class="container title" style="background: whitesmoke;"><u>Help</u></div>
+                <div class="container title" style="background: whitesmoke;"><cite>Help</cite></div>
                 <div class="row lead" style="display: inline"> 
-                    1. <u>Edit</u> your caption in the bottom right box.
+                    1. <cite>Edit</cite> your caption in the bottom right box.
                 </div>
                 <br/>
-                <br/>
-                <div class="row lead" style="display: inline"> 2. <u>Copy & Paste</u>
+                <div class="row lead" style="display: inline"> 2. <cite>Copy & Paste</cite>
                      tags from the bottom left box into your caption. </div>
                 <br/>
-                <br/>
-                <div class="row lead" style="display: inline"> 3. <u>Search</u> 
+                <div class="row lead" style="display: inline"> 3. <cite>Search</cite> 
                     for key words in the current tags by typing in the search bar.
                     <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
                 </div>
                 <br/>
                 <div class="row lead" style="display: inline"> 
-                    4. <u>Download</u> the finished text you created or export the data as a csv file.
+                    4. <cite>Download</cite> the finished text you created or export the data as a csv file.
                     <p class="small-text">(Use the 'Save to Clipboard' button to copy the output box)</p>
                 </div> 
                 <br/>
-                <br/>
                 <div class="row lead" style="display: inline">
-                     5. <u>Save ISIS Logs</u> by clicking the 'Save ISIS Logs' Button in the center of the top bar.
+                     5. <cite>Save ISIS Logs</cite> by clicking the 'Save ISIS Logs' Button in the center of the top bar.
                     <p class="small-text">
                         (If there is no 'Save ISIS Logs' button, that is because there is no log for you on the server)
                     </p>
@@ -89,7 +86,7 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-4">
-                        <a class="btn btn-primary btn-lg" href="/" role="button" title="Upload New File"
+                        <a class="btn btn-primary btn-lg float-left" href="/" role="button" title="Upload New File"
                             style="width: auto; height: auto; padding:5; border: 1.5px solid black;">
                             Upload New File
                         </a>
@@ -100,11 +97,11 @@
                         id="logDownloadBtn">Save ISIS Logs</button>
                     </div>
                     <div class="col-4">
-                        <form method="POST" action="/imageEditor" class="lg-form text-center" style="margin: 0;">
+                        <form method="POST" action="/imageEditor" class="lg-form text-right float-right" style="margin: 0;">
                             <div class="form-group">
                                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                                <input type="submit" value="Edit Image" class="btn btn-primary btn-lg"
-                                title="Image Editor" style="width: auto; height: auto; padding:5;
+                                <input type="submit" value="View Image" class="btn btn-primary btn-lg"
+                                title="Image Editor" style="width: auto; height: auto; padding:5; margin: 0;
                                 border: 1.5px solid black;" onclick="loaderActivate()" />
                             </div>
                         </form>

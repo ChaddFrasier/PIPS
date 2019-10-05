@@ -9,10 +9,10 @@
         <meta property="og:type" content="website"/>
         <meta property="og:description" content="A publication tool for researchers of planetary science"/>
         <meta name="robots" content="index,follow">
-        <meta name="keywords" content="caption writer, USGS, usgs, Photo Editor, Figure, PIPS">
+        <meta name="keywords" content="caption writer, USGS, usgs, Photo Editor, Figure, PIPS, pips, pips">
 
         <link rel="icon" href="images/usgsLogo.png" type="image/x-icon">
-        <link rel="stylesheet" type="text/css" href="css/pips.css">
+        <link rel="stylesheet" type="text/css" href="/css/pips.css">
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -34,7 +34,7 @@
                 style="width: auto; min-width:2rem; height:auto; border-radius: 5px; 
                 border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
                 background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                <div class="container title" style="background: whitesmoke; "><u>Help</u></div>
+                <div class="container title" style="background: whitesmoke; "><cite>Help</cite></div>
                 <div class="row lead">
                      1. Select the cube or tif file you would like to use in your figure. (No Larger than 2GB)
                     <p class="small-text">Uploading a .tif file will take longer than a cube</p>
@@ -42,10 +42,10 @@
                 <br/>
                 <div class="row lead" style="display: inline;">
                      2. Input your desired output dimensions (W&times;H)in pixels.<br/><br/>
-                                       2a. Input Width <u>or</u> Height to have the other dimension calculated for you.
-                                        (W&times;_) or (_&times;H) <br/> 
+                                       2a. Input Width <cite>or</cite> Height to have the other dimension calculated for you.
+                                        (W&times;_) or (_&times;H) <br/>
                     <p class="small-text">
-                        It's suggested that you don't use a pixel dimension larger than your monitor.</p>
+                        It's suggested that you don't use a pixel dimension larger than your monitor.</p><br/>
                                        2b. Leave both boxes blank to default to 500dpi at 3 inches.
                 </div>
                 <br/>
@@ -114,33 +114,12 @@
                                 </label>
                                 <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
                                 type="file" class="form-control-file" />
-
-                                <div class="form-group float-center" 
-                                style="padding-left: 7rem; padding-right:0;padding-top: -1rem;
-                                width: 17rem;color: black;">
-                                    <input class="form-control form-control-sm text-center" type="text" id="widthInput"
-                                    name="desiredWidth" placeholder="Output Width (Px)" title="Output Width"/>
-                                    <input class="form-control form-control-sm text-center"
-                                    type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (Px)"
-                                    title="Output Height"/>
-                                </div>
                             </div>
                         </div>
                         <br/>
-                        <!-- Template upload-->
-                        <div class="row">
-                            <div class="btn btn-dark btn-lg form-group" 
-                            style="color: black; margin: auto auto; background: #e7c492; border: 5px solid black;">
-                                <label for="tplUpload" style="font-size: larger; color:black;">
-                                    Choose a Template File
-                                </label>
-                                <input name="templateFile" id="tplUpload" type="file" class="form-control-file" />
-                            </div>
-                        </div>
-                        <br/>
-                        <!-- Options -->
+                         <!-- Options -->
                         <div class="row" style="padding: 2%; color: black; margin: auto auto; background: #e7c492;
-                         border: 5px solid black;">
+                          display:none; border: 5px solid black;" id="optionBox">
                             <div class="row" style="width: 100%; text-align: center;">
                                 <div class="col-4"></div>
                                 <div class="col-4">
@@ -215,9 +194,115 @@
                                             padding: 2%; font-size: 85%;">Full Page</button>
                                         </div>
                                     </div>
+                                    <!--
+                                    <br/>
+                                    <div class="row" style="width: 100%;">
+                                        <div class="col-3">
+                                            <button type="button" id="journalOption2" class="btn btn-lg button"
+                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;">
+                                                NEW JOURNAL
+                                            </button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" id="j2Option1" class="btn btn-lg button" 
+                                            style="visibility: hidden;width: 100%; margin:auto auto; 
+                                            padding: 2%; font-size: 85%;">NEW CHOICE 1</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" id="j2Option2" class="btn btn-lg button" 
+                                            style="visibility: hidden;width: 100%; margin:auto auto; 
+                                            padding: 2%; font-size: 85%;">NEW CHOICE 2</button>
+                                        </div>
+                                        <div class="col-3">
+                                            <button type="button" id="j2Option3" class="btn btn-lg button" 
+                                            style="visibility: hidden;width: 100%; margin:auto auto; 
+                                            padding: 2%; font-size: 85%;">NEW CHOICE 3</button>
+                                        </div>
+                                    </div>
+                                    -->
                                 </div>
                             </div>   
                         </div>
+                        
+                        <div class="row">
+                            <div class="container" id="dimensionInput"
+                            style="width:auto; display:none; border-top:0;color: black; margin: auto auto;
+                                background: #e7c492; border: 5px solid black;">
+                                <div class="form-group float-center" 
+                                style="width: 17rem;color: black;">
+                                    <div class="col">
+                                        <label for="widthInput" style="color: black;">Width of output (pixels)</label>
+                                        <input class="form-control form-control-sm text-center" type="text" id="widthInput"
+                                        name="desiredWidth" placeholder="Output Width (px)" title="Output Width"/>
+                                    </div>
+                                    <div class="col">
+                                        <label for="heightInput" style="color: black;">Height of output (pixels)</label>
+                                        <input class="form-control form-control-sm text-center"
+                                        type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (px)"
+                                        title="Output Height"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <!-- Template upload-->
+                        <div class="row">
+                            <div class="btn btn-dark btn-lg form-group" 
+                            style="color: black; margin: auto auto; background: #e7c492; border: 5px solid black;">
+                                <label for="tplUpload" style="font-size: larger; color:black;border-bottom: 2px solid black;">
+                                    Choose a Template File
+                                </label>
+                                <div class="row">
+                                    <div class="col">
+                                        <label for="mosaicBtn" style="font-size: small; color:black;">
+                                            Mosaic
+                                        </label>
+                                        <br/>
+                                        <button role="button" id="mosaicBtn">Choice 1</button>
+                                    </div>
+                                    <div class="col">
+                                        <label for="mapProjectedBtn" style="font-size: small; color:black;">
+                                            Map Projected
+                                        </label>
+                                        <br/>
+                                        <button role="button" id="mapProjectedBtn">Choice 2</button>
+                                    </div>
+                                    <div class="col">
+                                        <label for="compositeBtn" style="font-size: small; color:black;">
+                                            Composite
+                                        </label>
+                                        <br/>
+                                        <button role="button" id="compositeBtn">Choice 3</button>
+                                    </div>
+                                    <div class="col">
+                                        <label for="otherBtn" style="font-size: small; color:black;">
+                                            Other Template
+                                        </label>
+                                        <br/>
+                                        <button role="button" id="otherBtn">Choice 4</button>
+                                    </div>
+                                    <div class="col">
+                                        <label for="other2Btn" style="font-size: small; color:black;">
+                                            Other Template
+                                        </label>
+                                        <br/>
+                                        <button role="button" id="other2Btn">Choice 5</button>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                        <label for="tplUpload" 
+                                        style="font-size: larger; margin: auto auto;
+                                        color:black; border-bottom: 2px solid black;">
+                                            Custom Upload
+                                        </label>
+                                    <input name="templateFile" id="tplUpload" 
+                                    style="margin-left:auto;margin-right:auto;" type="file" 
+                                    class="form-control-file"/>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                       
                         <br/>
                         <!-- Submit button -->
                         <div class="row">

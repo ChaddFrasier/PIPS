@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
         <meta name="description" content="Image Editing Page of PIPS">
 
-        <link rel="stylesheet", href="css/pips.css" type="text/css">
+        <link rel="stylesheet", href="/css/pips.css" type="text/css">
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
             integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" 
@@ -53,12 +53,12 @@
                         <a style="background-color: transparent" target="__blank" 
                         href="https://github.com/ChaddFrasier/PIPS/blob/master/README.md#Hot-Keys">here</a>.</p>
                 </div>
-                <div class="row lead" style="font-size: 175%; width:auto; height: auto;">
-                    2. <cite>Drag icons</cite> around the image with the mouse.</div>
                 <br/>
+                <div class="row lead" style="font-size: 175%; width:auto; height: auto;">
+                    2. <cite> Drag icons</cite> around the image with the mouse.</div>
                 <br/>
                 <div class="row lead" style="font-size: 175%;">
-                    3. <cite>Scale</cite> any icons and text by mousing over the corners of the object.</div>
+                    3. <cite>Scale</cite>any icons and text by mousing over the corners of the object.</div>
                 <br/>
                 <div class="row lead" style="font-size: 175%;">
                     4. <cite>Draw</cite> lines using the Pencil Tool.  
@@ -66,6 +66,7 @@
 
                     </p>
                 </div>
+                <br/>
                 <div class="row lead" style="font-size: 175%;">
                     5. Use the <cite> Esc key</cite> 
                     to remove the head after the first click when using the pencil tool.
@@ -107,14 +108,14 @@
                     <h2>Edit Cube Image</h2>
                     <h4 id="imageName"></h4>
                     <h5><%=w%> &times; <%=h%> px</h5>   
-                    <button class="btn btn-primary btn-lg float-left" onclick="captionHandler()"
+                    <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
                     style="border: 2px solid black; width: auto; height: 3rem; margin: auto auto; margin-top: .5%;"
                      title="Go Back">
                         View Caption
                     </button>
-                    <a class="btn btn-primary btn-lg float-right" 
+                    <a class="btn btn-primary btn-lg float-left" 
                     style="border: 2px solid black; width: auto; height: 3rem; margin: auto auto; margin-top: .5%;"
-                    href="/" role="button" title="Start Over">New Upload</a>
+                    href="/" role="button" title="Start Over">Upload New File</a>
                 </div>
             </div>
             <div class="row" style="margin-top:1rem; margin-bottom: 1rem; padding:0;">
@@ -360,15 +361,15 @@
                         <!-- Export Button Interface -->
                         <div class="row" role="table" style="border-bottom: 4px solid black; margin-top: auto;
                          margin-bottom: auto;" title="Download Figure">
-                            <div class="row" style="padding:0; padding-left: 2rem; width: 20rem;">
+                            <div class="row" style="padding:2%; padding-left: 2rem; width: 20rem;">
                                 <div class="col-4" style="padding: 0;">
-                                    <p class="float-left" style="margin-right: 2rem; padding-top: .5rem;">
+                                    <p class="float-left" style="margin-right: 2rem;">
                                     Save<br/>Figure
                                     </p>
                                 </div>
-                                <div class="col-8" style="margin-top:auto; margin-bottom:auto;">
+                                <div class="col-8">
                                     <button class="btn btn-primary btn-lg button" 
-                                    style="height: 100%;" id="exportBtn" >
+                                    style="height: 90%;margin: auto auto;" id="exportBtn" >
                                         <svg viewBox="0 0 20 25">
                                             <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
                                             <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
