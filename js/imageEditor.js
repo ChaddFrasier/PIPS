@@ -760,21 +760,26 @@ function captionHandler(){
  * @description grow the progress bar using animations up to the width over duration seconds
  * 
 */
-function growProgress(duration){
-    document.getElementById("mainBar").style.animation = "growBar "+ duration + "s linear";
-    document.getElementById("mainBar").style.webkitAnimation = "growBar "+ duration + "s linear";
+function growProgress(progressBar){
+    progressBar.firstElementChild.classList.add('startAnimation');
 }
 
 /**
  * @function showProgress
  * 
- * @description sets the progressBar div to visible
+ * @description creates a brand new progress bar and returns the element
  * 
 */
-// show the download progress bar
 function showProgress(){
-    var elem = document.getElementById("progressBar");
-    elem.style.visibility = "visible";
+    var parent = document.getElementById("progressBarBox");
+    var outerBar = document.createElement("div"),
+        innerBar = document.createElement("div");
+
+    outerBar.id = "progressBar",
+    innerBar.id = "mainBar",
+    outerBar.appendChild(innerBar),
+    parent.appendChild(outerBar);
+    return outerBar;
 }
 
 /**
@@ -784,15 +789,8 @@ function showProgress(){
  * 
 */
 // hide the progress bar for download
-function hideProgress(){
-    var elem = document.getElementById("progressBar");
-    // stop the animation
-
-    document.getElementById("mainBar").style.animation = "";
-    document.getElementById("mainBar").style.webkitAnimation = "";
-    
-    // hide the bar
-    elem.style.visibility = "hidden";
+function hideProgress(progressBar){
+    progressBar.remove();
 }
 
 /**
@@ -1832,11 +1830,9 @@ $(document).ready(function(){
         do{
             // read in a filename with prompt
             var filename = prompt("Save File as png, svg, tiff, or jpeg","");
-        }while(filename!== "" && filename  !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
+        }while(filename !== "" && filename !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
                                                                                         .test(filename))
-        // load bar with a duration of .5 seconds
-        growProgress(.5);
-
+        
         // if the file is not null
         if(filename !== null){
             // read the file extenson
@@ -1848,16 +1844,16 @@ $(document).ready(function(){
             //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
                 // creates a blob from the encoded svg and sets the type of the blob to and image svg
             var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
-            
+            var progressBar = showProgress();
 
             if(fileExt === "svg"){
-                growProgress(.25);
+                growProgress(progressBar);
                 // creates an object url for the download
                 var url = DOMURL.createObjectURL(svgBlob);
                 triggerDownload(url,filename);
                 loader.style.visibility = "hidden";
                 document.getElementById("loadingText").innerHTML = "Loading";
-                setTimeout(hideProgress,500);
+                setTimeout(hideProgress,500, progressBar);
                 DOMURL.revokeObjectURL(url);
                 return;
             }
@@ -1868,7 +1864,7 @@ $(document).ready(function(){
                 // upl = name of the file upload
                 // svgBlob is the raw blob image
                 // and the name of the svg file will be the user's unique id
-                fd.append("upl",svgBlob, getCookie("userId") + ".svg");
+                fd.append("upl", svgBlob, getCookie("userId") + ".svg");
                 // append download and canvas data to the form
                 fd.append("w",w);
                 fd.append("h",h);
@@ -1885,7 +1881,7 @@ $(document).ready(function(){
                         headers: headers,
                         referrerPolicy: "no-referrer"
                     }).then((response) =>{
-                        growProgress(.5);
+                        growProgress(progressBar);
                         // if the response is an error code
                         if(response.status !== 200){
                             // read the response as text
@@ -1913,7 +1909,7 @@ $(document).ready(function(){
                                 document.body.appendChild(div);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
-                                hideProgress();
+                                hideProgress(progressBar);
                             });
                         }
                         else{
@@ -1922,7 +1918,7 @@ $(document).ready(function(){
                                 var url = DOMURL.createObjectURL(blob);
 
                                 triggerDownload(url,filename);
-                                setInterval(hideProgress,500);
+                                setInterval(hideProgress, 1000, progressBar);
                                 loader.style.visibility = "hidden";
                                 document.getElementById("loadingText").innerHTML = "Loading";
                                 DOMURL.revokeObjectURL(url);
@@ -1938,7 +1934,7 @@ $(document).ready(function(){
         }
         else{
             // hid the loading elements because the user hit cancel on the prompt
-            hideProgress();
+            hideProgress(progressBar);
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
         }
@@ -1954,7 +1950,6 @@ $(document).ready(function(){
    $('#exportBtn').on("mousedown",function(){
         loader.style.visibility = "visible";
         document.getElementById("loadingText").innerHTML = "Compressing Image";
-        showProgress(); 
     });
 
     /** --------------------------------- End Export Functions ------------------------------------------- */
