@@ -180,6 +180,7 @@ $(document).ready(function(){
      */
     $("#mosaicBtn").mousedown(function(){
         console.log("Printed from Mosiac listener");
+        document.getElementById("tplCode").value = 1;
     });
 
     /**
@@ -189,6 +190,7 @@ $(document).ready(function(){
      */
     $("#mapProjectedBtn").mousedown(function(){
         console.log("Printed from Map Projected listener");
+        document.getElementById("tplCode").value = 2;
     });
 
     /**
@@ -198,6 +200,7 @@ $(document).ready(function(){
      */
     $("#compositeBtn").mousedown(function(){
         console.log("Printed from Composite listener");
+        document.getElementById("tplCode").value = 3;
     });
     
     /**

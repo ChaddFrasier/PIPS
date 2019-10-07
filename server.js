@@ -343,7 +343,7 @@ app.post('/captionWriter', async function(request, response){
 
     // cube file section
     try{
-        if(request.files === null || !request.files.uploadFile ){
+        if( request.files === null || !request.files.uploadFile ){
             // if no files uploaded
             // redirect the user & alert they need a .cub
             response.redirect('/?alertCode=3');
@@ -436,8 +436,26 @@ app.post('/captionWriter', async function(request, response){
                     return response.end();
                 }
             }catch(err){
-                // tpl is null set default
-                templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+                /** TODO: Here is where i will switch on the code and load the file that is needed */
+                switch(Number(request.body.tplCode)){
+                    //check the code and set the proper tpl
+                    case 1:
+                        templateText = fs.readFileSync('tpl/test.tpl', 'utf-8');
+                        break;
+
+                    case 2:
+                        // TODO:
+                        break;
+
+                    case 3:
+                        // TODO: 
+                        break;
+        
+                    default:
+                        // tpl is null set default
+                        templateText = fs.readFileSync('tpl/default.tpl', 'utf-8');
+                        break;
+                }
             }
             // check to see if the log flag is true and set outcome
             if(request.body.logToFile){
