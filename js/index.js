@@ -154,7 +154,6 @@ $(document).ready(function(){
     widthInputBox = document.getElementById("widthInput");
     heightInputBox = document.getElementById("heightInput");
 
-
     var pageVariable = document.getElementById("pageVariable");
 
     for(let i=0;i<pageVariable.childElementCount;i++){
@@ -174,7 +173,38 @@ $(document).ready(function(){
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
+    /**
+     * @function mosaicBtn 'mousedown' event listener
+     * 
+     * @description mouse click to chnage the template file field
+     */
+    $("#mosaicBtn").mousedown(function(){
+        console.log("Printed from Mosiac listener");
+    });
 
+    /**
+     * @function mapProjectedBtn 'mousedown' event listener
+     * 
+     * @description mouse click to chnage the template file field
+     */
+    $("#mapProjectedBtn").mousedown(function(){
+        console.log("Printed from Map Projected listener");
+    });
+
+    /**
+     * @function compositeBtn 'mousedown' event listener
+     * 
+     * @description mouse click to chnage the template file field
+     */
+    $("#compositeBtn").mousedown(function(){
+        console.log("Printed from Composite listener");
+    });
+    
+    /**
+     * @function cubUpload 'change' event listener
+     * 
+     * @description checks to see if the new file that was added is a cub or tif file and show the otions box
+     */
     $("#cubUpload").change(function(){
         var optionBox = document.getElementById("optionBox");
         if(this.value === "" || !/^.*\.(cub|CUB|tif|TIF)$/gm.test(this.value)){
