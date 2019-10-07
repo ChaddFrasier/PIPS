@@ -779,7 +779,7 @@ app.get('/imageEditor', function(request, response){
             // get image name
             let image = util.getimagename(userObject.name, 'png');
             imagepath = 'images/' + image;
-            var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+            
 
             // get resolution value
             var resolution = util.getPixelResolution(userObject);
@@ -788,115 +788,79 @@ app.get('/imageEditor', function(request, response){
                 h;
             // get the cube dimensions 
             userObject.getCubeDimensions()
-                .then(dimensions => {
-                    // capture dimensions in local vars
-                    dimensions = JSON.parse(dimensions);
-                    w = dimensions.w;
-                    h = dimensions.h;
+            .then(dimensions => {
+                // capture dimensions in local vars
+                dimensions = JSON.parse(dimensions);
+                w = dimensions.w;
+                h = dimensions.h;
 
-                    // check and calculate user dimensions if needed
-                    if(userObject.userDim[0] === -1){
-                        // if dimension needs to be auto generated
-                        // calculate the scale factor
-                        let factor = userObject.userDim[1]/h;
-                        // set the output dimensions
-                        userObject.userDim = [w*factor,userObject.userDim[1]];
-                    }
-                    else if(userObject.userDim[1] === -1){
-                        // get scale factor
-                        let factor = userObject.userDim[0]/w;
-                        // set output dimensions
-                        userObject.userDim = [userObject.userDim[0],h*factor];
-                    }
-        
-                    // set render variables
-                    var userDim = userObject.userDim;
-                    var rawCube = util.getRawCube(userObject.name,userObject.userNum);
-                    var isMapProjected = util.isMapProjected(userObject.data),
-                        rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
-        
-                    // calculate image width in meters
-                    if(resolution !== -1){
-                        var imageMeterWidth = util.calculateWidth(resolution, w);
-        
-                        if(imageMeterWidth > -1){
-                            // same as above for calculating scale bar
-                            let x = Math.log10(imageMeterWidth/2);
-                            let a = Math.floor(x);
-                            let b = x - a;
-        
-                            // if the decimal is 75% or more closer to a whole 10 set the base to 5
-                            // check if 35% or greater, set base 2
-                            // if the value is very close to a whole base on the low side 
-                            //      set base to 5 and decrement the 10 base
-                            // (this is to keep text from leaving image)
-                            // default to 1
-                            if(b >= 0.75){
-                                b = 5;
-                            }
-                            else if(b >= 0.35){
-                                b = 2;
-                            }
-                            else if(b<.05){
-                                a -= 1;
-                                b = 5;
-                            }
-                            else{
-                                b=1;
-                            }
-        
-                            var scalebarMeters = b*Math.pow(10,a);
-        
-                            var scalebarLength,
-                                scalebarUnits="";
-                            // if the length is less than 1KM return length in meters
-                            if(imageMeterWidth/1000 < 1){
-                                scalebarLength = scalebarMeters;
-                                var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
-                                scalebarUnits = "m";
-                            }
-                            else{
-                                scalebarLength = scalebarMeters/1000;
-                                var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
-                                scalebarUnits = "km";
-                            }
-        
-                            // render image page with needed data
-                            if(isWindows){ imagepath = imagepath.replace("\\","/");}
-                            if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
-                                response.render("imagePage.ejs", 
-                                {
-                                    image:imagepath,
-                                    tagField: data,
-                                    displayCube:rawCube,
-                                    isMapProjected: isMapProjected,
-                                    rotationOffset:rotationOffset,
-                                    origW: w,origH: h, w: userDim[0], h: userDim[1],
-                                    scalebarLength: scalebarLength,
-                                    scalebarPx: scalebarPx, 
-                                    scalebarUnits: scalebarUnits
-                                });
-                            }
-                            else{
-                                response.render("imagePage.ejs", 
-                                {
-                                    image:imagepath,
-                                    tagField: data,
-                                    displayCube:rawCube,
-                                    isMapProjected: isMapProjected,
-                                    rotationOffset:rotationOffset,
-                                    w: w, h: h, origW: w,origH: h,
-                                    scalebarLength: scalebarLength,
-                                    scalebarPx: scalebarPx,
-                                    scalebarUnits: scalebarUnits
-                                });
-                            }
+                // check and calculate user dimensions if needed
+                if(userObject.userDim[0] === -1){
+                    // if dimension needs to be auto generated
+                    // calculate the scale factor
+                    let factor = userObject.userDim[1]/h;
+                    // set the output dimensions
+                    userObject.userDim = [w*factor,userObject.userDim[1]];
+                }
+                else if(userObject.userDim[1] === -1){
+                    // get scale factor
+                    let factor = userObject.userDim[0]/w;
+                    // set output dimensions
+                    userObject.userDim = [userObject.userDim[0],h*factor];
+                }
+    
+                // set render variables
+                var userDim = userObject.userDim;
+                var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+                var isMapProjected = util.isMapProjected(userObject.data),
+                    rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+    
+                // calculate image width in meters
+                if(resolution !== -1){
+                    var imageMeterWidth = util.calculateWidth(resolution, w);
+    
+                    if(imageMeterWidth > -1){
+                        // same as above for calculating scale bar
+                        let x = Math.log10(imageMeterWidth/2);
+                        let a = Math.floor(x);
+                        let b = x - a;
+    
+                        // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                        // check if 35% or greater, set base 2
+                        // if the value is very close to a whole base on the low side 
+                        //      set base to 5 and decrement the 10 base
+                        // (this is to keep text from leaving image)
+                        // default to 1
+                        if(b >= 0.75){
+                            b = 5;
+                        }
+                        else if(b >= 0.35){
+                            b = 2;
+                        }
+                        else if(b<.05){
+                            a -= 1;
+                            b = 5;
                         }
                         else{
-                            console.log("Image Width in Meters Failed to Calculate");
+                            b=1;
                         }
-                    }
-                    else{
+    
+                        var scalebarMeters = b*Math.pow(10,a);
+    
+                        var scalebarLength,
+                            scalebarUnits="";
+                        // if the length is less than 1KM return length in meters
+                        if(imageMeterWidth/1000 < 1){
+                            scalebarLength = scalebarMeters;
+                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                            scalebarUnits = "m";
+                        }
+                        else{
+                            scalebarLength = scalebarMeters/1000;
+                            var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                            scalebarUnits = "km";
+                        }
+    
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/");}
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -907,9 +871,9 @@ app.get('/imageEditor', function(request, response){
                                 displayCube:rawCube,
                                 isMapProjected: isMapProjected,
                                 rotationOffset:rotationOffset,
-                                origW: w, origH: h, w: userDim[0], h: userDim[1],
-                                scalebarLength: 'none',
-                                scalebarPx: 'none',
+                                origW: w,origH: h, w: userDim[0], h: userDim[1],
+                                scalebarLength: scalebarLength,
+                                scalebarPx: scalebarPx, 
                                 scalebarUnits: scalebarUnits
                             });
                         }
@@ -922,17 +886,53 @@ app.get('/imageEditor', function(request, response){
                                 isMapProjected: isMapProjected,
                                 rotationOffset:rotationOffset,
                                 w: w, h: h, origW: w,origH: h,
-                                scalebarLength: 'none',
-                                scalebarPx: 'none',
+                                scalebarLength: scalebarLength,
+                                scalebarPx: scalebarPx,
                                 scalebarUnits: scalebarUnits
                             });
                         }
                     }
-                }).catch(err => {
-                    if(err){
-                        console.log("ERROR: " + err);
+                    else{
+                        console.log("Image Width in Meters Failed to Calculate");
                     }
-                });
+                }
+                else{
+                    // render image page with needed data
+                    if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                        response.render("imagePage.ejs", 
+                        {
+                            image:imagepath,
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset,
+                            origW: w, origH: h, w: userDim[0], h: userDim[1],
+                            scalebarLength: 'none',
+                            scalebarPx: 'none',
+                            scalebarUnits: scalebarUnits
+                        });
+                    }
+                    else{
+                        response.render("imagePage.ejs", 
+                        {
+                            image:imagepath,
+                            tagField: data,
+                            displayCube:rawCube,
+                            isMapProjected: isMapProjected,
+                            rotationOffset:rotationOffset,
+                            w: w, h: h, origW: w,origH: h,
+                            scalebarLength: 'none',
+                            scalebarPx: 'none',
+                            scalebarUnits: scalebarUnits
+                        });
+                    }
+                }
+            }).catch(err => {
+                if(err){
+                    console.log("ERROR: " + err);
+                }
+            });
         }
         else{
             response.redirect("/?alertCode=4");
@@ -991,7 +991,8 @@ app.post('/imageEditor', function(request, response){
         var w,
             h;
         // get user dimensions of cube
-        userObject.getCubeDimensions().then(dimensions => {
+        userObject.getCubeDimensions()
+        .then(dimensions => {
             // save dimensions into local variables
             dimensions = JSON.parse(dimensions);
             w = dimensions.w;
@@ -1040,15 +1041,19 @@ app.post('/imageEditor', function(request, response){
                     var scalebarLength,
                         scalebarUnits="";
                     // if the length is less than 1KM return length in meters
-                    if(imageMeterWidth/1000 < 1){
+                    console.log(Number(imageMeterWidth)/1000);
+                    if(Number(imageMeterWidth)/1000 < 1.5){
                         scalebarLength = scalebarMeters;
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
                         scalebarUnits = "m";
+                        console.log(scalebarLength + " is the length and the px is  " + scalebarPx);
                     }
                     else{
                         scalebarLength = scalebarMeters/1000;
+                        console.log(scalebarLength)
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                         scalebarUnits = "km";
+                        console.log(scalebarLength + " is the length from KM and the px is  " + scalebarPx);
                     }
 
                     // render image page with needed data

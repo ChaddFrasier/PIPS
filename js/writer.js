@@ -15,12 +15,9 @@
  */
 
 /** Variables */
-
 var outputName,
     loader;
 
-// punctuation to be ignored
-let unwantedPunc = ['.',',','-','?','!','%','#','@','$',':',';','"',"'","<",">"];
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 /**
  * @function filterTags
@@ -349,13 +346,13 @@ $(document).ready(function(){
 
     // try fetching the log file for the user and dont display if fetch fails to locate it
     fetch("/log/" + getCookie("userId"),{method:"GET"})
-        .then(function(response){
-            if(Number(response.status) !== 200){
-                document.getElementById("logDownloadBtn").style.display = "none";  
-            }
-        }).catch(function(err){
-            console.log(err);       
-        });
+    .then(function(response){
+        if(Number(response.status) !== 200){
+            document.getElementById("logDownloadBtn").style.display = "none";  
+        }
+    }).catch(function(err){
+        console.log(err);       
+    });
 
 
     /**
@@ -486,7 +483,7 @@ $(document).ready(function(){
                 console.log(err);
             }
         })
-    })
+    });
 }); // end document ready
 
 /**

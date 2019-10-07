@@ -16,10 +16,8 @@
  */
 
 /** Variables  */
-// set alert flag for warning the user of input size
-var alerted = false,
-    // get needed DOM element
-    loader,
+// get needed DOM element
+var loader,
     // get the input doms for dimensions
     widthInputBox,
     heightInputBox,
@@ -117,7 +115,6 @@ function loaderActivate(){
             widthInputBox.value = 1500;
             loader.style.visibility = 'visible';
             document.uploadForm.submit();
-
         }
         else{
             loader.style.visibility = 'visible';
@@ -137,7 +134,6 @@ function showHelp(btn){
     document.getElementById("help-box").style.visibility = "visible";
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
-
 /** ------------------------------------------ End Functions --------------------------------------------- */
 
 /** ------------------------------------------- Jquery --------------------------------------------------- */

@@ -21,29 +21,35 @@ var loader,
     textSize,
     w,
     h,
-    isMapProjected;
-
-// toggle colors tracker
-var toggleScalebar = true,
+    isMapProjected,
+    // toggle colors tracker
+    toggleScalebar = true,
     userTextColor,
     // declare the drawing flag
     drawFlag = false,
-    // array for removing text
-    textBoxArray = [];
+    // save the elements to dynamically add and remove them with a single line of code
+    sunImage,
+    northImage,
+    outlineBox,
+    eyeImage,
+    eyeArrow,
+    scaleBarIcon,
+    bg;
 
-//create clickArray
+//create arrays
 var clickArray = [],
     lineArr = [], 
-    keys = [];
+    keys = [],
+    // array for removing text
+    textBoxArray = [];
 
 // set values for calculating outline box size 
 var mouseX,
     mouseY,
     startX,
-    startY;
-
-// degree variables
-var northDegree,
+    startY,
+    // degree variables
+    northDegree,
     sunDegree,
     observerDegree;
 
@@ -54,15 +60,6 @@ var placeEnum = new Object({
         "bottom-right":3,
         "bottom-left":4
         });
-
-// save the elements to dynamically add and remove them with a single line of code
-var sunImage,
-    northImage,
-    outlineBox,
-    eyeImage,
-    eyeArrow,
-    scaleBarIcon,
-    bg;
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
 /** ---------------------------- Draggable Function ------------------------------------------------------ */
@@ -1576,7 +1573,7 @@ $(document).ready(function(){
             origW = parseInt(dimDiv.children[i].innerHTML);
         }
         else if(dimDiv.children[i].id === "scalebarLength"){
-            scalebarLength = parseInt(dimDiv.children[i].innerHTML);
+            scalebarLength = parseFloat(dimDiv.children[i].innerHTML);
         }
         else if(dimDiv.children[i].id === "scalebarPx"){
             scalePX = parseInt(dimDiv.children[i].innerHTML);
@@ -1690,7 +1687,7 @@ $(document).ready(function(){
     + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
     + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
-    + '<text id="scalebarHalf" x="1100" y="150" font-family="sans-serif" font-size="125"'
+    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white"></text>'
     + '<text id="scalebar0" x="2125" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white">0</text></g>';
@@ -1733,7 +1730,6 @@ $(document).ready(function(){
 
     // load the users base image as base64 to embed in the svg element
     loadImageAsURL(imageSrc, function(data){
-        
         // remove the loading gif and add the new dataURL
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
         myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', data);
@@ -1742,7 +1738,6 @@ $(document).ready(function(){
         myImage.setAttribute("x","0");
         myImage.setAttribute("y","0");
         myImage.setAttribute("transform","scale(1)");
-
     });
 
 /*  // This is how you can have a progress bar for the loading of an image onto the server
@@ -2802,7 +2797,6 @@ $(document).ready(function(){
         // get proper svg as target
         var target = (t == svg ? svg : t.parentNode);
         
-        
         // get new svg relative point
         var svgP = svgPoint(target, x, y);
         // convert to int
@@ -2815,7 +2809,6 @@ $(document).ready(function(){
             drawLine(line, mouseX, mouseY);
         }
         
-            
         /*
         if(cropFlag && !doneResizing){
 
@@ -2888,8 +2881,6 @@ $(document).ready(function(){
             loadInvisible();
             alert('Base Image:\nCannot Be Undone');
         }
-
-        
     }); */
 
     /* 
