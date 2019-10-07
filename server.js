@@ -1041,19 +1041,16 @@ app.post('/imageEditor', function(request, response){
                     var scalebarLength,
                         scalebarUnits="";
                     // if the length is less than 1KM return length in meters
-                    console.log(Number(imageMeterWidth)/1000);
                     if(Number(imageMeterWidth)/1000 < 1.5){
                         scalebarLength = scalebarMeters;
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
                         scalebarUnits = "m";
-                        console.log(scalebarLength + " is the length and the px is  " + scalebarPx);
                     }
                     else{
                         scalebarLength = scalebarMeters/1000;
                         console.log(scalebarLength)
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                         scalebarUnits = "km";
-                        console.log(scalebarLength + " is the length from KM and the px is  " + scalebarPx);
                     }
 
                     // render image page with needed data
@@ -1158,7 +1155,6 @@ app.post("/figureDownload", async function(request, response){
         sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
         .png()
         .toFile(path.join("tmp",filename),function(err, info){
-            console.log("Wrote to file")
             if(err){
                 console.log(err);
             }
@@ -1182,7 +1178,6 @@ app.post("/figureDownload", async function(request, response){
         sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
         .tiff()
         .toFile(path.join("tmp",filename),function(err, info){
-            console.log("Wrote to file")
             if(err){
                 console.log(err);
             }
