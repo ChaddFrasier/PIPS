@@ -105,7 +105,7 @@
                 <div class="container float-center" style="margin-left:auto; margin-right: auto;">
                     <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
                     enctype="multipart/form-data">
-                        <div class="row">
+                        <div class="row" style="margin-bottom: 1%;">
                             <div class="btn btn-dark btn-lg form-group" 
                             style="color:black; margin: auto auto; display:inline-block;
                             background:#e7c492; border: 5px solid black;">
@@ -116,7 +116,6 @@
                                 type="file" class="form-control-file"/>
                             </div>
                         </div>
-                        <br/>
                          <!-- Options -->
                         <div class="row" style="padding: 2%; color: black; margin: auto auto; background: #e7c492;
                           display:none; border: 5px solid black; width: 100%;" id="optionBox">
@@ -128,13 +127,13 @@
                                     </label>
                                 </div>
                                 <div class="col-5" style="text-align: right">
-                                    <h2 style="margin: auto auto; margin-top: 0;">Options</h2>
+                                    <h4 style="margin: auto auto; margin-top: 0;">Options</h4>
                                 </div>
                                 <div class="col-5"></div>
                             </div>
                             <div class="row" style="width: 100%;">
                                 <div class="col-2" style="padding: 0;">
-                                    <input title="Log ISIS Output to File?" class="form-check-input largeBox" 
+                                    <input title="Log ISIS Output to File?" class="form-check-input giantBox" 
                                     name="logToFile" type="checkbox" id="logCheckbox"
                                     style=" margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
                                 </div>
@@ -259,7 +258,7 @@
                                 </label>
                                 <div class="row">
                                     <div class="col">
-                                        <label for="mosaicBtn" style="font-size: small; color:black;">
+                                        <label for="mosaicBtn" style="font-size: medium; color:black;">
                                             Mosaic
                                         </label>
                                         <br/>
@@ -267,7 +266,7 @@
                                         style="width: 100%">Choice 1</button>
                                     </div>
                                     <div class="col">
-                                        <label for="mapProjectedBtn" style="font-size: small; color:black;">
+                                        <label for="mapProjectedBtn" style="font-size: medium; color:black;">
                                             Map Projected
                                         </label>
                                         <br/>
@@ -275,7 +274,7 @@
                                          id="mapProjectedBtn">Choice 2</button>
                                     </div>
                                     <div class="col">
-                                        <label for="compositeBtn" style="font-size: small; color:black;">
+                                        <label for="compositeBtn" style="font-size: medium; color:black;">
                                             Composite
                                         </label>
                                         <br/>
@@ -283,7 +282,7 @@
                                         id="compositeBtn">Choice 3</button>
                                     </div>
                                     <div class="col">
-                                        <label for="otherBtn" style="font-size: small; color:black;">
+                                        <label for="otherBtn" style="font-size: medium; color:black;">
                                             Other Template
                                         </label>
                                         <br/>
@@ -291,7 +290,7 @@
                                         id="otherBtn">Choice 4</button>
                                     </div>
                                     <div class="col">
-                                        <label for="other2Btn" style="font-size: small; color:black;">
+                                        <label for="other2Btn" style="font-size: medium; color:black;">
                                             Other Template
                                         </label>
                                         <br/>
@@ -311,8 +310,6 @@
                                 </div>
                             </div>
                         </div>
-                        <br/>
-                       
                         <br/>
                         <!-- Submit button -->
                         <div class="row">
