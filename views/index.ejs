@@ -9,7 +9,7 @@
         <meta property="og:type" content="website"/>
         <meta property="og:description" content="A publication tool for researchers of planetary science"/>
         <meta name="robots" content="index,follow">
-        <meta name="keywords" content="caption writer, USGS, usgs, Photo Editor, Figure, PIPS, pips, pips">
+        <meta name="keywords" content="caption writer,USGS,usgs,Photo Editor,Figure,PIPS,pips,pips">
 
         <link rel="icon" href="images/usgsLogo.png" type="image/x-icon">
         <link rel="stylesheet" type="text/css" href="/css/pips.css">
@@ -29,7 +29,7 @@
             <br>
             <!-- Help Box -->
             <div id="help-box" class="help-box float-left" 
-            style="visibility: hidden; width:15%; bottom: 10%; position: absolute; margin-left: 1%; margin-right:0;">
+            style="visibility: hidden; width:15%; bottom: 20%; position: absolute; margin-left: 1%; margin-right:0;">
                 <button class="float-right button" id="hideBtn" 
                 style="width: auto; min-width:2rem; height:auto; border-radius: 5px; 
                 border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
@@ -42,7 +42,8 @@
                 <br/>
                 <div class="row lead" style="display: inline;">
                      2. Input your desired output dimensions (W&times;H)in pixels.<br/><br/>
-                                       2a. Input Width <cite>or</cite> Height to have the other dimension calculated for you.
+                                       2a. Input Width <cite>or</cite>
+                                        Height to have the other dimension calculated for you.
                                         (W&times;_) or (_&times;H) <br/>
                     <p class="small-text">
                         It's suggested that you don't use a pixel dimension larger than your monitor.</p><br/>
@@ -88,8 +89,7 @@
                 padding-left: 0; padding-right:0; margin:auto auto;">
                     <p class="lead" style="margin-left: auto; margin-right: auto; width:100%;padding:0;
                     font-size: 2rem; color: black;">
-                        Upload a .cub or .tif file to begin.<p class="small-text" style="font-size: 65%">
-                            (.tpl upload is optional)</p> 
+                        Upload a .cub or .tif file to begin.
                     </p>
                     <a id="helpBtn" class="btn btn-primary btn-lg" title="Get Started" 
                     style="border: 2px solid black; color: white;" role="button" onclick="showHelp(this)">Help</a>
@@ -110,32 +110,33 @@
                             style="color:black; margin: auto auto; display:inline-block;
                             background:#e7c492; border: 5px solid black;">
                                 <label for="cubUpload" style="font-size: x-large; color:black;">
-                                    Choose an ISIS Cube or TIFF File
+                                    <cite>Choose an ISIS Cube or TIFF File</cite>
                                 </label>
                                 <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
-                                type="file" class="form-control-file" />
+                                type="file" class="form-control-file"/>
                             </div>
                         </div>
                         <br/>
                          <!-- Options -->
                         <div class="row" style="padding: 2%; color: black; margin: auto auto; background: #e7c492;
-                          display:none; border: 5px solid black;" id="optionBox">
+                          display:none; border: 5px solid black; width: 100%;" id="optionBox">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-4"></div>
-                                <div class="col-4">
-                                    <h2 style="margin: auto auto; margin-top: 0;">Options</h2>
-                                </div>
-                                <div class="col-4"></div>    
-                            </div>
-                            <div class="row" style="width: 100%;">
                                 <div class="col-2">
                                     <label id="logCheckboxLabel" for="logCheckbox" 
                                     style="color:black;margin-top:0; margin-bottom:auto;">
-                                        Log ISIS Output to File?
+                                        <cite>Log ISIS Output to File?</cite>
                                     </label>
+                                </div>
+                                <div class="col-5" style="text-align: right">
+                                    <h2 style="margin: auto auto; margin-top: 0;">Options</h2>
+                                </div>
+                                <div class="col-5"></div>
+                            </div>
+                            <div class="row" style="width: 100%;">
+                                <div class="col-2" style="padding: 0;">
                                     <input title="Log ISIS Output to File?" class="form-check-input largeBox" 
                                     name="logToFile" type="checkbox" id="logCheckbox"
-                                    style=" margin-right:auto; position: relative; top:10%; margin-bottom:auto;">
+                                    style=" margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
                                 </div>
                                 <div class="col-10">
                                     <div class="row" style="text-align: center; width: 90%; margin: auto auto;">
@@ -223,33 +224,37 @@
                                 </div>
                             </div>   
                         </div>
-                        
-                        <div class="row">
+                        <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
                             <div class="container" id="dimensionInput"
                             style="width:auto; display:none; border-top:0;color: black; margin: auto auto;
                                 background: #e7c492; border: 5px solid black;">
                                 <div class="form-group float-center" 
                                 style="width: 17rem;color: black;">
                                     <div class="col">
-                                        <label for="widthInput" style="color: black;">Width of output (pixels)</label>
-                                        <input class="form-control form-control-sm text-center" type="text" id="widthInput"
-                                        name="desiredWidth" placeholder="Output Width (px)" title="Output Width"/>
+                                        <label for="widthInput" style="color: black;">
+                                            Width of output (pixels)
+                                        </label>
+                                        <input class="form-control form-control-sm text-center" type="text" 
+                                        id="widthInput" name="desiredWidth" placeholder="Output Width (px)"
+                                        title="Output Width"/>
                                     </div>
                                     <div class="col">
-                                        <label for="heightInput" style="color: black;">Height of output (pixels)</label>
+                                        <label for="heightInput" style="color: black;">
+                                            Height of output (pixels)
+                                        </label>
                                         <input class="form-control form-control-sm text-center"
-                                        type="text" id="heightInput" name="desiredHeight" placeholder="Output Height (px)"
-                                        title="Output Height"/>
+                                        type="text" id="heightInput" name="desiredHeight" 
+                                        placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <br/>
                         <!-- Template upload-->
                         <div class="row">
                             <div class="btn btn-dark btn-lg form-group" 
                             style="color: black; margin: auto auto; background: #e7c492; border: 5px solid black;">
-                                <label for="tplUpload" style="font-size: larger; color:black;border-bottom: 2px solid black;">
+                                <label for="tplUpload" style="font-size: larger; color:black;
+                                border-bottom: 2px solid black;">
                                     Choose a Template File
                                 </label>
                                 <div class="row">
@@ -258,35 +263,40 @@
                                             Mosaic
                                         </label>
                                         <br/>
-                                        <button role="button" id="mosaicBtn">Choice 1</button>
+                                        <button type="button" id="mosaicBtn" class="btn btn-md button" 
+                                        style="width: 100%">Choice 1</button>
                                     </div>
                                     <div class="col">
                                         <label for="mapProjectedBtn" style="font-size: small; color:black;">
                                             Map Projected
                                         </label>
                                         <br/>
-                                        <button role="button" id="mapProjectedBtn">Choice 2</button>
+                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                         id="mapProjectedBtn">Choice 2</button>
                                     </div>
                                     <div class="col">
                                         <label for="compositeBtn" style="font-size: small; color:black;">
                                             Composite
                                         </label>
                                         <br/>
-                                        <button role="button" id="compositeBtn">Choice 3</button>
+                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        id="compositeBtn">Choice 3</button>
                                     </div>
                                     <div class="col">
                                         <label for="otherBtn" style="font-size: small; color:black;">
                                             Other Template
                                         </label>
                                         <br/>
-                                        <button role="button" id="otherBtn">Choice 4</button>
+                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        id="otherBtn">Choice 4</button>
                                     </div>
                                     <div class="col">
                                         <label for="other2Btn" style="font-size: small; color:black;">
                                             Other Template
                                         </label>
                                         <br/>
-                                        <button role="button" id="other2Btn">Choice 5</button>
+                                        <button type="button" class="btn btn-md button"style="width: 100%"
+                                         id="other2Btn">Choice 5</button>
                                     </div>
                                 </div>
                                 <div class="col">

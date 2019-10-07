@@ -401,7 +401,6 @@ app.post('/captionWriter', async function(request, response){
                     var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
                     cubeObj.userNum = numUsers++;
                 }
-                   
             }
 
             // save the cube upload to upload folder
@@ -413,7 +412,6 @@ app.post('/captionWriter', async function(request, response){
                 }
             });
 
-            
             // template file section
             try{
                 // regexp for verifying tpl file
@@ -535,13 +533,17 @@ app.post('/captionWriter', async function(request, response){
                             // if function resolved with a return
                             if(cubeName.length > 0){
                                 // set the name to the returning cube
+                                let tmp = cubeObj.name;
                                 cubeObj.name = cubeName[0];
+                                // remove the not needed files to save server space
+                                fs.unlinkSync(path.join(__dirname, "uploads",tmp));
                             }
                             // reset promise array
                             promises = [];
 
                             // get the cube name with no loading tag
                             var logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
+                            
                             // make promise on the isis function call
                             promises.push(util.makeSystemCalls(cubeObj.name,
                                 path.join('.','uploads',cubeObj.name),

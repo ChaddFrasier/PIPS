@@ -206,6 +206,10 @@ input[type=color]:hover {
     background: white;
 }
 
+input:focus {
+    outline: 2px double black;
+}
+
 input[type="color"] {
     margin: auto auto;
     margin-top: 0;
@@ -214,6 +218,14 @@ input[type="color"] {
 }
 input[type=checkbox]:hover {
     cursor: pointer;
+}
+
+.templateBtn {
+    background-color: #007150;
+    border-radius: 10px;
+    border: 1px solid black;
+    color: white;
+    padding: 4%;
 }
 
 svg {

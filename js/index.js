@@ -5,7 +5,7 @@
  * @version 1.0
  * 
  * @since 09/17/2019
- * @updated 10/04/2019
+ * @updated 10/06/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -177,7 +177,7 @@ $(document).ready(function(){
 
     $("#cubUpload").change(function(){
         var optionBox = document.getElementById("optionBox");
-        if(this.value === ""){
+        if(this.value === "" || !/^.*\.(cub|CUB|tif|TIF)$/gm.test(this.value)){
             optionBox.style.display = "none";
         }
         else{
@@ -209,6 +209,8 @@ $(document).ready(function(){
             document.getElementById("j1Option3").style.visibility = "hidden";
             document.getElementById("dimensionInput").style.display = "none";
             document.getElementById("journalOption1").className = "btn btn-lg button";
+            widthInputBox.value = 0;
+            heightInputBox.value = 0;
         }
     });
 
@@ -236,6 +238,8 @@ $(document).ready(function(){
             document.getElementById("j2Option3").style.visibility = "hidden";
             document.getElementById("journalOption2").className = "btn btn-lg button";
             document.getElementById("dimensionInput").style.display = "none";
+            widthInputBox.value = 0;
+            heightInputBox.value = 0;
         }
     });
 
