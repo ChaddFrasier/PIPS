@@ -699,7 +699,6 @@ function makeDraggable(event){
 }
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
-
 /** ------------------------------------------ Helper Function ------------------------------------------- */
 /**
  * @function setSvgClickDetection
@@ -771,14 +770,17 @@ function growProgress(progressBar){
  * 
 */
 function showProgress(){
+    // get parent div and create paieces for scalebar
     var parent = document.getElementById("progressBarBox");
     var outerBar = document.createElement("div"),
         innerBar = document.createElement("div");
 
+    // set the ids for css and append elements
     outerBar.id = "progressBar",
     innerBar.id = "mainBar",
     outerBar.appendChild(innerBar),
     parent.appendChild(outerBar);
+    // return the progressBar elements
     return outerBar;
 }
 
@@ -813,7 +815,6 @@ function loaderActivate(){
     loader.style.visibility = 'visible';
 }
 
-
 /**
  * @function setOpposite
  * 
@@ -846,7 +847,6 @@ function drawLine(lineElement,x2,y2){
  * 
  * @description extracts the data values used for angle calculations
  *               and disables any buttons with missing values
- * 
 */
 function getMetadata(){
     // get value string from hidden DOM element
@@ -886,8 +886,6 @@ function getMetadata(){
         document.getElementById('eyeFlag').setAttribute('class',
                                                             "btn btn-secondary btn-lg button disabled");
     }
-
-
     // if the degree value is over 360 just subtract 360 because the math is easier
     if(northDegree>360){ northDegree-=360; }
     if(sunDegree>360){ sunDegree-=360; }
@@ -918,7 +916,6 @@ getNameWithVal = function(val){
  * this code can be used to render a loading bar for the image as it is being sent from the server
  * Although since the ISIS Reduce call shrinks the size of the cube file, a loading bar in not really that necessary
  */
-
 Image.prototype.load = function(url){
     var thisImg = this;
     var xmlHTTP = new XMLHttpRequest();
@@ -1328,7 +1325,6 @@ function adjustBox(){
     }
 } 
 
-
 /**
  * @function captureClick
  * 
@@ -1416,8 +1412,7 @@ function peekTimer(startTime){
     // return the fixed times 
     return String(hrs) + ":" + String(mins) + ":" + String(secs);
 }
-
-        
+    
 /**
  * @function triggerDownload
  * 
@@ -1518,8 +1513,6 @@ function removeKey(keysArr, key){
     }
 }
 /** --------------------------------- End Draw Functions ------------------------------------------------- */
-
-
 /** ------------------------------------ Jquery Handlers ------------------------------------------------- */
 
 /** When Document is loaded initialize the Jquery functions */
@@ -1705,9 +1698,8 @@ $(document).ready(function(){
 
     // grab DOM elements that are needed
     var exportBtn =  document.getElementById('exportBtn'),
-        myImage = document.getElementById('crop');
-
-    var line,
+        myImage = document.getElementById('crop'),
+        line,
         userLineColor;
 
     svg = document.getElementById('svgWrapper');
@@ -1716,7 +1708,6 @@ $(document).ready(function(){
     // center the loading gif
     myImage.setAttribute("x",parseInt(w)*1.5 + "px");
     myImage.setAttribute("y",parseInt(h)*1.25 + "px");
-
 
     // dynamically add the elements to export better 
     svg.insertAdjacentHTML("beforeend",sunObjectString);
@@ -1739,7 +1730,6 @@ $(document).ready(function(){
 
     // start the draggable svg element
     makeDraggable(svg);
-
 
     // load the users base image as base64 to embed in the svg element
     loadImageAsURL(imageSrc, function(data){
@@ -1831,8 +1821,7 @@ $(document).ready(function(){
             // read in a filename with prompt
             var filename = prompt("Save File as png, svg, tiff, or jpeg","");
         }while(filename !== "" && filename !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
-                                                                                        .test(filename))
-        
+                                                                                        .test(filename));
         // if the file is not null
         if(filename !== null){
             // read the file extenson
@@ -2999,7 +2988,6 @@ $(document).ready(function(){
 
             bg.className.baseVal = "";
 
-            
             // parse the whole svg and set the pointerevents to accept clicks again
             setSvgClickDetection(svg, "all");
         }

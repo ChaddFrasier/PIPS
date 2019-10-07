@@ -378,10 +378,12 @@ div.row[role=table] {
     animation: growBar 1s linear;
     -webkit-animation: growBar 1s linear;
 }
+
 @keyframes growBar {
     from { transform: translateX(0%); }
     to { transform: translateX(100%); }
 }
+
 @-webkit-keyframes growBar {
     from { -webkit-transform: translateX(0%); }
     to { -webkit-transform: translateX(100%); }
@@ -391,6 +393,7 @@ div.row[role=table] {
     from { opacity: 1; }
     to { opacity: 0; }
 }
+
 @-webkit-keyframes fadeOut {
     from { opacity: 1; }
     to { opacity: 0; }
