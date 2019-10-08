@@ -100,7 +100,7 @@
                         <form method="POST" action="/imageEditor" class="lg-form text-right float-right" style="margin: 0;">
                             <div class="form-group">
                                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                                <input type="submit" value="View Image" class="btn btn-primary btn-lg"
+                                <input type="button" id="imagePageBtn" value="View Image" class="btn btn-primary btn-lg"
                                 title="Image Editor" style="width: auto; height: auto; padding:5; margin: 0;
                                 border: 1.5px solid black;" onclick="loaderActivate()" />
                             </div>
@@ -137,14 +137,14 @@
                 <div class="col-2" style="padding-right:2%; margin-top: auto; margin-bottom: auto;">
                     <!-- Download Button -->
                     <form class="lg-form text-center" style="margin: auto auto;">
-                            <div class="form-group" style="margin:auto auto;">
-                                <a class="btn button text-white btn-lg" title="Download Figure Caption"
-                                style="width: 100%; padding: 7px; font-size: 100%; border: 2px solid black;"
-                                role="button" id="link" download="<%=outputName%>">
-                                    Download Caption
-                                </a>
-                            </div>
-                        </form>
+                        <div class="form-group" style="margin:auto auto;">
+                            <a class="btn button text-white btn-lg" title="Download Figure Caption"
+                            style="width: 100%; padding: 7px; font-size: 100%; border: 2px solid black;"
+                            role="button" id="link" download="<%=outputName%>">
+                                Download Caption
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
             <div style="margin-left: auto; margin-right:auto;">

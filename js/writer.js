@@ -320,8 +320,12 @@ function initTags(){
     showMoreTags();
 }
 
-
-function hide(alert){
+/**
+ * @function hideAnimaton
+ * 
+ * @param {element} alert the element that needs to have the hide animation played
+ */
+function hideAnimaton(alert){
     alert.style.animation = "fadeOut 2s linear";
     alert.style.webkitAnimation = "fadeOut 2s linear";
     setTimeout(
@@ -329,12 +333,14 @@ function hide(alert){
             alert.remove();
         },2000);
 }
-/** ----------------------------------------- End Basic Functions ---------------------------------------- */
 
+/** ----------------------------------------- End Basic Functions ---------------------------------------- */
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
 // runs this code after the page is loaded
 $(document).ready(function(){
-    var varDiv = document.getElementById("pageVariables");
+    var varDiv = document.getElementById("pageVariables"),
+        goForward = false;
+    
     loader = document.getElementById('loading');
 
     // grab the variables from the server
@@ -354,7 +360,6 @@ $(document).ready(function(){
         console.log(err);       
     });
 
-
     /**
      * @function helpBtn 'mousedown' event handler
      * 
@@ -363,6 +368,29 @@ $(document).ready(function(){
     $("#helpBtn").on("mousedown",function(){
         // show the help box
         document.getElementById("help-box").style.visibility = "visible";
+    });
+
+    /**
+     * @function imagePageBtn 'mousedown' event listener
+     * 
+     * @description this is to handle the switch back and forth from 
+     *              the image page when the user was there last
+     */
+    $("#imagePageBtn").mousedown(function(){
+        // if the image page is the last page
+        if(document.referrer.indexOf("/imageEditor") > -1){
+            window.history.back();
+        }
+        else if(goForward){
+            // preserve chnages to image page when firefox is the browser
+            window.history.forward();
+        }
+        else{
+            // this line of code only works assuming the image button is the first form on the page
+            let imageForm = document.getElementsByTagName("form")[0];
+            goForward = true;
+            imageForm.submit();
+        }
     });
 
     /**
@@ -395,7 +423,7 @@ $(document).ready(function(){
         // add the alert
         document.body.appendChild(alert);
         // set the fade timeout
-        setTimeout(hide, 2000,alert);
+        setTimeout(hideAnimaton, 2000, alert);
     });
 
     /**

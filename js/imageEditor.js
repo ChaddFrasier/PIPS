@@ -1699,6 +1699,8 @@ $(document).ready(function(){
         line,
         userLineColor;
 
+        console.log(document.referrer);
+
     svg = document.getElementById('svgWrapper');
     loader = document.getElementById('loading');
 
