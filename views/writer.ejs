@@ -33,17 +33,22 @@
             <!-- Help Box -->
             <div class="help-box-right" id="help-box" style="visibility: hidden;
              margin-right: 2%; margin-top: 10%; padding-bottom: 0;">
-                    <button class="float-right button" id="hideBtn" 
-                    style="width: auto; height:auto; min-width: 2rem; border-radius: 5px; 
-                    border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-                    background-color: rgba(39, 109, 200); color: darkred;">&times;</button>
-                <div class="container title" style="background: whitesmoke;"><cite>Help</cite></div>
+                <button class="float-right button" id="hideBtn" 
+                style="width: auto; height:auto; min-width: 2rem; border-radius: 5px; 
+                border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+                background-color: rgba(39, 109, 200); color: darkred;">
+                    &times;
+                </button>
+                <div class="container title" style="background: whitesmoke;">
+                    <cite>Help</cite>
+                </div>
                 <div class="row lead" style="display: inline"> 
                     1. <cite>Edit</cite> your caption in the bottom right box.
                 </div>
                 <br/>
-                <div class="row lead" style="display: inline"> 2. <cite>Copy & Paste</cite>
-                     tags from the bottom left box into your caption. </div>
+                <div class="row lead" style="display: inline">
+                    2. <cite>Copy & Paste</cite> tags from the bottom left box into your caption. 
+                </div>
                 <br/>
                 <div class="row lead" style="display: inline"> 3. <cite>Search</cite> 
                     for key words in the current tags by typing in the search bar.
@@ -67,7 +72,7 @@
         <!-- Center Box -->
         <div class="mainbox-center" style="width: 65%; background-color: rgba(99,88,94,0.65); padding: 2rem;
         border: 3px solid rgba(255, 255,255, .65);padding:0;">
-        <!-- Title Box -->
+            <!-- Title Box -->
             <div class="container" 
             style="height: 14rem; max-width: none; padding: 1rem; padding-top: 0; padding-bottom: 2rem;
             border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; 
@@ -125,7 +130,7 @@
                         style="margin: 0; width: 100%; margin:auto auto;">
                             <label for="template-text-output">
                                 <h3 class="display-5 alert alert-secondary" 
-                                style="border: 2px solid black; background: #63585e; color: white;">Output</h2>
+                                style="border: 2px solid black; background: #63585e; color: white;">Output</h3>
                             </label>
                             <textarea readonly id="template-text-output"
                             class="form-control bg-white text-dark metadata" 
@@ -204,9 +209,9 @@
                                 <div class="lg-form text-center" style="margin: 0;">
                                     <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                                     <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                                    <input type="submit" value="Save Metadata CSV" class="btn button btn-lg"
+                                    <input type="submit" value="Save Data as CSV" class="btn button btn-lg"
                                     style="width: 100%; min-width: 100%; border: 2px solid black; padding: 7px;
-                                    font-size: 85%;" title="Download Data CSV" />
+                                    font-size: 80%;" title="Download Data CSV" />
                                 </div>
                             </form>
                     </div>
