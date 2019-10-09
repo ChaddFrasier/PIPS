@@ -1824,15 +1824,16 @@ $(document).ready(function(){
             // read the file extenson
             var fileExt = filename.split(".")[filename.split(".").length - 1];
 
+            // get lowercase file extension
             filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
-
 
             // encode the svg to a string
             var data = (new XMLSerializer()).serializeToString(svg); 
 
-            //data = '<?xml version="1.0" encoding="UTF-8"?>\n' + data;
-                // creates a blob from the encoded svg and sets the type of the blob to and image svg
+            // creates a blob from the encoded svg and sets the type of the blob to and image svg
             var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            
+            // create the progress bar
             var progressBar = showProgress();
 
             if(fileExt.toLowerCase() === "svg"){
@@ -1842,7 +1843,7 @@ $(document).ready(function(){
                 triggerDownload(url,filename);
                 loader.style.visibility = "hidden";
                 document.getElementById("loadingText").innerHTML = "Loading";
-                setTimeout(hideProgress,500, progressBar);
+                setTimeout(hideProgress, 500, progressBar);
                 DOMURL.revokeObjectURL(url);
                 return;
             }
@@ -1928,7 +1929,6 @@ $(document).ready(function(){
             document.getElementById("loadingText").innerHTML = "Loading";
         }
     });
-
 
     /**
      * @function exportBtn 'mousedown' event handler
