@@ -1824,6 +1824,9 @@ $(document).ready(function(){
             // read the file extenson
             var fileExt = filename.split(".")[filename.split(".").length - 1];
 
+            filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
+
+
             // encode the svg to a string
             var data = (new XMLSerializer()).serializeToString(svg); 
 
@@ -1832,7 +1835,7 @@ $(document).ready(function(){
             var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
             var progressBar = showProgress();
 
-            if(fileExt === "svg"){
+            if(fileExt.toLowerCase() === "svg"){
                 growProgress(progressBar);
                 // creates an object url for the download
                 var url = DOMURL.createObjectURL(svgBlob);
