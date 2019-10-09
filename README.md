@@ -85,13 +85,13 @@ key value pairs of the data that is held in the Cube headers. Help buttons are a
 pages to guide you if you become confused.  
 
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
-the server. You can optionally upload a template file for the server if you have used it before.
-Hit the 'What is a TPL File?' button to read all about what a template file for the server is. The 
-upload also asks for a width and height value to be entered which will be the output dimensions of the figure.
-The server can create log files for all the uploads, just check the Log ISIS Output check box to have the server
-generate a log file of the ISIS outputs that were recieved on the server run. The option box at the bottom
-is where users can choose what journal figure type they would like to use.
-![Index Page](https://i.imgur.com/omEEpuR.png)
+the server. You can optionally upload a template file for the server if you have used it before otherwise simply
+choose a template file preset using the buttons in the template box.
+Hit the 'What is a TPL File?' button to read all about what a template file for the server is and how to make one.
+Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
+types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
+check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
+![Current Index Page](https://i.imgur.com/rsTigav.png)
 
 
 2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
@@ -107,7 +107,7 @@ ISIS data, you can download the log file which contains the results from the ISI
 on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
 Logs' button in the center of the title box then you have no log file on the server. Lasty, you can copy all the 
 text in the output box by clicking the save to clipboard button, then just paste the text wherever it needs to live.
-![Writer Page](https://i.imgur.com/VVfFlw0.png)
+![Current Writer Page](https://i.imgur.com/VVfFlw0.png)
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
