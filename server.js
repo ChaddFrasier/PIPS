@@ -255,7 +255,6 @@ app.get('/', function(request, response){
 app.get('/tpl',function(request, response){
     // render the data
     response.render('tpl.ejs');
-
 });
 
 /**
@@ -269,7 +268,7 @@ app.get("/log/*",function(request, response){
 
     var id = request.url.split("/")[request.url.split("/").length -1];
 
-    if(fs.existsSync(path.join("log",id+".log"))){
+    if(fs.existsSync(path.join("log", id+".log"))){
         response.download(path.join("log",id+".log"),function(err){
             if(err){
                 console.log("DOWNLOAD FAILED: " + err);
@@ -278,7 +277,7 @@ app.get("/log/*",function(request, response){
             else{
                 console.log("Download Sent");
             }
-        })
+        });
     }
     else{
         response.status(403).send("File Not Found").end();
@@ -352,7 +351,6 @@ app.post('/captionWriter', async function(request, response){
         }
         // cube (.cub) file regexp
         else if(/^.*\.(cub|CUB|tif|TIF)$/gm.test(request.files.uploadFile.name)){
-           
             // get the file from request
             var cubeFile = request.files.uploadFile;
 
@@ -478,7 +476,6 @@ app.post('/captionWriter', async function(request, response){
                 promises.push(util.tiff2Cube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log", logCubeName));
             }
 
-            // TODO: add max image sizes
             // if the desired width and height are both given set that to be the user dimensions 
             if(Number(request.body.desiredWidth) > 50 || Number(request.body.desiredHeight)> 50){
                 if(Number(request.body.desiredHeight) === 0){
@@ -503,7 +500,6 @@ app.post('/captionWriter', async function(request, response){
 
             // after conversion finished
             Promise.all(promises).then(function(cubeName){
-
                 // if the return array legth is not 0 extract the new cubefile name
                 if(cubeName.length > 0){
                     // remove the tif file that was uploaded
@@ -511,8 +507,10 @@ app.post('/captionWriter', async function(request, response){
                     // get cube file name
                     cubeObj.name = path.basename(cubeName[0]);
                 }
+
                 // reset the promises array
                 promises = [];
+
                 // vars for reducing
                 var lines,
                     samples,
@@ -587,7 +585,7 @@ app.post('/captionWriter', async function(request, response){
                                 // when the readPvltoStructf function resolves create data instance
                                 Promise.all(promises).then(function(cubeData){
                                 
-                                    console.log("PVL Extraction Finished");
+                                    console.log("PVL Extraction Success");
                                     // add the cube instance to the cube array if it does not already exist
                                     cubeArray = util.addCubeToArray(cubeObj,cubeArray);
                                 
@@ -686,8 +684,6 @@ app.post('/captionWriter', async function(request, response){
     }
 });
 
-
-
 /**
  * POST '/csv'
  * 
@@ -695,7 +691,6 @@ app.post('/captionWriter', async function(request, response){
  */
 app.post('/csv', function(request,response){
     // send download file
-
     let cubeObj = util.getObjectFromArray(request.cookies["userId"],cubeArray);
 
     // if the user object is found
@@ -715,7 +710,6 @@ app.post('/csv', function(request,response){
     else{
         response.redirect("/?alertCode=4");
     }
-    
 });
 
 /**
@@ -767,7 +761,6 @@ app.get('/imageEditor', function(request, response){
     if(userid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
-
     }
     else{
         // get the user instance
@@ -1048,7 +1041,6 @@ app.post('/imageEditor', function(request, response){
                     }
                     else{
                         scalebarLength = scalebarMeters/1000;
-                        console.log(scalebarLength)
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                         scalebarUnits = "km";
                     }
@@ -1208,8 +1200,6 @@ app.get("*",function(request, response){
     // render a 404 error in the header and send the 404 page
     response.status(404).render("404.ejs");
 });
-
-
 
 /* activate the server */
 

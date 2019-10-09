@@ -24,7 +24,7 @@ module.exports = class Cube{
      * 
      * @param {sting} cubeName name of the cube to be contructed into an object.
      * @param {string} userId the 23 character user id that was randomly generated
-     */
+    */
     constructor(cubeName,userId){
         this._userId = userId;
         this._cubeName = cubeName;
@@ -39,6 +39,7 @@ module.exports = class Cube{
         this._logFlag = false;
     }
 
+
     /**
      * @function name
      * 
@@ -47,10 +48,11 @@ module.exports = class Cube{
      * @returns {string} name of cube file
      * 
      * @description getter for cubeName.
-     */
+    */
     get name(){
         return this._cubeName;
     }
+
 
     /**
      * @function name
@@ -58,12 +60,13 @@ module.exports = class Cube{
      * @param {string} name of the file that the instance is working with
      * 
      * @description setter for name of the instance
-     */
+    */
     set name(name){
         if(typeof(name) === "string"){
             this._cubeName = name;
         }
     }
+
 
     /**
      * @function userNum
@@ -73,10 +76,11 @@ module.exports = class Cube{
      * @returns {number} user instance id
      * 
      * @description getter for userNum.
-     */
+    */
     get userNum(){
         return this._userNum;
     }
+
 
     /**
      * @function userNum
@@ -84,12 +88,13 @@ module.exports = class Cube{
      * @param {number} num the number to be set to the userNum
      * 
      * @description set the number that the user got when uploading
-     */
+    */
     set userNum(num){
         this._userNum = Number(num);
     }
 
-     /**
+
+    /**
      * @function userID
      * 
      * @param void
@@ -97,10 +102,11 @@ module.exports = class Cube{
      * @returns {number} user id
      * 
      * @description getter for userId.
-     */
+    */
     get userId(){
         return this._userId;
     }
+
 
     /**
      * @function data
@@ -110,12 +116,13 @@ module.exports = class Cube{
      * @returns {JSON string} all data stringified
      * 
      * @description getter for data as stringify'ed JSON.
-     */
+    */
     get data(){
         return JSON.stringify(this._data);    
     }
 
-     /**
+
+    /**
      * @function userDim
      * 
      * @param void
@@ -123,10 +130,11 @@ module.exports = class Cube{
      * @returns {array} user dimensions of figure
      * 
      * @description return userDim array.
-     */
+    */
     get userDim(){
         return this._userDim;
     }
+
 
     /**
      * @function userDim
@@ -134,10 +142,11 @@ module.exports = class Cube{
      * @param {array} dimArray the dimension array to be set
      * 
      * @description set userDim array to the given array
-     */
+    */
     set userDim(dimArray){
         this._userDim = dimArray;    
     }
+
 
     /**
      * @function data 
@@ -145,12 +154,13 @@ module.exports = class Cube{
      * @param {JSON} data data to be set. 
      *  
      * @description set json object in this cube object.
-     */
+    */
     set data(data){
         if(typeof(data) === 'object'){
             this._data = data;
         }
     }
+
 
     /**
      * @function logFlag
@@ -160,10 +170,11 @@ module.exports = class Cube{
      * @returns {Boolean}
      * 
      * @description get the log flag value
-     */
+    */
     get logFlag(){
         return this._logFlag;    
     }
+
 
     /**
      * @function logFlag
@@ -171,12 +182,13 @@ module.exports = class Cube{
      * @param {JSON} data data to be set. 
      *  
      * @description set boolean value if the user wants to log to a file
-     */
+    */
     set logFlag(value){
         if(typeof(value) === 'boolean'){
             this._logFlag = value;
         }
     }
+
 
     /**
      * @function impData
@@ -186,10 +198,11 @@ module.exports = class Cube{
      * @returns {JSON String}
      * 
      * @description get important data as stringify'ed JSON.
-     */
+    */
     get impData(){
         return JSON.stringify(this._impData);    
     }
+
 
     /**
      * @function impData
@@ -197,12 +210,13 @@ module.exports = class Cube{
      * @param {JSON} data data to be set.
      *  
      * @description add important json object in this cube object.
-     */
+    */
     set impData(data){
         if(typeof(data) === "object"){
             this._impData = data;
         }
     }
+
 
     /**
      * @function getCubeDimensions
@@ -211,7 +225,7 @@ module.exports = class Cube{
      * 
      * @description This function parses out the first 10th of the cube
      *      file header to read out the lines and sample of the image
-     */
+    */
     getCubeDimensions(){
         var cubeObj = this;
         return new Promise(function(resolve,reject){
@@ -238,7 +252,7 @@ module.exports = class Cube{
                         }
                     }
                     reject();
-                }    
+                }
             });
         });
     }

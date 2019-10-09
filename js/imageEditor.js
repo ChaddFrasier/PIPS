@@ -140,6 +140,7 @@ function makeDraggable(event){
         };
     }
 
+
     /**
      * @function startDrag
      * 
@@ -617,6 +618,7 @@ function makeDraggable(event){
         }
     }
 
+
     /**
      * @function endDrag
      * 
@@ -640,6 +642,7 @@ function makeDraggable(event){
         }
         selectedElement = null;
     }
+
 
     /**
      * @function findLimit
@@ -706,7 +709,7 @@ function makeDraggable(event){
  * @description this function takes in a whole svg element and a mouse detection value
  *              It then parses through all the children of the svg and subchildren to set the mouse detection
  *              for every single element. Used for the drawing functionality
- */
+*/
 function setSvgClickDetection(svg, mouseDetect){
     let svgElements = svg.childNodes;
     
@@ -730,6 +733,7 @@ function setSvgClickDetection(svg, mouseDetect){
     }
 }
 
+
 /**
  * @function captionHandler
  * 
@@ -748,6 +752,7 @@ function captionHandler(){
     }
 }
 
+
 /**
  * @function growProgress
  * 
@@ -759,6 +764,7 @@ function captionHandler(){
 function growProgress(progressBar){
     progressBar.firstElementChild.classList.add('startAnimation');
 }
+
 
 /**
  * @function showProgress
@@ -781,6 +787,7 @@ function showProgress(){
     return outerBar;
 }
 
+
 /**
  * @function hideProgress
  * 
@@ -792,6 +799,7 @@ function hideProgress(progressBar){
     progressBar.remove();
 }
 
+
 /**
  * @function loadInvisible
  * 
@@ -802,6 +810,7 @@ function loadInvisible(){
     loader.style.visibility = 'hidden';    
 }
 
+
 /**
  * @function loaderActivate
  * 
@@ -811,6 +820,7 @@ function loadInvisible(){
 function loaderActivate(){
     loader.style.visibility = 'visible';
 }
+
 
 /**
  * @function setOpposite
@@ -825,7 +835,8 @@ function setOpposite(colorString){
     else{ return "black"; }
 }
 
- /**
+
+/**
  * @function drawLine
  * 
  * @param {DOM element} lineElement the line to be drawn
@@ -838,6 +849,7 @@ function drawLine(lineElement,x2,y2){
     lineElement.setAttribute("x2", x2);
     lineElement.setAttribute("y2",y2);
 }
+
 
 /**
  * @function getMetadata
@@ -883,13 +895,16 @@ function getMetadata(){
         document.getElementById('eyeFlag').setAttribute('class',
                                                             "btn btn-secondary btn-lg button disabled");
     }
+
     // if the degree value is over 360 just subtract 360 because the math is easier
     if(northDegree>360){ northDegree-=360; }
     if(sunDegree>360){ sunDegree-=360; }
     if(observerDegree>360){ observerDegree-=360; }
+
     // set the scale bar corners to the correct orientation
     setScaleboxCorners(northDegree, sunDegree);
 }
+
 
 /**
  * @function getNameWithVal
@@ -912,7 +927,7 @@ getNameWithVal = function(val){
 /**
  * this code can be used to render a loading bar for the image as it is being sent from the server
  * Although since the ISIS Reduce call shrinks the size of the cube file, a loading bar in not really that necessary
- */
+*/
 Image.prototype.load = function(url){
     var thisImg = this;
     var xmlHTTP = new XMLHttpRequest();
@@ -932,6 +947,7 @@ Image.prototype.load = function(url){
 };
 
 Image.prototype.completedPercentage = 0;
+
 
 /**
  * @function loadImageAsURL
@@ -982,7 +998,6 @@ function loadImageAsURL(url, callback) {
  * @description adjust the svg size and viewBox as needed to add extra black pixels to one side
  * 
 */
-
 function setImagePadding(val,location){
     // image w and h vars
     let imageW,
@@ -990,7 +1005,6 @@ function setImagePadding(val,location){
 
     // switch on the location of the padding
     switch(location){
-        
         case 'bottom':
             // get the new image height for the box and background
             imageH = h + val; 
@@ -1046,7 +1060,6 @@ function setImagePadding(val,location){
             makeDraggable(svg);
             break;
 
-
         case "left":
             // get the new image width for the box and background
             imageW = w + val;
@@ -1065,7 +1078,6 @@ function setImagePadding(val,location){
             break;
 
         default:
-        
             // set background x,y to padding at the right spot                            
             bg.setAttribute("x",0);
             bg.setAttribute("y",0);
@@ -1080,6 +1092,7 @@ function setImagePadding(val,location){
             makeDraggable(svg);
     }
 }
+
 
 /**
  * @function prepareCrop
@@ -1132,7 +1145,6 @@ function setScaleboxCorners(northDegree, sunDegree){
         // get the child list
         let childList = northImage.childNodes;
         let offset90 = Math.round(northDegree / 90);
-        let offset45 = northDegree / 45;
         /* 
         1. each corner was given a numeric value starting from top-left and going clockwise around 
             the image
@@ -1272,6 +1284,7 @@ function setIconAngle(icon, degree){
     }
 }
 
+
 /**
  * @function adjustBox
  * 
@@ -1301,10 +1314,8 @@ function adjustBox(){
         else if(w < 0 || h < 0){
             if(w<0){
                 w = Math.abs(w);
-
                 outlineBox.setAttribute('x' , startX  - w);
                 outlineBox.setAttribute('y' , startY);
-                
             }
             else{
                 h = Math.abs(h);
@@ -1322,6 +1333,7 @@ function adjustBox(){
     }
 } 
 
+
 /**
  * @function captureClick
  * 
@@ -1335,7 +1347,8 @@ function captureClick(x,y){
     clickArray.push(x);
     clickArray.push(y);
 }       
-      
+ 
+
 /**
  * @function createTimer
  * 
@@ -1348,6 +1361,7 @@ function createTimer(){
     let startTime = new Date();
     return [startTime.getHours(),startTime.getMinutes(),startTime.getSeconds()];
 }
+
 
 /**
  * @function getCookie
@@ -1382,6 +1396,7 @@ function getCookie(cname){
     return "";
 }
 
+
 /**
  * @function peekTimer
  * 
@@ -1410,6 +1425,7 @@ function peekTimer(startTime){
     return String(hrs) + ":" + String(mins) + ":" + String(secs);
 }
     
+
 /**
  * @function triggerDownload
  * 
@@ -1463,6 +1479,7 @@ function resetDrawTool(){
     setSvgClickDetection(svg, "all");
 }
 
+
 /**
  * @function svgPoint
  * 
@@ -1485,6 +1502,7 @@ function svgPoint(element, x, y) {
         the browsers coordinate matrix */
     return pt.matrixTransform(element.getScreenCTM().inverse());    
 }
+
 
 /**
  * @function removeKey
@@ -1923,12 +1941,13 @@ $(document).ready(function(){
             }
         }
         else{
-            // hid the loading elements because the user hit cancel on the prompt
+            // hide the loading elements because the user hit cancel on the prompt
             hideProgress(progressBar);
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
         }
     });
+
 
     /**
      * @function exportBtn 'mousedown' event handler
@@ -1955,6 +1974,7 @@ $(document).ready(function(){
         document.getElementById("help-box").style.visibility = "hidden";
     });
   
+
     /**
      * @function helpBtn 'mousedown' event handler
      * 
@@ -1994,6 +2014,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function sunCheckbox 'change' event handler
      * 
@@ -2016,6 +2037,7 @@ $(document).ready(function(){
             }
         }
     });
+
 
     /**
      * @function scaleCheckbox 'change' event handler
@@ -2040,6 +2062,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function eyeCheckbox 'change' event handler
      * 
@@ -2063,6 +2086,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function colorPickerLine 'change' event handler
      * 
@@ -2073,6 +2097,7 @@ $(document).ready(function(){
         userLineColor = document.getElementById("colorPickerLine").value;
     });
 
+
     /**
      * @function colorPickerBox 'change' event handler
      * 
@@ -2082,6 +2107,7 @@ $(document).ready(function(){
     $("#colorPickerBox").change(function(){
         userBoxColor = document.getElementById("colorPickerBox").value;
     });
+
 
     /**
      * @function textColorPicker 'change' event handler
@@ -2122,6 +2148,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function document 'keyup' event handler
      * 
@@ -2138,6 +2165,7 @@ $(document).ready(function(){
         }
     });
     
+
     /**
      * @function undoBox 'mousedown' event handler
      * 
@@ -2157,6 +2185,7 @@ $(document).ready(function(){
         }
     });
       
+
     /**
      * @function undoText 'mousedown' event handler
      * 
@@ -2215,6 +2244,7 @@ $(document).ready(function(){
             }
         }
     });
+
 
     /**
      * @function textBtn 'mousedown' event handler
@@ -2339,6 +2369,7 @@ $(document).ready(function(){
         }
     });
       
+
     /**
      * @function  eyeFlag 'click' event handler
      * 
@@ -2385,6 +2416,7 @@ $(document).ready(function(){
         } 
     });
        
+
     /**
      * @function  sunIconFlag 'click' event handler
      * 
@@ -2436,6 +2468,7 @@ $(document).ready(function(){
         
     });
 
+
     /**
      * @function  northIconFlag 'mousedown' event handler
      * 
@@ -2486,6 +2519,7 @@ $(document).ready(function(){
         }   
     }); 
 
+
     /**
      * @function pencilIconFlag 'mousedown' event handler
      * 
@@ -2508,6 +2542,7 @@ $(document).ready(function(){
             setSvgClickDetection(svg, "none");
         }
     });
+
 
     /**
      * @function outlineBtn "mousedown" event handler
@@ -2554,6 +2589,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function bottomPaddingBtn 'click' event handler
      * 
@@ -2580,6 +2616,7 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function topPaddingBtn 'click' event handler
      * 
@@ -2605,6 +2642,7 @@ $(document).ready(function(){
             padTop = false;  
         }
     });
+
 
     /**
      * @function rightPaddingBtn 'click' event handler
@@ -2633,6 +2671,7 @@ $(document).ready(function(){
         } 
     });
 
+
     /**
      * @function leftPaddingBtn 'click' event handler
      * 
@@ -2660,6 +2699,7 @@ $(document).ready(function(){
         } 
     });
 
+
     /**
      * @function resetPaddingBtn 'click' event handler
      * 
@@ -2677,13 +2717,14 @@ $(document).ready(function(){
         topBtn.className = 'btn button btn-md'; 
     });
 
+
     /**
      * @function document.keydown
      * 
      * @param {event} event the key press event
      * 
      * @description  Hotkey Handler
-     */
+    */
     $(document).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
@@ -2769,8 +2810,10 @@ $(document).ready(function(){
             }
         }
     });
+
+
     /** 
-     * @function document.keyup
+     * @function document 'keyup' listener
      * 
      * @param {event} event key event
      * 
@@ -3075,6 +3118,7 @@ $(document).ready(function(){
 
     let warned = false;
 
+    
     /**
      * @function paddingInput 'keyup' event handler
      * 

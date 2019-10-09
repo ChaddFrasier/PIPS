@@ -57,7 +57,7 @@ function filterTags(){
  * @function setOutput
  * 
  * @description sets the value of the output to the template and then calls output() 
- */
+*/
 function setOutput(){
     let getTemplate = document.getElementById("template-text").value;
     output(getTemplate);
@@ -314,7 +314,7 @@ function loaderActivate(){
  * @function initTags
  * 
  * @description sets up the UI by calling the showMoreTags function to populate the tag area
- */
+*/
 function initTags(){
     // write default to tag section
     showMoreTags();
@@ -324,7 +324,7 @@ function initTags(){
  * @function hideAnimaton
  * 
  * @param {element} alert the element that needs to have the hide animation played
- */
+*/
 function hideAnimaton(alert){
     alert.style.animation = "fadeOut 2s linear";
     alert.style.webkitAnimation = "fadeOut 2s linear";
@@ -375,7 +375,7 @@ $(document).ready(function(){
      * 
      * @description this is to handle the switch back and forth from 
      *              the image page when the user was there last
-     */
+    */
     $("#imagePageBtn").mousedown(function(){
         // if the image page is the last page
         if(document.referrer.indexOf("/imageEditor") > -1){
@@ -397,7 +397,7 @@ $(document).ready(function(){
      * @function copyBtn 'mousedown' event handlers
      * 
      * @description copy the output box text to the clipboard
-     */
+    */
     $("#copyBtn").on("mousedown",function(){
         // get the output field
         var output = document.getElementById("template-text-output");
@@ -458,7 +458,7 @@ $(document).ready(function(){
      * @function template-text 'keydown' listener
      * 
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
-     */
+    */
     $("#template-text").keydown(function(e){
         if(e.keyCode === 9) { // tab was pressed
             // get caret position/selection
@@ -485,7 +485,7 @@ $(document).ready(function(){
      * 
      * @description fetch and download a file by passing the file back as a download 
      *          and then converting the file into to a blob
-     */
+    */
     $("#logDownloadBtn").mousedown(function(event){
         fetch("log/" + getCookie("userId"), {method:"GET"})
             .then(function(response){
@@ -531,6 +531,5 @@ $(window).bind('pageshow', function(event){
     getMetadata();
     getAllTags();
     initTags();
-
 });
 /** ----------------------------------------- End Jquery Functions --------------------------------------- */

@@ -41,12 +41,13 @@ module.exports = {
         return new Promise(function(resolve,reject){
             // array of promises to resolve
             let promises = [];
+
             // call the isis commands
             promises.push(callIsis(cubeName, filepath, returnPath, imagePath,logToFile, logFileName, logCubeName));
             
             // when all promises is the array are resolved run this
             Promises.all(promises).then(function(){
-                console.log('All Calls  Finished\n');
+                console.log('All Calls Finished\n');
                 resolve();
             }).catch(function(code){
                 if(code === -1){
@@ -136,6 +137,7 @@ module.exports = {
         }
     },
 
+
     /**
      * @function setImageDimensions
      * 
@@ -211,7 +213,6 @@ module.exports = {
     },
 
 
-
     /**
      * @function tiff2Cube
      * 
@@ -236,6 +237,7 @@ module.exports = {
                 output = "";
          
             console.log('running std2isis\n');
+
             // spwan a sub process console
             var std2isis = spawn(isisCall,['from=',tiffName,"to=",cubeName]);
             // save the command args array to recreate the command in the log
@@ -304,6 +306,7 @@ module.exports = {
         });
     },
 
+
     /**
      * @function endProcessRun
      * 
@@ -313,6 +316,7 @@ module.exports = {
         fs.appendFileSync(path.join("log",filename),
         "END_UPLOAD\n\n");
     },
+
 
     /**
      * @function reduceCube
@@ -720,9 +724,10 @@ module.exports = {
      *              otherwise returns the same string
      */
     parseQuery: function(imageName){
-        try{return imageName.split('?')[0];}
-        catch(err){return imageName;}
+        try{ return imageName.split('?')[0]; }
+        catch(err){ return imageName; }
     },
+
 
     /**
      * @function createLogFile 
@@ -899,6 +904,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
     });
 }
 
+
 /**
  * @function logProcess
  * 
@@ -944,6 +950,7 @@ var logProcess = function(args, logFileName){
     }
 }
 
+
 /**
  * @function replaceAll
  *
@@ -958,6 +965,7 @@ String.prototype.replaceAll = function(find, replace){
     var str = this;
     return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 }
+
 
 /**
  * @function parseIsisInput
@@ -982,6 +990,7 @@ var parseIsisInput = function(array){
     }
     return returnStr;
 }
+
 
 /**
  * @function imageExtraction
@@ -1078,13 +1087,13 @@ var makeIsisCall = function(filepath, returnPath, isisCall, logToFile, logFileNa
             }
             else{
                 console.log(isisCall + ' stdout: ' + data.toString() + "\n");
-            }   
+            }
             fs.appendFile(returnPath,data,function(err){
-                if(err){console.log("Writing Error: ${err}");}
+                if(err){ console.log("Writing Error: ${err}"); }
                 else{
                     console.log(isisCall + " Output Wrote to File");
                 }
-            })
+            });
         });
         isisSpawn.stderr.on('data', function(data){
             if(logToFile){
@@ -1140,6 +1149,7 @@ var endTag = function(nameString){
     }
     return false;
 }
+
 
 /**
  * @function processFile

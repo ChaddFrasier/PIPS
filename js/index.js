@@ -76,6 +76,7 @@ function codeToAlert(){
     }
 }
 
+
 /**
  * @function setNotVisible
  * 
@@ -88,6 +89,7 @@ function setNotVisible(element){
     hideElement.style.visibility = 'hidden';    
 }
 
+
 /**
  * @function loadInvisible
  * 
@@ -96,6 +98,7 @@ function setNotVisible(element){
 function loadInvisible(){
     loader.style.visibility = 'hidden';    
 }
+
 
 /**
  * @function loaderActivate
@@ -123,6 +126,7 @@ function loaderActivate(){
     }
 }
 
+
 /**
  * @function showHelp
  * 
@@ -141,7 +145,7 @@ function showHelp(btn){
  * @function ready listener which runs after page load
  * 
  * @description after the document is loaded, grab the DOM elements that are needed for these functions
- */
+*/
 $(document).ready(function(){
     // get needed DOM element
     loader = document.getElementById('loading');
@@ -158,6 +162,7 @@ $(document).ready(function(){
         }
     }
 
+
     /**
      * @function helpBtn 'mousedown' event handler
      * 
@@ -169,41 +174,45 @@ $(document).ready(function(){
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
+
     /**
      * @function mosaicBtn 'mousedown' event listener
      * 
      * @description mouse click to chnage the template file field
-     */
+    */
     $("#mosaicBtn").mousedown(function(){
         console.log("Printed from Mosiac listener");
         document.getElementById("tplCode").value = 1;
     });
 
+
     /**
      * @function mapProjectedBtn 'mousedown' event listener
      * 
      * @description mouse click to chnage the template file field
-     */
+    */
     $("#mapProjectedBtn").mousedown(function(){
         console.log("Printed from Map Projected listener");
         document.getElementById("tplCode").value = 2;
     });
 
+
     /**
      * @function compositeBtn 'mousedown' event listener
      * 
      * @description mouse click to chnage the template file field
-     */
+    */
     $("#compositeBtn").mousedown(function(){
         console.log("Printed from Composite listener");
         document.getElementById("tplCode").value = 3;
     });
     
+
     /**
      * @function cubUpload 'change' event listener
      * 
      * @description checks to see if the new file that was added is a cub or tif file and show the otions box
-     */
+    */
     $("#cubUpload").change(function(){
         var optionBox = document.getElementById("optionBox");
         if(this.value === "" || !/^.*\.(cub|CUB|tif|TIF)$/gm.test(this.value)){
@@ -214,11 +223,12 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function journalOption1 'mousedown' event listener
      * 
      * @description show and hide the button options base on which button is currently clicked
-     */
+    */
     $("#journalOption1").mousedown(function(event){
         if(document.getElementById("j1Option1").style.visibility === "hidden"){
             document.getElementById("journalOption1").className = "btn btn-lg button btn-secondary";
@@ -243,11 +253,12 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function journalOption2 'mousedown' event listener
      * 
      * @description show and hide the button options base on which button is currently clicked
-     */
+    */
     $("#journalOption2").mousedown(function(event){
         if(document.getElementById("j2Option1").style.visibility === "hidden"){
             document.getElementById("journalOption2").className = "btn btn-lg button btn-secondary";
@@ -272,67 +283,79 @@ $(document).ready(function(){
         }
     });
 
+
     /**
      * @function j1Option1 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j1Option1").mousedown(function(event){
         widthInputBox.value = 1772;
         heightInputBox.value = 1772;
         document.getElementById("dimensionInput").style.display = "block";
     });
+
+
     /**
      * @function j1Option2 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j1Option2").mousedown(function(event){
         widthInputBox.value = 2756;
         heightInputBox.value = 2756;
         document.getElementById("dimensionInput").style.display = "block";
     });
+
+
     /**
      * @function j1Option3 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j1Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 3740;
         document.getElementById("dimensionInput").style.display = "block";
     });
+
+
     /**
      * @function j2Option1 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j2Option1").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 2264;
         document.getElementById("dimensionInput").style.display = "block";
     });
+
+
     /**
      * @function j2Option2 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j2Option2").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 4528;
         document.getElementById("dimensionInput").style.display = "block";
     });
+
+
     /**
      * @function j2Option3 'mousedown' event listener
      * 
      * @description change the default image output dimensions
-     */
+    */
     $("#j2Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 4528;
         document.getElementById("dimensionInput").style.display = "block";
     });
 });
+
 
 /**
  * @function window 'pageshow' event handler
