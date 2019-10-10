@@ -20,10 +20,295 @@
     </head>
     <body>
         <!-- Left Bar-->
-        <div class="mainbox-left">
+        <div class="mainbox-left" style="width: 20%;">
             <!-- Page Header Block-->
-            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto"
+            <img src="../images/usgsLogo.png" class="float-md-left" width="85%" height="auto"
                 style="margin: 0%; padding: 0%">
+            <!-- New UI with a tabular menu -->
+            <div class="tabs">
+                <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
+                    <p style="color: black; width: 75%;">Icons</p>
+                </button>
+                <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
+                    <p style="color: black; width: 75%;">Annotate</p>
+                </button>
+                <button class="tablinks" onclick="openToolBox(event, 'File')">
+                    <p style="color: black; width: 75%;">File Tools</p>
+                </button>
+            </div>
+            <div class="menu">
+                <!-- Button Interface-->
+                <div id="Icons" class="tabcontent">
+                    <h4>Icon Tools</h4>
+                    <!-- North Button -->
+                    <div class="row" role="table" style="margin-top:0rem; border-top: 4px solid black" 
+                            title="Alt + N">
+                        <div class="col-4">
+                            <p class="float-left" style="margin-right:.5rem; height: 100%; font-size: auto;">
+                                North Azimuthal<br/>Direction
+                            </p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <img class="btn btn-lg button" id="northIconFlag" style="width: 100%"
+                                src="/images/north.png" style="margin-left: auto; margin-right:auto;"></img>
+                        </div>
+                        <div class="col-4">
+                            <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
+                                Toggle Color
+                            </label>
+                            <br>
+                            <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
+                            style="visibility: hidden;"  title="Shift + Alt + N">
+                        </div>
+                    </div>
+                    <!-- Sun Direction Button -->
+                    <div class="row" role="table"title="Alt + S" style="padding-bottom: 1%;">
+                        <div class="col-4">
+                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
+                                Sun Azimuthal<br/>Direction
+                            </p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <svg class="btn btn-lg button" style="width: 100%" 
+                            viewBox="0 0 50 50"role="button" id="sunIconFlag">
+                                <circle cx="25" cy="25" r="5" stroke="black"></circle>
+                                <circle cx="25" cy="25" r="20" stroke="black" fill="transparent" stroke-width="5">
+                                </circle>
+                            </svg>
+                        </div>
+                        <div class="col-4">
+                            <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem;visibility: hidden;">
+                                Toggle Color
+                            </label>
+                            <br/>
+                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
+                            style="visibility: hidden;" title="Shift + Alt + S">
+                        </div>
+                    </div>
+                    <!-- Observer Direction Button -->
+                    <div class="row" role="table" title="Alt + O">
+                        <div class="col-4" style="margin: auto auto;">
+                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
+                                Observer Azimuthal<br/>Direction
+                            </p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <img class="btn btn-lg button" id="eyeFlag"  style="width: 100%" 
+                            src="/images/eye_symbol.png"></img>
+                        </div>
+                        <div class="col-4">
+                            <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top:20rem; visibility: hidden;">
+                                Toggle Color
+                            </label>
+                            <br/>
+                            <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
+                            style="visibility: hidden;" title="Shift + Alt + O">
+                        </div>
+                    </div>
+                    <div class="row" role="table" title="Alt + R">
+                        <div class="col-2" style="margin-top: auto; margin-bottom:auto;">
+                            <p class="float-left">Scalebar</p>
+                        </div>
+                        <div class="col-7" style="padding-left:15%; margin-top: auto; margin-bottom:auto;">
+                            <button class="btn btn-lg button" id="scaleBarButton"
+                            style="width:100%; padding:5%; padding-top:6%; color: black;">
+                                <svg viewBox= "0 0 25 4">
+                                    <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
+                                    stroke="black" fill="white" ></rect>
+                                    <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert" d="M 15 0 L 15 4"  stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
+                                    <path id="scalebarLine10th" d="M 0 2 L 2.5 2"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert30th" d="M 5 0 L 5 4"stroke="black" stroke-width=".75"/>
+
+                                    <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert50th" d="M 10 0 L 10 4"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarLine70th" d="M 5 2 L 7.5 2"
+                                    stroke="black" stroke-width=".75"/>
+                                    <path id="scalebarLine90th" d="M 10 2 L 12.5 2"
+                                    stroke="black" stroke-width=".75"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="col-3">
+                            <label id="scaleCheckboxLabel" for="scaleCheckbox"
+                            style="visibility: hidden; margin-bottom: 0;">Toggle Color</label>
+                            <br/>
+                            <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
+                            style="visibility: hidden;" title="Shift + Alt + R">
+                        </div>
+                    </div>
+                </div>
+                <!-- Annotation UI-->
+                <div id="Annotate" class="tabcontent" style="display: none;">
+                    <h4>Annotation Tools</h4>
+                    <!-- Draw Tool Button -->
+                    <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
+                        <div class="col-4" style="margin: auto auto;">
+                            <p class="float-left" style="padding-top: .5rem; height: 100%; font-size: auto;">
+                                Drawing Tool
+                            </p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <img class="btn btn-lg button" id="pencilIconFlag" style="width: 100%;" 
+                            src="/images/pencil.png"></img>
+                        </div>
+                        <div class="col-4" style="padding-top:2%;">
+                            <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
+                            value="#ffffff"/> 
+                            <br/>
+                            <br/>
+                            <button class="btn btn-danger btn-sm" id="undoLine" 
+                            style="visibility: hidden; width: 100%; margin-bottom: 5%;" title="Shift + Alt + L">
+                                Undo
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Outline Box Button -->
+                    <div class="row" role="table" title="Alt + B">
+                        <div class="col-4">
+                            <p class="float-left" style="padding-top: .5rem; width: 100%;">
+                                Outline Box
+                            </p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <button class="btn btn-lg button" id="outlineBtn" 
+                            style="width:100%; color:black; padding:1%; padding-top: 10%;">
+                                <svg viewBox="0 0 4 2">
+                                    <rect x="1" y="0" width="2" height="2" 
+                                    stroke="white" stroke-width=".5" fill="transparent"></rect>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="col-4" style="padding-top:2%;">
+                            <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"
+                            title="Change Color"/> 
+                            <br/>
+                            <br/>
+                            <button class="btn btn-danger btn-sm" 
+                            style="visibility: hidden; width: 100%;margin-bottom: 5%;" id="undoBox" 
+                            title="Shift + Alt + B">
+                                Undo
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Text Tool Button -->
+                    <div class="row" role="table" title="Alt + T">
+                        <div class="col-4">
+                            <p class="float-left" style="padding-top:.5rem; margin: auto auto;">Text Tool</p>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
+                            <button class="btn btn-lg button" id="textBtn" 
+                            style="width:100%; color: black; padding: 10%; padding-top: 15%;">
+                                <svg viewBox="0 0 20 10" width="100%">
+                                    <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
+                                    fill="transparent"></rect>
+                                    <text x="3" y="7" font-size="9">Aa</text>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%; ">
+                            <input type="color" id="textColorPicker" 
+                            style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
+                            <br/>
+                            <br/>
+                            <button class="btn btn-danger btn-sm" 
+                            style="margin-bottom: 5%;visibility: hidden; width: 100%;"
+                                id="undoText" title="Shift + Alt + T">
+                                Undo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- File UI-->
+                <div id="File" class="tabcontent" style="display: none;">
+                    <h4>File Manipulations</h4>
+                    <!-- Pad Image Interface -->
+                    <div class="row" role="table" title="Pad Image Border">
+                        <div class="row text-center">
+                            <h2 class="text-center" style="padding-left: 2rem; font-size: 100%; color: white;">
+                                Pad Image
+                            </h2>
+                        </div>
+                        <br/>
+                        <div class="row" style="width:100%;">
+                            <div class="col-6" style="padding-left:2rem; margin-bottom: 2%;">
+                                <input class="form-control form-control-lg"
+                                style="width: 100%; border: 1px solid lightgrey; font-size: 14px;"
+                                id="paddingInput" type="text" placeholder="Pad Pixels"/>
+                            </div>
+                            <div class="col-6" style="padding-left:15%;">
+                                <button  style=" width: 100%;" class="btn btn-danger btn-md button"
+                                id="resetPaddingBtn" title="Reset Padding">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" style="width: 100%; padding: .5%; margin: 1px;">
+                            <div class="col-3" style="padding: 0;">
+                                <button class="btn button btn-sm" style="width:100%" id="topPaddingBtn"
+                                    title="Top of Image">
+                                    Top 
+                                </button> 
+                            </div>
+                            <div class="col-3" style="width: 25%; padding: 0;">
+                                <button class="btn button btn-sm" style="width:100%" id="bottomPaddingBtn"
+                                    title="Bottom of Image">
+                                    Bottom 
+                                </button>
+                            </div>
+                            <div class="col-3" style="width: 25%; padding: 0;">
+                                <button class="btn button btn-sm" style="width:100%" id="leftPaddingBtn"
+                                    title="Left Side of Image">
+                                    Left 
+                                </button> 
+                            </div>
+                            <div class="col-3" style="width: 25%; padding: 0;">
+                                <button class="btn button btn-sm" style="width:100%" id="rightPaddingBtn"
+                                    title="Right Side of Image">
+                                    Right 
+                                </button> 
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Export Button Interface -->
+                    <div class="row" role="table" style="border-bottom: 4px solid black; margin-top: auto;
+                    margin-bottom: auto;" title="Download Figure">
+                        <div class="row" style="padding:2%; padding-left: 2rem; width: 20rem;">
+                            <div class="col-4" style="padding: 0;">
+                                <p class="float-left" style="margin-right: 2rem;">
+                                Save<br/>Figure
+                                </p>
+                            </div>
+                            <div class="col-8">
+                                <button class="btn btn-primary btn-lg button" 
+                                style="height: 90%;margin: auto auto;" id="exportBtn" >
+                                    <svg viewBox="0 0 20 25">
+                                        <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
+                                        <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
+                                        L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
+                                        fill="white" stroke="white"></path>
+                                        <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 
+                                        L 12 5" stroke="black" fill="black"></path>
+                                        <path d="M 2 17 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 17 
+                                        a1,1 0 0 0 -1,-1 L 3 16 a1,1 0 0 0 -1,1"
+                                        fill="white" stroke="white"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
+<!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
         </div>
 
         <!-- Right Bar-->
@@ -102,309 +387,54 @@
         </div>
         
         <!-- Center Box-->
-        <div class="mainbox-center" style="width: 70%; background-color: rgba(99,88,94,0.65);
-        border: 3px solid rgba(255, 255,255, .65);padding: 0;">
+        <div class="mainbox-center" style="width: 65%; height:100%; background-color: rgba(99,88,94,0.65);
+        border: 3px solid rgba(255, 255,255, .65); padding: 5px;">
             <!-- Center Title Box -->
             <div class="container text-center" style="background: rgba(99, 88, 94, 0.692);
-            height: 20%; padding: 2rem; max-width: none; width:100%; border: 1px solid black; margin: 0;">
-                <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" title="Help!" 
-                style="position: absolute; left: auto; right: 16.5%;"/>
+            height: 13rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black; margin:0;">
                 <div class="jumbotron text-center" 
-                style="border: 1px solid black; margin-left: auto; margin-right: auto; 
-                background: rgba(243, 214, 176, 0.698); height:7rem; padding: 0;">
-                    <h2>Edit Cube Image</h2>
-                    <h4 id="imageName"></h4>
-                    <h5><%=w%> &times; <%=h%> px</h5>   
-                    <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
-                    style="border: 2px solid black; width: auto; height: 3rem; margin: auto auto; margin-top: .5%;"
-                     title="Go Back">
-                        View Caption
-                    </button>
-                    <a class="btn btn-primary btn-lg float-left" 
-                    style="border: 2px solid black; width: auto; height: 3rem; margin: auto auto; margin-top: .5%;"
-                    href="/" role="button" title="Start Over">Upload New File</a>
-                </div>
-            </div>
-            <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 1%;margin-bottom: 1%;">
-                <!-- add progress bar here using js-->
-            </div>
-            <div class="row" style="margin-top:1rem; margin-bottom:0; padding:0;">
-                <div class="col-3" style="z-index: 10; padding: 0;">
-                    <!-- Button Interface-->
-                    <h2 class="text-center" style="color:white;">Tools</h2>
-                    <div class="image-controls" style="padding-left: 2%">
-                        
-    <!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
-    <!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
-
-                        <!-- North Button Interface -->
-                        <div class="row" role="table" style="margin-top:0rem; border-top: 4px solid black" 
-                        title="Alt + N">
-                            <div class="col-4">
-                                <p class="float-left" style="margin-right:.5rem; height: 100%; font-size: auto;">
-                                    North Azimuthal<br/>Direction
-                                </p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <img class="btn btn-lg button" id="northIconFlag" style="width: 100%"
-                                 src="/images/north.png" style="margin-left: auto; margin-right:auto;"></img>
-                            </div>
-                            <div class="col-4">
-                                <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
-                                    Toggle Color
-                                </label>
-                                <br>
-                                <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
-                                style="visibility: hidden;"  title="Shift + Alt + N">
-                            </div>
+                style="border: 1px solid black; margin:auto auto;margin-left: auto; margin-right: auto; 
+                background: rgba(243, 214, 176, 0.698); height:75%; padding: 0;">
+                    <div class="row">
+                        <div class="col-4" style="width: 15%;"></div>
+                        <div class="col-4" style="text-align: center; width: 70%;">
+                            <h2 style="font-size:125%;">Edit Cube Image</h2>
+                            <h4 id="imageName"style="font-size:125%;"></h4>
+                            <h5 style="font-size:125%;"><%=w%> &times; <%=h%> px</h5>
                         </div>
-                        <!-- Sun Button Interface -->
-                        <div class="row" role="table"title="Alt + S" style="padding-bottom: 1%;">
-                            <div class="col-4">
-                                <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
-                                    Sun Azimuthal<br/>Direction
-                                </p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <svg class="btn btn-lg button" style="width: 100%" 
-                                viewBox="0 0 50 50"role="button" id="sunIconFlag">
-                                    <circle cx="25" cy="25" r="5" stroke="black"></circle>
-                                    <circle cx="25" cy="25" r="20" stroke="black" fill="transparent" stroke-width="5">
-                                    </circle>
-                                </svg>
-                            </div>
-                            <div class="col-4">
-                                <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem;visibility: hidden;">
-                                    Toggle Color
-                                </label>
-                                <br/>
-                                <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
-                                style="visibility: hidden;" title="Shift + Alt + S">
-                            </div>
-                        </div>
-                        <!-- Observer Button Interface -->
-                        <div class="row" role="table" title="Alt + O">
-                            <div class="col-4" style="margin: auto auto;">
-                                <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
-                                    Observer Azimuthal<br/>Direction
-                                </p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <img class="btn btn-lg button" id="eyeFlag"  style="width: 100%" 
-                                src="/images/eye_symbol.png"></img>
-                            </div>
-                            <div class="col-4">
-                                <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top:20rem; visibility: hidden;">
-                                    Toggle Color
-                                </label>
-                                <br/>
-                                <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
-                                style="visibility: hidden;" title="Shift + Alt + O">
-                            </div>
-                        </div>
-                        <!-- Pencil Tool Interface -->
-                        <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
-                            <div class="col-4" style="margin: auto auto;">
-                                <p class="float-left" style="padding-top: .5rem; height: 100%; font-size: auto;">
-                                    Drawing Tool
-                                </p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <img class="btn btn-lg button" id="pencilIconFlag" style="width: 100%;" 
-                                src="/images/pencil.png"></img>
-                            </div>
-                            <div class="col-4" style="padding-top:2%;">
-                                <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
-                                value="#ffffff"/> 
-                                <br/>
-                                <br/>
-                                <button class="btn btn-danger btn-sm" id="undoLine" 
-                                style="visibility: hidden; width: 100%; margin-bottom: 5%;" title="Shift + Alt + L">
-                                    Undo
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Scalebar Button Interface -->
-                        <div class="row" role="table" title="Alt + R">
-                            <div class="col-2" style="margin-top: auto; margin-bottom:auto;">
-                                <p class="float-left">Scalebar</p>
-                            </div>
-                            <div class="col-7" style="padding-left:15%; margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="scaleBarButton"
-                                style="width:100%; padding:5%; padding-top:6%; color: black;">
-                                    <svg viewBox= "0 0 25 4">
-                                        <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width=".5" 
-                                        stroke="black" fill="white" ></rect>
-                                        <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert" d="M 15 0 L 15 4"  stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert10th" d="M 0 0 L 0 4"  stroke="black" stroke-width="1"/>
-                                        <path id="scalebarLine10th" d="M 0 2 L 2.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert20th" d="M 2.5 0 L 2.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert30th" d="M 5 0 L 5 4"stroke="black" stroke-width=".75"/>
-
-                                        <path id="scalebarVert40th" d="M 7.5 0 L 7.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 10 0 L 10 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarVert50th" d="M 12.5 0 L 12.5 4"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine70th" d="M 5 2 L 7.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                        <path id="scalebarLine90th" d="M 10 2 L 12.5 2"
-                                        stroke="black" stroke-width=".75"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="col-3">
-                                <label id="scaleCheckboxLabel" for="scaleCheckbox"
-                                style="visibility: hidden; margin-bottom: 0;">Toggle Color</label>
-                                <br/>
-                                <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
-                                style="visibility: hidden;" title="Shift + Alt + R">
-                            </div>
-                        </div>
-                        <!-- Outline Button Interface -->
-                        <div class="row" role="table" title="Alt + B">
-                            <div class="col-4">
-                                <p class="float-left" style="padding-top: .5rem; width: 100%;">
-                                    Outline Box
-                                </p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="outlineBtn" 
-                                style="width:100%; color:black; padding:1%; padding-top: 10%;">
-                                    <svg viewBox="0 0 4 2">
-                                        <rect x="1" y="0" width="2" height="2" 
-                                        stroke="white" stroke-width=".5" fill="transparent"></rect>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="col-4" style="padding-top:2%;">
-                                <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"
-                                title="Change Color"/> 
-                                <br/>
-                                <br/>
-                                <button class="btn btn-danger btn-sm" 
-                                style="visibility: hidden; width: 100%;margin-bottom: 5%;" id="undoBox" 
-                                title="Shift + Alt + B">
-                                    Undo
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Text Tool Interface -->
-                        <div class="row" role="table" title="Alt + T">
-                            <div class="col-4">
-                                <p class="float-left" style="padding-top:.5rem; margin: auto auto;">Text Tool</p>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                                <button class="btn btn-lg button" id="textBtn" 
-                                style="width:100%; color: black; padding: 10%; padding-top: 15%;">
-                                    <svg viewBox="0 0 20 10" width="100%">
-                                        <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
-                                        fill="transparent"></rect>
-                                        <text x="3" y="7" font-size="9">Aa</text>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%; ">
-                                <input type="color" id="textColorPicker" 
-                                style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
-                                <br/>
-                                <br/>
-                                <button class="btn btn-danger btn-sm" 
-                                style="margin-bottom: 5%;visibility: hidden; width: 100%;"
-                                 id="undoText" title="Shift + Alt + T">
-                                    Undo
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Pad Image Interface -->
-                        <div class="row" role="table" title="Pad Image Border">
-                            <div class="row text-center">
-                                <h2 class="text-center" style="padding-left: 2rem; font-size: 100%; color: white;">
-                                    Pad Image
-                                </h2>
-                            </div>
-                            <br/>
-                            <div class="row" style="width:100%;">
-                                <div class="col-6" style="padding-left:2rem; margin-bottom: 2%;">
-                                    <input class="form-control form-control-lg"
-                                    style="width: 100%; border: 1px solid lightgrey; font-size: 14px;"
-                                    id="paddingInput" type="text" placeholder="Pad Pixels"/>
-                                </div>
-                                <div class="col-6" style="padding-left:15%;">
-                                    <button  style=" width: 100%;" class="btn btn-danger btn-md button"
-                                    id="resetPaddingBtn" title="Reset Padding">
-                                        Reset
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="row" style="width: 100%; padding: .5%; margin: 1px;">
-                                <div class="col-3" style="padding: 0;">
-                                    <button class="btn button btn-sm" style="width:100%" id="topPaddingBtn"
-                                     title="Top of Image">
-                                      Top 
-                                    </button> 
-                                </div>
-                                <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="width:100%" id="bottomPaddingBtn"
-                                     title="Bottom of Image">
-                                      Bottom 
-                                    </button>
-                                </div>
-                                <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="width:100%" id="leftPaddingBtn"
-                                     title="Left Side of Image">
-                                      Left 
-                                    </button> 
-                                </div>
-                                <div class="col-3" style="width: 25%; padding: 0;">
-                                    <button class="btn button btn-sm" style="width:100%" id="rightPaddingBtn"
-                                     title="Right Side of Image">
-                                      Right 
-                                    </button> 
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Export Button Interface -->
-                        <div class="row" role="table" style="border-bottom: 4px solid black; margin-top: auto;
-                         margin-bottom: auto;" title="Download Figure">
-                            <div class="row" style="padding:2%; padding-left: 2rem; width: 20rem;">
-                                <div class="col-4" style="padding: 0;">
-                                    <p class="float-left" style="margin-right: 2rem;">
-                                    Save<br/>Figure
-                                    </p>
-                                </div>
-                                <div class="col-8">
-                                    <button class="btn btn-primary btn-lg button" 
-                                    style="height: 90%;margin: auto auto;" id="exportBtn" >
-                                        <svg viewBox="0 0 20 25">
-                                            <path d="M 0 0 L 15 0 L 20 5 L 20 25 L 0 25 L 0 0"></path>
-                                            <path d="M 3 3.5 L 3 10 a1,1 0 0 0 1,1 L 13 11 a1,1 0 0 0 1,-1 
-                                            L 14 3.5 a1,1 0 0 0 -1,-1 L 4 2.5 a1,1 0 0 0 -1,1" 
-                                            fill="white" stroke="white"></path>
-                                            <path d="M 12 4 L 12 9 a2.5,2.5 0 0 1 -3,0 L 9 4 a2.5,2.5 0 0 1 3,0 
-                                            L 12 5" stroke="black" fill="black"></path>
-                                            <path d="M 2 17 L 2 22 a1,1 0 0 0 1,1 L 17 23 a1,1 0 0 0 1,-1 L 18 17 
-                                            a1,1 0 0 0 -1,-1 L 3 16 a1,1 0 0 0 -1,1"
-                                            fill="white" stroke="white"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
+                        <div class="col-4" style="width: 15%;">
+                            <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" title="Help!" 
+                            style="position: relative;"/>
                         </div>
                     </div>
                 </div>
-                <div class="col-9">
+                <div class="row" style="width: 100%">
+                    <a class="btn btn-primary btn-lg float-left" 
+                    style="border: 2px solid black; width: auto; height: 3rem; margin-top: .5%; margin-left: 0;
+                        margin-bottom:auto; "
+                    href="/" role="button" title="Start Over">
+                        Upload New File
+                    </a>
+                    <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
+                    style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .5%;
+                    margin-left: auto;"
+                        title="Go Back">
+                        View Caption
+                    </button>  
+                </div>
+            </div>
+            <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 0;">
+                <!-- add progress bar here using js-->
+            </div>
+            <div class="row" style="margin-top:1rem; margin-bottom:0; padding:0;">
+                <div class="col">
                     <!-----------------------Editor Box----------------------------------------------->
-                    <div style="height: 75%; margin-left: 
-                    auto; margin-right: 0; margin-top: 0; margin-bottom: 0; padding: 0;">
+                    <div style="height: fit-content; width: auto; margin-left:auto;
+                     margin-right: 0; margin-top: auto; margin-bottom: auto; padding: 0;">
                         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" 
                         fill="black" xmlns:xlink="http://www.w3.org/1999/xlink" 
                         class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:rgb(1, 1, 1);"
-                         width='100%' height='100%'> 
+                         width='100%' height='100%'>
                             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
                             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0"
                                 transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>

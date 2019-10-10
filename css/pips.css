@@ -9,10 +9,6 @@ body,html {
     margin: 0%;
 }
 
-div {
-    padding: 0;
-}
-
 .mainbox-left {
     float: left;
     width: 15%;
@@ -36,8 +32,71 @@ text {
     height: auto;
     width: 70%;
     border: 10px;
+    margin-top: 0;
+    margin-bottom: auto;
     margin-left: auto;
     margin-right: auto;
+    overflow-y: auto;
+    overflow-x: hidden; 
+    padding-bottom: 2%;
+}
+
+.menu {
+    display: inline-flex;
+    width: 75%;
+    height: 85%;
+    background: rgb(161, 161, 161);
+    border: #000;
+    margin-top: 25%;
+}
+
+* { box-sizing: border-box }
+
+/* Style the tab */
+.tabs {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    width: 20%;
+    height: auto;
+    margin-left: 2%;
+    margin-top: 25%;
+}
+
+/* Style the tab content */
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 100%;
+    border-left: none;
+    margin-bottom: 2%;
+    height: auto;
+    text-align: center;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tabs button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    font-size: 55%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+/* Change background color of buttons on hover */
+.tabs button:hover {
+    background-color: #ddd;
+}
+  
+/* Create an active/current "tab button" class */
+.tabs button.active {
+    background-color: rgb(161, 161, 161);
 }
 
 .text-stroke {
@@ -204,8 +263,7 @@ label {
     color: white;
     border: 2px solid black !important;
     overflow: hidden;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin: auto auto;
     min-width: 4.5rem;
 }
 
