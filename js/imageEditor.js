@@ -422,7 +422,7 @@ function makeDraggable(event){
                     // decrement by the growing factor
                     currentScale -= growingFactor;
                     // check for the min
-                    if(currentScale < iconMin){currentScale = iconMin;}
+                    if(currentScale < iconMin){ currentScale = iconMin; }
 
                     // translate the icon 0 in the x direction and by the difference 
                     //      in the positive y direction
@@ -436,7 +436,7 @@ function makeDraggable(event){
                     currentScale += growingFactor;
 
                     // check for max size
-                    if(currentScale > iconMax){currentScale = iconMax;}
+                    if(currentScale > iconMax){ currentScale = iconMax; }
                     if(!isOutline && bbox.height * currentScale > parseInt(h)/3){
                         currentScale -= growingFactor
                     }
@@ -468,7 +468,7 @@ function makeDraggable(event){
                 if(coord.x > offset.x && coord.y > offset.y){
                     currentScale -= growingFactor;
                     // check for min
-                    if(currentScale < iconMin){currentScale = iconMin;}
+                    if(currentScale < iconMin){ currentScale = iconMin; }
 
                     // transform the icon by the positive difference in the sizes                        
                     dx = parseInt(transform.matrix.e +
@@ -1419,9 +1419,20 @@ function getCookie(cname){
     return "";
 }
 
+/**
+ * @function openToolBox
+ * 
+ * @param {event} event the click event object passed by the user's click
+ * @param {string} id the id of the box to display 
+ * 
+ * @description when one of the tab buttons is clicked this function hides
+ *              all menu tabs and then shows the target of the click
+ */
 function openToolBox(event, id){
     // Declare all variables
-    var i, tabcontent, tablinks;
+    var i,
+    tabcontent,
+    tablinks;
   
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -2637,18 +2648,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'bottom');
             padBottom = true, padLeft = false, padRight = false, padTop = false;
 
-            bottomBtn.className = 'btn btn-danger button btn-sm disabled';
+            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            bottomBtn.className = 'btn button btn-sm';
-            leftBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padBottom = false;  
         }
     });
@@ -2664,18 +2675,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'top');
             padTop = true, padLeft = false, padRight = false, padBottom = false;
             
-            topBtn.className = 'btn btn-danger button btn-sm disabled';
+            topBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            bottomBtn.className = 'btn button btn-sm';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            topBtn.className = 'btn button btn-sm';
-            leftBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            bottomBtn.className = 'btn button btn-sm';
+            topBtn.className = 'btn button btn-sm paddingBtn';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
             padTop = false;  
         }
     });
@@ -2692,18 +2703,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'right');
             padRight = true, padLeft = false, padBottom = false, padTop = false;
 
-            rightBtn.className = 'btn btn-danger button btn-sm disabled';
+            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-sm';
-            bottomBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            rightBtn.className = 'btn button btn-sm'; 
-            leftBtn.className = 'btn button btn-sm';
-            bottomBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            rightBtn.className = 'btn button btn-sm paddingBtn'; 
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padRight = false; 
         } 
     });
@@ -2720,18 +2731,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'left');
             padLeft = true, padBottom = false, padRight=false, padTop = false;
             
-            leftBtn.className = 'btn btn-danger button btn-sm disabled';
+            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
             
-            bottomBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            leftBtn.className = 'btn button btn-sm'; 
-            bottomBtn.className = 'btn button btn-sm';
-            rightBtn.className = 'btn button btn-sm';
-            topBtn.className = 'btn button btn-sm';
+            leftBtn.className = 'btn button btn-sm paddingBtn'; 
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padLeft = false; 
         } 
     });
@@ -2748,10 +2759,10 @@ $(document).ready(function(){
         
         padBottom = false, padLeft = false, padRight = false, padTop = false;
         
-        bottomBtn.className = 'btn button btn-sm';
-        leftBtn.className = 'btn button btn-sm';
-        rightBtn.className = 'btn button btn-sm';
-        topBtn.className = 'btn button btn-sm'; 
+        bottomBtn.className = 'btn button btn-sm paddingBtn';
+        leftBtn.className = 'btn button btn-sm paddingBtn';
+        rightBtn.className = 'btn button btn-sm paddingBtn';
+        topBtn.className = 'btn button btn-sm paddingBtn'; 
     });
 
 

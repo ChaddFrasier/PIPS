@@ -108,8 +108,8 @@
                                 <label for="cubUpload" style="font-size: x-large; color:black;">
                                     <cite>Choose an ISIS Cube or TIFF File</cite>
                                 </label>
-                                <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
-                                type="file" class="form-control-file"/>
+                                <input name="uploadFile" accept=".cub, .tif, .tiff, .TIF, .TIFF, .CUB"
+                                id="cubUpload" style="padding-bottom:1rem;" type="file" class="form-control-file"/>
                             </div>
                         </div>
                          <!-- Options -->
@@ -301,7 +301,7 @@
                                         color:black; border-bottom: 2px solid black;">
                                             Custom Upload
                                         </label>
-                                    <input name="templateFile" id="tplUpload" 
+                                    <input name="templateFile" id="tplUpload" accept=".tpl"
                                     style="margin-left:auto;margin-right:auto;" type="file" 
                                     class="form-control-file"/>
                                 </div>
