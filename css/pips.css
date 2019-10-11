@@ -333,7 +333,7 @@ label {
     min-width: 4.5rem;
 }
 
-.button [id=northIconFlag] {
+.button[id=northIconFlag] {
     min-height: 7rem;
     min-width: 4.5rem;
 }
@@ -487,6 +487,7 @@ div.row[role=table] {
     background: rgba(99, 88, 94, 0.692);
     text-align: left;
     overflow: hidden;
+    min-height: 7rem;
 }
 
 .btnList {
