@@ -537,12 +537,14 @@ app.post('/captionWriter', async function(request, response){
                                 break;
                             }
                         }
+
+                        console.log(scaleFactor);
                         
                         // if the image needs to be reduced
                         if(scaleFactor > 1){
                             // promise on the reduce call
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
@@ -1140,54 +1142,60 @@ app.post("/figureDownload", async function(request, response){
     response.header("Cache-Control", "max-age=0");
 
     // save the file in the form data to the server so it can be read
-    await request.files.upl.mv("./tmp/" + request.files.upl.name);
-
-    if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
-        // use sharp Module to convert to png from data buffer
-        sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
-        .png()
-        .toFile(path.join("tmp",filename),function(err, info){
-            if(err){
-                console.log(err);
-            }
-            else{
-                response.download(path.join("tmp",filename),function(err){
+    request.files.upl.mv("./tmp/" + request.files.upl.name,
+    async (err) => {
+        if(err){
+            console.log("Conversion Error: " + err);
+        }
+        else{
+            if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
+                // use sharp Module to convert to png from data buffer
+                await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                .png()
+                .toFile(path.join("tmp",filename),function(err, info){
                     if(err){
-                        console.log(err);
+                        console.log("Sharp Error: " + err);
                     }
                     else{
-                        // remove the files from temp
-                        fs.unlinkSync(path.join("tmp",request.files.upl.name));
-                        fs.unlinkSync(path.join("tmp",filename));
+                        response.download(path.join("tmp",filename),function(err){
+                            if(err){
+                                console.log("Download Error: " + err);
+                            }
+                            else{
+                                // remove the files from temp
+                                fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                                fs.unlinkSync(path.join("tmp",filename));
+                            }
+                        });
                     }
-                });
-            }
-        }).end();
-    }
-    else{
-        // Otherwise it will be a tiff
-        // use sharp Module to convert to tiff from data buffer
-        sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
-        .tiff()
-        .toFile(path.join("tmp",filename),function(err, info){
-            if(err){
-                console.log(err);
+                }).end();
             }
             else{
-                response.download(path.join("tmp",filename),function(err){
+                // Otherwise it will be a tiff
+                // use sharp Module to convert to tiff from data buffer
+                sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                .tiff()
+                .toFile(path.join("tmp",filename),function(err, info){
                     if(err){
-                        console.log(err);
+                        console.log("Conversion Error: " + err);
                     }
                     else{
-                        // remove files from tmp
-                        fs.unlinkSync(path.join("tmp",request.files.upl.name));
-                        fs.unlinkSync(path.join("tmp",filename));
-
+                        response.download(path.join("tmp",filename),function(err){
+                            if(err){
+                                console.log("Download Error: " + err);
+                            }
+                            else{
+                                // remove files from tmp
+                                fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                                fs.unlinkSync(path.join("tmp",filename));
+        
+                            }
+                        });
                     }
-                });
+                }).end();
             }
-        }).end();
-    }
+        }
+    });    
 });
 
 /**

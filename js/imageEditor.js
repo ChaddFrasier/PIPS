@@ -1895,6 +1895,7 @@ $(document).ready(function(){
             // encode the svg to a string
             var data = (new XMLSerializer()).serializeToString(svg); 
 
+            //data += '<?xml version="1.1" encoding="utf-8"?>\n' + data;
             // creates a blob from the encoded svg and sets the type of the blob to and image svg
             var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
             
