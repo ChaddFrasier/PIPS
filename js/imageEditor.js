@@ -1893,11 +1893,12 @@ $(document).ready(function(){
             filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
 
             // encode the svg to a string
-            var data = (new XMLSerializer()).serializeToString(svg); 
-
-            //data += '<?xml version="1.1" encoding="utf-8"?>\n' + data;
+            var data = 
+                '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+                + (new XMLSerializer()).serializeToString(svg);
+            
             // creates a blob from the encoded svg and sets the type of the blob to and image svg
-            var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
             
             // create the progress bar
             var progressBar = showProgress();
