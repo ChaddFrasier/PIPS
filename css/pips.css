@@ -333,6 +333,11 @@ label {
     min-width: 4.5rem;
 }
 
+.button [id=northIconFlag] {
+    min-height: 7rem;
+    min-width: 4.5rem;
+}
+
 .button:hover {
     background: rgba(0, 113, 79, 0.705);
     border: 2px solid rgba(0, 0, 0, 0.534) !important;
@@ -368,7 +373,7 @@ input[type=checkbox]:hover {
     padding: 4%;
 }
 
-svg {
+svg.image-image {
     position: relative;
     align-content: left;
     margin-top: 0;

@@ -49,9 +49,13 @@
                                 North Azimuthal<br/>Direction
                             </p>
                         </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                            <img class="btn btn-lg button" id="northIconFlag" style="width: 100%"
-                                src="/images/north.png" style="margin-left: auto; margin-right:auto;"></img>
+                        <div class="col-4" style="text-align:center;">
+                            <svg id="northIconFlag" class="btn btn-lg button" viewBox=" 0 0 50 100"
+                             stroke-width="2" style="padding:5%; margin-left:auto;margin-right: auto;">
+                                <path d="M 25 0 L 50 50 L 25 25 L 25 0" stroke="black" fill="black"/>
+                                <path d="M 25 0 L 0 50 L 25 25 L 25 0" fill="white" stroke="black"/>
+                                <path d="M 45 55 L 45 100 L 5 55 L 5 100" fill="none" stroke="black" stroke-width="3"/>
+                            </svg>
                         </div>
                         <div class="col-4">
                             <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
