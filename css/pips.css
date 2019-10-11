@@ -351,10 +351,10 @@ input[type=color]:hover {
 }
 
 input:focus {
-    outline: 2px double black;
+    outline: 2px double white;
 }
 
-input[type="color"] {
+input[type=color] {
     margin: auto auto;
     margin-top: 0;
     margin-bottom: auto;
