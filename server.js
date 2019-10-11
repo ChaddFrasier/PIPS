@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 10/07/2019
+ * @updated 10/11/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -538,8 +538,6 @@ app.post('/captionWriter', async function(request, response){
                             }
                         }
 
-                        console.log(scaleFactor);
-                        
                         // if the image needs to be reduced
                         if(scaleFactor > 1){
                             // promise on the reduce call
@@ -570,7 +568,6 @@ app.post('/captionWriter', async function(request, response){
                                 cubeObj.logFlag,
                                 cubeObj.userId + ".log",
                                 logCubeName));
-                        
                         
                             // when isis is done read the pvl file
                             Promise.all(promises).then(function(){
@@ -1173,11 +1170,11 @@ app.post("/figureDownload", async function(request, response){
             else{
                 // Otherwise it will be a tiff
                 // use sharp Module to convert to tiff from data buffer
-                sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
                 .tiff()
                 .toFile(path.join("tmp",filename),function(err, info){
                     if(err){
-                        console.log("Conversion Error: " + err);
+                        console.log("Sharp Error: " + err);
                     }
                     else{
                         response.download(path.join("tmp",filename),function(err){
@@ -1188,7 +1185,6 @@ app.post("/figureDownload", async function(request, response){
                                 // remove files from tmp
                                 fs.unlinkSync(path.join("tmp",request.files.upl.name));
                                 fs.unlinkSync(path.join("tmp",filename));
-        
                             }
                         });
                     }
