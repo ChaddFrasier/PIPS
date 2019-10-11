@@ -2135,6 +2135,24 @@ $(document).ready(function(){
 
 
     /**
+     * @function viewOption 'mousedown' event handler
+     * 
+     * @description change the view of the image that the user is viewing
+     * 
+    */
+    $("#viewOption").on("change", function(){
+        if($(this).is(":checked")){
+            $("#imageViewContainer").css("width","65%");
+            $("#imageViewContainer").css("height","auto");
+        }
+        else{
+            $("#imageViewContainer").css("width","auto");
+            $("#imageViewContainer").css("height","fit-content");
+        }
+    });
+
+
+    /**
      * @function colorPickerLine 'change' event handler
      * 
      * @description when the color value is changed in the color picker set the global

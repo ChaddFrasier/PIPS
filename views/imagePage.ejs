@@ -409,18 +409,30 @@
                     </div>
                 </div>
                 <div class="row" style="width: 100%">
-                    <a class="btn btn-primary btn-lg float-left" 
-                    style="border: 2px solid black; width: auto; height: 3rem; margin-top: .5%; margin-left: 0;
-                        margin-bottom:auto; "
-                    href="/" role="button" title="Start Over">
-                        Upload New File
-                    </a>
-                    <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
-                    style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .5%;
-                    margin-left: auto;"
-                        title="Go Back">
-                        View Caption
-                    </button>  
+                    <div class="col-4">
+                        <a class="btn btn-primary btn-lg float-left" 
+                        style="border: 2px solid black; width: auto; height: 3rem; margin-top: .5%; margin-left: 0;
+                            margin-bottom:auto; "
+                        href="/" role="button" title="Start Over">
+                            Upload New File
+                        </a>
+                    </div>
+                    <div class="col-4" style="display: flex; margin: auto auto; padding-left: 10%;">
+                        <h5 style="width: 30%; color: white;">Fit Image in box</h5>
+                        <!-- Rounded switch -->
+                        <label class="switch">
+                            <input id="viewOption" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>    
+                    </div>
+                    <div class="col-4">
+                        <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
+                        style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .5%;
+                        margin-left: auto;"
+                            title="Go Back">
+                            View Caption
+                        </button>
+                    </div>  
                 </div>
             </div>
             <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 0;">
@@ -429,8 +441,8 @@
             <div class="row" style="margin-top:1rem; margin-bottom:0; padding:0;">
                 <div class="col">
                     <!-----------------------Editor Box----------------------------------------------->
-                    <div style="height: fit-content; width: auto; margin-left:auto;
-                     margin-right: 0; margin-top: auto; margin-bottom: auto; padding: 0;">
+                    <div id="imageViewContainer" style="height: fit-content; width: auto; margin-left:auto;
+                     margin-right: auto; margin-top: auto; margin-bottom: auto; padding: 0;">
                         <svg id="svgWrapper" xmlns="http://www.w3.org/2000/svg" version='1.1' stroke="black" 
                         fill="black" xmlns:xlink="http://www.w3.org/1999/xlink" 
                         class="image-image" viewBox="0 0 <%=w%> <%=h%>" style="fill:rgb(1, 1, 1);"
