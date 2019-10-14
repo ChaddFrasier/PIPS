@@ -1755,7 +1755,7 @@ $(document).ready(function(){
     + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
     + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
-    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="125"'
+    + '<text id="scalebarHalf" x="1075" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white"></text>'
     + '<text id="scalebar0" x="2125" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white">0</text></g>';
@@ -2283,6 +2283,11 @@ $(document).ready(function(){
      * 
     */
     $("#scaleBarButton").on("mousedown", function(){
+        var scaleCheckbox = document.getElementById("scaleCheckbox"),
+            scaleCheckboxLabel = document.getElementById("scaleCheckboxLabel"),
+            scaleCheckboxSlider = document.getElementById("scaleCheckboxSlider"),
+            scaleAnimation = document.getElementById("scaleAnimation");
+
         // if the scalebar btn is not disabled
         if(!this.classList.contains("disabled")){
             // clear all draw instance data if the flag is true
@@ -2296,8 +2301,18 @@ $(document).ready(function(){
                 svg.appendChild(scaleBarIcon);
                 this.className = "btn btn-danger btn-lg button";
 
-                document.getElementById("scaleCheckbox").style.visibility = "visible";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
+                scaleCheckbox.style.visibility = "visible";
+                scaleCheckboxLabel.style.visibility = "visible";
+
+                scaleCheckbox.style.transition = ".4s";
+                scaleCheckbox.style.webkitTransition = ".4s";
+                scaleCheckboxLabel.style.transition = ".4s";
+                scaleCheckboxLabel.style.webkitTransition = ".4s";
+                scaleCheckboxSlider.style.transition = ".4s";
+                scaleCheckboxSlider.style.webkitTransition = ".4s";
+                scaleAnimation.style.transition = ".4s";
+                scaleAnimation.style.webkitTransition = ".4s";
+
 
                 toggleScalebar = false;
             }
@@ -2306,8 +2321,18 @@ $(document).ready(function(){
                 scaleBarIcon.remove();
                 toggleScalebar = true;
                 this.className = "btn btn-lg button";
-                document.getElementById("scaleCheckbox").style.visibility = "hidden";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
+
+                scaleCheckbox.style.transition = "0s";
+                scaleCheckbox.style.webkitTransition = "0s";
+                scaleCheckboxLabel.style.transition = "0s";
+                scaleCheckboxLabel.style.webkitTransition = "0s";
+                scaleCheckboxSlider.style.transition = "0s";
+                scaleCheckboxSlider.style.webkitTransition = "0s";
+                scaleAnimation.style.transition = "0s";
+                scaleAnimation.style.webkitTransition = "0s";
+
+                scaleCheckbox.style.visibility = "hidden";
+                scaleCheckboxLabel.style.visibility = "hidden";
             }
         }
     });
@@ -2445,6 +2470,11 @@ $(document).ready(function(){
      * 
     */
     $('#eyeFlag').click(function(){
+        var eyeCheckbox = document.getElementById("eyeCheckbox"),
+            eyeCheckboxLabel = document.getElementById("eyeCheckboxLabel"),
+            eyeCheckboxSlider = document.getElementById("eyeCheckboxSlider"),
+            eyeAnimation = document.getElementById("eyeAnimation");
+
         if(!document.getElementById("eyeFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2460,8 +2490,18 @@ $(document).ready(function(){
                 eyeImage.style.visibility = 'hidden';
                 eyeFlag = !eyeFlag;
                 document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("eyeCheckbox").style.visibility = "hidden";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
+
+                eyeCheckbox.style.transition = "0s";
+                eyeCheckbox.style.webkitTransition = "0s";
+                eyeCheckboxLabel.style.transition = "0s";
+                eyeCheckboxLabel.style.webkitTransition = "0s";
+                eyeCheckboxSlider.style.transition = "0s";
+                eyeCheckboxSlider.style.webkitTransition = "0s";
+                eyeAnimation.style.transition = "0s";
+                eyeAnimation.style.webkitTransition = "0s";
+
+                eyeCheckbox.style.visibility = "hidden";
+                eyeCheckboxLabel.style.visibility = "hidden";
                 
             }
 
@@ -2476,8 +2516,19 @@ $(document).ready(function(){
                 setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
                 document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
+
                 document.getElementById("eyeCheckbox").style.visibility = "visible";
                 document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
+
+                eyeCheckbox.style.transition = ".4s";
+                eyeCheckbox.style.webkitTransition = ".4s";
+                eyeCheckboxLabel.style.transition = ".4s";
+                eyeCheckboxLabel.style.webkitTransition = ".4s";
+                eyeCheckboxSlider.style.transition = ".4s";
+                eyeCheckboxSlider.style.webkitTransition = ".4s";
+                eyeAnimation.style.transition = ".4s";
+                eyeAnimation.style.webkitTransition = ".4s";
+
                 eyeFlag = false;
                 eyeIconPlaced = true;
             }
@@ -2492,7 +2543,11 @@ $(document).ready(function(){
      * 
     */
     $('#sunIconFlag').click(function(){
-        
+        var sunCheckbox = document.getElementById("sunCheckbox"),
+            sunCheckboxLabel = document.getElementById("sunCheckboxLabel"),
+            sunCheckboxSlider = document.getElementById("sunCheckboxSlider"),
+            sunAnimation = document.getElementById("sunAnimation");
+
         if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2508,8 +2563,18 @@ $(document).ready(function(){
                 sunImage.remove();
                 document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
                 sunFlag = false;
-                document.getElementById("sunCheckbox").style.visibility = "hidden";
-                document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
+
+                sunCheckbox.style.transition = "0s";
+                sunCheckbox.style.webkitTransition = "0s";
+                sunCheckboxLabel.style.transition = "0s";
+                sunCheckboxLabel.style.webkitTransition = "0s";
+                sunCheckboxSlider.style.transition = "0s";
+                sunCheckboxSlider.style.webkitTransition = "0s";
+                sunAnimation.style.transition = "0s";
+                sunAnimation.style.webkitTransition = "0s";
+
+                sunCheckbox.style.visibility = "hidden";
+                sunCheckboxLabel.style.visibility = "hidden";
 
             }
             
@@ -2525,8 +2590,17 @@ $(document).ready(function(){
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
                                                                         "btn btn-danger btn-lg button");
-                document.getElementById("sunCheckbox").style.visibility = "visible";
-                document.getElementById("sunCheckboxLabel").style.visibility = "visible";
+                sunCheckbox.style.visibility = "visible";
+                sunCheckboxLabel.style.visibility = "visible";
+
+                sunCheckbox.style.transition = ".4s";
+                sunCheckbox.style.webkitTransition = ".4s";
+                sunCheckboxLabel.style.transition = ".4s";
+                sunCheckboxLabel.style.webkitTransition = ".4s";
+                sunCheckboxSlider.style.transition = ".4s";
+                sunCheckboxSlider.style.webkitTransition = ".4s";
+                sunAnimation.style.transition = ".4s";
+                sunAnimation.style.webkitTransition = ".4s";
                 
                 setIconAngle(sunImage, sunDegree);
                 makeDraggable(svg);  
@@ -2544,6 +2618,11 @@ $(document).ready(function(){
      * 
     */
     $('#northIconFlag').on('mousedown',function(){
+        var northLabel = document.getElementById("northCheckboxLabel"),
+            northAnimation = document.getElementById("northAnimation"),
+            northCheckboxSlider = document.getElementById("northCheckboxSlider"),
+            northCheckbox = document.getElementById("northCheckbox");
+
         if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2560,8 +2639,17 @@ $(document).ready(function(){
                 northImage.remove();
                 northImage.style.visibility = 'hidden';
                 document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "hidden";
-                document.getElementById("northCheckboxLabel").style.visibility = "hidden";
+                northLabel.style.transition = "0s";
+                northCheckbox.style.transition = "0s";
+                northLabel.style.webkitTransition = "0s";
+                northCheckbox.style.webkitTransition = "0s";
+                northAnimation.style.webkitTransition = "0s";
+                northAnimation.style.transition = "0s";
+                northCheckboxSlider.style.webkitTransition = "0s";
+                northCheckboxSlider.style.transition = "0s";
+                northCheckbox.style.visibility = "hidden";
+                northLabel.style.visibility = "hidden";
+                
                 northFlag = !northFlag;
             }
             
@@ -2579,9 +2667,17 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "visible";
-                document.getElementById("northCheckboxLabel").style.visibility = "visible";
+                                                                        "btn btn-danger btn-lg button");                                 
+                northLabel.style.transition = ".4s";
+                northCheckbox.style.transition = ".4s";
+                northLabel.style.webkitTransition = ".4s";
+                northCheckbox.style.webkitTransition = ".4s";
+                northAnimation.style.webkitTransition = ".4s";
+                northAnimation.style.transition = ".4s";
+                northCheckboxSlider.style.webkitTransition = ".4s";
+                northCheckboxSlider.style.transition = ".4s";
+                northCheckbox.style.visibility = "visible";
+                northLabel.style.visibility = "visible";
             }
             clickArray = [];
         }   

@@ -58,12 +58,12 @@
                             </svg>
                         </div>
                         <div class="col-4">
-                            <label id="northCheckboxLabel" for="northCheckbox" style="visibility:hidden">
-                                Toggle Color
-                            </label>
-                            <br>
-                            <input class="form-check-input largeBox" type="checkbox" id="northCheckbox" 
-                            style="visibility: hidden;"  title="Shift + Alt + N">
+                            <p id="northCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <label class="switch" id="northCheckbox" style="visibility: hidden;">
+                                <input type="checkbox" id="northCheckboxSlider" title="Shift + Alt + N"
+                                style="margin: auto auto; margin-bottom: 0;">
+                                <span class="slider round" id="northAnimation" ></span>
+                            </label> 
                         </div>
                     </div>
                     <!-- Sun Direction Button -->
@@ -82,12 +82,12 @@
                             </svg>
                         </div>
                         <div class="col-4">
-                            <label id="sunCheckboxLabel" for="sunCheckbox" style="top: 20rem;visibility: hidden;">
-                                Toggle Color
+                            <p id="sunCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <label class="switch" id="sunCheckbox" style="visibility: hidden;">
+                                <input type="checkbox" id="sunCheckboxSlider" title="Shift + Alt + S"
+                                style="margin: auto auto; margin-bottom: 0;">
+                                <span class="slider round" id="sunAnimation" ></span>
                             </label>
-                            <br/>
-                            <input class="form-check-input largeBox" type="checkbox" id="sunCheckbox"
-                            style="visibility: hidden;" title="Shift + Alt + S">
                         </div>
                     </div>
                     <!-- Observer Direction Button -->
@@ -102,12 +102,12 @@
                             src="/images/eye_symbol.png"></img>
                         </div>
                         <div class="col-4">
-                            <label id="eyeCheckboxLabel" for="eyeCheckbox" style="top:20rem; visibility: hidden;">
-                                Toggle Color
+                            <p id="eyeCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <label class="switch" id="eyeCheckbox" style="visibility: hidden;">
+                                <input type="checkbox" id="eyeCheckboxSlider" title="Shift + Alt + O"
+                                style="margin: auto auto; margin-bottom: 0;">
+                                <span class="slider round" id="eyeAnimation" ></span>
                             </label>
-                            <br/>
-                            <input class="form-check-input largeBox" type="checkbox" id="eyeCheckbox" 
-                            style="visibility: hidden;" title="Shift + Alt + O">
                         </div>
                     </div>
                     <div class="row" role="table" title="Alt + R">
@@ -143,11 +143,12 @@
                             </button>
                         </div>
                         <div class="col-3">
-                            <label id="scaleCheckboxLabel" for="scaleCheckbox"
-                            style="visibility: hidden; margin-bottom: 0;">Toggle Color</label>
-                            <br/>
-                            <input class="form-check-input largeBox" type="checkbox" id="scaleCheckbox" 
-                            style="visibility: hidden;" title="Shift + Alt + R">
+                            <p id="scaleCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <label class="switch" id="scaleCheckbox" style="visibility: hidden;">
+                                <input type="checkbox" id="scaleCheckboxSlider" title="Shift + Alt + R"
+                                style="margin: auto auto; margin-bottom: 0;">
+                                <span class="slider round" id="scaleAnimation"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
