@@ -113,13 +113,14 @@
                             </div>
                         </div>
                          <!-- Options -->
-                        <div class="row" style="padding: 2%; color: black; margin: auto auto; background: #e7c492;
+                        <div class="row" style="padding: 1%; color: black; margin: auto auto; background: #e7c492;
                           display:none; border: 5px solid black; width: 100%;" id="optionBox">
+                          <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
                                 <div class="col-2">
                                     <label id="logCheckboxLabel" for="logCheckbox" 
                                     style="color:black;margin-top:0; margin-bottom:auto;">
-                                        <cite>Log ISIS Output to File?</cite>
+                                        <cite style="font-size: 85%">Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
                                 <div class="col-5" style="text-align: right">
@@ -134,13 +135,12 @@
                                     style=" margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
                                 </div>
                                 <div class="col-10">
-                                    <div class="row" style="text-align: center; width: 90%; margin: auto auto;">
-                                        <div class="col" style="margin-right: 2%; width: 25%;">
-                                            <h5>Journal</h5>
-                                        </div> 
-                                        <div class="col-10" style="margin-left:2%; text-align: center; width: 75%;
-                                        border-bottom: 1px solid black; padding-right: 0; left: 4%; margin-bottom:1%;">
-                                            <h5>Figure Size</h5>
+                                    <div class="row" style="text-align: center; width: 90%; margin: auto auto; margin-bottom: 0; display: flex;">
+                                        <div class="col" style="text-align: center; width: auto; margin: 1%;
+                                        padding-right: 0; display: flex; border-bottom: 1px solid black">
+                                            <h5 style="margin-left:0; margin-right: auto;">Journal</h5>
+                                        
+                                            <h5 style="margin-left:auto; margin-right: auto;">Figure Size</h5>
                                         </div>
                                     </div>
                                     <div class="row" style="width: 100%;">
@@ -170,7 +170,7 @@
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption2" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;">
+                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 50%;">
                                                 American Geophysical Union
                                             </button>
                                         </div>
@@ -217,11 +217,12 @@
                                     </div>
                                     -->
                                 </div>
-                            </div>   
-                        </div>
-                        <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+                            </div>
+                        </div>   
+                   
+                        <div class="col-4" style="width: 25%; margin:0; padding: 2%;">
                             <div class="container" id="dimensionInput"
-                            style="width:auto; display:none; border-top:0;color: black; margin: auto auto;
+                            style="width:auto; visibility: visible; border-top:0;color: black; margin: auto auto;
                                 background: #e7c492; border: 5px solid black;">
                                 <div class="form-group float-center" 
                                 style="width: 17rem;color: black;">
@@ -241,9 +242,12 @@
                                         type="text" id="heightInput" name="desiredHeight" 
                                         placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
+                                
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <br/>
                         <!-- Template upload-->
                         <div class="row">
                             <input id="tplCode" name="tplCode" type="number" style="display: none;" value="0">

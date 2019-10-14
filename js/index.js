@@ -219,7 +219,7 @@ $(document).ready(function(){
             optionBox.style.display = "none";
         }
         else{
-            optionBox.style.display = "block";
+            optionBox.style.display = "flex";
         }
     });
 
@@ -246,7 +246,6 @@ $(document).ready(function(){
             document.getElementById("j1Option1").style.visibility = "hidden";
             document.getElementById("j1Option2").style.visibility = "hidden";
             document.getElementById("j1Option3").style.visibility = "hidden";
-            document.getElementById("dimensionInput").style.display = "none";
             document.getElementById("journalOption1").className = "btn btn-lg button";
             widthInputBox.value = 0;
             heightInputBox.value = 0;
@@ -277,7 +276,6 @@ $(document).ready(function(){
             document.getElementById("j2Option2").style.visibility = "hidden";
             document.getElementById("j2Option3").style.visibility = "hidden";
             document.getElementById("journalOption2").className = "btn btn-lg button";
-            document.getElementById("dimensionInput").style.display = "none";
             widthInputBox.value = 0;
             heightInputBox.value = 0;
         }
@@ -292,7 +290,7 @@ $(document).ready(function(){
     $("#j1Option1").mousedown(function(event){
         widthInputBox.value = 1772;
         heightInputBox.value = 1772;
-        document.getElementById("dimensionInput").style.display = "block";
+        
     });
 
 
@@ -304,7 +302,6 @@ $(document).ready(function(){
     $("#j1Option2").mousedown(function(event){
         widthInputBox.value = 2756;
         heightInputBox.value = 2756;
-        document.getElementById("dimensionInput").style.display = "block";
     });
 
 
@@ -316,7 +313,6 @@ $(document).ready(function(){
     $("#j1Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 3740;
-        document.getElementById("dimensionInput").style.display = "block";
     });
 
 
@@ -328,7 +324,6 @@ $(document).ready(function(){
     $("#j2Option1").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 2264;
-        document.getElementById("dimensionInput").style.display = "block";
     });
 
 
@@ -340,7 +335,6 @@ $(document).ready(function(){
     $("#j2Option2").mousedown(function(event){
         widthInputBox.value = 1870;
         heightInputBox.value = 4528;
-        document.getElementById("dimensionInput").style.display = "block";
     });
 
 
@@ -352,7 +346,6 @@ $(document).ready(function(){
     $("#j2Option3").mousedown(function(event){
         widthInputBox.value = 3740;
         heightInputBox.value = 4528;
-        document.getElementById("dimensionInput").style.display = "block";
     });
 });
 

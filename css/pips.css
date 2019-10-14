@@ -331,6 +331,7 @@ label {
     overflow: hidden;
     margin: auto auto;
     min-width: 4.5rem;
+    min-height: 2rem;
 }
 
 .button[id=northIconFlag] {
