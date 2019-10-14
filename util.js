@@ -12,7 +12,8 @@
  * 
  * @see {server.js} Read the header before editing
  * 
- */
+ * @todo Eliminate console.log() race condition in ISIS Calls
+*/
 
 // require dependencies
 const spawn = require('child_process').spawn;

@@ -169,3 +169,6 @@ Project Home:[Github](https://github.com/ChaddFrasier/PIPS),[DockerHub](https://
 Issue Tracker: [Issues/Bugs](https://github.com/ChaddFrasier/PIPS/issues)
 
 Related Repos: [ISIS3](https://github.com/USGS-Astrogeology/ISIS3), [Dockerbuild](https://github.com/ChaddFrasier/PIPS_Docker)
+
+-----------------------------------------------------------------------------------------------------------------------
+@ChaddFrasier GitHub

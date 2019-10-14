@@ -5,7 +5,7 @@
  * @version 1.0
  * 
  * @since 09/17/2019
- * @updated 10/07/2019
+ * @updated 10/14/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -289,8 +289,7 @@ $(document).ready(function(){
     */
     $("#j1Option1").mousedown(function(event){
         widthInputBox.value = 1772;
-        heightInputBox.value = 1772;
-        
+        heightInputBox.value = 1772; 
     });
 
 
