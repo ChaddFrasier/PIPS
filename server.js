@@ -544,6 +544,9 @@ app.post('/captionWriter', async function(request, response){
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
                             promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
+                        else if(samples * lines > 60000){
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
+                        }
                         
                         Promise.all(promises).then(function(cubeName){
                             // if function resolved with a return
