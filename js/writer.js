@@ -59,6 +59,7 @@ function filterTags(){
  * @description sets the value of the output to the template and then calls output() 
 */
 function setOutput(){
+    document.getElementById("template-text").value = document.getElementById("template-text").value.trim();
     let getTemplate = document.getElementById("template-text").value;
     output(getTemplate);
 }
@@ -255,7 +256,7 @@ function output(rawText){
     }
 
     //set the innerHTML for the last(output) textarea
-    outputArea.innerHTML = rawText;
+    outputArea.innerHTML = rawText.trim();
 
     //update the download link to the new text
     var finalResult = outputArea.value;
