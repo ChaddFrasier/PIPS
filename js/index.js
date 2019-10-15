@@ -101,6 +101,23 @@ function loadInvisible(){
 
 
 /**
+ * @function resetOtherButtons
+ * 
+ * @param {element} currentBtn the whole btn element that is being clicked 
+ * 
+ * @description reset the color using class objects
+ */
+function resetOtherButtons(currentBtn){
+    var journalButtonList = document.querySelectorAll("button.journal");
+
+    journalButtonList.forEach( btn => {
+        if(btn !== currentBtn){
+            btn.classList.remove("btn-secondary");
+        }
+    });
+}
+
+/**
  * @function loaderActivate
  * 
  * @description show the loader gif
@@ -328,72 +345,47 @@ $(document).ready(function(){
 
 
     /**
-     * @function j1Option1 'mousedown' event listener
+     * @function button.journal 'mousedown' event listener
      * 
      * @description change the default image output dimensions
     */
-    $("#j1Option1").mousedown(function(event){
-        widthInputBox.value = 1772;
-        heightInputBox.value = 1772; 
-    });
+    $("button.journal").mousedown(function(event){
+        switch($(this).html()){
+            case "Single Column":
+                widthInputBox.value = 1772;
+                heightInputBox.value = 1772;
+                break;
 
+            case "1.5 Column":
+                widthInputBox.value = 2756;
+                heightInputBox.value = 2756;
+                break;
 
-    /**
-     * @function j1Option2 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j1Option2").mousedown(function(event){
-        widthInputBox.value = 2756;
-        heightInputBox.value = 2756;
-    });
+            case "Double Column":
+                widthInputBox.value = 3740;
+                heightInputBox.value = 3740;
+                break;
 
+            case "1/4 Page":
+                widthInputBox.value = 1870;
+                heightInputBox.value = 2264;
+                break;
 
-    /**
-     * @function j1Option3 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j1Option3").mousedown(function(event){
-        widthInputBox.value = 3740;
-        heightInputBox.value = 3740;
-    });
+            case "1/2 Page":
+                widthInputBox.value = 1870;
+                heightInputBox.value = 4528;
+                break;
 
-
-    /**
-     * @function j2Option1 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option1").mousedown(function(event){
-        widthInputBox.value = 1870;
-        heightInputBox.value = 2264;
-    });
-
-
-    /**
-     * @function j2Option2 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option2").mousedown(function(event){
-        widthInputBox.value = 1870;
-        heightInputBox.value = 4528;
-    });
-
-
-    /**
-     * @function j2Option3 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option3").mousedown(function(event){
-        widthInputBox.value = 3740;
-        heightInputBox.value = 4528;
+            case "Full Page":
+                widthInputBox.value = 3740;
+                heightInputBox.value = 4528;
+                break;
+        }
+        
+        $(this).addClass("btn-secondary");
+        resetOtherButtons(this);
     });
 });
-
-
 /**
  * @function window 'pageshow' event handler
  * 
