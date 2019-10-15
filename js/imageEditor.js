@@ -2137,19 +2137,26 @@ $(document).ready(function(){
 
 
     /**
-     * @function viewOption 'mousedown' event handler
+     * @function viewOption 'change' event handler
      * 
      * @description change the view of the image that the user is viewing
      * 
     */
     $("#viewOption").on("change", function(){
         if($(this).is(":checked")){
-            $("#imageViewContainer").css("width","65%");
-            $("#imageViewContainer").css("height","auto");
+            if(w >= h){
+                $("#imageViewContainer").css({"width":"55%"});
+                $("#imageViewContainer").css({"height":"auto"});
+            }
+            else{
+                console.log()
+                $("#imageViewContainer").css({"width":"auto"});
+                $("#imageViewContainer").css({"height":window.innerHeight/1.25 + "px"});
+            }
         }
         else{
-            $("#imageViewContainer").css("width","auto");
-            $("#imageViewContainer").css("height","fit-content");
+            $("#imageViewContainer").css({"width":"auto"});
+            $("#imageViewContainer").css({"height":"100%"});
         }
     });
 
