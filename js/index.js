@@ -209,6 +209,51 @@ $(document).ready(function(){
     
 
     /**
+     * @function widthInput 'keyup' event listener
+     * 
+     * @description this is where the width box is fixed to 5000pxs 
+     */
+    $("#widthInput").keyup(function(event){
+        try{
+            var val = parseInt($(this).val());
+
+            if(typeof(val) === "number" && val > 5000){
+                $(this).val(5000);
+            }
+            else if(isNaN(val) && $(this).val() !== ""){
+                alert("Must Input an integer");
+                $(this).val("");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
+    /**
+     * @function heightInput 'keyup' event listener
+     * 
+     * @description this is where the width box is fixed to 5000pxs 
+     */
+    $("#heightInput").keyup(function(event){
+        try{
+            var val = parseInt($(this).val());
+
+            if(typeof(val) === "number" && val > 5000){
+                $(this).val(5000);
+            }
+            else if(isNaN(val) && $(this).val() !== ""){
+                alert("Must Input an integer");
+                $(this).val("");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
+
+    /**
      * @function cubUpload 'change' event listener
      * 
      * @description checks to see if the new file that was added is a cub or tif file and show the otions box
