@@ -455,9 +455,13 @@ app.post('/captionWriter', async function(request, response){
                         break;
                 }
             }
+
             // check to see if the log flag is true and set outcome
             if(request.body.logToFile){
                 cubeObj.logFlag = true;
+            }
+            else{
+                cubeObj.logFlag = false;
             }
 
             // create the log file if needed
@@ -544,7 +548,7 @@ app.post('/captionWriter', async function(request, response){
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
                             promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
-                        else if(samples * lines > 60000){
+                        else if(samples * lines > 4000000){
                             promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
