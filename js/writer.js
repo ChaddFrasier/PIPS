@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 10/14/2019
+ * @updated 10/15/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -524,6 +524,8 @@ $(window).bind('pageshow', function(event){
     if(event.originalEvent.persisted){
         loadInvisible();
     }
+
+    // trim extra space off of template file
     document.getElementById("template-text").value = document.getElementById("template-text").value.trim();
 
     // start page actions

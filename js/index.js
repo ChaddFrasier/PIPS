@@ -5,7 +5,7 @@
  * @version 1.0
  * 
  * @since 09/17/2019
- * @updated 10/14/2019
+ * @updated 10/15/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -104,14 +104,16 @@ function loadInvisible(){
  * @function resetOtherButtons
  * 
  * @param {element} currentBtn the whole btn element that is being clicked 
- * @param {string} typeofButton the string needed to query the correct buttons
+ * @param {string} classofButton the string needed to query the correct buttons
  * 
  * @description reset the color using class objects
  */
-function resetOtherButtons(currentBtn, typeofButton){
-    var journalButtonList = document.querySelectorAll("button." + typeofButton);
+function resetOtherButtons(currentBtn, classofButton){
+    // get the button with the passed class
+    var ButtonList = document.querySelectorAll("button." + classofButton);
 
-    journalButtonList.forEach( btn => {
+    // for each button elemnt
+    ButtonList.forEach( btn => {
         if(btn !== currentBtn){
             btn.classList.remove("btn-secondary");
         }
