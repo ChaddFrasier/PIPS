@@ -16,7 +16,8 @@
 
 /** Variables */
 var outputName,
-    loader;
+    loader,
+    cursorLocation;
 
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 /**
@@ -449,6 +450,34 @@ $(document).ready(function(){
         document.body.appendChild(alert);
         // set the fade timeout
         setTimeout(hideAnimaton, 2000, alert);
+    });
+
+    $("#specialCharactersBtn").mousedown(function(){
+        if($(this).hasClass("btn-secondary")){
+            $(this).removeClass("btn-secondary");
+            cursorLocation = null;
+            document.getElementById("specialCharBox").style.display = "none";
+        }
+        else{
+            $(this).addClass("btn-secondary");
+            document.getElementById("specialCharBox").style.display = "block";
+            cursorLocation = document.getElementById("template-text").selectionStart;
+        }
+    });
+
+
+    $("button.specChar").mousedown(function(){
+
+        var symbol = $(this).html(),
+            templateText = document.getElementById("template-text").value,
+            end = templateText.substring(cursorLocation, templateText.length),
+            start = templateText.substring(0, cursorLocation++);
+
+        start += symbol;
+
+        document.getElementById("template-text").value =  String(start + end);
+        setOutput();
+        $("#specialCharactersBtn").mousedown();
     });
 
     /**

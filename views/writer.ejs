@@ -124,7 +124,7 @@
                 </div>
                 <div class="col-8" style="text-align: center;">
                     <div class="container float-center" 
-                    style="margin-left: auto; margin-right: auto; width: 100%; max-width: none;">
+                    style="margin-left: auto; margin-right: auto; width: 100%; max-width: none; display: flex;">
                     <!-- Output Box -->
                         <div id="template-output" class="text-center form-group metadata" 
                         style="margin: 0; width: 100%; margin:auto auto;">
@@ -134,8 +134,56 @@
                             </label>
                             <textarea readonly id="template-text-output"
                             class="form-control bg-white text-dark metadata" 
-                            style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7"></textarea>
+                            style="resize: vertical; font-size: 22px; border: 2px solid black;" rows="7">
+                            </textarea>
                             <br/>
+                        </div>
+                        <button class="btn btn-lg button" id="specialCharactersBtn"
+                         style=" margin:0; text-align: center; position:sticky; height: 2rem; padding-right: 10%;
+                        margin-top: 5%; padding:0; max-width: 2rem; min-width: 2rem;" title="Special Charaters">
+                            &Omega;
+                        </button>
+                    </div>
+                    <div class="container" id="specialCharBox" style="display: none;">
+                        <div class="row">
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&plusmn;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&#176;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&lt;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&gt;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&sim;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&times;</button>
+                            </div> 
+                        </div>
+                        <div class="row" style="margin-top: 1%;margin-bottom: 1%;">
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">⁸</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&micro;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&le;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&ge;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&mdash;</button>
+                            </div> 
+                            <div class="col-2">
+                                <button class="specChar btn btn-md button">&frasl;</button>
+                            </div> 
                         </div>
                     </div>
                 </div>
