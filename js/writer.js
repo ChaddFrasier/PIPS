@@ -75,7 +75,7 @@ function getMetadata(){
     var jsonData = JSON.parse(metaDataString);
     
     //'StartTime': '1997-10-20T10:58:37.46'
-    for(key in jsonData){
+    for(const key of Object.keys(jsonData)){
         //console.log('key: ' + key + ':val:' + jsonData[key]);
         if(key != undefined){  
             let str = keyToTag(key) + ": " + jsonData[key] + "\n";
@@ -95,7 +95,7 @@ function getAllTags(){
     var metaDataArea = document.getElementById("allTagArea");
     metaDataArea.value = "";
     metaData = JSON.parse(metaData);
-    for(key in metaData){
+    for(const key of Object.keys(metaData)){
         let str = keyToTag(key) + ": " + metaData[key].toString().trim() + "\n";
         metaDataArea.value += str;
     }
@@ -227,6 +227,31 @@ function removeUnits(str){
     return tmpArr.join("");
 }
 
+
+/**
+ * IDEA: 
+ * 
+ * ~ Sort the keys by length and place them in the sorted array (longest to shortest)
+ * ~ parse over the array and use the key to create a new object in the right order
+ * 
+ * 
+ */
+
+Object.prototype.sort = function(){
+    
+    let keys = Object.keys(this);
+
+    keys.sort(function(a, b){
+        return a.length < b.length;
+    });
+    var sortedObject = new Object();
+    for(let index = 0; index < keys.length; index++){
+        sortedObject[ keys[index] ] = this[ keys[index] ];
+    }
+    return sortedObject;
+}
+
+
 /**
  * @function output
  * 
@@ -243,8 +268,8 @@ function output(rawText){
 
     // combine the JSONs into 1 object
     allMetaData = Object.assign(allMetaData, impData);
-    
-    for(key in allMetaData){
+
+    for(const key of Object.keys(allMetaData.sort())){
         if(rawText.indexOf(key.trim()) > -1){
             let val = getMetadataVal(key);
             if(hasUnits(val)){
