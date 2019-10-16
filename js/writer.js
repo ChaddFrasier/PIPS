@@ -59,7 +59,6 @@ function filterTags(){
  * @description sets the value of the output to the template and then calls output() 
 */
 function setOutput(){
-    document.getElementById("template-text").value = document.getElementById("template-text").value.trim();
     let getTemplate = document.getElementById("template-text").value;
     output(getTemplate);
 }
@@ -525,6 +524,7 @@ $(window).bind('pageshow', function(event){
     if(event.originalEvent.persisted){
         loadInvisible();
     }
+    document.getElementById("template-text").value = document.getElementById("template-text").value.trim();
 
     // start page actions
     loadInvisible();
