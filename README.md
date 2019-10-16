@@ -91,7 +91,7 @@ Hit the 'What is a TPL File?' button to read all about what a template file for 
 Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
 types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
 check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
-![Current Index Page](https://i.imgur.com/rsTigav.png)
+![Current Index Page](https://i.imgur.com/iU8UVgw.png)
 
 
 2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
@@ -132,7 +132,7 @@ pad the image and a location to place the pixels. To remove the padding either d
 in the text box or hit the reset button.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
 Accepted file export types include svg, tiff, png, jpg, and jpeg.
-![Current Edit Page](https://i.imgur.com/m2vYsAs.png)
+![Current Edit Page](https://i.imgur.com/3XSXqQu.png)
 
 #### Hot Keys
 
