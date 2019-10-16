@@ -114,13 +114,13 @@
                         </div>
                          <!-- Options -->
                         <div class="row" style="padding: 1%; color: black; margin: auto auto; background: #e7c492;
-                          display:none; border: 5px solid black; width: 100%;" id="optionBox">
+                          display:none; border: 5px solid black; width: 102%;" id="optionBox">
                           <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-2">
+                                <div class="col-2">                                        
                                     <label id="logCheckboxLabel" for="logCheckbox" 
-                                    style="color:black;margin-top:0; margin-bottom:auto;">
-                                        <cite style="font-size: 85%">Log ISIS Output to File?</cite>
+                                    style="color:black;margin: 0;">
+                                        <cite style="font-size: 95%; padding-top: 10%;">Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
                                 <div class="col-5" style="text-align: right">
@@ -129,12 +129,18 @@
                                 <div class="col-5"></div>
                             </div>
                             <div class="row" style="width: 100%;">
-                                <div class="col-2" style="padding: 1%;">
-                                    <label class="switch">
-                                        <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N"
-                                        style="margin: auto auto; margin-bottom: 0;">
-                                        <span class="slider round" id="logAnimation"></span>
-                                    </label> 
+                                <div class="col-2" style="padding: 1%; padding-top:5%;">
+                                    <div class="row">
+                                        <div class="col-2" style="padding: 0; padding-left: 10%; padding-top: 3%;">Off</div>
+                                        <div class="col-6" style="padding: 0; padding-left: 10%;">
+                                            <label class="switch index">
+                                                <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N"
+                                                style="left:0;">
+                                                <span class="slider round" id="logAnimation"></span>
+                                            </label> 
+                                        </div>
+                                        <div class="col-4" style="padding: 0; padding-top: 3%;">On</div>
+                                    </div>  
                                 </div>
                                 <div class="col-10">
                                     <div class="row" style="text-align: center; width: 90%; margin: auto auto; margin-bottom: 0; display: flex;">
@@ -265,7 +271,7 @@
                                             Template 1
                                         </label>
                                         <br/>
-                                        <button type="button" id="mosaicBtn" class="btn btn-md button" 
+                                        <button type="button" id="mosaicBtn" class="template btn btn-md button" 
                                         style="width: 100%">Mosaic</button>
                                     </div>
                                     <div class="col">
@@ -273,7 +279,7 @@
                                                 Template 2
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                          id="mapProjectedBtn">Map Projected</button>
                                     </div>
                                     <div class="col">
@@ -281,7 +287,7 @@
                                                 Template 3
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                         id="compositeBtn">Composite</button>
                                     </div>
                                     <div class="col">
@@ -289,7 +295,7 @@
                                                 Template 4
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                         id="otherBtn">Choice 4</button>
                                     </div>
                                     <div class="col">
@@ -297,7 +303,7 @@
                                                 Template 5
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button"style="width: 100%"
+                                        <button type="button" class="template btn btn-md button"style="width: 100%"
                                          id="other2Btn">Choice 5</button>
                                     </div>
                                 </div>

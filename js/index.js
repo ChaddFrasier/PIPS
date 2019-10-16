@@ -104,11 +104,12 @@ function loadInvisible(){
  * @function resetOtherButtons
  * 
  * @param {element} currentBtn the whole btn element that is being clicked 
+ * @param {string} typeofButton the string needed to query the correct buttons
  * 
  * @description reset the color using class objects
  */
-function resetOtherButtons(currentBtn){
-    var journalButtonList = document.querySelectorAll("button.journal");
+function resetOtherButtons(currentBtn, typeofButton){
+    var journalButtonList = document.querySelectorAll("button." + typeofButton);
 
     journalButtonList.forEach( btn => {
         if(btn !== currentBtn){
@@ -191,40 +192,6 @@ $(document).ready(function(){
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
-
-    /**
-     * @function mosaicBtn 'mousedown' event listener
-     * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#mosaicBtn").mousedown(function(){
-        console.log("Printed from Mosiac listener");
-        document.getElementById("tplCode").value = 1;
-    });
-
-
-    /**
-     * @function mapProjectedBtn 'mousedown' event listener
-     * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#mapProjectedBtn").mousedown(function(){
-        console.log("Printed from Map Projected listener");
-        document.getElementById("tplCode").value = 2;
-    });
-
-
-    /**
-     * @function compositeBtn 'mousedown' event listener
-     * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#compositeBtn").mousedown(function(){
-        console.log("Printed from Composite listener");
-        document.getElementById("tplCode").value = 3;
-    });
-    
-
     /**
      * @function widthInput 'keyup' event listener
      * 
@@ -285,6 +252,10 @@ $(document).ready(function(){
         }
     });
 
+
+    $("#tplUpload").change(function(){
+        resetOtherButtons("", "template");
+    });
 
     /**
      * @function journalOption1 'mousedown' event listener
@@ -383,8 +354,34 @@ $(document).ready(function(){
         }
         
         $(this).addClass("btn-secondary");
-        resetOtherButtons(this);
+        resetOtherButtons(this, "journal");
     });
+
+
+    /**
+     * @function button.template 'mousedown' event listener
+     * 
+     * @description change the default image output dimensions
+    */
+   $("button.template").mousedown(function(event){
+    switch($(this).html()){
+        case "Mosaic":
+            document.getElementById("tplCode").value = 1;
+            break;
+        case "Map Projected":
+            document.getElementById("tplCode").value = 2;
+            break;
+        case "Composite":
+            document.getElementById("tplCode").value = 1;
+            break;
+        default:
+            document.getElementById("tplCode").value = 0;
+    }
+    
+    $("#tplUpload").val("");
+    $(this).addClass("btn-secondary");
+    resetOtherButtons(this, "template");
+});
 });
 /**
  * @function window 'pageshow' event handler

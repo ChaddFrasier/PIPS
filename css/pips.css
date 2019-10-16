@@ -444,6 +444,11 @@ cite {
     cursor: move;
 }
 
+.index {
+    transform: scale(.75);
+    
+}
+
 .resize {
     pointer-events: painted;
 }
