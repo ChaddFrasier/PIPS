@@ -442,7 +442,7 @@ app.post('/captionWriter', async function(request, response){
                         break;
 
                     case 2:
-                        // TODO:
+                        templateText = fs.readFileSync('tpl/mapDefault.tpl', 'utf-8');
                         break;
 
                     case 3:
