@@ -5,7 +5,7 @@
  * @version 1.0
  * 
  * @since 09/17/2019
- * @updated 10/07/2019
+ * @updated 10/15/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -101,6 +101,26 @@ function loadInvisible(){
 
 
 /**
+ * @function resetOtherButtons
+ * 
+ * @param {element} currentBtn the whole btn element that is being clicked 
+ * @param {string} classofButton the string needed to query the correct buttons
+ * 
+ * @description reset the color using class objects
+ */
+function resetOtherButtons(currentBtn, classofButton){
+    // get the button with the passed class
+    var ButtonList = document.querySelectorAll("button." + classofButton);
+
+    // for each button elemnt
+    ButtonList.forEach( btn => {
+        if(btn !== currentBtn){
+            btn.classList.remove("btn-secondary");
+        }
+    });
+}
+
+/**
  * @function loaderActivate
  * 
  * @description show the loader gif
@@ -174,39 +194,50 @@ $(document).ready(function(){
         document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
     });
 
-
     /**
-     * @function mosaicBtn 'mousedown' event listener
+     * @function widthInput 'keyup' event listener
      * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#mosaicBtn").mousedown(function(){
-        console.log("Printed from Mosiac listener");
-        document.getElementById("tplCode").value = 1;
+     * @description this is where the width box is fixed to 5000pxs 
+     */
+    $("#widthInput").keyup(function(event){
+        try{
+            var val = parseInt($(this).val());
+
+            if(typeof(val) === "number" && val > 5000){
+                $(this).val(5000);
+            }
+            else if(isNaN(val) && $(this).val() !== ""){
+                alert("Must Input an integer");
+                $(this).val("");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
     });
 
-
     /**
-     * @function mapProjectedBtn 'mousedown' event listener
+     * @function heightInput 'keyup' event listener
      * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#mapProjectedBtn").mousedown(function(){
-        console.log("Printed from Map Projected listener");
-        document.getElementById("tplCode").value = 2;
+     * @description this is where the width box is fixed to 5000pxs 
+     */
+    $("#heightInput").keyup(function(event){
+        try{
+            var val = parseInt($(this).val());
+
+            if(typeof(val) === "number" && val > 5000){
+                $(this).val(5000);
+            }
+            else if(isNaN(val) && $(this).val() !== ""){
+                alert("Must Input an integer");
+                $(this).val("");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
     });
 
-
-    /**
-     * @function compositeBtn 'mousedown' event listener
-     * 
-     * @description mouse click to chnage the template file field
-    */
-    $("#compositeBtn").mousedown(function(){
-        console.log("Printed from Composite listener");
-        document.getElementById("tplCode").value = 3;
-    });
-    
 
     /**
      * @function cubUpload 'change' event listener
@@ -219,10 +250,14 @@ $(document).ready(function(){
             optionBox.style.display = "none";
         }
         else{
-            optionBox.style.display = "block";
+            optionBox.style.display = "flex";
         }
     });
 
+
+    $("#tplUpload").change(function(){
+        resetOtherButtons("", "template");
+    });
 
     /**
      * @function journalOption1 'mousedown' event listener
@@ -246,7 +281,6 @@ $(document).ready(function(){
             document.getElementById("j1Option1").style.visibility = "hidden";
             document.getElementById("j1Option2").style.visibility = "hidden";
             document.getElementById("j1Option3").style.visibility = "hidden";
-            document.getElementById("dimensionInput").style.display = "none";
             document.getElementById("journalOption1").className = "btn btn-lg button";
             widthInputBox.value = 0;
             heightInputBox.value = 0;
@@ -277,7 +311,6 @@ $(document).ready(function(){
             document.getElementById("j2Option2").style.visibility = "hidden";
             document.getElementById("j2Option3").style.visibility = "hidden";
             document.getElementById("journalOption2").className = "btn btn-lg button";
-            document.getElementById("dimensionInput").style.display = "none";
             widthInputBox.value = 0;
             heightInputBox.value = 0;
         }
@@ -285,78 +318,73 @@ $(document).ready(function(){
 
 
     /**
-     * @function j1Option1 'mousedown' event listener
+     * @function button.journal 'mousedown' event listener
      * 
      * @description change the default image output dimensions
     */
-    $("#j1Option1").mousedown(function(event){
-        widthInputBox.value = 1772;
-        heightInputBox.value = 1772;
-        document.getElementById("dimensionInput").style.display = "block";
+    $("button.journal").mousedown(function(event){
+        switch($(this).html()){
+            case "Single Column":
+                widthInputBox.value = 1772;
+                heightInputBox.value = 1772;
+                break;
+
+            case "1.5 Column":
+                widthInputBox.value = 2756;
+                heightInputBox.value = 2756;
+                break;
+
+            case "Double Column":
+                widthInputBox.value = 3740;
+                heightInputBox.value = 3740;
+                break;
+
+            case "1/4 Page":
+                widthInputBox.value = 1870;
+                heightInputBox.value = 2264;
+                break;
+
+            case "1/2 Page":
+                widthInputBox.value = 1870;
+                heightInputBox.value = 4528;
+                break;
+
+            case "Full Page":
+                widthInputBox.value = 3740;
+                heightInputBox.value = 4528;
+                break;
+        }
+        
+        $(this).addClass("btn-secondary");
+        resetOtherButtons(this, "journal");
     });
 
 
     /**
-     * @function j1Option2 'mousedown' event listener
+     * @function button.template 'mousedown' event listener
      * 
      * @description change the default image output dimensions
     */
-    $("#j1Option2").mousedown(function(event){
-        widthInputBox.value = 2756;
-        heightInputBox.value = 2756;
-        document.getElementById("dimensionInput").style.display = "block";
-    });
-
-
-    /**
-     * @function j1Option3 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j1Option3").mousedown(function(event){
-        widthInputBox.value = 3740;
-        heightInputBox.value = 3740;
-        document.getElementById("dimensionInput").style.display = "block";
-    });
-
-
-    /**
-     * @function j2Option1 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option1").mousedown(function(event){
-        widthInputBox.value = 1870;
-        heightInputBox.value = 2264;
-        document.getElementById("dimensionInput").style.display = "block";
-    });
-
-
-    /**
-     * @function j2Option2 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option2").mousedown(function(event){
-        widthInputBox.value = 1870;
-        heightInputBox.value = 4528;
-        document.getElementById("dimensionInput").style.display = "block";
-    });
-
-
-    /**
-     * @function j2Option3 'mousedown' event listener
-     * 
-     * @description change the default image output dimensions
-    */
-    $("#j2Option3").mousedown(function(event){
-        widthInputBox.value = 3740;
-        heightInputBox.value = 4528;
-        document.getElementById("dimensionInput").style.display = "block";
-    });
+   $("button.template").mousedown(function(event){
+    switch($(this).html()){
+        case "Mosaic":
+            document.getElementById("tplCode").value = 1;
+            break;
+        case "Map Projected":
+            document.getElementById("tplCode").value = 2;
+            break;
+        case "Composite":
+            document.getElementById("tplCode").value = 1;
+            break;
+        default:
+            document.getElementById("tplCode").value = 0;
+    }
+    
+    $("#tplUpload").val("");
+    $(this).addClass("btn-secondary");
+    resetOtherButtons(this, "template");
 });
-
-
+});
 /**
  * @function window 'pageshow' event handler
  * 

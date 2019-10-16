@@ -108,18 +108,19 @@
                                 <label for="cubUpload" style="font-size: x-large; color:black;">
                                     <cite>Choose an ISIS Cube or TIFF File</cite>
                                 </label>
-                                <input name="uploadFile" id="cubUpload" style="padding-bottom:1rem;"
-                                type="file" class="form-control-file"/>
+                                <input name="uploadFile" accept=".cub, .tif, .tiff, .TIF, .TIFF, .CUB"
+                                id="cubUpload" style="padding-bottom:1rem;" type="file" class="form-control-file"/>
                             </div>
                         </div>
                          <!-- Options -->
-                        <div class="row" style="padding: 2%; color: black; margin: auto auto; background: #e7c492;
-                          display:none; border: 5px solid black; width: 100%;" id="optionBox">
+                        <div class="row" style="padding: 1%; color: black; margin: auto auto; background: #e7c492;
+                          display:none; border: 5px solid black; width: 102%;" id="optionBox">
+                          <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-2">
+                                <div class="col-2">                                        
                                     <label id="logCheckboxLabel" for="logCheckbox" 
-                                    style="color:black;margin-top:0; margin-bottom:auto;">
-                                        <cite>Log ISIS Output to File?</cite>
+                                    style="color:black;margin: 0;">
+                                        <cite style="font-size: 95%; padding-top: 10%;">Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
                                 <div class="col-5" style="text-align: right">
@@ -128,19 +129,26 @@
                                 <div class="col-5"></div>
                             </div>
                             <div class="row" style="width: 100%;">
-                                <div class="col-2" style="padding: 0;">
-                                    <input title="Log ISIS Output to File?" class="form-check-input giantBox" 
-                                    name="logToFile" type="checkbox" id="logCheckbox"
-                                    style=" margin-right:auto; position: relative; top:25%; margin-bottom:auto;">
+                                <div class="col-2" style="padding: 1%; padding-top:5%;">
+                                    <div class="row">
+                                        <div class="col-2" style="padding: 0; padding-left: 10%; padding-top: 3%;">Off</div>
+                                        <div class="col-6" style="padding: 0; padding-left: 10%;">
+                                            <label class="switch index">
+                                                <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N"
+                                                style="left:0;">
+                                                <span class="slider round" id="logAnimation"></span>
+                                            </label> 
+                                        </div>
+                                        <div class="col-4" style="padding: 0; padding-top: 3%;">On</div>
+                                    </div>  
                                 </div>
                                 <div class="col-10">
-                                    <div class="row" style="text-align: center; width: 90%; margin: auto auto;">
-                                        <div class="col" style="margin-right: 2%; width: 25%;">
-                                            <h5>Journal</h5>
-                                        </div> 
-                                        <div class="col-10" style="margin-left:2%; text-align: center; width: 75%;
-                                        border-bottom: 1px solid black; padding-right: 0; left: 4%; margin-bottom:1%;">
-                                            <h5>Figure Size</h5>
+                                    <div class="row" style="text-align: center; width: 90%; margin: auto auto; margin-bottom: 0; display: flex;">
+                                        <div class="col" style="text-align: center; width: auto; margin: 1%;
+                                        padding-right: 0; display: flex; border-bottom: 1px solid black">
+                                            <h5 style="margin-left:0; margin-right: auto;">Journal</h5>
+                                        
+                                            <h5 style="margin-left:auto; margin-right: auto;">Figure Size</h5>
                                         </div>
                                     </div>
                                     <div class="row" style="width: 100%;">
@@ -151,17 +159,17 @@
                                             </button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j1Option1" class="btn btn-lg button" 
+                                            <button type="button" id="j1Option1" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">Single Column</button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j1Option2" class="btn btn-lg button" 
+                                            <button type="button" id="j1Option2" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">1.5 Column</button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j1Option3" class="btn btn-lg button" 
+                                            <button type="button" id="j1Option3" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">Double Column</button>
                                         </div>
@@ -170,22 +178,22 @@
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption2" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;">
+                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 50%;">
                                                 American Geophysical Union
                                             </button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j2Option1" class="btn btn-lg button" 
+                                            <button type="button" id="j2Option1" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">1/4 Page</button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j2Option2" class="btn btn-lg button" 
+                                            <button type="button" id="j2Option2" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">1/2 Page</button>
                                         </div>
                                         <div class="col-3">
-                                            <button type="button" id="j2Option3" class="btn btn-lg button" 
+                                            <button type="button" id="j2Option3" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
                                             padding: 2%; font-size: 85%;">Full Page</button>
                                         </div>
@@ -217,11 +225,12 @@
                                     </div>
                                     -->
                                 </div>
-                            </div>   
-                        </div>
-                        <div class="row" style="margin-top: 1rem; margin-bottom: 1rem;">
+                            </div>
+                        </div>   
+                   
+                        <div class="col-4" style="width: 25%; margin:0; padding: 2%;">
                             <div class="container" id="dimensionInput"
-                            style="width:auto; display:none; border-top:0;color: black; margin: auto auto;
+                            style="width:auto; visibility: visible; border-top:0;color: black; margin: auto auto;
                                 background: #e7c492; border: 5px solid black;">
                                 <div class="form-group float-center" 
                                 style="width: 17rem;color: black;">
@@ -241,9 +250,12 @@
                                         type="text" id="heightInput" name="desiredHeight" 
                                         placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
+                                
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <br/>
                         <!-- Template upload-->
                         <div class="row">
                             <input id="tplCode" name="tplCode" type="number" style="display: none;" value="0">
@@ -259,7 +271,7 @@
                                             Template 1
                                         </label>
                                         <br/>
-                                        <button type="button" id="mosaicBtn" class="btn btn-md button" 
+                                        <button type="button" id="mosaicBtn" class="template btn btn-md button" 
                                         style="width: 100%">Mosaic</button>
                                     </div>
                                     <div class="col">
@@ -267,7 +279,7 @@
                                                 Template 2
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                          id="mapProjectedBtn">Map Projected</button>
                                     </div>
                                     <div class="col">
@@ -275,7 +287,7 @@
                                                 Template 3
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                         id="compositeBtn">Composite</button>
                                     </div>
                                     <div class="col">
@@ -283,7 +295,7 @@
                                                 Template 4
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%"
                                         id="otherBtn">Choice 4</button>
                                     </div>
                                     <div class="col">
@@ -291,7 +303,7 @@
                                                 Template 5
                                         </label>
                                         <br/>
-                                        <button type="button" class="btn btn-md button"style="width: 100%"
+                                        <button type="button" class="template btn btn-md button"style="width: 100%"
                                          id="other2Btn">Choice 5</button>
                                     </div>
                                 </div>
@@ -301,7 +313,7 @@
                                         color:black; border-bottom: 2px solid black;">
                                             Custom Upload
                                         </label>
-                                    <input name="templateFile" id="tplUpload" 
+                                    <input name="templateFile" id="tplUpload" accept=".tpl"
                                     style="margin-left:auto;margin-right:auto;" type="file" 
                                     class="form-control-file"/>
                                 </div>

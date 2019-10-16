@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 10/04/2019
+ * @updated 10/14/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -97,12 +97,12 @@ function makeDraggable(event){
         currentScale,
         startH,
         startW,
-        minNorth = .1219513,
-        maxNorth = 1.219513,
-        minSun = .15625,
-        maxSun = 1.5625,
-        minEye = .52,
-        maxEye = 5.2,
+        minNorth = .2439026,
+        maxNorth = 2.439026,
+        minSun = .3125,
+        maxSun = 3.125,
+        minEye = 1.18,
+        maxEye = 11.8,
         maxText = textSize*10,
         minText = textSize,
         iconMin,
@@ -236,7 +236,7 @@ function makeDraggable(event){
             // if true
             if(confined){
                 let rotateVal = transforms.getItem(1).angle;
-                if(rotateVal > 360){rotateVal-= 360;}
+                if(rotateVal > 360){ rotateVal-= 360; }
 
                 // get the current scale of the icon
                 let scaleFactor = scale.matrix.a;
@@ -422,7 +422,7 @@ function makeDraggable(event){
                     // decrement by the growing factor
                     currentScale -= growingFactor;
                     // check for the min
-                    if(currentScale < iconMin){currentScale = iconMin;}
+                    if(currentScale < iconMin){ currentScale = iconMin; }
 
                     // translate the icon 0 in the x direction and by the difference 
                     //      in the positive y direction
@@ -436,7 +436,7 @@ function makeDraggable(event){
                     currentScale += growingFactor;
 
                     // check for max size
-                    if(currentScale > iconMax){currentScale = iconMax;}
+                    if(currentScale > iconMax){ currentScale = iconMax; }
                     if(!isOutline && bbox.height * currentScale > parseInt(h)/3){
                         currentScale -= growingFactor
                     }
@@ -468,7 +468,7 @@ function makeDraggable(event){
                 if(coord.x > offset.x && coord.y > offset.y){
                     currentScale -= growingFactor;
                     // check for min
-                    if(currentScale < iconMin){currentScale = iconMin;}
+                    if(currentScale < iconMin){ currentScale = iconMin; }
 
                     // transform the icon by the positive difference in the sizes                        
                     dx = parseInt(transform.matrix.e +
@@ -481,7 +481,7 @@ function makeDraggable(event){
                     currentScale += growingFactor;
 
                     // check for max size
-                    if(currentScale > iconMax){currentScale = iconMax;}
+                    if(currentScale > iconMax){ currentScale = iconMax; }
                     if(!isOutline && (bbox.height * currentScale > parseInt(h)/3
                         || bbox.width * currentScale > parseInt(w)/3)){
                         currentScale -= growingFactor
@@ -515,9 +515,8 @@ function makeDraggable(event){
                 if(coord.x > offset.x && coord.y < offset.y){
                     currentScale -= growingFactor;
                     // check for min
-                    if(currentScale < iconMin){currentScale =iconMin;}
+                    if(currentScale < iconMin){  currentScale =iconMin; }
                     
-
                     // transform the icon by the negative difference in the sizes keep y the same
                     dx = parseInt(transform.matrix.e +
                             Math.abs(startW - bbox.width * currentScale)/4);
@@ -588,8 +587,7 @@ function makeDraggable(event){
                 selectedElement.style.strokeWidth = 
                             (parseInt(selectedElement.getAttribute("stroke-width"))/currentScale)*.5;
             }
-            if(isOutline || selectedElement.classList.contains("textbox") 
-                || selectedElement.id === "eyePosition"){
+            if(isOutline || selectedElement.classList.contains("textbox")){
                 if(dx && dy){
                     // set the new translate
                     transform.setTranslate(parseInt(dx),parseInt(dy));
@@ -1229,6 +1227,47 @@ function setScaleboxCorners(northDegree, sunDegree){
             }
         }
     }
+    // same is done for each icon that rotates
+    if(!isNaN(observerDegree)){
+        let childList = eyeImage.childNodes;
+        let offset90 = Math.round(observerDegree / 90);
+        
+        for(index in childList){
+            if(childList[index].classList 
+                && childList[index].classList.contains("resize") 
+                    && offset90 >= 1 && offset90 <= 3){
+                
+                if(childList[index].classList.contains("top-left")){
+                    let newClass = placeEnum["top-left"] + offset90;
+                    if(newClass > 4){newClass -= 4}
+                    
+
+                    childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                }
+                else if(childList[index].classList.contains("top-right")){
+                    let newClass = placeEnum["top-right"] + offset90;
+                    if(newClass > 4){newClass -= 4}
+                    
+
+                    childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                }
+                else if(childList[index].classList.contains("bottom-right")){
+                    let newClass = placeEnum["bottom-right"] + offset90;
+                    if(newClass > 4){newClass -= 4}
+                    
+
+                    childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                }
+                else if(childList[index].classList.contains("bottom-left")){
+                    let newClass = placeEnum["bottom-left"] + offset90;
+                    if(newClass > 4){newClass -= 4}
+                    
+
+                    childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                }
+            }
+        }
+    }
 }
 
 
@@ -1244,43 +1283,27 @@ function setScaleboxCorners(northDegree, sunDegree){
 function setIconAngle(icon, degree){
     // if the degree is no NaN
     if(!isNaN(degree)){
+
         // get the transform value if the icon object
         let transformVal = icon.getAttribute("transform");
         // get the seperate transform values in a list
         let transformArray = transformVal.split(" ");
 
-        // rotate the arrow around the center point of the eye
-        if(icon.id.indexOf('eye') > -1){
-            for(index in transformArray){
-                if(transformArray[index].indexOf("rotate") > -1){
-                    var tmp = transformArray[index].split("rotate(")[1];
-                    
-                    tmp = tmp.replace(")"," ").trim();
-                    tmp = degree;
-                    transformArray[index] = "rotate("+ tmp +",75,55)";
-                    
-                    icon.setAttribute("transform", transformArray.join(" "));
-                    return;
-                }
+        // set the rotation transform and return after
+        // the new transform attribute has been set
+        for(index in transformArray){
+            
+            if(transformArray[index].indexOf("rotate") > -1){
+                var tmp = transformArray[index].split("rotate(")[1];
+                
+                tmp = tmp.replace(")"," ").trim();
+                tmp = degree;
+                transformArray[index] = "rotate("+ tmp +")";
+                
+                icon.setAttribute("transform", transformArray.join(" "));
+                return;
             }
         }
-        else{
-            // set the rotation transform and return after
-            // the new transform attribute has been set
-            for(index in transformArray){
-                
-                if(transformArray[index].indexOf("rotate") > -1){
-                    var tmp = transformArray[index].split("rotate(")[1];
-                    
-                    tmp = tmp.replace(")"," ").trim();
-                    tmp = degree;
-                    transformArray[index] = "rotate("+ tmp +")";
-                    
-                    icon.setAttribute("transform", transformArray.join(" "));
-                    return;
-                }
-            }
-        } 
     }
 }
 
@@ -1394,6 +1417,38 @@ function getCookie(cname){
     }
     // not found
     return "";
+}
+
+/**
+ * @function openToolBox
+ * 
+ * @param {event} event the click event object passed by the user's click
+ * @param {string} id the id of the box to display 
+ * 
+ * @description when one of the tab buttons is clicked this function hides
+ *              all menu tabs and then shows the target of the click
+ */
+function openToolBox(event, id){
+    // Declare all variables
+    var i,
+    tabcontent,
+    tablinks;
+  
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+  
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+  
+    // Show the current tab, and add an "active" class to the link that opened the tab
+    document.getElementById(id).style.display = "block";
+    event.currentTarget.className += " active";
 }
 
 
@@ -1612,71 +1667,66 @@ $(document).ready(function(){
 
     // string version of the icons so they can be added dynamically with a single function call 
     var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(100,150) rotate(0) scale(.15625)"  stroke-width="7" style="border:0;'
+    + 'transform="translate(100,150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;"> '
     + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black"'
     + 'style="border:0;"></circle>'
     + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>'
-    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="black"'
-    + 'fill="white" stroke-width="10"/>'
+    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="white"'
+    + 'fill="black" stroke-width="10"/>'
     + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
     + 'style="visibility: hidden;"fill="red"/>'
     + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
     + 'style="visibility: hidden;"fill="blue"/>'
-    + '<rect class="resize bottom-right"x="220" y="200" width="100"height="100" style="visibility: hidden;'
+    + '<rect class="resize bottom-right"x="220" y="220" width="100"height="100" style="visibility: hidden;'
     + '"fill="green"/>'
-    + '<rect class="resize bottom-left"x="0" y="200" width="100" height="100"'
+    + '<rect class="resize bottom-left"x="0" y="220" width="100" height="100"'
     + 'style="visibility: hidden;"fill="yellow"/></g>';
 
     var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(100,100) rotate(0) scale(.1219513)" stroke-width="7"'
+    + 'transform="translate(100,100) rotate(0) scale(.2439026)" stroke-width="7"'
     + 'style="border:0; padding:0; pointer-events:all;">'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
-    + 'width="100" height="125" fill="red"/>'
-    + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="150"'
+    + 'width="100" height="100" fill="red"/>'
+    + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="100"'
     + 'fill="yellow"/>'
     + '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="white"  stroke="black"' 
     + 'stroke-width="4" style="border:0;"></path>'
     + '<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10"'
     + 'transform="translate(0,200)"fill="black" style="border:0;"></path>'
-    + '<rect class= "resize bottom-right"x="100" y="300" width="110" height="110"'
+    + '<rect class= "resize bottom-right"x="125" y="300" width="75" height="100"'
     + 'style="visibility: hidden;"fill="green"/>'
-    + '<rect class= "resize bottom-left"x="0" y="300" width="110" height="110" style="visibility: hidden;"'
+    + '<rect class= "resize bottom-left"x="0" y="300" width="75" height="100" style="visibility: hidden;"'
     + 'fill="blue"/></g>'
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
     + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
 
     var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>'
-    + '<rect class=" resize top-left" x="0" y="0" width="100" height="100"'
+    + '<rect class=" resize top-left" x="0" y="0" width="50" height="50"'
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
-    + '<rect class=" resize top-right" x="300" y="0" width="100" height="100"'
+    + '<rect class=" resize top-right" x="350" y="0" width="50" height="50"'
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
-    + '<rect class=" resize bottom-right" x="300" y="300" width="100" height="100"'
+    + '<rect class=" resize bottom-right" x="350" y="350" width="50" height="50"'
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
-    + '<rect class=" resize bottom-left" x="0" y="300" width="100" height="100"'
+    + '<rect class=" resize bottom-left" x="0" y="350" width="50" height="50"'
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />';
 
     var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(0,100) rotate(0) scale(.52)" stroke-width="3" style="border:0; padding:0;'
+    + 'transform="translate(150,100) rotate(0) scale(1.18)" stroke-width="3" style="border:0; padding:0;'
     + 'pointer-events:visible;">'
-    + '<path id="eyeArrow"x="0" y="0" transform="translate(0,0) rotate(0,150,115)"  stroke-width="2"'
-    + 'd="M 76.5 0 L 55 21.6 L 73.5 21.6 L 73.5 65 L78.5 65 L 78.5 21.6  L 95 21.6 L 74.5 0" '
-    + 'stroke="white" fill="black"/>'
-    + '<ellipse id= "eyeIconOuter"  cx="75" cy="55" rx="37" ry="25"  stroke="white" fill="black"'
-    + 'style="border:0;"></ellipse>'
-    + '<ellipse id= "eyeIconCenter" rx="18" ry="20" cy="55" cx="75" stroke-width="3" fill="white"'
-    + 'stroke="black"  style="border:0;">'
-    + '</ellipse><circle id= "eyeIconPupel"  r="7"cy="55" cx="75" stroke-width="4" stroke="white"'
-    + 'fill="black"  style="border:0;"></circle>'
-    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="55" height="50"'
-    + 'fill="red"/>'
-    + '<rect x="88" y="0" class="resize top-right" style="visibility: hidden;"width="47"'
-    + 'height="45" fill="blue"/>'
-    + '<rect x="88" y="67" class="resize bottom-right" style="visibility:hidden;"width="47"'
-    + 'height="40" fill="green"/>'
-    + '<rect x="1" y="65" class="resize bottom-left" style="visibility: hidden;"width="55" height="40"'
+    + '<path id="eyeArrow" x="0" y="0" stroke-width="2"'
+    + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>'
+    + '<path id= "eyeIconOuter" d="M 14 30 C 14 30 50 -10 85 30 C 85 30 50 75 14 29" fill="black"'
+    + 'stroke="white" style="border:0;"></path>'
+    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black"></ellipse>'
+    + '<circle id= "eyeIconPupel" r="6" cy="31" cx="50" stroke-width="2" stroke="white" fill="black"' 
+    + 'style="border:0;"></circle>'
+    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20" fill="red"/>'
+    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20" fill="blue"/>'
+    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20" fill="green"/>' 
+    + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20" '
     + 'fill="yellow"/></g>';
 
     var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
@@ -1705,19 +1755,16 @@ $(document).ready(function(){
     + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
     + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
     + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
-    + '<text id="scalebarHalf" x="1050" y="150" font-family="sans-serif" font-size="125"'
+    + '<text id="scalebarHalf" x="1075" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white"></text>'
     + '<text id="scalebar0" x="2125" y="150" font-family="sans-serif" font-size="125"'
     + 'stroke="white"fill="white">0</text></g>';
-
 
     // grab DOM elements that are needed
     var exportBtn =  document.getElementById('exportBtn'),
         myImage = document.getElementById('crop'),
         line,
         userLineColor;
-
-        console.log(document.referrer);
 
     svg = document.getElementById('svgWrapper');
     loader = document.getElementById('loading');
@@ -1846,10 +1893,12 @@ $(document).ready(function(){
             filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
 
             // encode the svg to a string
-            var data = (new XMLSerializer()).serializeToString(svg); 
-
+            var data = 
+                '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+                + (new XMLSerializer()).serializeToString(svg);
+            
             // creates a blob from the encoded svg and sets the type of the blob to and image svg
-            var svgBlob = new Blob([data], {type: 'image/svg+xml;charset=utf-8'});
+            var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
             
             // create the progress bar
             var progressBar = showProgress();
@@ -1888,7 +1937,8 @@ $(document).ready(function(){
                         body: fd,
                         headers: headers,
                         referrerPolicy: "no-referrer"
-                    }).then((response) =>{
+                    })
+                    .then((response) =>{
                         growProgress(progressBar);
                         // if the response is an error code
                         if(response.status !== 200){
@@ -1941,8 +1991,7 @@ $(document).ready(function(){
             }
         }
         else{
-            // hide the loading elements because the user hit cancel on the prompt
-            hideProgress(progressBar);
+            //remove the loading gif
             loader.style.visibility = "hidden";
             document.getElementById("loadingText").innerHTML = "Loading";
         }
@@ -1957,7 +2006,7 @@ $(document).ready(function(){
     */
    $('#exportBtn').on("mousedown",function(){
         loader.style.visibility = "visible";
-        document.getElementById("loadingText").innerHTML = "Compressing Image";
+        document.getElementById("loadingText").innerHTML = "Prepairing Image";
     });
 
     /** --------------------------------- End Export Functions ------------------------------------------- */
@@ -2083,6 +2132,31 @@ $(document).ready(function(){
                                                     setOpposite(children[index].getAttribute("fill")));
                 }
             }
+        }
+    });
+
+
+    /**
+     * @function viewOption 'change' event handler
+     * 
+     * @description change the view of the image that the user is viewing
+     * 
+    */
+    $("#viewOption").on("change", function(){
+        if($(this).is(":checked")){
+            if(w >= h){
+                $("#imageViewContainer").css({"width":"55%"});
+                $("#imageViewContainer").css({"height":"auto"});
+            }
+            else{
+                console.log()
+                $("#imageViewContainer").css({"width":"auto"});
+                $("#imageViewContainer").css({"height":window.innerHeight/1.25 + "px"});
+            }
+        }
+        else{
+            $("#imageViewContainer").css({"width":"auto"});
+            $("#imageViewContainer").css({"height":"100%"});
         }
     });
 
@@ -2216,6 +2290,11 @@ $(document).ready(function(){
      * 
     */
     $("#scaleBarButton").on("mousedown", function(){
+        var scaleCheckbox = document.getElementById("scaleCheckbox"),
+            scaleCheckboxLabel = document.getElementById("scaleCheckboxLabel"),
+            scaleCheckboxSlider = document.getElementById("scaleCheckboxSlider"),
+            scaleAnimation = document.getElementById("scaleAnimation");
+
         // if the scalebar btn is not disabled
         if(!this.classList.contains("disabled")){
             // clear all draw instance data if the flag is true
@@ -2229,8 +2308,18 @@ $(document).ready(function(){
                 svg.appendChild(scaleBarIcon);
                 this.className = "btn btn-danger btn-lg button";
 
-                document.getElementById("scaleCheckbox").style.visibility = "visible";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "visible";
+                scaleCheckbox.style.visibility = "visible";
+                scaleCheckboxLabel.style.visibility = "visible";
+
+                scaleCheckbox.style.transition = ".4s";
+                scaleCheckbox.style.webkitTransition = ".4s";
+                scaleCheckboxLabel.style.transition = ".4s";
+                scaleCheckboxLabel.style.webkitTransition = ".4s";
+                scaleCheckboxSlider.style.transition = ".4s";
+                scaleCheckboxSlider.style.webkitTransition = ".4s";
+                scaleAnimation.style.transition = ".4s";
+                scaleAnimation.style.webkitTransition = ".4s";
+
 
                 toggleScalebar = false;
             }
@@ -2239,8 +2328,18 @@ $(document).ready(function(){
                 scaleBarIcon.remove();
                 toggleScalebar = true;
                 this.className = "btn btn-lg button";
-                document.getElementById("scaleCheckbox").style.visibility = "hidden";
-                document.getElementById("scaleCheckboxLabel").style.visibility = "hidden";
+
+                scaleCheckbox.style.transition = "0s";
+                scaleCheckbox.style.webkitTransition = "0s";
+                scaleCheckboxLabel.style.transition = "0s";
+                scaleCheckboxLabel.style.webkitTransition = "0s";
+                scaleCheckboxSlider.style.transition = "0s";
+                scaleCheckboxSlider.style.webkitTransition = "0s";
+                scaleAnimation.style.transition = "0s";
+                scaleAnimation.style.webkitTransition = "0s";
+
+                scaleCheckbox.style.visibility = "hidden";
+                scaleCheckboxLabel.style.visibility = "hidden";
             }
         }
     });
@@ -2311,7 +2410,7 @@ $(document).ready(function(){
             var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect3.setAttribute("x",10);
             rect3.setAttribute("y",1);
-            rect3.setAttribute("width", 9);
+            rect3.setAttribute("width", 7);
             rect3.setAttribute("height", 7);
             rect3.style.visibility = "hidden";
             rect3.setAttribute("class","resize top-right");
@@ -2337,7 +2436,8 @@ $(document).ready(function(){
             g.appendChild(rect4);
 
             // set the user text color
-            if(userTextColor){
+            if(userTextColor)
+            {
                 text.setAttribute("stroke",userTextColor);
                 text.setAttribute("fill",userTextColor);
             }
@@ -2356,8 +2456,8 @@ $(document).ready(function(){
             // this auto finds the relative length of the text element
             let bbox = g.getBBox();
             if(strlength > 1){
-                rect3.setAttribute("x",bbox.width - 1);
-                rect4.setAttribute("x",bbox.width - 1);
+                rect3.setAttribute("x",bbox.width - 2);
+                rect4.setAttribute("x",bbox.width - 2);
             }
             // track the new text element
             textBoxArray.push(g);
@@ -2377,6 +2477,11 @@ $(document).ready(function(){
      * 
     */
     $('#eyeFlag').click(function(){
+        var eyeCheckbox = document.getElementById("eyeCheckbox"),
+            eyeCheckboxLabel = document.getElementById("eyeCheckboxLabel"),
+            eyeCheckboxSlider = document.getElementById("eyeCheckboxSlider"),
+            eyeAnimation = document.getElementById("eyeAnimation");
+
         if(!document.getElementById("eyeFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2392,8 +2497,18 @@ $(document).ready(function(){
                 eyeImage.style.visibility = 'hidden';
                 eyeFlag = !eyeFlag;
                 document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("eyeCheckbox").style.visibility = "hidden";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "hidden";
+
+                eyeCheckbox.style.transition = "0s";
+                eyeCheckbox.style.webkitTransition = "0s";
+                eyeCheckboxLabel.style.transition = "0s";
+                eyeCheckboxLabel.style.webkitTransition = "0s";
+                eyeCheckboxSlider.style.transition = "0s";
+                eyeCheckboxSlider.style.webkitTransition = "0s";
+                eyeAnimation.style.transition = "0s";
+                eyeAnimation.style.webkitTransition = "0s";
+
+                eyeCheckbox.style.visibility = "hidden";
+                eyeCheckboxLabel.style.visibility = "hidden";
                 
             }
 
@@ -2405,11 +2520,22 @@ $(document).ready(function(){
                 outlineBox.style.visibility = 'hidden';
                 
                 svg.appendChild(eyeImage);
-                setIconAngle(eyeArrow, observerDegree);
+                setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
                 document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
+
                 document.getElementById("eyeCheckbox").style.visibility = "visible";
                 document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
+
+                eyeCheckbox.style.transition = ".4s";
+                eyeCheckbox.style.webkitTransition = ".4s";
+                eyeCheckboxLabel.style.transition = ".4s";
+                eyeCheckboxLabel.style.webkitTransition = ".4s";
+                eyeCheckboxSlider.style.transition = ".4s";
+                eyeCheckboxSlider.style.webkitTransition = ".4s";
+                eyeAnimation.style.transition = ".4s";
+                eyeAnimation.style.webkitTransition = ".4s";
+
                 eyeFlag = false;
                 eyeIconPlaced = true;
             }
@@ -2424,7 +2550,11 @@ $(document).ready(function(){
      * 
     */
     $('#sunIconFlag').click(function(){
-        
+        var sunCheckbox = document.getElementById("sunCheckbox"),
+            sunCheckboxLabel = document.getElementById("sunCheckboxLabel"),
+            sunCheckboxSlider = document.getElementById("sunCheckboxSlider"),
+            sunAnimation = document.getElementById("sunAnimation");
+
         if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2440,8 +2570,18 @@ $(document).ready(function(){
                 sunImage.remove();
                 document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
                 sunFlag = false;
-                document.getElementById("sunCheckbox").style.visibility = "hidden";
-                document.getElementById("sunCheckboxLabel").style.visibility = "hidden";
+
+                sunCheckbox.style.transition = "0s";
+                sunCheckbox.style.webkitTransition = "0s";
+                sunCheckboxLabel.style.transition = "0s";
+                sunCheckboxLabel.style.webkitTransition = "0s";
+                sunCheckboxSlider.style.transition = "0s";
+                sunCheckboxSlider.style.webkitTransition = "0s";
+                sunAnimation.style.transition = "0s";
+                sunAnimation.style.webkitTransition = "0s";
+
+                sunCheckbox.style.visibility = "hidden";
+                sunCheckboxLabel.style.visibility = "hidden";
 
             }
             
@@ -2457,8 +2597,17 @@ $(document).ready(function(){
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
                                                                         "btn btn-danger btn-lg button");
-                document.getElementById("sunCheckbox").style.visibility = "visible";
-                document.getElementById("sunCheckboxLabel").style.visibility = "visible";
+                sunCheckbox.style.visibility = "visible";
+                sunCheckboxLabel.style.visibility = "visible";
+
+                sunCheckbox.style.transition = ".4s";
+                sunCheckbox.style.webkitTransition = ".4s";
+                sunCheckboxLabel.style.transition = ".4s";
+                sunCheckboxLabel.style.webkitTransition = ".4s";
+                sunCheckboxSlider.style.transition = ".4s";
+                sunCheckboxSlider.style.webkitTransition = ".4s";
+                sunAnimation.style.transition = ".4s";
+                sunAnimation.style.webkitTransition = ".4s";
                 
                 setIconAngle(sunImage, sunDegree);
                 makeDraggable(svg);  
@@ -2476,6 +2625,11 @@ $(document).ready(function(){
      * 
     */
     $('#northIconFlag').on('mousedown',function(){
+        var northLabel = document.getElementById("northCheckboxLabel"),
+            northAnimation = document.getElementById("northAnimation"),
+            northCheckboxSlider = document.getElementById("northCheckboxSlider"),
+            northCheckbox = document.getElementById("northCheckbox");
+
         if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -2492,8 +2646,17 @@ $(document).ready(function(){
                 northImage.remove();
                 northImage.style.visibility = 'hidden';
                 document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "hidden";
-                document.getElementById("northCheckboxLabel").style.visibility = "hidden";
+                northLabel.style.transition = "0s";
+                northCheckbox.style.transition = "0s";
+                northLabel.style.webkitTransition = "0s";
+                northCheckbox.style.webkitTransition = "0s";
+                northAnimation.style.webkitTransition = "0s";
+                northAnimation.style.transition = "0s";
+                northCheckboxSlider.style.webkitTransition = "0s";
+                northCheckboxSlider.style.transition = "0s";
+                northCheckbox.style.visibility = "hidden";
+                northLabel.style.visibility = "hidden";
+                
                 northFlag = !northFlag;
             }
             
@@ -2511,9 +2674,17 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
-                document.getElementById("northCheckbox").style.visibility = "visible";
-                document.getElementById("northCheckboxLabel").style.visibility = "visible";
+                                                                        "btn btn-danger btn-lg button");                                 
+                northLabel.style.transition = ".4s";
+                northCheckbox.style.transition = ".4s";
+                northLabel.style.webkitTransition = ".4s";
+                northCheckbox.style.webkitTransition = ".4s";
+                northAnimation.style.webkitTransition = ".4s";
+                northAnimation.style.transition = ".4s";
+                northCheckboxSlider.style.webkitTransition = ".4s";
+                northCheckboxSlider.style.transition = ".4s";
+                northCheckbox.style.visibility = "visible";
+                northLabel.style.visibility = "visible";
             }
             clickArray = [];
         }   
@@ -2562,7 +2733,7 @@ $(document).ready(function(){
         g.setAttribute("class","draggable confine outline");
         g.setAttribute("transform-origin","50%; 50%;");
         g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
-        g.setAttribute("stroke-width","10");
+        g.setAttribute("stroke-width","20");
         g.style.border = 0;
         g.style.padding = 0;
         g.style.pointerEvents = "visible";
@@ -2600,18 +2771,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'bottom');
             padBottom = true, padLeft = false, padRight = false, padTop = false;
 
-            bottomBtn.className = 'btn btn-danger button btn-md disabled';
+            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            bottomBtn.className = 'btn button btn-md';
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padBottom = false;  
         }
     });
@@ -2627,18 +2798,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'top');
             padTop = true, padLeft = false, padRight = false, padBottom = false;
             
-            topBtn.className = 'btn btn-danger button btn-md disabled';
+            topBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            topBtn.className = 'btn button btn-md';
-            leftBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
+            topBtn.className = 'btn button btn-sm paddingBtn';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
             padTop = false;  
         }
     });
@@ -2655,18 +2826,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'right');
             padRight = true, padLeft = false, padBottom = false, padTop = false;
 
-            rightBtn.className = 'btn btn-danger button btn-md disabled';
+            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
 
-            leftBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            rightBtn.className = 'btn button btn-md'; 
-            leftBtn.className = 'btn button btn-md';
-            bottomBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            rightBtn.className = 'btn button btn-sm paddingBtn'; 
+            leftBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padRight = false; 
         } 
     });
@@ -2683,18 +2854,18 @@ $(document).ready(function(){
             setImagePadding(parseInt(paddingBoxInput.value),'left');
             padLeft = true, padBottom = false, padRight=false, padTop = false;
             
-            leftBtn.className = 'btn btn-danger button btn-md disabled';
+            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
             
-            bottomBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
         }
         else{
             setImagePadding(parseInt(0),"none"); 
-            leftBtn.className = 'btn button btn-md'; 
-            bottomBtn.className = 'btn button btn-md';
-            rightBtn.className = 'btn button btn-md';
-            topBtn.className = 'btn button btn-md';
+            leftBtn.className = 'btn button btn-sm paddingBtn'; 
+            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn button btn-sm paddingBtn';
             padLeft = false; 
         } 
     });
@@ -2711,10 +2882,10 @@ $(document).ready(function(){
         
         padBottom = false, padLeft = false, padRight = false, padTop = false;
         
-        bottomBtn.className = 'btn button btn-md';
-        leftBtn.className = 'btn button btn-md';
-        rightBtn.className = 'btn button btn-md';
-        topBtn.className = 'btn button btn-md'; 
+        bottomBtn.className = 'btn button btn-sm paddingBtn';
+        leftBtn.className = 'btn button btn-sm paddingBtn';
+        rightBtn.className = 'btn button btn-sm paddingBtn';
+        topBtn.className = 'btn button btn-sm paddingBtn'; 
     });
 
 
@@ -3004,7 +3175,7 @@ $(document).ready(function(){
                 line.style.stroke = "white";
             }
             
-            line.style.strokeWidth = 4;
+            line.style.strokeWidth = 10;
             svg.appendChild(line);
 
             lineArr.push(line);

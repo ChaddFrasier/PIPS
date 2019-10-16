@@ -4,13 +4,9 @@ body,html {
     backface-visibility: visible;
     background-size: cover; 
     -webkit-text-size-adjust:100%; /* Disable mobile safari autozoom */
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     margin: 0%;
-}
-
-div {
-    padding: 0;
 }
 
 .mainbox-left {
@@ -36,8 +32,135 @@ text {
     height: auto;
     width: 70%;
     border: 10px;
+    margin-top: 0;
+    margin-bottom: auto;
     margin-left: auto;
     margin-right: auto;
+    overflow-y: auto;
+    overflow-x: hidden; 
+    padding-bottom: 2%;
+}
+
+button.paddingBtn {
+    min-width: 2rem;
+}
+.menu {
+    display: inline-flex;
+    width: 75%;
+    height: 85%;
+    background: rgb(161, 161, 161);
+    border: #000;
+    margin-top: 25%;
+}
+
+* { box-sizing: border-box }
+
+/* Style the tab */
+.tabs {
+    float: left;
+    border: 1px solid #000;
+    background-color: #f1f1f1;
+    width: 20%;
+    height: auto;
+    margin-left: 2%;
+    margin-top: 25%;
+}
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+  
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+}
+
+input:checked + .slider {
+    background-color: #007150;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #007150;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+} 
+/* Style the tab content */
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #000;
+    width: 100%;
+    border-left: none;
+    border-bottom:none;
+    padding-bottom: 2%;
+    height: auto;
+    text-align: center;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tabs button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    font-size: 55%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+/* Change background color of buttons on hover */
+.tabs button:hover {
+    background-color: #ddd;
+}
+  
+/* Create an active/current "tab button" class */
+.tabs button.active {
+    background-color: rgb(161, 161, 161);
 }
 
 .text-stroke {
@@ -198,15 +321,15 @@ label {
 }
 
 .button {
-    width:4.5rem;
+    width:5rem;
     height: auto;
     background: #007150;
     color: white;
     border: 2px solid black !important;
     overflow: hidden;
-    margin-top: auto;
-    margin-bottom: auto;
-    min-width: 4.5rem;
+    margin: auto auto;
+    min-width: 5rem;
+    min-height: 2rem;
 }
 
 .button:hover {
@@ -222,10 +345,10 @@ input[type=color]:hover {
 }
 
 input:focus {
-    outline: 2px double black;
+    outline: 2px double white;
 }
 
-input[type="color"] {
+input[type=color] {
     margin: auto auto;
     margin-top: 0;
     margin-bottom: auto;
@@ -244,7 +367,7 @@ input[type=checkbox]:hover {
     padding: 4%;
 }
 
-svg {
+svg.image-image {
     position: relative;
     align-content: left;
     margin-top: 0;
@@ -321,6 +444,11 @@ cite {
     cursor: move;
 }
 
+.index {
+    transform: scale(.75);
+    
+}
+
 .resize {
     pointer-events: painted;
 }
@@ -355,9 +483,10 @@ div.row[role=table] {
     border: 4px solid black;
     border-bottom: 2px solid black;
     border-top: 2px solid black;
-    background: rgba(99, 88, 94, 0.692);
+    background: rgba(117, 117, 117, 0.692);
     text-align: left;
     overflow: hidden;
+    min-height: 7rem;
 }
 
 .btnList {
