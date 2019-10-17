@@ -434,17 +434,14 @@ app.post('/captionWriter', async function(request, response){
                     return response.end();
                 }
             }catch(err){
-                /** TODO: Here is where i will switch on the code and load the file that is needed */
                 switch(Number(request.body.tplCode)){
                     //check the code and set the proper tpl
                     case 1:
                         templateText = fs.readFileSync('tpl/mosaicDefault.tpl', 'utf-8');
                         break;
-
                     case 2:
                         templateText = fs.readFileSync('tpl/mapDefault.tpl', 'utf-8');
                         break;
-
                     case 3:
                         templateText = fs.readFileSync('tpl/compositeDefault.tpl', 'utf-8');
                         break;
