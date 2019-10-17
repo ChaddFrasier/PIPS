@@ -72,6 +72,7 @@ button.paddingBtn {
     display: inline-block;
     width: 60px;
     height: 34px;
+    transform: scale(.75)
 }
   
 /* Hide default HTML checkbox */
@@ -341,7 +342,7 @@ label {
 input[type=color]:hover {
     cursor: pointer;
     border: 1.5px double rgba(0, 0, 0, 0.452);
-    background: white;
+    background: rgb(189, 189, 189);
 }
 
 input:focus {
@@ -352,6 +353,7 @@ input[type=color] {
     margin: auto auto;
     margin-top: 0;
     margin-bottom: auto;
+    padding: 4%;
     width: 75%;
 }
 

@@ -438,7 +438,7 @@ app.post('/captionWriter', async function(request, response){
                 switch(Number(request.body.tplCode)){
                     //check the code and set the proper tpl
                     case 1:
-                        templateText = fs.readFileSync('tpl/test.tpl', 'utf-8');
+                        templateText = fs.readFileSync('tpl/mosaicDefault.tpl', 'utf-8');
                         break;
 
                     case 2:
@@ -446,7 +446,7 @@ app.post('/captionWriter', async function(request, response){
                         break;
 
                     case 3:
-                        // TODO: 
+                        templateText = fs.readFileSync('tpl/compositeDefault.tpl', 'utf-8');
                         break;
         
                     default:

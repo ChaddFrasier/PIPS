@@ -1,2 +1,2 @@
-SpacecraftName map of TargetName with IsisCube.Mapping.ProjectionName features labeled.
+SpacecraftName map of TargetName with IsisCube.Mapping.ProjectionName features labeled was created from the image IsisCube.Archive.ProductId in mission phase IsisCube.Instrument.MissionPhaseName.
 The image is at a scale of PixelResolution m/px and centered at IsisCube.Mapping.CenterLatitude&#730;(N|S), IsisCube.Mapping.CenterLongitude&#730;(E|W).

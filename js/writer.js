@@ -230,10 +230,6 @@ function removeUnits(str){
 
 
 /**
- * IDEA: 
- * 
- * ~ Sort the keys by length and place them in the sorted array (longest to shortest)
- * ~ parse over the array and use the key to create a new object in the right order
  * 
  * 
  */
@@ -253,7 +249,10 @@ Object.prototype.sort = function(){
 }
 
 
-/**
+// TODO: this fails when refreshing 
+// ||||
+// VVVV
+/** 
  * @function output
  * 
  * @param {string} rawText the raw text of the output before data has been exchanged 

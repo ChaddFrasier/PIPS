@@ -689,7 +689,7 @@ function makeDraggable(event){
                     return maxText;
                 }
                 else{
-                    return 2;
+                    return 5;
                 }
             }
         }
@@ -1444,11 +1444,13 @@ function openToolBox(event, id){
     tablinks = document.getElementsByClassName("tablinks");
     for (i = 0; i < tablinks.length; i++) {
       tablinks[i].className = tablinks[i].className.replace(" active", "");
+      tablinks[i].firstElementChild.style.color = "black";
     }
   
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(id).style.display = "block";
     event.currentTarget.className += " active";
+    event.currentTarget.firstElementChild.style.color = "white";
 }
 
 
@@ -1684,7 +1686,7 @@ $(document).ready(function(){
     + 'style="visibility: hidden;"fill="yellow"/></g>';
 
     var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(100,100) rotate(0) scale(.2439026)" stroke-width="7"'
+    + 'transform="translate(100,100) rotate(0) scale(.2439026)" stroke-width="5"'
     + 'style="border:0; padding:0; pointer-events:all;">'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'

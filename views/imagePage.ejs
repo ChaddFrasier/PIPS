@@ -27,13 +27,13 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: black; width: 75%;">Icons</p>
+                    <p style="color: white; width: 100%; font-size: 110%;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: 75%;">Annotate</p>
+                    <p style="color: black; width: 100%; font-size: 110%;">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black; width: 75%;">File Tools</p>
+                    <p style="color: black; width: 100%; font-size: 110%;">File Tools</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
@@ -45,11 +45,11 @@
                     <div class="row" role="table" style="margin-top:0rem; border-top: 2px solid black" 
                             title="Alt + N">
                         <div class="col-4" style="margin-top: 2%;">
-                            <p class="float-left" style="margin-right:.5rem; height: 100%; font-size: auto;">
+                            <p class="float-left" style="padding-left: 3%;margin-right:.5rem; height: 100%; font-size: 80%;">
                                 North Azimuthal<br/>Direction
                             </p>
                         </div>
-                        <div class="col-4" style="text-align:center; margin: auto auto;">
+                        <div class="col-4" style="text-align:center; margin: auto auto; padding: 1%;">
                             <svg id="northIconFlag" role="button" class="btn btn-lg button" viewBox="0 0 100 100"
                              stroke-width="3" style=" margin:auto auto; width: 100%; padding: 5%;">
                                 <path d="M 50 0 L 85 65 L 50 50 L 50 0" stroke="black" fill="black"/>
@@ -71,12 +71,12 @@
                     <!-- Sun Direction Button -->
                     <div class="row" role="table"title="Alt + S" style="padding-bottom: 1%;">
                         <div class="col-4">
-                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
+                            <p class="float-left" style="padding-left: 3%;margin-right: .5rem; height: 100%; font-size: 80%;">
                                 Sun Azimuthal<br/>Direction
                             </p>
                         </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                            <svg class="btn btn-lg button" style="width: 100%; padding: 3%;" 
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 1%;">
+                            <svg class="btn btn-lg button" style="width: 100%; padding: 1%;" 
                             viewBox="0 0 50 50"role="button" id="sunIconFlag" stroke-width="3">
                                 <circle cx="25" cy="25" r="5" stroke="black" stroke-width="1"></circle>
                                 <circle cx="25" cy="25" r="20" stroke="black" fill="transparent">
@@ -95,12 +95,12 @@
                     <!-- Observer Direction Button -->
                     <div class="row" role="table" title="Alt + O">
                         <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: auto;">
+                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: 80%;padding-left: 3%;">
                                 Observer Azimuthal<br/>Direction
                             </p>
                         </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
-                            <svg class="btn btn-lg button" id="eyeFlag"  style="width: 100%; padding: 3%;" 
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 1%;">
+                            <svg class="btn btn-lg button" id="eyeFlag"  style="width: 100%; padding: 1%;" 
                             viewBox="0 0 100 100" stroke-width="5">
                                 <path d="M 0 51 C 0 50 50 0 100 51" fill="white" stroke="black"></path>
                                 <path d="M 0 49 C 0 50 49 100 100 49" fill="white" stroke="black"></path>
@@ -118,12 +118,12 @@
                         </div>
                     </div>
                     <div class="row" role="table" title="Alt + R">
-                        <div class="col-2" style="margin-top: auto; margin-bottom:auto;">
+                        <div class="col-4" style="padding-left: 3%; margin-top: auto; margin-bottom:auto; font-size: 80%;">
                             <p class="float-left">Scalebar</p>
                         </div>
-                        <div class="col-7" style="padding-left:15%; margin-top: auto; margin-bottom:auto;">
+                        <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
                             <button class="btn btn-lg button" id="scaleBarButton"
-                            style="width:100%; padding:4%; padding-top:6%; color: black;">
+                            style="width:100%; padding:3%; padding-top:5%; color: black;">
                                 <svg viewBox= "0 0 25 4">
                                     <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width="1.5" 
                                     stroke="black" fill="white" ></rect>
@@ -149,7 +149,7 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="col-3">
+                        <div class="col-4">
                             <p id="scaleCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
                             <label class="switch" id="scaleCheckbox" style="visibility: hidden;">
                                 <input type="checkbox" id="scaleCheckboxSlider" title="Shift + Alt + R"
@@ -165,7 +165,7 @@
                     <!-- Draw Tool Button -->
                     <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
                         <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="padding-top: .5rem; height: 100%; font-size: auto;">
+                            <p class="float-left" style="padding-top: .5rem; height: 100%; font-size: 80%;">
                                 Drawing Tool
                             </p>
                         </div>
@@ -186,17 +186,17 @@
                     </div>
                     <!-- Outline Box Button -->
                     <div class="row" role="table" title="Alt + B">
-                        <div class="col-4">
-                            <p class="float-left" style="padding-top: .5rem; width: 100%;">
+                        <div class="col-4" style="margin: auto auto;">
+                            <p class="float-left" style="width: 100%; font-size: 80%;">
                                 Outline Box
                             </p>
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
                             <button class="btn btn-lg button" id="outlineBtn" 
-                            style="width:100%; color:black; padding:1%; padding-top: 10%;">
+                            style="width:85%; color:black; padding:3%; padding-top: 10%;">
                                 <svg viewBox="0 0 100 100">
                                     <rect x="10" y="20" width="80" height="65" 
-                                    stroke="white" stroke-width="10" fill="transparent"></rect>
+                                    stroke="white" stroke-width="8" fill="transparent"></rect>
                                 </svg>
                             </button>
                         </div>
@@ -214,8 +214,8 @@
                     </div>
                     <!-- Text Tool Button -->
                     <div class="row" role="table" title="Alt + T">
-                        <div class="col-4">
-                            <p class="float-left" style="padding-top:.5rem; margin: auto auto;">Text Tool</p>
+                        <div class="col-4" style="margin: auto auto;">
+                            <p class="float-left" style="font-size: 80%;">Text Tool</p>
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto;">
                             <button class="btn btn-lg button" id="textBtn" 
@@ -254,7 +254,7 @@
                         <div class="row" style="width:100%;">
                             <div class="col-6" style="padding-left:2rem; margin-bottom: 2%;">
                                 <input class="form-control form-control-lg"
-                                style="width: 100%; border: 1px solid lightgrey; font-size: 14px;"
+                                style="width: 100%; border: 1px solid lightgrey; font-size: 50%;"
                                 id="paddingInput" type="text" placeholder="Pad Pixels"/>
                             </div>
                             <div class="col-6" style="padding-left:15%;">
@@ -292,17 +292,17 @@
                         </div>
                     </div>
                     <!-- Export Button Interface -->
-                    <div class="row" role="table" style="border-bottom: 4px solid black; margin-top: auto;
+                    <div class="row" role="table" style="border-bottom: 2px solid black; margin-top: auto;
                     margin-bottom: auto;" title="Download Figure">
                         <div class="row" style="padding:2%; padding-left: 2rem; width: 20rem;">
-                            <div class="col-4" style="padding: 0;">
+                            <div class="col-4" style="padding: 0; margin: auto auto;">
                                 <p class="float-left" style="margin-right: 2rem;">
                                 Save<br/>Figure
                                 </p>
                             </div>
-                            <div class="col-8">
+                            <div class="col-8" style="margin: auto auto;">
                                 <button class="btn btn-primary btn-lg button" 
-                                style="height: 90%;margin: auto auto;" id="exportBtn" >
+                                style="height: 75%;margin: auto auto;" id="exportBtn" >
                                     <svg viewBox="0 0 100 100" stroke-width="10">
                                         <path d="M 5 40 L 5 95 L 95 95 L 95 40" stroke="black" fill="transparent"></path>
                                         <path d="M 50 10 L 50 80 L 70 50 L 50 80 L 30 50 L 50 81" stroke-width="8" stroke="black" fill="transparent"></path>
@@ -424,13 +424,13 @@
                         </a>
                     </div>
                     <div class="col-4" style="display: flex; margin: auto auto; padding-left: 10%;">
-                        <h5 style="width: 30%; color: white;">Zoom Fit</h5>
+                        <h5 style="width: 30%; color: white; padding-top: 2%;">Zoom Fit</h5>
                         <!-- Rounded switch -->
                         <label class="switch">
                             <input id="viewOption" type="checkbox">
                             <span class="slider round"></span>
                         </label>
-                        <h5 style="width: 30%; color: white;">Box Fit</h5>    
+                        <h5 style="width: 30%; color: white; padding-top: 2%;">Box Fit</h5>    
                     </div>
                     <div class="col-4">
                         <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"

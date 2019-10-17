@@ -255,6 +255,11 @@ $(document).ready(function(){
     });
 
 
+    /**
+     * @function tplUpload 'change' listener
+     * 
+     * @description change the color of the buttons when the file in the template upload input changes
+     */
     $("#tplUpload").change(function(){
         resetOtherButtons("", "template");
     });
@@ -366,24 +371,24 @@ $(document).ready(function(){
      * @description change the default image output dimensions
     */
    $("button.template").mousedown(function(event){
-    switch($(this).html()){
-        case "Mosaic":
-            document.getElementById("tplCode").value = 1;
-            break;
-        case "Map Projected":
-            document.getElementById("tplCode").value = 2;
-            break;
-        case "Composite":
-            document.getElementById("tplCode").value = 1;
-            break;
-        default:
-            document.getElementById("tplCode").value = 0;
-    }
-    
-    $("#tplUpload").val("");
-    $(this).addClass("btn-secondary");
-    resetOtherButtons(this, "template");
-});
+        switch($(this).html()){
+            case "Mosaic":
+                document.getElementById("tplCode").value = 1;
+                break;
+            case "Map Projected":
+                document.getElementById("tplCode").value = 2;
+                break;
+            case "Composite":
+                document.getElementById("tplCode").value = 1;
+                break;
+            default:
+                document.getElementById("tplCode").value = 0;
+        }
+        
+        $("#tplUpload").val("");
+        $(this).addClass("btn-secondary");
+        resetOtherButtons(this, "template");
+    });
 });
 /**
  * @function window 'pageshow' event handler
