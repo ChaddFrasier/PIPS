@@ -379,7 +379,7 @@ $(document).ready(function(){
                 document.getElementById("tplCode").value = 2;
                 break;
             case "Composite":
-                document.getElementById("tplCode").value = 1;
+                document.getElementById("tplCode").value = 3;
                 break;
             default:
                 document.getElementById("tplCode").value = 0;
