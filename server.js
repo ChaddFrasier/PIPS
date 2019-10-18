@@ -542,10 +542,18 @@ app.post('/captionWriter', async function(request, response){
                         // if the image needs to be reduced
                         if(scaleFactor > 1){
                             // promise on the reduce call
+                            console.log("REDUCING");
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] > 4000000){
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            }
+                            else{
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            }
+                            
                         }
                         else if(samples * lines > 4000000){
+                            console.log("NORMAL SHRINKs");
                             promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
