@@ -158,7 +158,7 @@ input:checked + .slider:before {
 .tabs button:hover {
     background-color: #ddd;
 }
-  
+
 /* Create an active/current "tab button" class */
 .tabs button.active {
     background-color: rgb(161, 161, 161);
