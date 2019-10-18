@@ -547,7 +547,7 @@ app.post('/captionWriter', async function(request, response){
                             if(cubeObj.userDim[0] * cubeObj.userDim[1] > 4000000){
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
                             }
-                            else{
+                            else if(scaleFactor >= 1.5){
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
                             }
                             

@@ -331,7 +331,7 @@ label {
     margin: auto auto;
     min-width: 5rem;
     min-height: 2rem;
-    max-height: 4rem;
+    max-height: 10rem;
 }
 
 .button:hover {
@@ -354,7 +354,7 @@ input[type=color] {
     margin: auto auto;
     margin-top: 0;
     margin-bottom: auto;
-    padding: 4%;
+    padding: 1%;
     width: 75%;
 }
 
