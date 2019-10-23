@@ -1509,6 +1509,21 @@ function triggerDownload(imgURI,filename){
     a.dispatchEvent(event);
 }
 
+function getMarkerId(id, inc){
+    if(document.getElementById(id) === null){
+        return id;
+    }
+    else if(document.getElementById(id+inc) === null){
+        return id + inc;
+    }
+    else{
+        // call recursion on next increment and new id
+        return getMarkerId(id,  ++inc);
+    }
+}
+
+
+
 /** ----------------------------- End Helper Function ---------------------------------------------------- */
 
 /** --------------------------------- Draw Functions ----------------------------------------------------- */
@@ -1527,7 +1542,18 @@ function resetDrawTool(){
 
     // remove half drawn lines if any
     if(lineArr.length > 0 && clickArray.length > 1){
-        lineArr.pop().remove();
+        var elem = lineArr.pop();
+
+            if(elem.getAttribute("marker-end")){
+                // remove the arrow def based on marker-end value
+                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+
+                if(id !== "#arrow"){
+                    $(id).parent().remove();
+                }
+            }
+            
+            elem.remove();
     }
     // reset the click array
     clickArray = [];
@@ -2153,7 +2179,6 @@ $(document).ready(function(){
                 $("#imageViewContainer").css({"height":"auto"});
             }
             else{
-                console.log()
                 $("#imageViewContainer").css({"width":"auto"});
                 $("#imageViewContainer").css({"height":window.innerHeight/1.25 + "px"});
             }
@@ -2208,14 +2233,34 @@ $(document).ready(function(){
     */
     $("#undoLine").on("mousedown",function(){
         if(lineArr.length > 0 && clickArray.length > 1){
-            lineArr.pop().remove();
+            let elem = lineArr.pop();
+            if(elem.getAttribute("marker-end")){
+                // remove the arrow def based on marker-end value
+                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+
+                if(id !== "#arrow"){
+                    $(id).parent().remove();
+                }
+            }
+            elem.remove();
             svg.className.baseVal = "image-image float-center";
             document.getElementById("pencilIconFlag").className = "btn btn-lg button";
             drawFlag = false;
             clickArray = [];
         }
         else if(lineArr.length > 0){
-            lineArr.pop().remove();
+            var elem = lineArr.pop();
+
+            if(elem.getAttribute("marker-end")){
+                // remove the arrow def based on marker-end value
+                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+
+                if(id !== "#arrow"){
+                    $(id).parent().remove();
+                }
+            }
+            
+            elem.remove();
         }
         else{
             alert("No lines drawn");
@@ -2237,7 +2282,16 @@ $(document).ready(function(){
         // when escape is clicked with the drawFlag true
         if(event.keyCode === 27 && drawFlag){
             if(lineArr.length > 0 && clickArray.length > 1){
-                lineArr.pop().remove();
+                let elem = lineArr.pop();
+                if(elem.getAttribute("marker-end")){
+                    // remove the arrow def based on marker-end value
+                    let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+    
+                    if(id !== "#arrow"){
+                        $(id).parent().remove();
+                    }
+                }
+                elem.remove();
                 clickArray = [];
             }
         }
@@ -2383,16 +2437,15 @@ $(document).ready(function(){
             // text offset location
             text.setAttribute("dx",0);
             text.setAttribute("dy",0);
-            // text font family to fix issue #66
-            text.setAttribute("font-family","sans-serif");
+            
             // default the letter spacing for all browsers
             text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
             // font size
-            text.style.fontSize = "15";
+            text.setAttribute("font","10px san-serif");
             // set draggable group defaults
             g.setAttribute("height",0);
             g.setAttribute("width",0);
-            g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize*2 + ")");
+            g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize + ")");
 
             // create rectangles on all corners for scaling the text
             var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
@@ -3031,110 +3084,7 @@ $(document).ready(function(){
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
             drawLine(line, mouseX, mouseY);
         }
-        
-        /*
-        if(cropFlag && !doneResizing){
-
-
-            // clicking close to the 0,0
-            if(mouseX < 0 && mouseY < bufferY){
-                mouseX = 0;
-                mouseY = 0;
-            }
-            // if the click is close to max corner(bottom right)
-            else if(mouseY > Number(<%=h%>) - bufferY && mouseX > Number(<%=w%>)){
-                mouseX = <%=w%>;
-                mouseY = <%=h%>;
-            }
-            // if the click is close to the top right 
-            else if(mouseX > Number(<%=w%>) && mouseY < bufferY){
-                mouseX = <%=w%>;
-                mouseY = 0;
-            }
-            // if the click is close to bottom left corner
-            else if(mouseX < 0 && mouseY > Number(<%=h%>) - bufferY){
-                mouseX = 0;
-                mouseY = <%=h%>;
-            }
-            // for left side
-            else if(mouseX < 0 && mouseY < Number(<%=h%>) - bufferY){
-                mouseX = 0;
-                
-            }
-            // for right side
-            else if(mouseX > Number(<%=w%>) && mouseY < Number(<%=h%>) - bufferY && mouseY > bufferY){
-                mouseX = <%=w%>;
-            }
-            adjustBox();
-        }*/
     });
-
-    /* 
-
-    // button to undo the cropped image
-    $("#backBtn").on('click',function(event){
-        event.preventDefault();
-
-        var currentImg = '<%= image %>';
-
-        console.log(currentImg);
-
-        // if the image has been cropped then get the previous image
-        if(currentImg.indexOf('_crop.png') > -1){
-            // ajax request for the data sending the current image link
-            $.ajax({
-                type: 'GET',
-                
-                cache: false,
-                url: 'http://localhost:8080/crop?currentImage=' +'<%= image %>',
-                success: function(response) {
-                    $("html").html(response);
-                
-                    
-                },
-                error: function(xhr, status, err) {
-                    console.log(xhr.responseText);
-                    loadInvisible();
-                    
-                }
-            });
-        }
-        else{
-            // if the current image is the base image then alert the user
-            loadInvisible();
-            alert('Base Image:\nCannot Be Undone');
-        }
-    }); */
-
-    /* 
-    // use same logic for other button
-    $("#cropFlag").click(function(){
-        cropFlag = !cropFlag;
-
-        if(cropFlag){
-            if(!northIconPlaced){
-                northFlag = false
-                document.getElementById('northIconFlag').innerHTML = "Add North Arrow";
-            }
-            if(!sunIconPlaced){
-                sunFlag = false;
-                document.getElementById('sunIconFlag').innerHTML = "Add Sun Icon";
-            }
-            if(eyeFlag && !eyeIconPlaced){
-                eyeFlag = false;
-                document.getElementById('eyeFlag').innerHTML = "Add Observer Icon";
-            }
-
-            document.getElementById('cropFlag').innerHTML = "Cancel?";
-            
-        }
-        else{
-            clickArray = [];
-            document.getElementById('cropFlag').innerHTML = "Crop Image";
-            outlineBox.style.visibility = 'hidden';
-        }
-        
-    }); */
 
 
     /**
@@ -3148,7 +3098,8 @@ $(document).ready(function(){
         // set event variables
         var t = event.target,
             x = event.clientX,
-            y = event.clientY;
+            y = event.clientY,
+            markerId;
 
         // TODO: figure our how to buffer the Y portion
         var bufferY = parseInt(h * .09);
@@ -3165,15 +3116,50 @@ $(document).ready(function(){
         // if the draw flag is true and length of clicks is 0
         if(drawFlag && clickArray.length === 0 
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
+            
+            let isArrowHead = document.getElementById("arrowCheckboxSlider").checked,
+                NS = "http://www.w3.org/2000/svg";
+
             // create the new  line dynamically and add it to the array so we can remove it later if needed
-            line = document.createElementNS("http://www.w3.org/2000/svg","line");
+            line = document.createElementNS(NS,"line");
             line.setAttribute("x1",mouseX);
             line.setAttribute("y1",mouseY);
             line.setAttribute("x2",mouseX);
             line.setAttribute("y2",mouseY);
             line.style.visibility = "visible";
+
+            if(isArrowHead){
+                console.log(userLineColor);
+                // if arrow with default color 
+                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-end","url(#arrow)"); }
+                // if the array is linger than 1 and the color is not default
+                else if(lineArr.length > 0 || userLineColor){
+                    var markerId = "arrow" + lineArr.length,
+                    pathId = "arrowPath" + lineArr.length,
+                    newDef = document.getElementById("arrowDef").cloneNode();
+
+                    newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                    newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                    line.setAttribute("marker-end", String("url(#" + markerId + ")"));
+                    (newDef.childNodes).forEach(childElem => {
+                        // if the childElement has a child
+                        if(childElem.childElementCount > 0){
+                            childElem.setAttribute("id", markerId);
+                            childElem.childNodes[1].setAttribute("fill", userLineColor);
+                            childElem.childNodes[1].setAttribute("id", pathId);
+                        }
+                    });
+                    svg.appendChild(newDef);
+                }
+            }
+
+            // check to see if it is a custom color
             if(userLineColor){
                 line.style.stroke = userLineColor;
+                if(pathId){
+                    document.getElementById(pathId).style.fill = userLineColor;
+                    document.getElementById(pathId).style.stroke = userLineColor;
+                }
             }
             else{
                 line.style.stroke = "white";
@@ -3205,90 +3191,6 @@ $(document).ready(function(){
             // parse the whole svg and set the pointerevents to accept clicks again
             setSvgClickDetection(svg, "all");
         }
-    
-        /*   COMMENTING OUT FOR NOW
-        if(cropFlag){
-            // clicking close to the 0,0
-            if(mouseX < 0 && mouseY < bufferY){
-                captureClick(0,0);
-            }
-            // if the click is close to max corner(bottom right)
-            else if(mouseY > Number(<%=h%>) - bufferY && mouseX > Number(<%=w%>)){
-                captureClick(<%=w%>,<%=h%>);
-            }
-            // if the click is close to the top right 
-            else if(mouseX > Number(<%=w%>) && mouseY < bufferY){
-                captureClick(<%=w%>,0);
-            }
-            // if the click is close to bottom left corner
-            else if(mouseX < 0 && mouseY > Number(<%=h%>) - bufferY){
-                captureClick(0,<%=h%>);
-            }
-            // for left side
-            else if(mouseX < 0 && mouseY < Number(<%=h%>) - bufferY){
-                captureClick(0,mouseY);
-            }
-            // for right side
-            else if(mouseX > Number(<%=w%>) && mouseY < Number(<%=h%>) - bufferY && mouseY > bufferY){
-                captureClick(<%=w%>,mouseY);
-            }
-
-            if(!doneResizing){
-                    console.log(clickArray);
-                outlineBox.style.visibility = 'visible';
-                svg.appendChild(outlineBox);
-                outlineBox.setAttribute('x',clickArray[0]);
-                outlineBox.setAttribute('y',clickArray[1]);
-            }
-
-            if(clickArray.length === 4){
-                // and if the points arent stacked
-                if((clickArray[0] === clickArray[2] && clickArray[0] !== 0) 
-                    || clickArray[1] === clickArray[3]){
-                    clickArray = [];
-                    alert('Cannot be cropped in this manner');
-                    cropFlag = false;
-                    document.getElementById('cropFlag').innerHTML = "Crop Image";
-                
-                }
-                else{
-                    prepareCrop(clickArray);
-                    // activate loader gif 
-                    loaderActivate();
-                    // set done resizeing flag
-                    doneResizing = true;
-                    //get the array string for the request
-                    let arrayStr = clickArray.toString();
-                    // prevent defaults 
-                    event.preventDefault();
-                    // send ajax POST request through http
-                    $.ajax({
-                        type: 'POST',
-                        cache: false,
-                        async: true,
-                        url: 'http://localhost:8080/crop?cropArray=' + arrayStr 
-                        + '&currentImage=' +'<%= image %>',
-                        success: function(response) { 
-                            // on success load the new html data into the page    
-                            $("html").html(response);
-                            // set the loader to invisible
-                            loadInvisible();
-                            // reset clickarray
-                            clickArray = [];
-                            // reset flag
-                            cropFlag = false;
-                        },
-                        error: function(xhr, status, err) {
-                            // on error log the error
-                            console.log(xhr.responseText);
-                            alert('Crop Failed');
-                            loadInvisible();
-                        }
-                    });
-                }
-            }   
-        }
-        */
     });
 
     let warned = false;
@@ -3326,125 +3228,4 @@ $(document).ready(function(){
             $("#resetPaddingBtn").click();
         }
     });
-
-
-    /*  // capture mouse position on image mouse over
-    $('#crop').mousemove(function(event){
-        event.preventDefault();
-
-        // set event variables
-        var t = event.target;
-        var x = event.clientX;
-        var y = event.clientY;
-    
-        // get proper svg as target
-        var target = (t == svg ? svg : t.parentNode);
-        
-        // get new svg relative point
-        var svgP = svgPoint(target, x, y);
-        // convert to int
-        mouseX = parseInt(svgP.x),
-        mouseY = parseInt(svgP.y);
-
-        console.log( "mouse over image: " + mouseX +': ' + mouseY);
-        
-        // only adjust the box if currently croppping
-        if(!doneResizing && clickArray.length > 1){
-            
-            adjustBox();
-        }
-    }); */
-
-
-    /* 
-    // when the image registers a click
-    $("image").on("click", function(event) {
-        event.preventDefault();
-        // capture event variables for px calculations
-        var t = event.target;
-        var x = event.pageX;
-        var y = event.pageY;
-    
-        // if the target is the svg DOM then keep it the same 
-            //  otherwise set it to the parent of the current target 
-        var target = (t == svg ? svg : t.parentNode);
-        // get the converted svg coordinates
-        var svgP = svgPoint(target, x, y);
-        // convert floats to integers
-        var x = parseInt(svgP.x),
-            y = parseInt(svgP.y);
-    
-        // ======== FOR TESTING=======
-        console.log("x is: " + x);
-        console.log("y is:" + y);
-        // ===========================
-
-        /* // if any of the flags are true
-        if(cropFlag){
-
-            // and if the click array is either length = 0 or the clicks are in 
-                // a proper location for cropping capture the click in the clickArray 
-            if(clickArray.length === 0){
-                captureClick(x,y);
-                // check click array
-                console.log(clickArray);
-            }
-            else if(clickArray.length === 2){
-                
-                captureClick(x,y);
-                prepareCrop(clickArray);
-                
-                
-            }
-            
-            // Then if the click flag is true and the length of the array is 2
-            if(cropFlag && clickArray.length === 2){
-                // set the dimensions and visibilty of the outline box
-                outlineBox.style.visibility = 'visible';
-                svg.insert(outlineBox);
-                
-                outlineBox.setAttribute('x',clickArray[0]);
-                outlineBox.setAttribute('y',clickArray[1]);
-            }
-            // if the crop flag is true and the length of the click array is 4 crop the image
-            else if( cropFlag && clickArray.length === 4){
-                // activate loader gif 
-                loaderActivate();
-                // set done resizeing flag
-                doneResizing = true;
-                //get the array string for the request
-                let arrayStr = clickArray.toString();
-                // prevent defaults 
-                event.preventDefault();
-                // send ajax POST request through http
-                $.ajax({
-                    type: 'POST',
-                    cache: false,
-                    async: true,
-                    url: 'http://localhost:8080/crop?cropArray=' + arrayStr 
-                    + '&currentImage=' +'<%= image %>',
-                    success: function(response) { 
-                        // on success load the new html data into the page    
-                        $("html").html(response);
-                        // set the loader to invisible
-                        loadInvisible();
-                        // reset clickarray
-                        clickArray = [];
-                        // reset flag
-                        cropFlag = false;
-                    },
-                    error: function(xhr, status, err) {
-                        // on error log the error
-                        console.log(xhr.responseText);
-                        alert('Crop Failed');
-                        loadInvisible();
-                    }
-                });
-                
-            }
-        }  
-    }); // end image click
-    */
-    // ---------------------------------- End Click & Text Input Handlers -----------------------------------
-    
 });/** ------------------------------------ End Jquery Handlers ------------------------------------------ */
