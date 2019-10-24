@@ -243,11 +243,11 @@ p {
 
 .loading {
     visibility:hidden; 
-    margin-right:1rem;
-    right: 0;
-    top: 0;
+    margin-right:auto;
     margin-left: auto; 
-    height: 10%;
+    top: 10%;
+    left: 30%;
+    height: 75%;
     width: auto;
     position: absolute;
 }
