@@ -1,2 +1,2 @@
-This composite image of TargetName was created using multiple images from IsisCube.Instrument.SpacecraftName's mission phase IsisCube.Instrument.MissionPhaseName.
+This composite image of TargetName was created using multiple images from IsisCube.Instrument.SpacecraftName's mission phase Phase.
 This composite shows ProjectionName features on the surface of TargetName.
