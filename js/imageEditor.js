@@ -3129,7 +3129,6 @@ $(document).ready(function(){
             line.style.visibility = "visible";
 
             if(isArrowHead){
-                console.log(userLineColor);
                 // if arrow with default color 
                 if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-end","url(#arrow)"); }
                 // if the array is linger than 1 and the color is not default
