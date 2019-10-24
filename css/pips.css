@@ -252,6 +252,17 @@ p {
     position: absolute;
 }
 
+.loading-small {
+    visibility:hidden; 
+    margin-right:1rem;
+    margin-left: auto; 
+    top: 0;
+    left: auto;
+    height: 15%;
+    width: auto;
+    position: absolute;
+}
+
 .alertBoxes {
     padding: 2px;
 }

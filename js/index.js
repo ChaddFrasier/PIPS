@@ -96,7 +96,10 @@ function setNotVisible(element){
  * @description hide the loader gif
 */
 function loadInvisible(){
-    loader.style.visibility = 'hidden';    
+    loader.style.visibility = 'hidden';
+    var divs = document.querySelectorAll("div");   
+
+    divs[divs.length - 1].remove();
 }
 
 
