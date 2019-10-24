@@ -148,6 +148,13 @@ function loaderActivate(){
         }
         else{
             loader.style.visibility = 'visible';
+            var div = document.createElement("div");
+            div.style.background = "rgba(0,0,0,.5)";
+            div.style.width = "100vw";
+            div.style.height = "110%";
+            div.style.position = "absolute";
+            div.style.top = "0";
+            document.body.insertBefore(div,this.firstChild);
             document.uploadForm.submit();
         }
     }
