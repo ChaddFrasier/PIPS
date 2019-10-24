@@ -2441,7 +2441,7 @@ $(document).ready(function(){
             // default the letter spacing for all browsers
             text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
             // font size
-            text.setAttribute("font","10px san-serif");
+            text.setAttribute("class","user");
             // set draggable group defaults
             g.setAttribute("height",0);
             g.setAttribute("width",0);
