@@ -2,3 +2,4 @@
 *.prt
 *.pgw
 package-lock.json
+.vscode

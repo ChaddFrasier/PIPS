@@ -96,7 +96,10 @@ function setNotVisible(element){
  * @description hide the loader gif
 */
 function loadInvisible(){
-    loader.style.visibility = 'hidden';    
+    loader.style.visibility = 'hidden';
+    var divs = document.querySelectorAll("div");   
+
+    divs[divs.length - 1].remove();
 }
 
 
@@ -137,10 +140,24 @@ function loaderActivate(){
             heightInputBox.value = 1500;
             widthInputBox.value = 1500;
             loader.style.visibility = 'visible';
+            var div = document.createElement("div");
+            div.style.background = "rgba(0,0,0,.5)";
+            div.style.width = "100vw";
+            div.style.height = "110%";
+            div.style.position = "absolute";
+            div.style.top = "0";
+            document.body.insertBefore(div,this.firstChild);
             document.uploadForm.submit();
         }
         else{
             loader.style.visibility = 'visible';
+            var div = document.createElement("div");
+            div.style.background = "rgba(0,0,0,.5)";
+            div.style.width = "100vw";
+            div.style.height = "110%";
+            div.style.position = "absolute";
+            div.style.top = "0";
+            document.body.insertBefore(div,this.firstChild);
             document.uploadForm.submit();
         }
     }
@@ -287,9 +304,9 @@ $(document).ready(function(){
             document.getElementById("j1Option2").style.visibility = "hidden";
             document.getElementById("j1Option3").style.visibility = "hidden";
             document.getElementById("journalOption1").className = "btn btn-lg button";
-            widthInputBox.value = 0;
-            heightInputBox.value = 0;
         }
+        widthInputBox.value = "";
+        heightInputBox.value = "";
     });
 
 
@@ -316,9 +333,9 @@ $(document).ready(function(){
             document.getElementById("j2Option2").style.visibility = "hidden";
             document.getElementById("j2Option3").style.visibility = "hidden";
             document.getElementById("journalOption2").className = "btn btn-lg button";
-            widthInputBox.value = 0;
-            heightInputBox.value = 0;
         }
+        widthInputBox.value = "";
+        heightInputBox.value = "";
     });
 
 
