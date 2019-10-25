@@ -2,6 +2,7 @@
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
 - [Introduction](#Introduction)
+- [Install](#Installing)
 - [Developing](#Developing)
 - [Contributing](#Contributing)
 - [Manual](#Manual)
@@ -37,6 +38,17 @@ uploads when the user should already have the file.
 
 In the future this project will be linked to the POW site at the USGS to bring the fast editing
 to a whole new scope of users and data.
+
+## Installing
+If you wish to only use the application and you have no intention to contribute to the GitHub then you can
+install and run this code using Docker CE on any operating system. 
+
+1. Follow the Docker installation guide for your OS [here](https://docs.docker.com/docker-for-windows/install/).
+
+2. Once Docker is installed run this command in your console: `docker pull chaddfrasier/pips-usgs`
+
+3. And lastly start the container by running the image: `docker run --name pips -p 8080:8080 chaddfrasier/pips-usgs`
+
 
 ## Developing
 
@@ -91,7 +103,7 @@ Hit the 'What is a TPL File?' button to read all about what a template file for 
 Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
 types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
 check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
-![Current Index Page](https://i.imgur.com/iU8UVgw.png)
+![Current Index Page](https://i.imgur.com/Ot90QqL.png)
 
 
 2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
@@ -107,7 +119,8 @@ ISIS data, you can download the log file which contains the results from the ISI
 on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
 Logs' button in the center of the title box then you have no log file on the server. Lasty, you can copy all the 
 text in the output box by clicking the save to clipboard button, then just paste the text wherever it needs to live.
-![Current Writer Page](https://i.imgur.com/VVfFlw0.png)
+The user can also add special characters by using the sigma button at the top of the output box.
+![Current Writer Page](https://i.imgur.com/Paw8YJi.png)
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
@@ -120,7 +133,8 @@ __(checkboxes are only visible when icons are on screen)__.
 Draw over icons and the image using the pencil tool. Click the pencil button and click once to place one 
 end of the line, and then click a second time to place the other end of the line. Change colors of the
 line by using the color picker box next to the button. Once at least 1 line is on the screen,
-a 'Undo Line' will appear on screen. Use this to remove the last line that you drew. 
+a 'Undo Line' will appear on screen. Use this to remove the last line that you drew. Use the slider to add or remove
+an arrowhead.
 Add outline boxes to the figure by clicking the box button and then dragging the box around the image.
 Scale the box larger and smaller by mouseing over the corners of the icon and click dragging the icon
 when prompted. Again a color picker is given to allow you to change the color of the box, and again an
@@ -131,8 +145,8 @@ You can add padding to the image at one of the four sides, type the numbr of pix
 pad the image and a location to place the pixels. To remove the padding either delete the numbers
 in the text box or hit the reset button.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
-Accepted file export types include svg, tiff, png, jpg, and jpeg.
-![Current Edit Page](https://i.imgur.com/3XSXqQu.png)
+Accepted file export types include svg, tif, png, jpg, and jpeg.
+![Current Edit Page](https://i.imgur.com/M8ZKKfB.png)
 
 #### Hot Keys
 
