@@ -242,7 +242,7 @@
                         style="margin: 0; position: relative; padding: 0;">
                             <h3 class="display-5 alert alert-secondary" 
                             style="border: 2px solid black; margin-left: auto;
-                            margin-right: auto; background: #63585e; color: white;">
+                            margin-right: auto; background: #63585e; color: white;" id="tagTitle">
                                 Usable Tags
                             </h3>
                         </label>
@@ -287,7 +287,7 @@
                             onclick="showMoreTags()">Show Important Tags</button>
                             <br/>
                             <form action="/csv" method='POST' class="lg-form text-center float-left" 
-                            style="margin: 0;  margin-top:2rem; width:100%;">
+                            style="margin: 0;  margin-top:1rem; margin-bottom:.25rem; width:100%;">
                                 <div class="lg-form text-center" style="margin: 0;">
                                     <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                                     <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
@@ -296,6 +296,12 @@
                                     font-size: 80%;" title="Download Data CSV" />
                                 </div>
                             </form>
+                            <br/>
+                            <button class="btn btn-lg button" role="button" id="templateDownloadBtn"
+                            style="width: 100%; min-width: 100%; border: 2px solid black; padding: 7px;
+                                font-size: 80%;">
+                                    Save Template
+                                </button>
                     </div>
                     
                 </div>

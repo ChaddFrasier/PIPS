@@ -1911,7 +1911,7 @@ $(document).ready(function(){
         // and it passes the file extension check
         do{
             // read in a filename with prompt
-            var filename = prompt("Save File as png, svg, tiff, or jpeg","");
+            var filename = prompt("Save File as png, svg, tiff, or jpeg", displayCube.replace(".cub",".pipsFig.tiff"));
         }while(filename !== "" && filename !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
                                                                                         .test(filename));
         // if the file is not null

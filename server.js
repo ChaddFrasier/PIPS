@@ -1146,7 +1146,7 @@ app.post("/figureDownload", async function(request, response){
     // get the filename that the user entered
     var filename = request.body.downloadName,
         fileExt = filename.split(".")[filename.split(".").length - 1];
-
+    
     // set response header
     response.header("Cache-Control", "max-age=0");
 
