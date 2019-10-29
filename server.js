@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 10/15/2019
+ * @updated 10/29/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -130,6 +130,7 @@ const fileUpload = require('express-fileupload');
 const path = require('path');
 const exec = require('child_process').exec;
 const fs = require('fs');
+const os = require('os');
 const Promise = require('bluebird');
 const cookieparser = require('cookie-parser');
 const bodyParser = require("body-parser");
@@ -542,18 +543,17 @@ app.post('/captionWriter', async function(request, response){
                         // if the image needs to be reduced
                         if(scaleFactor > 1){
                             // promise on the reduce call
-                            console.log("REDUCING");
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
                             if(cubeObj.userDim[0] * cubeObj.userDim[1] > 4000000){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2.5,
+                                     cubeObj.logFlag,cubeObj.userId + ".log"));
                             }
                             else if(scaleFactor >= 1.5){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5, cubeObj.logFlag,cubeObj.userId + ".log"));
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5,
+                                     cubeObj.logFlag,cubeObj.userId + ".log"));
                             }
-                            
                         }
                         else if(samples * lines > 4000000){
-                            console.log("NORMAL SHRINKs");
                             promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
@@ -563,8 +563,8 @@ app.post('/captionWriter', async function(request, response){
                                 // set the name to the returning cube
                                 let tmp = cubeObj.name;
                                 cubeObj.name = cubeName[0];
-                                // remove the not needed files to save server space
-                                fs.unlinkSync(path.join(__dirname, "uploads",tmp));
+                                /* // remove the not needed files to save server space
+                                fs.unlinkSync(path.join(__dirname, "uploads",tmp)); */
                             }
                             // reset promise array
                             promises = [];
@@ -1222,7 +1222,12 @@ app.get("*",function(request, response){
 // listen on some port
 // FOR TESTING ONLY!!! should be 'const PORT = process.env.PORT || 8080;'
 const PORT = 8080 || process.env.PORT;
-app.listen(PORT);
+
+// localhost listening on 8000
+app.listen(8000);
+// serving machines on either open or closed network
+app.listen(PORT,"0.0.0.0");
 
 // tell console status and port #
-console.log("Server is running and listen to port " + PORT);
+console.log("Server is running and listen for outer connections on port " + PORT + "\n http://" + os.hostname() + ":8080/");
+console.log("Server is running and listen locally on port " + 8000 + "\n http://localhost:8000/");
