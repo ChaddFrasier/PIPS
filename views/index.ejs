@@ -20,7 +20,7 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script src="js/index.js"></script>
     </head>
-    <body style="overflow: hidden">
+    <body>
         <!-- left -->
         <div class="mainbox-left" style="width: 15%; height: 100%; padding:0;">
             <!-- USGS Logo -->
@@ -118,9 +118,9 @@
                           display:none; border: 5px solid black; width: 102%;" id="optionBox">
                           <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-2">                                        
+                                <div class="col-2" style="width:85%;">                                        
                                     <label id="logCheckboxLabel" for="logCheckbox" 
-                                    style="color:black;margin: 0;">
+                                    style="color:black; margin: auto auto;">
                                         <cite style="font-size: 95%; padding-top: 10%;">Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
@@ -132,7 +132,7 @@
                             <div class="row" style="width: 100%;">
                                 <div class="col-2" style="padding: 1%; padding-top:5%;">
                                     <div class="row">
-                                        <div class="col-2" style="padding: 0; padding-left: 10%; padding-top: 3%;">Off</div>
+                                        <div class="col-2" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
                                         <div class="col-6" style="padding: 0; padding-left: 10%;">
                                             <label class="switch index">
                                                 <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N"
@@ -155,7 +155,7 @@
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption1" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 85%;"
+                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;"
                                             title="Elsevier">
                                                 Elsevier
                                             </button>
@@ -163,24 +163,24 @@
                                         <div class="col-3">
                                             <button type="button" id="j1Option1" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">Single Column</button>
+                                            padding: 2%; font-size: 65%;">Single Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option2" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">1.5 Column</button>
+                                            padding: 2%; font-size: 75%;">1.5 Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option3" class="journal btn btn-lg button" 
                                             style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">Double Column</button>
+                                            padding: 2%; font-size: 65%;">Double Column</button>
                                         </div>
                                     </div>
                                     <br/>
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption2" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 100%;"
+                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 85%;"
                                              title="American Geophysical Union">
                                                 AGU
                                             </button>
@@ -188,17 +188,17 @@
                                         <div class="col-3">
                                             <button type="button" id="j2Option1" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">1/4 Page</button>
+                                            padding: 2%; font-size: 75%;">1/4 Page</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j2Option2" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">1/2 Page</button>
+                                            padding: 2%; font-size: 75%;">1/2 Page</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j2Option3" class="journal btn btn-lg button" 
                                             style="visibility: hidden;width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 85%;">Full Page</button>
+                                            padding: 2%; font-size: 75%;">Full Page</button>
                                         </div>
                                     </div>
                                     <!--
@@ -236,7 +236,7 @@
                             style="width:auto; visibility: visible; border-top:0;color: black; margin: auto auto;
                                 background: #e7c492; border: 5px solid black;">
                                 <div class="form-group float-center" 
-                                style="width: 17rem;color: black;">
+                                style="width: 100%;color: black;">
                                     <div class="col">
                                         <label for="widthInput" style="color: black;">
                                             Width of output (pixels)
@@ -328,7 +328,7 @@
                         <!-- Submit button -->
                         <div class="row">
                             <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                                style="width: 10%; margin:auto auto; border: 1px solid black;" 
+                                style="width: auto; margin:auto auto; border: 1px solid black;" 
                                 title="Submit Upload" onclick="loaderActivate()" />
                         </div>
                     </form>
@@ -336,8 +336,8 @@
             </div>
         </div>
         <!-- Loading Gif-->
-        <div id="loading" class="text-center loading">
-            <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
+        <div id="loading" class="text-center loading float-center" style="margin: auto auto; left: 0%; width: 100%;">
+            <img src="../images/loading.gif" class='float-center' height="75%" weight="auto"/>
             <br>
             <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
         </div>

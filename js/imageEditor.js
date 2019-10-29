@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 10/14/2019
+ * @updated 10/29/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -869,8 +869,8 @@ function getMetadata(){
     
     if(isNaN(northDegree)){
         // check if it is map projected, if yes set north to 0 else
-        if(isMapProjected){
-            let rotateOffset = parseFloat("<%=rotationOffset %>");
+        if(isMapProjected === 'true'){
+            let rotateOffset = parseFloat("<%=rotationOffset %>");            
             if(!isNaN(rotateOffset)){
                 northDegree = 0 + rotateOffset;
             }
@@ -1897,136 +1897,6 @@ $(document).ready(function(){
     getMetadata();
 
     /** ------------------------------- Export Functions ------------------------------------------------- */
-    /**
-     * @function exportBtn 'click' event handler
-     * 
-     * @description gets a filename for the download and sends a 
-     *              request to the server to download the figure image
-    */
-    exportBtn.addEventListener('click', function (event) {
-        // prevent event defaults
-        event.preventDefault();
-        
-        // read in a filename while the filename is not empty 
-        // and it passes the file extension check
-        do{
-            // read in a filename with prompt
-            var filename = prompt("Save File as png, svg, tiff, or jpeg","");
-        }while(filename !== "" && filename !== null && !/^.*\.(png|PNG|JPEG|jpeg|JPG|jpg|SVG|svg|tif|tiff|TIF|TIFF)$/gm
-                                                                                        .test(filename));
-        // if the file is not null
-        if(filename !== null){
-            // read the file extenson
-            var fileExt = filename.split(".")[filename.split(".").length - 1];
-
-            // get lowercase file extension
-            filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
-
-            // encode the svg to a string
-            var data = 
-                '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
-                + (new XMLSerializer()).serializeToString(svg);
-            
-            // creates a blob from the encoded svg and sets the type of the blob to and image svg
-            var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
-            
-            // create the progress bar
-            var progressBar = showProgress();
-
-            if(fileExt.toLowerCase() === "svg"){
-                growProgress(progressBar);
-                // creates an object url for the download
-                var url = DOMURL.createObjectURL(svgBlob);
-                triggerDownload(url,filename);
-                loader.style.visibility = "hidden";
-                document.getElementById("loadingText").innerHTML = "Loading";
-                setTimeout(hideProgress, 500, progressBar);
-                DOMURL.revokeObjectURL(url);
-                return;
-            }
-            else{
-                // create a new Form data object
-                let fd = new FormData();
-                // append a new file to the form. 
-                // upl = name of the file upload
-                // svgBlob is the raw blob image
-                // and the name of the svg file will be the user's unique id
-                fd.append("upl", svgBlob, getCookie("userId") + ".svg");
-                // append download and canvas data to the form
-                fd.append("w",w);
-                fd.append("h",h);
-                fd.append("downloadName",filename);
-                var headers = new Headers();
-                headers.append("pragma","no-cache");
-                headers.append("cache-control", "no-cache");
-
-                // send a post request to the server attaching the formData as the body of the request
-                fetch('/figureDownload',
-                    {
-                        method:'POST',
-                        body: fd,
-                        headers: headers,
-                        referrerPolicy: "no-referrer"
-                    })
-                    .then((response) =>{
-                        growProgress(progressBar);
-                        // if the response is an error code
-                        if(response.status !== 200){
-                            // read the response as text
-                            response.text().then((responseText) =>{
-                                // create a small div box to notify the error
-                                let div = document.createElement("div");
-                                div.className = "jumbotron text-center float-center";
-                                div.style.width = "25rem";
-                                div.style.height= "auto";
-                                div.innerHTML = responseText;
-                                // attach a button to the div so the user can remove the div if they want
-                                var btn = document.createElement("button");
-                                btn.className = "btn btn-danger";
-                                btn.style.position = "relative";
-                                btn.innerHTML = "&times;";
-                                btn.style.width = "5rem";
-                                // append the button to the div
-                                div.appendChild(btn);
-                                // then after it has been added,
-                                // make an eventLister to remove the whole div box when the button is clicked
-                                btn.addEventListener("click",function(event){
-                                    this.parentElement.remove();
-                                });
-                                // append the whole div to the document
-                                document.body.appendChild(div);
-                                loader.style.visibility = "hidden";
-                                document.getElementById("loadingText").innerHTML = "Loading";
-                                hideProgress(progressBar);
-                            });
-                        }
-                        else{
-                            // server sent back a 200
-                            response.blob().then((blob)=>{
-                                var url = DOMURL.createObjectURL(blob);
-
-                                triggerDownload(url,filename);
-                                setInterval(hideProgress, 1000, progressBar);
-                                loader.style.visibility = "hidden";
-                                document.getElementById("loadingText").innerHTML = "Loading";
-                                DOMURL.revokeObjectURL(url);
-                            });
-                        }
-                    }).catch((err) =>{
-                        // catch any fetch errors
-                        if(err){
-                            console.log(err);
-                        }
-                    });
-            }
-        }
-        else{
-            //remove the loading gif
-            loader.style.visibility = "hidden";
-            document.getElementById("loadingText").innerHTML = "Loading";
-        }
-    });
-
 
     /**
      * @function exportBtn 'mousedown' event handler
@@ -2034,10 +1904,260 @@ $(document).ready(function(){
      * @description shows the loading and progress bar
      * 
     */
-   $('#exportBtn').on("mousedown",function(){
+    $('#exportBtn').on("mousedown",function(){
         loader.style.visibility = "visible";
-        document.getElementById("loadingText").innerHTML = "Prepairing Image";
+        document.getElementById("loadingText").innerHTML = "Save Image As ...";
+
+        var window = document.createElement("div"),
+            box = document.createElement("div"),
+            inputtext = document.createElement("input"),
+            select = document.createElement("select"),
+            optiontif = document.createElement("option"),
+            optionpng = document.createElement("option"),
+            optionjpg = document.createElement("option"),
+            optionsvg = document.createElement("option"),
+            cancelBtn = document.createElement("button"),
+            saveBtn = document.createElement("button");
+
+        window.style.background = "lightgrey";
+        window.style.width = "400px";
+        window.style.height = "150px";
+        window.style.border = "2px solid black";
+        window.style.position = "absolute";
+        window.style.left = "40%";
+        window.style.top = "50%";
+        window.style.borderRadius = "10px";
+        window.innerHTML = "Save File";
+        
+        box.style.padding = "1%";
+        box.style.background = "smokewhite";
+        box.style.width = "100%";
+        box.style.height = "85%";
+        box.style.borderTop = "1px solid black";
+        box.style.left = "0%";
+        box.style.top = "15%";
+        box.innerHTML = "Filename: ";
+
+        inputtext.type = "text";
+        inputtext.style.margin = "auto auto";
+        inputtext.style.width = "75%";
+        inputtext.style.marginTop = "1rem";
+        inputtext.style.fontSize = "12px";
+        inputtext.id = "filenameInput";
+        inputtext.value = displayCube.replace(".cub", "_fig");
+        inputtext.addEventListener("keyup", textParser);
+
+        optiontif.value = ".tif";
+        optiontif.innerHTML = ".tif";
+        optionpng.value = ".png";
+        optionpng.innerHTML = ".png";
+        optionjpg.value = ".jpg";
+        optionjpg.innerHTML = ".jpg";
+        optionsvg.value = ".svg";
+        optionsvg.innerHTML = ".svg";
+
+        select.style.right = "10px";
+        select.style.top = "75px";
+        select.style.position = "absolute";
+        select.id = "fileExtSelect";
+
+        cancelBtn.style.position = "absolute";
+        cancelBtn.style.bottom = "5px";
+        cancelBtn.innerHTML = "Cancel";
+        cancelBtn.className = "btn btn-md button";
+        cancelBtn.style.background = "red";
+        cancelBtn.id = "cancelBtn";
+        cancelBtn.addEventListener("click", cancelBtnFunction);
+
+        saveBtn.style.position = "absolute";
+        saveBtn.style.bottom = "5px";
+        saveBtn.style.left = "55%";
+        saveBtn.innerHTML = "Save";
+        saveBtn.className = "btn btn-md button";
+        saveBtn.addEventListener("click", saveBtnFunction);
+
+        select.appendChild(optiontif);
+        select.appendChild(optionsvg);
+        select.appendChild(optionpng);
+        select.appendChild(optionjpg);
+
+        box.appendChild(cancelBtn);
+        box.appendChild(saveBtn);
+        box.appendChild(inputtext);
+        box.appendChild(select);
+        window.appendChild(box);
+        
+        var mainbox = document.getElementsByClassName("mainbox-center");
+
+        mainbox[0].appendChild(window);
+
     });
+
+
+    /**
+     * @function saveBtnFunction
+     * 
+     * @description Checks to see if the filename if a properfilename and then saves the file using the server 
+     *              like it did before in the old export function
+     */
+    function saveBtnFunction(){
+        var filename = document.getElementById("filenameInput").value + document.getElementById("fileExtSelect").value; 
+
+        if(/^.*\.(jpg|jpeg|png|tif|svg)$/gm.test(filename)){
+            // hide the save ui div
+            this.offsetParent.remove();
+
+            // if the file is not null
+            if(filename !== null){
+                // read the file extenson
+                var fileExt = filename.split(".")[filename.split(".").length - 1];
+                // get lowercase file extension
+                filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
+
+                // encode the svg to a string
+                var data = 
+                    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+                    + (new XMLSerializer()).serializeToString(svg);
+                
+                // creates a blob from the encoded svg and sets the type of the blob to and image svg
+                var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+                
+                // create the progress bar
+                var progressBar = showProgress();
+
+                if(fileExt.toLowerCase() === "svg"){
+                    growProgress(progressBar);
+                    // creates an object url for the download
+                    var url = DOMURL.createObjectURL(svgBlob);
+                    triggerDownload(url,filename);
+                    loader.style.visibility = "hidden";
+                    document.getElementById("loadingText").innerHTML = "Loading";
+                    setTimeout(hideProgress, 500, progressBar);
+                    DOMURL.revokeObjectURL(url);
+                    return;
+                }
+                else{
+                    // create a new Form data object
+                    let fd = new FormData();
+                    // append a new file to the form. 
+                    // upl = name of the file upload
+                    // svgBlob is the raw blob image
+                    // and the name of the svg file will be the user's unique id
+                    fd.append("upl", svgBlob, getCookie("userId") + ".svg");
+                    // append download and canvas data to the form
+                    fd.append("w",w);
+                    fd.append("h",h);
+                    fd.append("downloadName", filename);
+                    var headers = new Headers();
+                    headers.append("pragma","no-cache");
+                    headers.append("cache-control", "no-cache");
+
+                    // send a post request to the server attaching the formData as the body of the request
+                    fetch('/figureDownload',
+                        {
+                            method:'POST',
+                            body: fd,
+                            headers: headers,
+                            referrerPolicy: "no-referrer"
+                        })
+                        .then((response) =>{
+                            growProgress(progressBar);
+                            // if the response is an error code
+                            if(response.status !== 200){
+                                // read the response as text
+                                response.text().then((responseText) =>{
+                                    // create a small div box to notify the error
+                                    let div = document.createElement("div");
+                                    div.className = "jumbotron text-center float-center";
+                                    div.style.width = "25rem";
+                                    div.style.height= "auto";
+                                    div.innerHTML = responseText;
+                                    // attach a button to the div so the user can remove the div if they want
+                                    var btn = document.createElement("button");
+                                    btn.className = "btn btn-danger";
+                                    btn.style.position = "relative";
+                                    btn.innerHTML = "&times;";
+                                    btn.style.width = "5rem";
+                                    // append the button to the div
+                                    div.appendChild(btn);
+                                    // then after it has been added,
+                                    // make an eventLister to remove the whole div box when the button is clicked
+                                    btn.addEventListener("click",function(event){
+                                        this.parentElement.remove();
+                                    });
+                                    // append the whole div to the document
+                                    document.body.appendChild(div);
+                                    loader.style.visibility = "hidden";
+                                    document.getElementById("loadingText").innerHTML = "Loading";
+                                    hideProgress(progressBar);
+                                });
+                            }
+                            else{
+                                // server sent back a 200
+                                response.blob().then((blob)=>{
+                                    var url = DOMURL.createObjectURL(blob);
+
+                                    triggerDownload(url,filename);
+                                    setInterval(hideProgress, 1000, progressBar);
+                                    loader.style.visibility = "hidden";
+                                    document.getElementById("loadingText").innerHTML = "Loading";
+                                    DOMURL.revokeObjectURL(url);
+                                });
+                            }
+                        }).catch((err) =>{
+                            // catch any fetch errors
+                            if(err){
+                                console.log(err);
+                            }
+                        });
+                }
+            }
+            else{
+                //remove the loading gif
+                loader.style.visibility = "hidden";
+                document.getElementById("loadingText").innerHTML = "Loading";
+            }
+        }
+        else{
+            // filename does not fit the reg exp
+            console.log("REGEXP evaluated to false");
+        }
+        
+    }
+
+    /**
+     * @function cancelBtnFunction
+     * 
+     * @description cancel button that removes the save div and hides the loading gif
+     */
+    function cancelBtnFunction(){
+        // cancel the saving process
+        this.offsetParent.remove();
+        document.getElementById("loading").style.visibility = "hidden";
+    }
+
+
+    /**
+     * @function textParser
+     * 
+     * @description parses over the text in the filename and removes any file extension thats could
+     *              repeat in the name
+     */
+    function textParser(){
+        var arr = [".tif", ".tiff", ".png", ".svg", ".jpg", ".jpeg"];
+        if(/^.*\.(jpg|jpeg|svg|png|tif|tiff)$/gm.test(String(this.value).toLowerCase())){
+            for(let i = 0; i < arr.length; i++){
+                this.value = this.value.replace(arr[i],"");
+
+                if(!(/^.*\.(jpg|jpeg|svg|png|tif|tiff)$/gm.test(String(this.value).toLowerCase()))){
+                    alert("Enter Filname with no extension");
+                    break;
+                    
+                }
+            }    
+        }
+        
+    }
 
     /** --------------------------------- End Export Functions ------------------------------------------- */
 

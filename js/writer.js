@@ -230,7 +230,7 @@ function removeUnits(str){
 
 
 /**
- * 
+ * Object prototype sort function that sorts by key length
  * 
  */
 
@@ -242,9 +242,11 @@ Object.prototype.sort = function(){
         return a.length < b.length;
     });
     var sortedObject = new Object();
+
     for(let index = 0; index < keys.length; index++){
-        sortedObject[ keys[index] ] = this[ keys[index] ];
+        sortedObject[ String(keys[index]) ] = this[ String(keys[index]) ];
     }
+
     return sortedObject;
 }
 
@@ -302,13 +304,17 @@ function showMoreTags(){
     var importantTags = document.getElementById("allTagArea");
     val = val.toString();
     if(val === "Show Important Tags"){
+        // Switch to important tags
         val = "Show All Tags";
         document.getElementById("button-more-tags").innerHTML = val;
+        document.getElementById("tagTitle").innerHTML = "Common Tags";
         textArea.value = metaTags.value;
     }
     else{
+        //show all the tags
         val = "Show Important Tags";
         document.getElementById("button-more-tags").innerHTML = val;
+        document.getElementById("tagTitle").innerHTML = "All Tags";
         textArea.value = importantTags.value;
     }
 
@@ -356,7 +362,7 @@ function hideAnimaton(alert){
     setTimeout(
         function(){
             alert.remove();
-        },2000);
+        }, 2000);
 }
 
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
@@ -451,6 +457,10 @@ $(document).ready(function(){
         setTimeout(hideAnimaton, 2000, alert);
     });
 
+    /**
+     * 
+     * 
+     */
     $("#specialCharactersBtn").mousedown(function(){
         if($(this).hasClass("btn-secondary")){
             $(this).removeClass("btn-secondary");
@@ -465,6 +475,33 @@ $(document).ready(function(){
     });
 
 
+    $("#templateDownloadBtn").mousedown( function(){
+        var templateText = document.getElementById("template-text").value;
+        var data = encodeURIComponent(templateText);
+        
+        var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
+
+        
+        if(filename !== null && /^.*\.(tpl)$/gm.test(filename)){
+            var a = document.createElement("a");
+            a.href = "data:attachment/text," + data;
+            a.target = "__blank";
+            a.download = filename;
+            console.log('output name is '+ outputName);
+    
+            a.click();
+        }
+        else if(filename !== null){
+            $("#templateDownloadBtn").mousedown();
+        }
+        
+    });
+
+
+    /**
+     * 
+     * 
+     */
     $("button.specChar").mousedown(function(){
 
         var symbol = $(this).html(),
@@ -512,7 +549,7 @@ $(document).ready(function(){
      * 
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
-    $("#template-text").keydown(function(e){
+    $("#template-text").keydown( function(e){
         if(e.keyCode === 9) { // tab was pressed
             // get caret position/selection
             var start = this.selectionStart;
