@@ -1382,7 +1382,7 @@ function captureClick(x,y){
 */
 function createTimer(){
     let startTime = new Date();
-    return [startTime.getHours(),startTime.getMinutes(),startTime.getSeconds()];
+    return [ startTime.getHours(),startTime.getMinutes(),startTime.getSeconds() ];
 }
 
 
@@ -1651,9 +1651,7 @@ $(document).ready(function(){
     var sunIconPlaced = false,
         northIconPlaced = false,
         eyeIconPlaced = false,
-        doneResizing = false,
-        northFlag = false,
-        cropFlag = false, 
+        northFlag = false, 
         sunFlag = false,
         eyeFlag = false;
 
@@ -1791,8 +1789,7 @@ $(document).ready(function(){
     + 'stroke="white"fill="white">0</text></g>';
 
     // grab DOM elements that are needed
-    var exportBtn =  document.getElementById('exportBtn'),
-        myImage = document.getElementById('crop'),
+    var myImage = document.getElementById('crop'),
         line,
         userLineColor;
 

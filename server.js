@@ -188,7 +188,7 @@ try{
     // loop throught then and delete the file if it matchest this regexp
     for(index in fileArr){
         // regexp uses negativelookbehind to ensure the image file is not one of the required file strings
-        if(/^.*(?<!arrow|eye_symbol|north|pencil|pencilcursor|sun_symbol|usgsLogo)\.(png)$/gm
+        if(/^.*(?<!pencilcursor|usgsLogo)\.(png)$/gm
             .test(fileArr[index])){
             // remove the file
             fs.unlinkSync(path.join('images',fileArr[index]));
