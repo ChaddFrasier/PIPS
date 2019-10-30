@@ -1419,6 +1419,7 @@ function getCookie(cname){
     return "";
 }
 
+
 /**
  * @function openToolBox
  * 
@@ -1481,7 +1482,7 @@ function peekTimer(startTime){
     // return the fixed times 
     return String(hrs) + ":" + String(mins) + ":" + String(secs);
 }
-    
+
 
 /**
  * @function triggerDownload
@@ -2688,8 +2689,6 @@ $(document).ready(function(){
 
             if(eyeFlag){
                 
-                cropFlag = false;
-            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
                 outlineBox.remove();
                 outlineBox.style.visibility = 'hidden';
                 
@@ -2760,11 +2759,7 @@ $(document).ready(function(){
             }
             
             if(sunFlag){
-                
-                cropFlag = false;
                 outlineBox.style.visibility = 'hidden';
-                
-            /*  document.getElementById('cropFlag').innerHTML = "Crop Image"; */
                 sunImage.style.visibility = 'visible';
                 svg.appendChild(sunImage);
                 sunFlag = false;
@@ -2836,8 +2831,6 @@ $(document).ready(function(){
             
             // otherwise set the other flags to false and adjust their html
             if(northFlag){
-                /* cropFlag = false;
-                document.getElementById('cropFlag').innerHTML = "Crop Image"; */
                 outlineBox.remove();
                 outlineBox.style.visibility = 'hidden';
                 
@@ -3185,8 +3178,7 @@ $(document).ready(function(){
         var t = event.target;
         var x = event.clientX;
         var y = event.clientY;
-        // TODO: figure our how to buffer the Y portion
-        var bufferY = 50;
+        
         // get proper svg as target
         var target = (t == svg ? svg : t.parentNode);
         
@@ -3217,9 +3209,6 @@ $(document).ready(function(){
             x = event.clientX,
             y = event.clientY,
             markerId;
-
-        // TODO: figure our how to buffer the Y portion
-        var bufferY = parseInt(h * .09);
         
         // get proper svg as target
         var target = (t == svg ? svg : t.parentNode);
@@ -3290,8 +3279,8 @@ $(document).ready(function(){
         else if(drawFlag && clickArray.length > 1  
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
             // if the line is being drawn and the seconf click happens set the final location
-            line.setAttribute("x2",mouseX);
-            line.setAttribute("y2",mouseY);
+            line.setAttribute("x2", mouseX);
+            line.setAttribute("y2", mouseY);
 
             clickArray = [];
             drawFlag = false;
@@ -3311,7 +3300,6 @@ $(document).ready(function(){
 
     let warned = false;
 
-    
     /**
      * @function paddingInput 'keyup' event handler
      * 
