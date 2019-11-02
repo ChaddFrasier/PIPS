@@ -1016,8 +1016,12 @@ function setImagePadding(val,location){
             // adjust the height and set the width to what it should be
             bg.setAttribute("height", imageH);
             bg.setAttribute("width",w);
-    
-    
+
+            // set the image dimensions display for the user
+            document.getElementById("displayCube").innerHTML = w + " &times;" + imageH +  " px";
+            document.getElementById("changeDimWidth").placeholder = w + " px";
+            document.getElementById("changeDimHeight").placeholder = imageH + " px";
+
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1035,7 +1039,11 @@ function setImagePadding(val,location){
             // set the viewbox values 
             svg.setAttribute("viewBox", "0 " + String(val*-1) + " " + w + " " + imageH);
             
-            
+            // set the image dimensions display for the user
+            document.getElementById("displayCube").innerHTML = w + " &times;" + imageH +  " px";
+            document.getElementById("changeDimWidth").placeholder = w + " px";
+            document.getElementById("changeDimHeight").placeholder = imageH + " px";
+
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1053,7 +1061,11 @@ function setImagePadding(val,location){
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 "  + imageW + " " + h);
             
-            
+            // set the image dimensions display for the user
+            document.getElementById("displayCube").innerHTML = imageW + " &times;" + h +  " px";
+            document.getElementById("changeDimWidth").placeholder = imageW + " px";
+            document.getElementById("changeDimHeight").placeholder = h + " px";
+
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1071,6 +1083,11 @@ function setImagePadding(val,location){
             // set the viewbox values 
             svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " " + h);
            
+            // set the image dimensions display for the user
+            document.getElementById("displayCube").innerHTML = imageW + " &times;" + h +  " px";
+            document.getElementById("changeDimWidth").placeholder = imageW + " px";
+            document.getElementById("changeDimHeight").placeholder = h + " px";
+
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1086,6 +1103,11 @@ function setImagePadding(val,location){
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
             
+            // set the image dimensions display for the user
+            document.getElementById("displayCube").innerHTML = w + " &times;" + h +  " px";
+            document.getElementById("changeDimWidth").placeholder = w + " px";
+            document.getElementById("changeDimHeight").placeholder = h + " px";
+
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
     }
@@ -1695,99 +1717,99 @@ $(document).ready(function(){
     // string version of the icons so they can be added dynamically with a single function call 
     var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
     + 'transform="translate(100,150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
-    + 'padding:0; pointer-events:visible;"> '
+    + 'padding:0; pointer-events:visible;">\n'
     + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black"'
-    + 'style="border:0;"></circle>'
-    + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>'
+    + 'style="border:0;"></circle>\n'
+    + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>\n'
     + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="white"'
-    + 'fill="black" stroke-width="10"/>'
+    + 'fill="black" stroke-width="10"/>\n'
     + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="red"/>'
+    + 'style="visibility: hidden;"fill="red"/>\n'
     + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="blue"/>'
+    + 'style="visibility: hidden;"fill="blue"/>\n'
     + '<rect class="resize bottom-right"x="220" y="220" width="100"height="100" style="visibility: hidden;'
-    + '"fill="green"/>'
+    + '"fill="green"/>\n'
     + '<rect class="resize bottom-left"x="0" y="220" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="yellow"/></g>';
+    + 'style="visibility: hidden;"fill="yellow"/>\n</g>\n';
 
     var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
     + 'transform="translate(100,100) rotate(0) scale(.2439026)" stroke-width="5"'
-    + 'style="border:0; padding:0; pointer-events:all;">'
-    + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>'
+    + 'style="border:0; padding:0; pointer-events:all;">\n'
+    + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
-    + 'width="100" height="100" fill="red"/>'
+    + 'width="100" height="100" fill="red"/>\n'
     + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="100"'
-    + 'fill="yellow"/>'
+    + 'fill="yellow"/>\n'
     + '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="black"  stroke="white"' 
-    + 'stroke-width="2" style="border:0;"></path>'
+    + 'stroke-width="2" style="border:0;"></path>\n'
     + '<path id= "northIcon2"  d="M 100 0 L 0 200 L 100 150 L 100 0" fill="white"  stroke="white"' 
-    + 'stroke-width="2" style="border:0;"></path>'
+    + 'stroke-width="2" style="border:0;"></path>\n'
     + '<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10"'
-    + 'transform="translate(0,200)"fill="black" style="border:0;"></path>'
+    + 'transform="translate(0,200)"fill="black" style="border:0;"></path>\n'
     + '<rect class= "resize bottom-right"x="125" y="300" width="75" height="100"'
-    + 'style="visibility: hidden;"fill="green"/>'
+    + 'style="visibility: hidden;"fill="green"/>\n'
     + '<rect class= "resize bottom-left"x="0" y="300" width="75" height="100" style="visibility: hidden;"'
-    + 'fill="blue"/></g>'
+    + 'fill="blue"/>\n</g>\n'
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
-    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />';
+    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />\n';
 
-    var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>'
+    var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>\n'
     + '<rect class=" resize top-left" x="0" y="0" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
     + '<rect class=" resize top-right" x="350" y="0" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
     + '<rect class=" resize bottom-right" x="350" y="350" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />'
+    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
     + '<rect class=" resize bottom-left" x="0" y="350" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />';
+    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />\n';
 
     var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
     + 'transform="translate(150,100) rotate(0) scale(1.18)" stroke-width="3" style="border:0; padding:0;'
-    + 'pointer-events:visible;">'
+    + 'pointer-events:visible;">\n'
     + '<path id="eyeArrow" x="0" y="0" stroke-width="2"'
-    + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>'
+    + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>\n'
     + '<path id= "eyeIconOuter" d="M 14 30 C 14 30 50 -10 85 30 C 85 30 50 75 14 29" fill="black"'
-    + 'stroke="white" style="border:0;"></path>'
-    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black"></ellipse>'
+    + 'stroke="white" style="border:0;"></path>\n'
+    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black"></ellipse>\n'
     + '<circle id= "eyeIconPupel" r="6" cy="31" cx="50" stroke-width="2" stroke="white" fill="black"' 
-    + 'style="border:0;"></circle>'
-    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20" fill="red"/>'
-    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20" fill="blue"/>'
-    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20" fill="green"/>' 
-    + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20" '
-    + 'fill="yellow"/></g>';
+    + 'style="border:0;"></circle>\n'
+    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20"stroke="black" fill="red"/>\n'
+    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20"stroke="black" fill="blue"/>\n'
+    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20"stroke="black" fill="green"/>\n' 
+    + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20"'
+    + ' fill="yellow" stroke="black"/>\n</g>\n';
 
     var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
     + 'transform="translate(0,175) scale(.1)" stroke-width="10"'
-    + 'style="border:0; padding:0; pointer-events:all;">'
-    + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>'
+    + 'style="border:0; padding:0; pointer-events:all;">\n'
+    + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>\n'
     + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white"'
-    + 'fill="black" ></rect>'
-    + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>'
-    + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="50"/>'
-    + '<path id="scalebarVert20th" d="M 550 200 L 550 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarVert30th" d="M 750 200 L 750 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="50"/>'
-    + '<path id="scalebarVert40th" d="M 950 200 L 950 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarVert50th" d="M 1150 200 L 1150 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="50"/>'
-    + '<path id="scalebarVert60th" d="M 1350 200 L 1350 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarVert70th" d="M 1550 200 L 1550 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="50"/>'
-    + '<path id="scalebarVert80th" d="M 1750 200 L 1750 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>'
-    + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>'
+    + 'fill="black" ></rect>\n'
+    + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>\n'
+    + '<path id="scalebarVert" d="M 2150 200 L 2150 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarVert10th" d="M 350 200 L 350 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarLine10th" d="M 150 350 L 350 350"  stroke="white" stroke-width="50"/>\n'
+    + '<path id="scalebarVert20th" d="M 550 200 L 550 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarVert30th" d="M 750 200 L 750 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarLine30th" d="M 550 350 L 750 350"  stroke="white" stroke-width="50"/>\n'
+    + '<path id="scalebarVert40th" d="M 950 200 L 950 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarVert50th" d="M 1150 200 L 1150 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarLine50th" d="M 950 350 L 1150 350"  stroke="white" stroke-width="50"/>\n'
+    + '<path id="scalebarVert60th" d="M 1350 200 L 1350 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarVert70th" d="M 1550 200 L 1550 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarLine70th" d="M 1350 350 L 1550 350"  stroke="white" stroke-width="50"/>\n'
+    + '<path id="scalebarVert80th" d="M 1750 200 L 1750 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarVert90th" d="M 1950 200 L 1950 500"  stroke="white" stroke-width="20"/>\n'
+    + '<path id="scalebarLine90th" d="M 1750 350 L 1950 350"  stroke="white" stroke-width="50"/>\n'
     + '<text id="scalebarText" x="3975" y="150" font-family="sans-serif"'
-    + 'font-size="125" stroke="white"fill="white"><%=scalebarLength%><%=scalebarUnits%></text>'
-    + '<text id="scalebar1" x="100" y="150" font-family="sans-serif"'
-    + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>'
+    + 'font-size="125" stroke="white"fill="white">\n<%=scalebarLength%><%=scalebarUnits%>\n</text>\n'
+    + '<text id="scalebar1" x="110" y="150" font-family="sans-serif"'
+    + 'font-size="125" stroke="white"fill="white"> <%=scalebarLength%></text>\n'
     + '<text id="scalebarHalf" x="1075" y="150" font-family="sans-serif" font-size="125"'
-    + 'stroke="white"fill="white"></text>'
-    + '<text id="scalebar0" x="2125" y="150" font-family="sans-serif" font-size="125"'
-    + 'stroke="white"fill="white">0</text></g>';
+    + 'stroke="white"fill="white"></text>\n'
+    + '<text id="scalebar0" x="2115" y="150" font-family="sans-serif" font-size="125"'
+    + 'stroke="white"fill="white">0</text>\n</g>\n';
 
     // grab DOM elements that are needed
     var myImage = document.getElementById('crop'),
@@ -1802,11 +1824,11 @@ $(document).ready(function(){
     myImage.setAttribute("y",parseInt(h)*1.25 + "px");
 
     // dynamically add the elements to export better 
-    svg.insertAdjacentHTML("beforeend",sunObjectString);
-    svg.insertAdjacentHTML("beforeend",northObjectString);
-    svg.insertAdjacentHTML('beforeend',outlineObjectString);
-    svg.insertAdjacentHTML("beforeend",eyeObjectString);
-    svg.insertAdjacentHTML("beforeend",scaleBarObject);
+    svg.insertAdjacentHTML("beforeend", sunObjectString);
+    svg.insertAdjacentHTML("beforeend", northObjectString);
+    svg.insertAdjacentHTML('beforeend', outlineObjectString);
+    svg.insertAdjacentHTML("beforeend", eyeObjectString);
+    svg.insertAdjacentHTML("beforeend", scaleBarObject);
 
     // save the elements to dynamically add and remove them with a single line of code
     sunImage = document.getElementById("sunPosition"),
@@ -1826,13 +1848,13 @@ $(document).ready(function(){
     // load the users base image as base64 to embed in the svg element
     loadImageAsURL(imageSrc, function(data){
         // remove the loading gif and add the new dataURL
-        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', "");
-        myImage.setAttributeNS("http://www.w3.org/1999/xlink",'xlink:href', data);
+        myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', "");
+        myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', data);
         
         // default all transforms
-        myImage.setAttribute("x","0");
-        myImage.setAttribute("y","0");
-        myImage.setAttribute("transform","scale(1)");
+        myImage.setAttribute("x", "0");
+        myImage.setAttribute("y", "0");
+        myImage.setAttribute("transform", "scale(1)");
     });
 
 /*  // This is how you can have a progress bar for the loading of an image onto the server
@@ -1856,6 +1878,7 @@ $(document).ready(function(){
         }
         // if half the bar is less than 1 km then give it the decimal
         if(half < 1){
+            // set the half text and ajust based on character count
             document.getElementById("scalebarHalf").innerHTML = half;
         }
         // otherwise parse it to the closest int
@@ -1874,6 +1897,34 @@ $(document).ready(function(){
         textSize = 2;
     }
 
+
+    console.log(String(parseInt(half)).length);
+
+    if(String(parseInt(half)).length === 1 && half >= 1){
+        document.getElementById("scalebarHalf").setAttribute("x","1100");
+    }
+    else if(String(parseInt(half)).length === 3 || half < 1){
+        
+        if(half < 1){
+            document.getElementById("scalebarHalf").setAttribute("x","1050");
+        }
+        else{
+            document.getElementById("scalebarHalf").setAttribute("x","1030");
+        }
+    }
+    else{
+        console.log("scalebarHalf: " + String(parseInt(half)).length);
+    }
+
+    if(String(parseInt(scalebarLength)).length === 2){
+        document.getElementById("scalebar1").setAttribute("x","75");
+        document.getElementById("scalebarText").setAttribute("x","3985");
+    }
+    else if(String(parseInt(scalebarLength)).length === 3){
+        document.getElementById("scalebar1").setAttribute("x","45");
+        document.getElementById("scalebarText").setAttribute("x","4000");
+    }
+
     // remove the objects because they are not needed yet
     northImage.remove();
     sunImage.remove();
@@ -1885,6 +1936,9 @@ $(document).ready(function(){
     outlineBox.style.visibility = 'hidden';
 
     console.log(" Image Dimensions are => " + w + " : " + h);
+
+    document.getElementById("changeDimWidth").placeholder = w + " px";
+    document.getElementById("changeDimHeight").placeholder = h + " px";
     // set loader to invisible
     loadInvisible();
 
@@ -2014,7 +2068,7 @@ $(document).ready(function(){
 
                 // encode the svg to a string
                 var data = 
-                    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
+                    '<?xml version="1.1" encoding="UTF-8"?>\n'
                     + (new XMLSerializer()).serializeToString(svg);
                 
                 // creates a blob from the encoded svg and sets the type of the blob to and image svg
@@ -2041,7 +2095,7 @@ $(document).ready(function(){
                     // upl = name of the file upload
                     // svgBlob is the raw blob image
                     // and the name of the svg file will be the user's unique id
-                    fd.append("upl", svgBlob, getCookie("userId") + ".svg");
+                    fd.append("upl", svgBlob, getCookie("puiv") + ".svg");
                     // append download and canvas data to the form
                     fd.append("w",w);
                     fd.append("h",h);
@@ -2170,7 +2224,6 @@ $(document).ready(function(){
     $("#hideBtn").on("mousedown", function(){
         document.getElementById("help-box").style.visibility = "hidden";
     });
-  
 
     /**
      * @function helpBtn 'mousedown' event handler
@@ -2198,14 +2251,16 @@ $(document).ready(function(){
         for(index in children){
             // if the child is an object
             if(typeof(children[index]) == "object"){
-                // call opposite for fill and stroke
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",
-                                                    setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",
-                                                    setOpposite(children[index].getAttribute("fill")));
+                if(children[index].nodeName !== "#text"){
+                    // call opposite for fill and stroke
+                    if(children[index].getAttribute("stroke")){
+                        children[index].setAttribute("stroke",
+                                                        setOpposite(children[index].getAttribute("stroke")));
+                    }
+                    if(children[index].getAttribute("fill")){
+                        children[index].setAttribute("fill",
+                                                        setOpposite(children[index].getAttribute("fill")));
+                    }
                 }
             }
         }
@@ -2247,13 +2302,15 @@ $(document).ready(function(){
 
         for(index in children){
             if(typeof(children[index]) == "object"){
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",
-                                                    setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",
-                                                    setOpposite(children[index].getAttribute("fill")));
+                if(children[index].nodeName !== "#text"){
+                    if(children[index].getAttribute("stroke")){
+                        children[index].setAttribute("stroke",
+                                                        setOpposite(children[index].getAttribute("stroke")));
+                    }
+                    if(children[index].getAttribute("fill")){
+                        children[index].setAttribute("fill",
+                                                        setOpposite(children[index].getAttribute("fill")));
+                    }
                 }
             }
         }
@@ -2270,14 +2327,16 @@ $(document).ready(function(){
         let children = eyeImage.childNodes;
         
         for(index in children){
-            if(typeof(children[index]) == "object"){
-                if(children[index].getAttribute("stroke")){
-                    children[index].setAttribute("stroke",
-                                                    setOpposite(children[index].getAttribute("stroke")));
-                }
-                if(children[index].getAttribute("fill")){
-                    children[index].setAttribute("fill",
-                                                    setOpposite(children[index].getAttribute("fill")));
+            if(typeof(children[index]) === "object"){
+                if(children[index].nodeName !== "#text"){
+                    if(children[index].getAttribute("stroke")){
+                        children[index].setAttribute("stroke",
+                                                        setOpposite(children[index].getAttribute("stroke")));
+                    }
+                    if(children[index].getAttribute("fill")){
+                        children[index].setAttribute("fill",
+                                                        setOpposite(children[index].getAttribute("fill")));
+                    }
                 }
             }
         }
@@ -2459,6 +2518,180 @@ $(document).ready(function(){
 
     // ------------------------------- Button Handlers ------------------------------------------------------
       
+
+    // TODO: finish the resizing abilities
+    $("#resizeUpdateBtn").on("mousedown", function(){
+        var displayCube = document.getElementById("displayCube"),
+            displayString = displayCube.innerHTML,
+            widthInput = document.getElementById("changeDimWidth").value,
+            heightInput = document.getElementById("changeDimHeight").value;
+            
+        var dim = {
+            w:"0",
+            h:"0"
+        };
+
+        dim.w = parseInt(displayString.split("×")[0]);
+        dim.h = parseInt(displayString.split("×")[1]);
+
+        if((widthInput !== "" || heightInput !== "") && (dim.w !== widthInput || dim.h !== heightInput)){
+            // get user id from browser cookie
+            let id = getCookie("puiv");
+            var fd = new FormData(),
+                headers = new Headers();
+            
+            if(widthInput === ""){
+                console.log("The height recieved was " + heightInput);
+                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+                fd.append("h",heightInput);
+                // -1 to denote auto generation
+                fd.append("w", widthInput);
+            }
+            else if(heightInput === ""){
+                console.log("The width recieved was " + widthInput);
+                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
+                fd.append("w", widthInput);
+                fd.append("h", heightInput);
+            }
+            else{
+                // both are not empty
+                console.log("Both fields are filled");
+                fd.append("w", widthInput);
+                fd.append("h", heightInput);
+            }
+
+            // make sure the id is not undefined on server
+            fd.append("id", id);
+            headers.append("pragma","no-cache");
+            headers.append("cache-control", "no-cache");
+
+            fetch('/resizeFigure',
+                        {
+                            method:'POST',
+                            body: fd,
+                            headers: headers,
+                            referrerPolicy: "no-referrer"
+                        })
+                        .then((response) =>{
+                            console.log(response);
+
+                            if(response.status === 200){
+                                // read the new file and convert to data url
+                                response.blob().then((data, err)=>{
+                                    var reader = new FileReader();
+                                    reader.readAsDataURL(data);
+                                    reader.onloadend = function(){
+                                        myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
+                                        myImage.setAttribute("width", widthInput);
+                                        myImage.setAttribute("height", heightInput);
+                                        bg.setAttribute("width", widthInput);
+                                        bg.setAttribute("height", heightInput);
+                                        svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
+
+                                        displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+                                    }
+                                });
+                            }
+                            
+                        }).catch((err) =>{
+                            // catch any fetch errors
+                            if(err){
+                                console.log(err);
+                            }
+                        });
+        }
+        else{
+            var dim = {
+                w:"0",
+                h:"0"
+            };
+    
+            dim.w = parseInt(displayString.split("×")[0]);
+            dim.h = parseInt(displayString.split("×")[1]);
+
+            if(dim.w !== parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"))
+                || dim.h !== parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"))){
+                    var fd = new FormData(),
+                        headers = new Headers();
+
+                    widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+                    heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
+
+                    fd.append("w", widthInput);
+                    fd.append("h", heightInput);
+
+                    // make sure the id is not undefined on server
+                    fd.append("id", getCookie("puiv"));
+                    headers.append("pragma","no-cache");
+                    headers.append("cache-control", "no-cache");
+
+                    fetch('/resizeFigure',
+                                {
+                                    method:'POST',
+                                    body: fd,
+                                    headers: headers,
+                                    referrerPolicy: "no-referrer"
+                                })
+                                .then((response) =>{
+                                    console.log(response);
+
+                                    if(response.status === 200){
+                                        // read the new file and convert to data url
+                                        response.blob().then((data, err)=>{
+                                            // read the blob as a data URL
+                                            var reader = new FileReader();
+                                            reader.readAsDataURL(data);
+                                            reader.onloadend = function(){
+                                                // set the new image dimensions in the client
+                                                myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
+                                                myImage.setAttribute("width", widthInput);
+                                                myImage.setAttribute("height", heightInput);
+                                                bg.setAttribute("width", widthInput);
+                                                bg.setAttribute("height", heightInput);
+                                                svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
+
+                                                displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+                                            }
+                                        });
+                                    }
+                                    
+                                }).catch((err) =>{
+                                    // catch any fetch errors
+                                    if(err){
+                                        console.log(err);
+                                    }
+                                });
+
+                }
+        }
+    });
+
+    // TODO: parse the input and change it if it isn't a number
+    $("#changeDimHeight").on("keyup", function(event){
+        var boxInput = parseInt(this.value);
+
+        if(isNaN(boxInput)){
+            this.value = "";
+        }
+        else{
+            this.value = boxInput;
+        }
+        
+    });
+    // TODO: parse the input and change it if it isn't a number
+    $("#changeDimWidth").on("keyup", function(event){
+        var boxInput = parseInt(this.value);
+
+        if(isNaN(boxInput)){
+            this.value = "";
+        }
+        else{
+            this.value = boxInput;
+        }
+        
+    });
+
+
     /**
      * @function scaleBarButton 'mousedown' event handler
      * 
@@ -3325,7 +3558,7 @@ $(document).ready(function(){
             // if the value is not a number, warn the user that only numbers can render
             //  warned flag is to onl warn each user 1 time
             if(this.value !== "" && !warned){
-                alert("Only Accepts Whole Numbers");
+                alert("Only Accepts Positive Whole Numbers");
                 warned = true;
             }
             // reset the padding to 0

@@ -780,6 +780,73 @@ module.exports = {
                 }
             }
         } 
+    },
+
+
+    /**
+     * @function imageExtraction
+     * 
+     * @param {string} imagename name of the image
+     * @param {string} filepath path to the cube file on the server
+     * @param {string} imagePath path where image should be saved
+     * @param {boolean} logToFile true or false should the server log to a file
+     * @param {string} logFileName the name of the user's log file
+     * @param {string} logCubeName the name of the file the user uploaded to use in log
+     * 
+     * @returns {Promise}
+     * 
+     * @description calls the isis image conversion on the given cube
+     */
+    imageExtraction: function(imagename, filepath, imagePath, logToFile, logFileName, logCubeName){
+        console.log('Running isis2std for image now \n');
+        return new Promise(function(resolve,reject){
+            // execute the isis2std function with same logic as other ISIS calls
+            var command = undefined,
+                statusCode =  undefined,
+                output = undefined;
+
+            var isis2std = spawn('isis2std',['from=', filepath, "to=", path.join(imagePath,imagename)]);
+
+            command = isis2std.spawnargs;
+
+            isis2std.stdout.on('data', function(data){
+                if(logToFile){
+                    output = data.toString();
+                }
+                else{
+                    console.log('isis2std stdout: ' + data.toString() + "\n");
+                }
+            });
+            isis2std.stderr.on('data', function(data){
+                if(logToFile){
+                    output = data.toString();
+                }
+                else{
+                    console.log('isis2std Error: ' + data.toString() + "\n");
+                }
+            });
+            isis2std.on('exit',function(code){
+                if(logToFile){
+                    statusCode = code;
+                }
+                else{
+                    console.log('isis2std Exited with code: ' + code + "\n");
+                }
+                if(code === 0){
+                    if(![logCubeName, statusCode, command, output].includes(undefined)){
+                        logProcess([logCubeName, "isis2std", statusCode,command, output], logFileName);
+                    }
+                    resolve();
+                }
+                else{
+                    reject('isis2std Error: ' + code.toString + "\n");
+                }
+            });
+            isis2std.on("error",function(err){
+                reject(-1);
+            });
+            
+        });
     }
 };
 
@@ -888,7 +955,7 @@ var callIsis = function(cubeName, filepath, returnPath, imagePath, logToFile,log
             promises.push(makeIsisCall(filepath, returnPath, isisCalls[i], logToFile,logFileName, logCubeName));
         }
         // call and push image command
-        promises.push(imageExtraction(imagename,filepath,imagePath,logToFile,logFileName, logCubeName));                       
+        promises.push(require(__filename).imageExtraction(imagename,filepath,imagePath,logToFile,logFileName, logCubeName));                       
 
         // this block will pass and run when all isis commands are finished
         Promises.all(promises).then(function(){
@@ -990,73 +1057,6 @@ var parseIsisInput = function(array){
         }
     }
     return returnStr;
-}
-
-
-/**
- * @function imageExtraction
- * 
- * @param {string} imagename name of the image
- * @param {string} filepath path to the cube file on the server
- * @param {string} imagePath path where image should be saved
- * @param {boolean} logToFile true or false should the server log to a file
- * @param {string} logFileName the name of the user's log file
- * @param {string} logCubeName the name of the file the user uploaded to use in log
- * 
- * @returns {Promise}
- * 
- * @description calls the isis image conversion on the given cube
- */
-var imageExtraction = function(imagename, filepath, imagePath, logToFile, logFileName, logCubeName){
-    console.log('Running isis2std for image now \n');
-    return new Promise(function(resolve,reject){
-        // execute the isis2std function with same logic as other ISIS calls
-        var command = undefined,
-            statusCode =  undefined,
-            output = undefined;
-
-        var isis2std = spawn('isis2std',['from=', filepath, "to=", path.join(imagePath,imagename)]);
-
-        command = isis2std.spawnargs;
-
-        isis2std.stdout.on('data', function(data){
-            if(logToFile){
-                output = data.toString();
-            }
-            else{
-                console.log('isis2std stdout: ' + data.toString() + "\n");
-            }
-        });
-        isis2std.stderr.on('data', function(data){
-            if(logToFile){
-                output = data.toString();
-            }
-            else{
-                console.log('isis2std Error: ' + data.toString() + "\n");
-            }
-        });
-        isis2std.on('exit',function(code){
-            if(logToFile){
-                statusCode = code;
-            }
-            else{
-                console.log('isis2std Exited with code: ' + code + "\n");
-            }
-            if(code === 0){
-                if(![logCubeName, statusCode, command, output].includes(undefined)){
-                    logProcess([logCubeName, "isis2std", statusCode,command, output], logFileName);
-                }
-                resolve();
-            }
-            else{
-                reject('isis2std Error: ' + code.toString + "\n");
-            }
-        });
-        isis2std.on("error",function(err){
-            reject(-1);
-        });
-        
-    });
 }
 
 

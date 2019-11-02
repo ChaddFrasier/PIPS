@@ -296,7 +296,7 @@ app.get("/log/*",function(request, response){
 app.get('/captionWriter',function(request,response){
     console.log(request.path);
 
-    var userid = request.cookies['userId'];
+    var userid = request.cookies['puiv'];
 
     if(userid === undefined){
         // send response w/ all variables
@@ -339,7 +339,7 @@ app.post('/captionWriter', async function(request, response){
     
     //============== for testing only =======================
     console.log('=================== New Upload ========================');
-    //================================================
+    //=======================================================
 
     // cube file section
     try{
@@ -356,7 +356,7 @@ app.post('/captionWriter', async function(request, response){
             var cubeFile = request.files.uploadFile;
 
             //  find user id if it exists
-            var uid = request.cookies["userId"];
+            var uid = request.cookies['puiv'];
             
             // create promises array for syncronous behavior
             var promises = [];
@@ -369,12 +369,14 @@ app.post('/captionWriter', async function(request, response){
                 isTiff = false;
             }
 
+            // make sure string only contains digets and it is a proper length
+    
             // if no user id is found 
-            if(uid === undefined){
+            if(uid === undefined || !(/[\S\d]{23}/gm.test(uid) && uid.length === 23)){
                 // create a random 23 character user id
                 uid = util.createUserID(23);
                 // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) 
-                response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
+                response.cookie('puiv', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
             }
 
             // if the cubeArray is empty
@@ -402,6 +404,10 @@ app.post('/captionWriter', async function(request, response){
                 }
             }
 
+            // remove the file that was uploaded to allow for a clean file read from the fs module
+            try{fs.unlinkSync('./uploads/' + cubeObj.name);}
+            catch(err){/* Catch file error if file is not on server*/}
+            
             // save the cube upload to upload folder
             await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
@@ -517,7 +523,7 @@ app.post('/captionWriter', async function(request, response){
                 var lines,
                     samples,
                     scaleFactor;
-
+   
                 // get the original dimensions of the cube file just in case scaling is required
                 fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
                     if(err){
@@ -540,21 +546,28 @@ app.post('/captionWriter', async function(request, response){
                             }
                         }
 
+                        if(cubeObj.userDim[1] * cubeObj.userDim[0] >= 18000000){
+                            console.log('runs');
+                            scaleFactor = scaleFactor * 5;
+                        }
+                        else if(cubeObj.userDim[1] * cubeObj.userDim[0] > 10627600){
+                            scaleFactor = scaleFactor * 1.75;
+                        }                        
                         // if the image needs to be reduced
                         if(scaleFactor > 1){
                             // promise on the reduce call
                             var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
-                            if(cubeObj.userDim[0] * cubeObj.userDim[1] > 4000000){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2.5,
-                                     cubeObj.logFlag,cubeObj.userId + ".log"));
-                            }
-                            else if(scaleFactor >= 1.5){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5,
-                                     cubeObj.logFlag,cubeObj.userId + ".log"));
-                            }
+
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                cubeObj.logFlag,cubeObj.userId + ".log"));
+                        }
+                        else if(samples * lines > 18000000){
+                            console.log("default 2");
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, 6, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         else if(samples * lines > 4000000){
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
+                            console.log("default");
+                            promises.push(util.reduceCube(rawCube, cubeObj.name, 1.75, cubeObj.logFlag,cubeObj.userId + ".log"));
                         }
                         
                         Promise.all(promises).then(function(cubeName){
@@ -702,7 +715,7 @@ app.post('/captionWriter', async function(request, response){
  */
 app.post('/csv', function(request,response){
     // send download file
-    let cubeObj = util.getObjectFromArray(request.cookies["userId"],cubeArray);
+    let cubeObj = util.getObjectFromArray(request.cookies['puiv'],cubeArray);
 
     // if the user object is found
     if(typeof(cubeObj) === "object"){
@@ -731,7 +744,7 @@ app.post('/csv', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    let userId = request.cookies['userId'];
+    let userId = request.cookies['puiv'];
 
     if(userId === undefined){
         // send response w/ all variables
@@ -767,7 +780,7 @@ app.get('/csv', function(request, response){
 app.get('/imageEditor', function(request, response){
     console.log(request.path);
 
-    var userid= request.cookies['userId'];
+    var userid= request.cookies['puiv'];
 
     if(userid === undefined){
         // send response w/ all variables
@@ -954,7 +967,7 @@ app.post('/imageEditor', function(request, response){
     console.log(request.path);
 
     // prepare variables 
-    var uid = request.cookies['userId'],
+    var uid = request.cookies['puiv'],
         userObject,
         imagepath,
         data,
@@ -1131,6 +1144,9 @@ app.post('/imageEditor', function(request, response){
     }
 });
 
+/**
+ * This will be the link where the pow pipeline can be implimented
+ */
 app.post("/pow",function(request, response){
     // TODO: POW connection link
 });
@@ -1205,6 +1221,144 @@ app.post("/figureDownload", async function(request, response){
         }
     });    
 });
+
+/**
+ * '/resizeFigure' handler
+ * 
+ * resize cubes and return them to the imageEditor
+ */
+app.post("/resizeFigure",function(request, response){
+    // user id, and the new figure width and height
+    var id = String(request.body.id),
+        newWidth = parseInt(request.body.w),
+        newHeight = parseInt(request.body.h),
+        promises = [],
+        origCube;
+
+    var userObject = util.getObjectFromArray(id, cubeArray);
+    var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+
+    // make sure string only contains digets and it is a proper length
+    if(/[\S\d]{23}$/gm.test(id) && id.length === 23){
+        // if the user object is found
+        if(typeof(userObject) === "object"){
+            let workingCube = userObject.name.replace("r-", "u-");
+
+            if(workingCube !== userObject.name){
+                origCube = userObject.name;
+                userObject.name = workingCube;
+            }
+
+            // get the origional cube dimensions
+            userObject.getCubeDimensions().then((dimensions) => {
+                dimensions = JSON.parse(dimensions);
+
+                var rawW = dimensions.w,
+                    rawH = dimensions.h;
+
+                    //TODO: run the reduce function and return a blob of the new image file
+                    console.log(rawW + " : " + rawH);
+
+                    // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
+                    scaleFactor = (rawH <= rawH) ? rawH/newHeight : rawH/newWidth;
+
+                    console.log(scaleFactor);
+                    // if the image needs to be reduced
+                    if(scaleFactor > 1){
+                        // promise on the reduce call
+                        // TODO: imitate what happens above to reduce cube
+                        if(userObject.userDim[1] * userObject.userDim[0] >= 18000000){
+                            console.log('runs');
+                            scaleFactor = scaleFactor * 5;
+                        }
+                        else if(userObject.userDim[1] * userObject.userDim[0] > 10627600){
+                            console.log('runs 2');
+                            scaleFactor = scaleFactor * 1.75;
+                        }                        
+                        // if the image needs to be reduced
+                        if(scaleFactor > 1){
+                            console.log('runs 4');
+                            // promise on the reduce call
+                            var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+
+                            promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        else if(samples * lines > 18000000){
+                            console.log("default 2");
+                            promises.push(util.reduceCube(rawCube, userObject.name, 6, userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        else if(samples * lines > 4000000){
+                            console.log("default");
+                            promises.push(util.reduceCube(rawCube, userObject.name, 1.75, userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        
+
+                        Promise.all(promises).then(() =>{
+                            // change name back
+                            if(origCube){
+                                userObject.name = origCube;
+                            }
+                            
+                            Promise.all(promises).then(()=>{
+                                // send the reaponse
+                                console.log("send");
+                                promises = [];
+                                promises.push(util.imageExtraction(util.getimagename(userObject.name, "png"),
+                                 path.join(__dirname, "uploads",userObject.name), path.join(__dirname, "images"),
+                                 userObject.logToFile, userObject.userId + ".log", rawCube));
+            
+            
+                                Promise.all(promises).then(function(){
+                                    response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
+                                
+                                }).catch((err)=>{
+                                    console.log("Error Happened: " + err);
+                                });
+                            }).catch((err)=>{
+                                console.log("Error Here: " + err);
+                            });
+                        });
+                    }
+                    else{
+
+                        console.log("default 3");
+                        promises.push(util.reduceCube(rawCube, userObject.name, 2, userObject.logFlag,userObject.userId + ".log"));
+
+                        Promise.all(promises).then(() =>{
+                            // change name back
+                            if(origCube){
+                                userObject.name = origCube;
+                            }
+                            
+                        }).then(()=>{
+                            // send the reaponse
+                            console.log("send");
+                            promises = [];
+                            promises.push(util.imageExtraction(util.getimagename(userObject.name, "png"),
+                                path.join(__dirname, "uploads",userObject.name), path.join(__dirname, "images"),
+                                userObject.logToFile, userObject.userId + ".log", rawCube));
+        
+        
+                            Promise.all(promises).then(function(){
+                                response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
+                            
+                            }).catch((err)=>{
+                                console.log("Error Happened: " + err);
+                            });
+                        }).catch((err)=>{
+                            console.log("Error Here: " + err);
+                        });
+                        
+                    }
+            });
+        }
+        else{
+            // user object was not found on server
+        }  
+    }
+});
+
 
 /**
  * '/*' catch all unknown routes

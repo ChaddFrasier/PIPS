@@ -310,6 +310,32 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Resizing Button Interface -->
+                    <div class="row" role="table">
+                        <div class="col-4" style="padding: 0; padding-left:5%; margin: auto auto;">
+                            <p class="float-center" style="padding-left:5%;">
+                                Resize<br/>Figure
+                            </p>
+                        </div>
+                        <div class="col-4" style="padding: 0; margin: auto auto;">
+                            <p class="float-center" style="margin-bottom: 0; margin-top: auto;">
+                                Width
+                            </p>
+                            <input id="changeDimWidth" type="text" style="width: 100%;">
+                            <br/>
+                            <br/>
+                            <input id="changeDimHeight" type="text" style="width: 100%;">
+                            <p class="float-center" style="padding:0%;">
+                                Height
+                            </p>
+                        </div>
+                        <div class="col-4" style="padding: 1%; padding-top: 0; margin: auto auto;">
+                            <button id="resizeUpdateBtn" class="btn btn-lg button"
+                            style="width: 100%; padding: 1%; font-size: 100%;">
+                                Update
+                            </button>
+                        </div>
+                    </div>
                     <!-- Export Button Interface -->
                     <div class="row" role="table" style="border-bottom: 2px solid black; margin-top: auto;
                     margin-bottom: auto;" title="Download Figure">
@@ -333,8 +359,6 @@
                     </div>
                 </div>
             </div>
-<!-- <li><button class="btn btn-primary btn-lg float-center" id="cropFlag"> Crop Image</button></li>-->
-<!--<li><button id="backBtn" class="btn btn-secondary btn-lg" onclick="loaderActivate()">Undo Crop</button></li>-->
         </div>
 
         <!-- Right Bar-->
@@ -429,7 +453,7 @@
                         <div class="col-4" style="text-align: center; width: 70%;">
                             <h2 style="font-size:125%;">Edit Cube Image</h2>
                             <h4 id="imageName"style="font-size:125%;"></h4>
-                            <h5 style="font-size:125%;"><%=w%> &times; <%=h%> px</h5>
+                            <h5 id="displayCube" style="font-size:125%;"><%=w%> &times; <%=h%> px</h5>
                         </div>
                         <div class="col-4" style="width: 15%;">
                             <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" title="Help!" 
@@ -485,7 +509,8 @@
                             </defs>
                             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
                             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0"
-                                transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"/>
+                                transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"></image>
+                        
                         </svg>
                     </div>
                 </div> 
