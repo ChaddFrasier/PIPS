@@ -267,22 +267,44 @@ app.get('/tpl',function(request, response){
 app.get("/log/*",function(request, response){
     console.log(request.url);
 
+    let queryString = request.query.isTest;
     var id = request.url.split("/")[request.url.split("/").length -1];
 
-    if(fs.existsSync(path.join("log", id+".log"))){
-        response.download(path.join("log",id+".log"),function(err){
-            if(err){
-                console.log("DOWNLOAD FAILED: " + err);
-                response.status(500).send("File Failed to Send").end();
-            }
-            else{
-                console.log("Download Sent");
-            }
-        });
+    id = id.split("?")[0];
+
+    console.log(queryString);
+
+    if(queryString === undefined){
+    
+        if(fs.existsSync(path.join("log", id+".log"))){
+            response.download(path.join("log",id+".log"),function(err){
+                if(err){
+                    console.log("DOWNLOAD FAILED: " + err);
+                    response.status(500).send("File Failed to Send").end();
+                }
+                else{
+                    console.log("Download Sent");
+                }
+            });
+        }
+        else{
+            response.status(403).send("File Not Found").end();
+        }
     }
     else{
-        response.status(403).send("File Not Found").end();
+        // check to see if the file exists
+        console.log("test");
+        let exists = fs.existsSync(path.join(__dirname, "log", id + ".log"));
+
+        if(exists){
+            response.sendStatus(200);
+        }   
+        else{
+            // file not found
+            response.sendStatus(404);
+        }
     }
+    
 });
 
 /**
@@ -546,38 +568,71 @@ app.post('/captionWriter', async function(request, response){
                             }
                         }
 
-                        if(cubeObj.userDim[1] * cubeObj.userDim[0] >= 18000000){
-                            console.log('runs');
-                            scaleFactor = scaleFactor * 5;
-                        }
-                        else if(cubeObj.userDim[1] * cubeObj.userDim[0] > 10627600){
-                            scaleFactor = scaleFactor * 1.75;
-                        }                        
-                        // if the image needs to be reduced
-                        if(scaleFactor > 1){
-                            // promise on the reduce call
-                            var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
+                                               
+                        // promise on the reduce call
+                        var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum),
+                            max = 2725;
 
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
-                                cubeObj.logFlag,cubeObj.userId + ".log"));
+                        // image is bigger than the desired figure size
+                        if(scaleFactor > 1){
+                            // if the new dimensions is less than the minimum and image is larger than new dimensions
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                                console.log("runs 1");
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                    cubeObj.logFlag, cubeObj.userId + ".log"));
+                            }
+                            else{
+                                // new figure size is large than max
+                                if(samples * lines > 7579000){
+                                    console.log("runs 1a");
+                                    scaleFactor = (samples > lines) ? samples/max : lines/max;
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                                else{
+                                    console.log("runs 1b");
+                                    // render at full res
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                            }
+                            
                         }
-                        else if(samples * lines > 18000000){
-                            console.log("default 2");
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, 6, cubeObj.logFlag,cubeObj.userId + ".log"));
-                        }
-                        else if(samples * lines > 4000000){
-                            console.log("default");
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, 1.75, cubeObj.logFlag,cubeObj.userId + ".log"));
+                        else{
+                            // image is smaller than desired figure size
+                            // TODO: 
+
+                            // if the new dimensions is less than the max
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                                // render image at full res
+                                console.log("runs 2");
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                    cubeObj.logFlag, cubeObj.userId + ".log"));
+                            }
+                            // if the new dimensions is more than the max dimensions
+                            else{
+                                // render image at max res
+                                // cast the image into the max res
+                                if(lines * samples > 7579000){
+                                    console.log("runs 2a");
+                                    scaleFactor = (samples > lines) ? samples/max : lines/max;
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                                else{
+                                    console.log("runs 2b");
+                                    // render at full res
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                            }
                         }
                         
                         Promise.all(promises).then(function(cubeName){
                             // if function resolved with a return
                             if(cubeName.length > 0){
                                 // set the name to the returning cube
-                                let tmp = cubeObj.name;
                                 cubeObj.name = cubeName[0];
-                                /* // remove the not needed files to save server space
-                                fs.unlinkSync(path.join(__dirname, "uploads",tmp)); */
                             }
                             // reset promise array
                             promises = [];
@@ -1233,7 +1288,8 @@ app.post("/resizeFigure",function(request, response){
         newWidth = parseInt(request.body.w),
         newHeight = parseInt(request.body.h),
         promises = [],
-        origCube;
+        origCube,
+        max = 2725;
 
     var userObject = util.getObjectFromArray(id, cubeArray);
     var rawCube = util.getRawCube(userObject.name,userObject.userNum);
@@ -1256,82 +1312,77 @@ app.post("/resizeFigure",function(request, response){
                 var rawW = dimensions.w,
                     rawH = dimensions.h;
 
-                    //TODO: run the reduce function and return a blob of the new image file
-                    console.log(rawW + " : " + rawH);
+                //TODO: run the reduce function and return a blob of the new image file
+                console.log(rawW + " : " + rawH);
 
-                    // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
-                    scaleFactor = (rawH <= rawH) ? rawH/newHeight : rawH/newWidth;
+                // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
+                scaleFactor = (rawH <= rawH) ? rawH/newHeight : rawH/newWidth;
 
-                    console.log(scaleFactor);
-                    // if the image needs to be reduced
-                    if(scaleFactor > 1){
-                        // promise on the reduce call
-                        // TODO: imitate what happens above to reduce cube
-                        if(userObject.userDim[1] * userObject.userDim[0] >= 18000000){
-                            console.log('runs');
-                            scaleFactor = scaleFactor * 5;
-                        }
-                        else if(userObject.userDim[1] * userObject.userDim[0] > 10627600){
-                            console.log('runs 2');
-                            scaleFactor = scaleFactor * 1.75;
-                        }                        
-                        // if the image needs to be reduced
-                        if(scaleFactor > 1){
-                            console.log('runs 4');
-                            // promise on the reduce call
-                            var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+                console.log(scaleFactor);
 
+                // image is bigger than the desired figure size
+                if(scaleFactor > 1){
+                    // if the new dimensions is less than the minimum and image is larger than new dimensions
+                    if(newWidth * newHeight <= 7579000){
+                        console.log("runs 1");
+                        promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                            userObject.logFlag,userObject.userId + ".log"));
+                    }
+                    else{
+                        // new figure size is large than max
+                        if(rawH * rawW > 7579000){
+                            console.log("runs 1a");
+                            scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
                             promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
                                 userObject.logFlag,userObject.userId + ".log"));
                         }
-                        else if(samples * lines > 18000000){
-                            console.log("default 2");
-                            promises.push(util.reduceCube(rawCube, userObject.name, 6, userObject.logFlag,userObject.userId + ".log"));
+                        else{
+                            console.log("runs 1b");
+                            // render at full res
+                            promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                userObject.logFlag,userObject.userId + ".log"));
                         }
-                        else if(samples * lines > 4000000){
-                            console.log("default");
-                            promises.push(util.reduceCube(rawCube, userObject.name, 1.75, userObject.logFlag,userObject.userId + ".log"));
+                    }
+                    
+                }
+                else{
+                    // image is smaller than desired figure size
+                    // TODO: 
+
+                    // if the new dimensions is less than the max
+                    if(newWidth * newHeight <= 7579000){
+                        // render image at full res
+                        console.log("runs 2");
+                        promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                            userObject.logFlag,userObject.userId + ".log"));
+                    }
+                    // if the new dimensions is more than the max dimensions
+                    else{
+                        // render image at max res
+                        // cast the image into the max res
+                        if(rawH * rawW > 7579000){
+                            console.log("runs 2a");
+                            scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
+                            promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        else{
+                            console.log("runs 2b");
+                            // render at full res
+                            promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                    }
+                }
+
+                if(promises){
+                    Promise.all(promises).then(() =>{
+                        // change name back
+                        if(origCube){
+                            userObject.name = origCube;
                         }
                         
-
-                        Promise.all(promises).then(() =>{
-                            // change name back
-                            if(origCube){
-                                userObject.name = origCube;
-                            }
-                            
-                            Promise.all(promises).then(()=>{
-                                // send the reaponse
-                                console.log("send");
-                                promises = [];
-                                promises.push(util.imageExtraction(util.getimagename(userObject.name, "png"),
-                                 path.join(__dirname, "uploads",userObject.name), path.join(__dirname, "images"),
-                                 userObject.logToFile, userObject.userId + ".log", rawCube));
-            
-            
-                                Promise.all(promises).then(function(){
-                                    response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
-                                
-                                }).catch((err)=>{
-                                    console.log("Error Happened: " + err);
-                                });
-                            }).catch((err)=>{
-                                console.log("Error Here: " + err);
-                            });
-                        });
-                    }
-                    else{
-
-                        console.log("default 3");
-                        promises.push(util.reduceCube(rawCube, userObject.name, 2, userObject.logFlag,userObject.userId + ".log"));
-
-                        Promise.all(promises).then(() =>{
-                            // change name back
-                            if(origCube){
-                                userObject.name = origCube;
-                            }
-                            
-                        }).then(()=>{
+                        Promise.all(promises).then(()=>{
                             // send the reaponse
                             console.log("send");
                             promises = [];
@@ -1341,6 +1392,8 @@ app.post("/resizeFigure",function(request, response){
         
         
                             Promise.all(promises).then(function(){
+                                // send response
+                                // TODO: calculate the new scalebar values
                                 response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
                             
                             }).catch((err)=>{
@@ -1349,12 +1402,14 @@ app.post("/resizeFigure",function(request, response){
                         }).catch((err)=>{
                             console.log("Error Here: " + err);
                         });
-                        
-                    }
+                    });
+                }
+                
             });
         }
         else{
             // user object was not found on server
+            console.log("userobject not found");
         }  
     }
 });

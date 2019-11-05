@@ -612,7 +612,7 @@ function makeDraggable(event){
                 else if(dy > maxY){ dy = maxY; }
             }
             // set the transform
-            transform.setTranslate(dx, dy);
+            transform.setTranslate(dx,dy);
         }
     }
 
@@ -1018,7 +1018,7 @@ function setImagePadding(val,location){
             bg.setAttribute("width",w);
 
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = w + " &times;" + imageH +  " px";
+            document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             document.getElementById("changeDimWidth").placeholder = w + " px";
             document.getElementById("changeDimHeight").placeholder = imageH + " px";
 
@@ -1040,7 +1040,7 @@ function setImagePadding(val,location){
             svg.setAttribute("viewBox", "0 " + String(val*-1) + " " + w + " " + imageH);
             
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = w + " &times;" + imageH +  " px";
+            document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             document.getElementById("changeDimWidth").placeholder = w + " px";
             document.getElementById("changeDimHeight").placeholder = imageH + " px";
 
@@ -1062,7 +1062,7 @@ function setImagePadding(val,location){
             svg.setAttribute("viewBox", "0 0 "  + imageW + " " + h);
             
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = imageW + " &times;" + h +  " px";
+            document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             document.getElementById("changeDimWidth").placeholder = imageW + " px";
             document.getElementById("changeDimHeight").placeholder = h + " px";
 
@@ -1084,7 +1084,7 @@ function setImagePadding(val,location){
             svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " " + h);
            
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = imageW + " &times;" + h +  " px";
+            document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             document.getElementById("changeDimWidth").placeholder = imageW + " px";
             document.getElementById("changeDimHeight").placeholder = h + " px";
 
@@ -1104,7 +1104,7 @@ function setImagePadding(val,location){
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
             
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = w + " &times;" + h +  " px";
+            document.getElementById("displayCube").innerHTML = w + " &times; " + h +  " px";
             document.getElementById("changeDimWidth").placeholder = w + " px";
             document.getElementById("changeDimHeight").placeholder = h + " px";
 
@@ -1443,6 +1443,70 @@ function getCookie(cname){
 
 
 /**
+ * @function resetIcons
+*/
+
+// TODO: reset the scalebar scale with the image change
+// TODO: adjust the change in the icons
+function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
+    var children = svg.children,
+        appendArr = [];
+    console.log("CHNAGES ARE " + heightDif + " : " + widthDif);
+    for(var i=0; i < children.length; i++){
+        if(children[i].getAttribute("transform")){
+            var transformArray = children[i].getAttribute("transform").split(") ");
+            var tmpArr = [];
+
+            transformArray.forEach(transform => {
+                if(transform.indexOf("translate") > -1){
+                    
+                    
+                    var x = Number(transform.split(",")[0].replace("translate(","")),
+                        y = Number(transform.split(",")[1].trim());
+
+                    if(x >= newWidth - 30 || y >= newHeight - 30){
+                        console.log("off screen");
+                        transform = "translate(" + Math.abs(x - widthDif) + ", " + Math.abs(y - heightDif) + ")";
+                        tmpArr.push(transform);
+                    }
+                    else{
+                        tmpArr.push(transform + ")");
+                    }
+                }
+                else{
+                    if(transform.indexOf(")") > -1){
+                        tmpArr.push(transform);
+                    }
+                    else{
+                        tmpArr.push(transform + ")");
+                    }
+                    
+                }
+            });
+            children[i].setAttribute("transform", tmpArr.join(" "));
+            appendArr.push(children[i]);
+        }
+    }
+
+    console.log(appendArr);
+    appendArr.forEach(element => {
+        if(element.id.indexOf("north") > -1){
+            $("#northIconFlag").mousedown();
+            $("#northIconFlag").mousedown();
+        }
+        else if(element.id.indexOf("sun") > -1){
+            $("#sunIconFlag").click();
+            $("#sunIconFlag").click();
+        }
+        else if(element.id.indexOf("eye") > -1){
+            $("#eyeFlag").click();
+            $("#eyeFlag").click();
+        }
+    });
+}
+
+
+/**
  * @function openToolBox
  * 
  * @param {event} event the click event object passed by the user's click
@@ -1532,6 +1596,12 @@ function triggerDownload(imgURI,filename){
     a.dispatchEvent(event);
 }
 
+/**
+ * 
+ * @param {*} id 
+ * @param {*} inc 
+ * TODO:
+ */
 function getMarkerId(id, inc){
     if(document.getElementById(id) === null){
         return id;
@@ -1716,7 +1786,7 @@ $(document).ready(function(){
 
     // string version of the icons so they can be added dynamically with a single function call 
     var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(100,150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
+    + 'transform="translate(100, 150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;">\n'
     + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black"'
     + 'style="border:0;"></circle>\n'
@@ -1733,7 +1803,7 @@ $(document).ready(function(){
     + 'style="visibility: hidden;"fill="yellow"/>\n</g>\n';
 
     var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(100,100) rotate(0) scale(.2439026)" stroke-width="5"'
+    + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="5"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
@@ -1765,7 +1835,7 @@ $(document).ready(function(){
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />\n';
 
     var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(150,100) rotate(0) scale(1.18)" stroke-width="3" style="border:0; padding:0;'
+    + 'transform="translate(150, 100) rotate(0) scale(1.18)" stroke-width="3" style="border:0; padding:0;'
     + 'pointer-events:visible;">\n'
     + '<path id="eyeArrow" x="0" y="0" stroke-width="2"'
     + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>\n'
@@ -1781,7 +1851,7 @@ $(document).ready(function(){
     + ' fill="yellow" stroke="black"/>\n</g>\n';
 
     var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
-    + 'transform="translate(0,175) scale(.1)" stroke-width="10"'
+    + 'transform="translate(0, 175) scale(.1)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
     + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>\n'
     + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white"'
@@ -1866,13 +1936,13 @@ $(document).ready(function(){
         // set the size based on how the image is drawn
         if((w/origW) < (h/origH)){
             scaleBarIcon.setAttribute("transform",
-                                            "translate(0,175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
+                                            "translate(0, 175) scale(" + (scalePX/4000)* 2 * (w/origW) + ')');
             // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
             textSize = (scalePX/4000)* 21 * (w/origW);
         }
         else{
             scaleBarIcon.setAttribute("transform",
-                                            "translate(0,175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
+                                            "translate(0, 175) scale(" + (scalePX/4000)* 2 * (h/origH) + ')');
             // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
             textSize = (scalePX/4000)* 21 * (h/origH);
         }
@@ -2534,7 +2604,10 @@ $(document).ready(function(){
         dim.w = parseInt(displayString.split("×")[0]);
         dim.h = parseInt(displayString.split("×")[1]);
 
-        if((widthInput !== "" || heightInput !== "") && (dim.w !== widthInput || dim.h !== heightInput)){
+        console.log((widthInput !== "" || heightInput !== ""));
+        if((widthInput !== "" || heightInput !== "")
+            && (parseInt(widthInput) > 1000 || parseInt(heightInput) > 1000)
+            && (dim.w !== widthInput || dim.h !== heightInput)){
             // get user id from browser cookie
             let id = getCookie("puiv");
             var fd = new FormData(),
@@ -2565,6 +2638,14 @@ $(document).ready(function(){
             headers.append("pragma","no-cache");
             headers.append("cache-control", "no-cache");
 
+            
+            var heightDifference = Math.abs(dim.h - heightInput),
+                widthDifference = Math.abs(dim.w - widthInput);
+
+                console.log(widthDifference + " : " + heightDifference);
+
+                console.log("UPPER FUNC");
+
             fetch('/resizeFigure',
                         {
                             method:'POST',
@@ -2589,10 +2670,13 @@ $(document).ready(function(){
                                         svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
 
                                         displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+
+                                        // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
+                                        resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                                     }
+                                    console.log("END RESPONSE");
                                 });
-                            }
-                            
+                            } 
                         }).catch((err) =>{
                             // catch any fetch errors
                             if(err){
@@ -2600,7 +2684,8 @@ $(document).ready(function(){
                             }
                         });
         }
-        else{
+        else if(widthInput == "" && heightInput === ""){
+            // both inputs empty
             var dim = {
                 w:"0",
                 h:"0"
@@ -2609,8 +2694,18 @@ $(document).ready(function(){
             dim.w = parseInt(displayString.split("×")[0]);
             dim.h = parseInt(displayString.split("×")[1]);
 
-            if(dim.w !== parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"))
-                || dim.h !== parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"))){
+            var heightDifference = Math.abs((heightInput !== "") ? dim.h - heightInput : dim.h - origH ),
+                widthDifference = Math.abs((widthInput !== "") ? dim.w - widthInput : dim.w - origW );
+
+            console.log("LOWER FUNC");
+            console.log(dim);
+        
+            console.log(heightDifference + " difs : " + widthDifference);
+            
+
+            console.log(heightDifference + " : " + widthDifference);
+
+            if(heightDifference || widthDifference){
                     var fd = new FormData(),
                         headers = new Headers();
 
@@ -2651,8 +2746,15 @@ $(document).ready(function(){
                                                 svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
 
                                                 displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+
+                                                // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
+                                                resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                                             }
                                         });
+                                        console.log("END RESPONSE");
+                                    }
+                                    else{
+                                        console.log(response.status + " is the returned status");
                                     }
                                     
                                 }).catch((err) =>{
@@ -2673,6 +2775,9 @@ $(document).ready(function(){
         if(isNaN(boxInput)){
             this.value = "";
         }
+        else if(boxInput > 5000){
+            this.value = 5000;
+        }
         else{
             this.value = boxInput;
         }
@@ -2684,6 +2789,9 @@ $(document).ready(function(){
 
         if(isNaN(boxInput)){
             this.value = "";
+        }
+        else if(boxInput > 5000){
+            this.value = 5000;
         }
         else{
             this.value = boxInput;
@@ -2796,7 +2904,7 @@ $(document).ready(function(){
             // set draggable group defaults
             g.setAttribute("height",0);
             g.setAttribute("width",0);
-            g.setAttribute("transform","translate(50,50) rotate(0) scale("+ textSize + ")");
+            g.setAttribute("transform","translate(50, 50) rotate(0) scale("+ textSize + ")");
 
             // create rectangles on all corners for scaling the text
             var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
@@ -3132,7 +3240,7 @@ $(document).ready(function(){
 
         g.setAttribute("class","draggable confine outline");
         g.setAttribute("transform-origin","50%; 50%;");
-        g.setAttribute("transform","translate(0,0) rotate(0) scale(.5)");
+        g.setAttribute("transform","translate(0, 0) rotate(0) scale(.5)");
         g.setAttribute("stroke-width","20");
         g.style.border = 0;
         g.style.padding = 0;

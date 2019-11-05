@@ -382,7 +382,7 @@ $(document).ready(function(){
     }
 
     // try fetching the log file for the user and dont display if fetch fails to locate it
-    fetch("/log/" + getCookie("puiv"),{method:"GET"})
+    fetch("/log/" + getCookie("puiv") + "?isTest=true",{method:"GET"})
     .then(function(response){
         if(Number(response.status) !== 200){
             document.getElementById("logDownloadBtn").style.display = "none";  
