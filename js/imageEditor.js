@@ -1443,66 +1443,81 @@ function getCookie(cname){
 
 
 /**
+ * 
+ * @param {*} icon 
+ */
+function resetSingleIcon(icon, widthDif, heightDif){
+    var transformArr = icon.getAttribute("transform").split(") "),
+        displayString = document.getElementById("displayCube").innerHTML,
+        tmpArr = [];
+
+    var dim = {
+        w:"0",
+        h:"0"
+    };
+
+    dim.w = parseInt(displayString.split("×")[0]);
+    dim.h = parseInt(displayString.split("×")[1]);
+
+    transformArr.forEach(transform => {
+        if(transform.indexOf("translate") > -1){
+            
+            // get the current x and y translate values
+            var x = transform.split(",")[0].replace("translate(",""),
+                y = transform.split(",")[1];
+
+            // chrome fails because of the translate format
+            // check to see if the variable init failed
+            if(!x || !y){
+                x = transform.split(" ")[0].replace("translate(",""),
+                y = transform.split(" ")[1]; 
+            }
+     
+            if(x >= dim.w - 100 || y >= dim.h - 100){
+                transform = "translate(" + Math.abs(x - widthDif) + ", " + Math.abs(y - heightDif) + ")";
+                tmpArr.push(transform);
+            }
+            else{
+                tmpArr.push(transform + ")");
+            }
+        }
+        else{
+            if(transform.indexOf(")") > -1){
+                tmpArr.push(transform);
+            }
+            else{
+                tmpArr.push(transform + ")");
+            }
+            
+        }
+    });
+    icon.setAttribute("transform", tmpArr.join(" "));
+    
+}
+
+
+/**
  * @function resetIcons
 */
 
 // TODO: reset the scalebar scale with the image change
 // TODO: adjust the change in the icons
 function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
-    var children = svg.children,
-        appendArr = [];
+    var children = svg.children;
+       
     console.log("CHNAGES ARE " + heightDif + " : " + widthDif);
     for(var i=0; i < children.length; i++){
         if(children[i].getAttribute("transform")){
-            var transformArray = children[i].getAttribute("transform").split(") ");
-            var tmpArr = [];
-
-            transformArray.forEach(transform => {
-                if(transform.indexOf("translate") > -1){
-                    
-                    
-                    var x = Number(transform.split(",")[0].replace("translate(","")),
-                        y = Number(transform.split(",")[1].trim());
-
-                    if(x >= newWidth - 30 || y >= newHeight - 30){
-                        console.log("off screen");
-                        transform = "translate(" + Math.abs(x - widthDif) + ", " + Math.abs(y - heightDif) + ")";
-                        tmpArr.push(transform);
-                    }
-                    else{
-                        tmpArr.push(transform + ")");
-                    }
-                }
-                else{
-                    if(transform.indexOf(")") > -1){
-                        tmpArr.push(transform);
-                    }
-                    else{
-                        tmpArr.push(transform + ")");
-                    }
-                    
-                }
-            });
-            children[i].setAttribute("transform", tmpArr.join(" "));
-            appendArr.push(children[i]);
+            resetSingleIcon(children[i], widthDif, heightDif);
         }
     }
+    
 
-    console.log(appendArr);
-    appendArr.forEach(element => {
-        if(element.id.indexOf("north") > -1){
-            $("#northIconFlag").mousedown();
-            $("#northIconFlag").mousedown();
-        }
-        else if(element.id.indexOf("sun") > -1){
-            $("#sunIconFlag").click();
-            $("#sunIconFlag").click();
-        }
-        else if(element.id.indexOf("eye") > -1){
-            $("#eyeFlag").click();
-            $("#eyeFlag").click();
-        }
-    });
+    resetSingleIcon(northImage, widthDif, heightDif);
+    resetSingleIcon(sunImage, widthDif, heightDif);
+    resetSingleIcon(eyeImage, widthDif, heightDif);
+    resetSingleIcon(scaleBarIcon, widthDif, heightDif);
+    makeDraggable(svg);
 }
 
 
@@ -1788,11 +1803,11 @@ $(document).ready(function(){
     var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;">\n'
-    + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="15" stroke="white" fill="black"'
+    + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="10" stroke="white" fill="black"'
     + 'style="border:0;"></circle>\n'
     + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>\n'
     + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="white"'
-    + 'fill="black" stroke-width="10"/>\n'
+    + 'fill="black"/>\n'
     + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
     + 'style="visibility: hidden;"fill="red"/>\n'
     + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
@@ -1835,9 +1850,9 @@ $(document).ready(function(){
     + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />\n';
 
     var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
-    + 'transform="translate(150, 100) rotate(0) scale(1.18)" stroke-width="3" style="border:0; padding:0;'
+    + 'transform="translate(150, 100) rotate(0) scale(1.18)" stroke-width="2" style="border:0; padding:0;'
     + 'pointer-events:visible;">\n'
-    + '<path id="eyeArrow" x="0" y="0" stroke-width="2"'
+    + '<path id="eyeArrow" x="0" y="0"'
     + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>\n'
     + '<path id= "eyeIconOuter" d="M 14 30 C 14 30 50 -10 85 30 C 85 30 50 75 14 29" fill="black"'
     + 'stroke="white" style="border:0;"></path>\n'
@@ -2642,9 +2657,6 @@ $(document).ready(function(){
             var heightDifference = Math.abs(dim.h - heightInput),
                 widthDifference = Math.abs(dim.w - widthInput);
 
-                console.log(widthDifference + " : " + heightDifference);
-
-                console.log("UPPER FUNC");
 
             fetch('/resizeFigure',
                         {
@@ -2671,7 +2683,7 @@ $(document).ready(function(){
 
                                         displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
-                                        // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
+                                        // TODO: adjust the scalebar when size changes
                                         resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                                     }
                                     console.log("END RESPONSE");
@@ -2696,14 +2708,6 @@ $(document).ready(function(){
 
             var heightDifference = Math.abs((heightInput !== "") ? dim.h - heightInput : dim.h - origH ),
                 widthDifference = Math.abs((widthInput !== "") ? dim.w - widthInput : dim.w - origW );
-
-            console.log("LOWER FUNC");
-            console.log(dim);
-        
-            console.log(heightDifference + " difs : " + widthDifference);
-            
-
-            console.log(heightDifference + " : " + widthDifference);
 
             if(heightDifference || widthDifference){
                     var fd = new FormData(),
@@ -3100,6 +3104,7 @@ $(document).ready(function(){
             }
             
             if(sunFlag){
+               
                 outlineBox.style.visibility = 'hidden';
                 sunImage.style.visibility = 'visible';
                 svg.appendChild(sunImage);
@@ -3174,7 +3179,7 @@ $(document).ready(function(){
             if(northFlag){
                 outlineBox.remove();
                 outlineBox.style.visibility = 'hidden';
-                
+
                 svg.appendChild(northImage);
                 northImage.style.visibility = 'visible';
                 setIconAngle(northImage, northDegree);
