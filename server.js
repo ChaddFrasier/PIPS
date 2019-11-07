@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 11/06/2019
+ * @updated 11/07/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -279,7 +279,7 @@ app.get('/tpl',function(request, response){
  * Checks to see if the file is currently on the server and sends the 
  * file for downloads it to the client
  */
-app.get("/log/*",function(request, response){
+app.get("/log/*",function(request, response) {
     console.log(request.url);
 
     let queryString = request.query.isTest;
@@ -628,9 +628,8 @@ app.post('/captionWriter', async function(request, response){
                             }
                             
                         }
-                        else{
-                            // image is smaller than desired figure size
-                            // TODO: 
+                        else{ // image is smaller than desired figure size
+                            
                             // if the new dimensions is less than the max
                             if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
                                 // render image at full res
@@ -715,7 +714,7 @@ app.post('/captionWriter', async function(request, response){
                                     // write the csv data to the file
                                     fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
 
-                                    // TODO: Save each new instance to the memArray
+                                    // create or update data instance
                                     if(memArray.length === 0){
                                         // create the new instance and add it to the array
                                         var newMem = new Memory(cubeObj.userNum);
@@ -1289,7 +1288,7 @@ app.post('/imageEditor', function(request, response){
 /**
  * This will be the link where the pow pipeline can be implimented
  */
-app.get("/pow",function(request, response){
+app.post("/pow",function(request, response){
     // TODO: POW connection link
     var id = request.cookies["puiv"];
 });
@@ -1480,9 +1479,7 @@ app.post("/resizeFigure",function(request, response){
         
                             Promise.all(promises).then(function(){
                                 // send response
-                                
                                 response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
-                            
                             }).catch((err)=>{
                                 console.log("Error Happened: " + err);
                             });
@@ -1506,13 +1503,13 @@ app.post("/resizeFigure",function(request, response){
  */
 // TODO: calculate the new scalebar values
 app.post("/evalScalebar", function(request, response){
-
-    var userObject = util.getObjectFromArray(request.body.id, cubeArray);
-
-    var w,
+    
+    var userObject = util.getObjectFromArray(request.body.id, cubeArray),
+        w,
         h,
-        // get resolution value
-        resolution = util.getPixelResolution(userObject);
+    
+    // get resolution value
+    resolution = util.getPixelResolution(userObject);
 
     userObject.getCubeDimensions().then(dimensions => {
         // save dimensions into local variables
@@ -1574,9 +1571,7 @@ app.post("/evalScalebar", function(request, response){
             }
         }
 
-        console.log( "scalebarLength: " + scalebarLength );
-        console.log( "scalebarPx: " + scalebarPx );
-
+        // send response to the server as data to handle in the callback
         response.send(
             {
                 scalebarLength: scalebarLength,
@@ -1607,13 +1602,12 @@ app.get("*",function(request, response){
     catch(err){
         // no instance was found
     }
-    
     // render a 404 error in the header and send the 404 page
     response.status(404).render("404.ejs");
 });
 
-/* activate the server */
 
+/* activate the server */
 // listen on some port
 // FOR TESTING ONLY!!! should be 'const PORT = process.env.PORT || 8080;'
 const PORT = 8080 || process.env.PORT;
@@ -1647,7 +1641,6 @@ var interval = function() {
             }
         }
     }
-    
     console.log("End Memory Analysis\n");
 }
 // set the memory managment system to check instances every 8 hours

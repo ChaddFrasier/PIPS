@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 11/06/2019
+ * @updated 11/07/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1443,23 +1443,32 @@ function getCookie(cname){
 
 
 /**
+ * @function resetSingleIcon
  * 
- * @param {*} icon 
+ * @param {DOM element} icon the current icon being adjusted
+ * 
+ * @description moved the icon in relation to the growth or shrinking of the image
  */
 function resetSingleIcon(icon, widthDif, heightDif){
+    // get elements and vars
     var transformArr = icon.getAttribute("transform").split(") "),
         displayString = document.getElementById("displayCube").innerHTML,
-        tmpArr = [];
+        tmpArr = [],
+        dim = {
+            w:"0",
+            h:"0"
+        };
 
-    var dim = {
-        w:"0",
-        h:"0"
-    };
-
+    // get current image dimensions
     dim.w = parseInt(displayString.split("×")[0]);
     dim.h = parseInt(displayString.split("×")[1]);
 
+/*     console.log("Dif W: " + widthDif);
+    console.log("Dif H: " + heightDif); */
+
+    // for each transform peice
     transformArr.forEach(transform => {
+        // if the transform is translate
         if(transform.indexOf("translate") > -1){
             
             // get the current x and y translate values
@@ -1470,10 +1479,10 @@ function resetSingleIcon(icon, widthDif, heightDif){
             // check to see if the variable init failed
             if(!x || !y){
                 x = transform.split(" ")[0].replace("translate(",""),
-                y = transform.split(" ")[1]; 
+                y = transform.split(" ")[1];
             }
-     
-            if(x >= dim.w - 100 || y >= dim.h - 100){
+            // TODO: shift everything in reltion to how much the image changes
+            if(x >= dim.w - widthDif || y >= dim.h - heightDif){
                 transform = "translate(" + Math.abs(x - widthDif) + ", " + Math.abs(y - heightDif) + ")";
                 tmpArr.push(transform);
             }
@@ -1492,26 +1501,22 @@ function resetSingleIcon(icon, widthDif, heightDif){
         }
     });
     icon.setAttribute("transform", tmpArr.join(" "));
-    
 }
-
 
 /**
  * @function resetIcons
-*/
-// TODO: first try to shift icons by the width difference everytime ( up and down)
-// adjust the change in the icons using the icon size
+ * 
+ * @param {DOM element} svg the svg element object
+ * @param {number} newWidth the width inputed
+ * @param {number} newHeight the height input
+ * @param {number} heightDif the difference between the old and new height 
+ * @param {number} widthDif the difference between the old and new weight
+ * 
+ * @description this function moved icons in relation to the width and height difference
+ */
 function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
-    var children = svg.children;
        
-    console.log("CHNAGES ARE " + heightDif + " : " + widthDif);
-    for(var i=0; i < children.length; i++){
-        if(children[i].getAttribute("transform")){
-            resetSingleIcon(children[i], widthDif, heightDif);
-        }
-    }
-    
-
+    // grab all the icons on screen
     resetSingleIcon(northImage, widthDif, heightDif);
     resetSingleIcon(sunImage, widthDif, heightDif);
     resetSingleIcon(eyeImage, widthDif, heightDif);
@@ -1532,11 +1537,12 @@ function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
 function openToolBox(event, id){
     // Declare all variables
     var i,
-    tabcontent,
-    tablinks;
+        tabcontent,
+        tablinks;
   
     // Get all elements with class="tabcontent" and hide them
     tabcontent = document.getElementsByClassName("tabcontent");
+
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = "none";
     }
@@ -1611,10 +1617,14 @@ function triggerDownload(imgURI,filename){
 }
 
 /**
+ * @function getMarkerId
  * 
- * @param {*} id 
- * @param {*} inc 
- * TODO: comment the code
+ * @param {string} id the id of the DOM element 
+ * @param {number} inc the incrimental variable to chnage the value
+ * 
+ * @returns recurse | number
+ * 
+ * @description creates a new id using recursion to make sure it is unique
  */
 function getMarkerId(id, inc){
     if(document.getElementById(id) === null){
@@ -1982,8 +1992,6 @@ $(document).ready(function(){
     }
 
 
-    console.log(String(parseInt(half)).length);
-
     // Reset the font 
     if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
         document.getElementById("scalebarHalf").setAttribute("x","1100");
@@ -2019,8 +2027,6 @@ $(document).ready(function(){
 
     // set defaults
     outlineBox.style.visibility = 'hidden';
-
-    console.log(" Image Dimensions are => " + w + " : " + h);
 
     document.getElementById("changeDimWidth").placeholder = w + " px";
     document.getElementById("changeDimHeight").placeholder = h + " px";
@@ -2604,8 +2610,13 @@ $(document).ready(function(){
     // ------------------------------- Button Handlers ------------------------------------------------------
       
 
-    // TODO: finish the resizing abilities
+    /**
+     * @function resizeUpdateBtn 'mousedown' event handler
+     * 
+     * @description fetches the new sized image and scalebar dimensions
+     */
     $("#resizeUpdateBtn").on("mousedown", function(){
+        // required elemnts
         var displayCube = document.getElementById("displayCube"),
             scalebarHalf = document.getElementById("scalebarHalf"),
             scalebarText = document.getElementById("scalebarText"),
@@ -2619,20 +2630,29 @@ $(document).ready(function(){
             h:"0"
         };
 
+        // if the scalebar is not on the image
         if(scalebarHalf === null){
-            console.log("PROBLEM!!!")
+            // place the icon
             $("#scaleBarButton").mousedown();
+            
+            // grab the elements
             scalebarHalf = document.getElementById("scalebarHalf");
             scalebarText = document.getElementById("scalebarText");
             scalebar1 = document.getElementById("scalebar1");
+            
+            // remove it again
             $("#scaleBarButton").mousedown();
         }
+
+        // get new image dimensions
         dim.w = parseInt(displayString.split("×")[0]);
         dim.h = parseInt(displayString.split("×")[1]);
 
+        // if either of the inputs is not empty and more than 1000 and new dimensions are not the same as before
         if((widthInput !== "" || heightInput !== "")
             && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
             && (dim.w !== widthInput || dim.h !== heightInput)){
+            
             // get user id from browser cookie
             let id = getCookie("puiv");
             var fd = new FormData(),
@@ -2660,9 +2680,9 @@ $(document).ready(function(){
             headers.append("pragma","no-cache");
             headers.append("cache-control", "no-cache");
 
-            
-            var heightDifference = Math.abs(dim.h - heightInput),
-                widthDifference = Math.abs(dim.w - widthInput);
+            // calculate difference
+            var heightDifference = dim.h - heightInput,
+                widthDifference = dim.w - widthInput;
 
 
             fetch('/resizeFigure',
@@ -2677,8 +2697,14 @@ $(document).ready(function(){
                     // read the new file and convert to data url
                     response.blob().then((data, err)=>{
                         var reader = new FileReader();
+                        
+                        // read image as data url
                         reader.readAsDataURL(data);
+
+                        // when reader is done loading
                         reader.onloadend = function(){
+
+                            // set new interface
                             myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
                             myImage.setAttribute("width", widthInput);
                             myImage.setAttribute("height", heightInput);
@@ -2688,7 +2714,7 @@ $(document).ready(function(){
 
                             displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
-                            // TODO: adjust the scalebar when size changes
+                            // shift icons
                             resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                             fd = new FormData();
 
@@ -2701,12 +2727,15 @@ $(document).ready(function(){
                                     referrerPolicy: "no-referrer"
                                 })
                             .then(response => {
-                                // TODO:
                                 response.blob().then((data, err)=> {
                                     var reader = new FileReader();
+                                    
+                                    //read json data as string
                                     reader.readAsText(data);
 
+                                    // when the read is finished
                                     reader.onloadend = function(){
+                                        // load the json structure out of the text string
                                         var body = JSON.parse(reader.result);
 
                                         scalePX = parseFloat(body["scalebarPX"]);
@@ -2717,19 +2746,7 @@ $(document).ready(function(){
                                         origW = parseInt(body["origW"]);
                                         origH = parseInt(body["origH"]);
 
-                                        TODO:
-                                        // mimic what it done to create the scalebar with these relationships
-                                        /**orig -> this func
-                                         * w -> user width
-                                         * h -> user height
-                                         * origW -> cube width dimensions
-                                         * origH -> cube height dimensions
-                                         * 
-                                         * reset variale to allow resizing later
-                                         * 
-                                         * DO THIS FOR BOTH RESIZE CALLS
-                                         */
-
+                                        
                                         // if the scale bar is not none
                                         if(scalePX !== 'none' && !isNaN(scalePX)){
                                             // set the size based on how the image is drawn
@@ -2813,7 +2830,7 @@ $(document).ready(function(){
                 }
             });
         }
-        else if(widthInput == "" && heightInput === ""){
+        else if(widthInput === "" && heightInput === ""){
             // both inputs empty
             var dim = {
                 w:"0",
@@ -2823,8 +2840,9 @@ $(document).ready(function(){
             dim.w = parseInt(displayString.split("×")[0]);
             dim.h = parseInt(displayString.split("×")[1]);
 
-            var heightDifference = Math.abs((heightInput !== "") ? dim.h - heightInput : dim.h - origH ),
-                widthDifference = Math.abs((widthInput !== "") ? dim.w - widthInput : dim.w - origW );
+
+            var heightDifference = (heightInput !== "") ? dim.h - heightInput : dim.h - h ,
+                widthDifference = (widthInput !== "") ? dim.w - widthInput : dim.w - w ;
 
             if(heightDifference || widthDifference){
                 var fd = new FormData(),
@@ -2866,7 +2884,7 @@ $(document).ready(function(){
 
                                 displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
-                                // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
+                                // shift the icons
                                 resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                                 fd = new FormData();
 
@@ -2879,7 +2897,6 @@ $(document).ready(function(){
                                     referrerPolicy: "no-referrer"
                                 })
                                 .then(response => {
-                                    // TODO:
                                     response.blob().then((data, err)=> {
                                         var reader = new FileReader();
                                         reader.readAsText(data);
@@ -2894,19 +2911,6 @@ $(document).ready(function(){
                                             scalebarUnits = body["scalebarUnits"];
                                             origW = parseInt(body["origW"]);
                                             origH = parseInt(body["origH"]);
-    
-                                            TODO:
-                                            // mimic what it done to create the scalebar with these relationships
-                                            /**orig -> this func
-                                             * w -> user width
-                                             * h -> user height
-                                             * origW -> cube width dimensions
-                                             * origH -> cube height dimensions
-                                             * 
-                                             * reset variale to allow resizing later
-                                             * 
-                                             * DO THIS FOR BOTH RESIZE CALLS
-                                             */
     
                                             // if the scale bar is not none
                                             if(scalePX !== 'none' && !isNaN(scalePX)){
@@ -2996,11 +3000,16 @@ $(document).ready(function(){
             }
         }
         else if(widthInput < 1000 || heightInput < 1000){
+            // if dimensions are not accepted
             alert("At least 1 Dimensions need to be 1000 or more");
         }
     });
 
-    // TODO: parse the input and change it if it isn't a number
+    /**
+     * @function changeDimHeight on 'keyup' handler
+     * 
+     * @description make sure the input in not over 5000 or empty
+     */
     $("#changeDimHeight").on("keyup", function(event){
         var boxInput = parseInt(this.value);
 
@@ -3012,10 +3021,14 @@ $(document).ready(function(){
         }
         else{
             this.value = boxInput;
-        }
-        
+        }    
     });
-    // TODO: parse the input and change it if it isn't a number
+
+    /**
+     * @function changeDimWidth on 'keyup' handler
+     * 
+     * @description make sure the input in not over 5000 or empty
+     */
     $("#changeDimWidth").on("keyup", function(event){
         var boxInput = parseInt(this.value);
 

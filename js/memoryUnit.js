@@ -5,7 +5,7 @@
  * @alias Memory
  * 
  * @since 11/05/2019
- * @updated 11/06/2019
+ * @updated 11/07/2019
  * 
  * @constructor void
  * 
@@ -35,6 +35,8 @@ module.exports = class Memory{
 
     /**
      * @function userId set
+     * 
+     * @param {string} id the user id of the user that is using this memory block
      */
     set userId(id) {
         if(typeof(id) !== "string"){
@@ -55,6 +57,8 @@ module.exports = class Memory{
 
     /**
      * @function lastRequest set
+     * 
+     * @param {number} date the date represented in milliseconds
      */
     set lastRequest(date) {
         if(typeof(date) !== "number"){
@@ -161,6 +165,8 @@ module.exports = class Memory{
 
     /**
      * @function checkAllDate
+     * 
+     * @param {array} memArray the array that the server is using to store the memeory elements
      */
     checkAllDates( memArray ){
         var returnArr = [];
@@ -186,9 +192,10 @@ module.exports = class Memory{
 
 
     /**
+     * @function checkMemInstances
      * 
-     * @param {*} id 
-     * @param {*} array 
+     * @param {string} id the userId to match 
+     * @param {array} array the array that the memory is in
      */
     checkMemInstances(id, array){
         if(array.length === 0){ return false; }
@@ -198,14 +205,14 @@ module.exports = class Memory{
                 return true;
             }
         }
-
         return false;
     }
 
     /**
+     * @function accessMemory
      * 
-     * @param {*} id 
-     * @param {*} array 
+     * @param {string} id the userId to match 
+     * @param {array} array the array that the memory is in
      */
     accessMemory(id, array){
         if(array.length === 0){ return undefined; }
