@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 10/29/2019
+ * @updated 11/06/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1499,9 +1499,8 @@ function resetSingleIcon(icon, widthDif, heightDif){
 /**
  * @function resetIcons
 */
-
-// TODO: reset the scalebar scale with the image change
-// TODO: adjust the change in the icons
+// TODO: first try to shift icons by the width difference everytime ( up and down)
+// adjust the change in the icons using the icon size
 function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
     var children = svg.children;
        
@@ -1615,7 +1614,7 @@ function triggerDownload(imgURI,filename){
  * 
  * @param {*} id 
  * @param {*} inc 
- * TODO:
+ * TODO: comment the code
  */
 function getMarkerId(id, inc){
     if(document.getElementById(id) === null){
@@ -1985,12 +1984,13 @@ $(document).ready(function(){
 
     console.log(String(parseInt(half)).length);
 
-    if(String(parseInt(half)).length === 1 && half >= 1){
+    // Reset the font 
+    if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
         document.getElementById("scalebarHalf").setAttribute("x","1100");
     }
-    else if(String(parseInt(half)).length === 3 || half < 1){
+    else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
         
-        if(half < 1){
+        if( half < 1 ){
             document.getElementById("scalebarHalf").setAttribute("x","1050");
         }
         else{
@@ -2008,7 +2008,7 @@ $(document).ready(function(){
     else if(String(parseInt(scalebarLength)).length === 3){
         document.getElementById("scalebar1").setAttribute("x","45");
         document.getElementById("scalebarText").setAttribute("x","4000");
-    }
+    }   
 
     // remove the objects because they are not needed yet
     northImage.remove();
@@ -2607,6 +2607,9 @@ $(document).ready(function(){
     // TODO: finish the resizing abilities
     $("#resizeUpdateBtn").on("mousedown", function(){
         var displayCube = document.getElementById("displayCube"),
+            scalebarHalf = document.getElementById("scalebarHalf"),
+            scalebarText = document.getElementById("scalebarText"),
+            scalebar1 = document.getElementById("scalebar1"),
             displayString = displayCube.innerHTML,
             widthInput = document.getElementById("changeDimWidth").value,
             heightInput = document.getElementById("changeDimHeight").value;
@@ -2616,12 +2619,19 @@ $(document).ready(function(){
             h:"0"
         };
 
+        if(scalebarHalf === null){
+            console.log("PROBLEM!!!")
+            $("#scaleBarButton").mousedown();
+            scalebarHalf = document.getElementById("scalebarHalf");
+            scalebarText = document.getElementById("scalebarText");
+            scalebar1 = document.getElementById("scalebar1");
+            $("#scaleBarButton").mousedown();
+        }
         dim.w = parseInt(displayString.split("×")[0]);
         dim.h = parseInt(displayString.split("×")[1]);
 
-        console.log((widthInput !== "" || heightInput !== ""));
         if((widthInput !== "" || heightInput !== "")
-            && (parseInt(widthInput) > 1000 || parseInt(heightInput) > 1000)
+            && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
             && (dim.w !== widthInput || dim.h !== heightInput)){
             // get user id from browser cookie
             let id = getCookie("puiv");
@@ -2629,21 +2639,18 @@ $(document).ready(function(){
                 headers = new Headers();
             
             if(widthInput === ""){
-                console.log("The height recieved was " + heightInput);
                 widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
                 fd.append("h",heightInput);
                 // -1 to denote auto generation
                 fd.append("w", widthInput);
             }
             else if(heightInput === ""){
-                console.log("The width recieved was " + widthInput);
                 heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
                 fd.append("w", widthInput);
                 fd.append("h", heightInput);
             }
             else{
                 // both are not empty
-                console.log("Both fields are filled");
                 fd.append("w", widthInput);
                 fd.append("h", heightInput);
             }
@@ -2659,42 +2666,152 @@ $(document).ready(function(){
 
 
             fetch('/resizeFigure',
-                        {
-                            method:'POST',
-                            body: fd,
-                            headers: headers,
-                            referrerPolicy: "no-referrer"
-                        })
-                        .then((response) =>{
-                            console.log(response);
+                {
+                    method:'POST',
+                    body: fd,
+                    headers: headers,
+                    referrerPolicy: "no-referrer"
+                })
+            .then((response) =>{
+                if(response.status === 200){
+                    // read the new file and convert to data url
+                    response.blob().then((data, err)=>{
+                        var reader = new FileReader();
+                        reader.readAsDataURL(data);
+                        reader.onloadend = function(){
+                            myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
+                            myImage.setAttribute("width", widthInput);
+                            myImage.setAttribute("height", heightInput);
+                            bg.setAttribute("width", widthInput);
+                            bg.setAttribute("height", heightInput);
+                            svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
 
-                            if(response.status === 200){
-                                // read the new file and convert to data url
-                                response.blob().then((data, err)=>{
+                            displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+
+                            // TODO: adjust the scalebar when size changes
+                            resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                            fd = new FormData();
+
+                            fd.append("id", id);
+                            fetch("/evalScalebar", 
+                                {
+                                    method: 'POST',
+                                    body: fd,
+                                    headers: headers,
+                                    referrerPolicy: "no-referrer"
+                                })
+                            .then(response => {
+                                // TODO:
+                                response.blob().then((data, err)=> {
                                     var reader = new FileReader();
-                                    reader.readAsDataURL(data);
+                                    reader.readAsText(data);
+
                                     reader.onloadend = function(){
-                                        myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
-                                        myImage.setAttribute("width", widthInput);
-                                        myImage.setAttribute("height", heightInput);
-                                        bg.setAttribute("width", widthInput);
-                                        bg.setAttribute("height", heightInput);
-                                        svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
+                                        var body = JSON.parse(reader.result);
 
-                                        displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+                                        scalePX = parseFloat(body["scalebarPX"]);
+                                        scalebarLength = parseFloat(body["scalebarLength"]);
 
-                                        // TODO: adjust the scalebar when size changes
-                                        resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                                        scalebarUnits = body["scalebarUnits"];
+                                        var half = parseFloat(scalebarLength)/2;
+                                        origW = parseInt(body["origW"]);
+                                        origH = parseInt(body["origH"]);
+
+                                        TODO:
+                                        // mimic what it done to create the scalebar with these relationships
+                                        /**orig -> this func
+                                         * w -> user width
+                                         * h -> user height
+                                         * origW -> cube width dimensions
+                                         * origH -> cube height dimensions
+                                         * 
+                                         * reset variale to allow resizing later
+                                         * 
+                                         * DO THIS FOR BOTH RESIZE CALLS
+                                         */
+
+                                        // if the scale bar is not none
+                                        if(scalePX !== 'none' && !isNaN(scalePX)){
+                                            // set the size based on how the image is drawn
+                                            if((widthInput/origW) < (heightInput/origH)){
+                                                scaleBarIcon.setAttribute("transform",
+                                                                                "translate(0, 175) scale(" + (scalePX/4000)* 2 * (widthInput/origW) + ')');
+                                                // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
+                                                textSize = (scalePX/4000)* 21 * (widthInput/origW);
+                                            }
+                                            else{
+                                                scaleBarIcon.setAttribute("transform",
+                                                                                "translate(0, 175) scale(" + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
+                                                textSize = (scalePX/4000)* 21 * (heightInput/origH);
+                                            }
+                                            // if half the bar is less than 1 km then give it the decimal
+                                            if(half < 1){
+                                                // set the half text and ajust based on character count
+                                                scalebarHalf.innerHTML = half;
+                                            }
+                                            // otherwise parse it to the closest int
+                                            else{
+                                                if(parseInt(half) === half){
+                                                    scalebarHalf.innerHTML = parseInt(half);
+                                                }
+                                                else{
+                                                    scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
+                                                }
+                                            }
+                                            scalebarText.innerHTML = scalebarLength + scalebarUnits;
+                                            scalebar1.innerHTML = scalebarLength;
+                                        }
+                                        else{
+                                            // if the scalebarPx is none disable the button
+                                            document.getElementById("scaleBarButton").setAttribute("class",
+                                                                                                    "btn btn-secondary btn-lg button disabled");
+                                            // set deafult font size for text boxes note that this is a scale value not px size 
+                                            // (px = font size * textSize)
+                                            textSize = 2;
+                                        }
+                                
+                                        // Reset the font 
+                                        if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                            scalebarHalf.setAttribute("x","1100");
+                                        }
+                                        else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                            
+                                            if( half < 1 ){
+                                                scalebarHalf.setAttribute("x","1050");
+                                            }
+                                            else{
+                                                scalebarHalf.setAttribute("x","1030");
+                                            }
+                                        }
+                                        else{
+                                            console.log("scalebarHalf: " + String(parseInt(half)).length);
+                                        }
+
+                                        if(String(parseInt(scalebarLength)).length === 2){
+                                            scalebar1.setAttribute("x","75");
+                                            scalebarText.setAttribute("x","3985");
+                                        }
+                                        else if(String(parseInt(scalebarLength)).length === 3){
+                                            scalebar1.setAttribute("x","45");
+                                            scalebarText.setAttribute("x","4000");
+                                        }   
+                                        
                                     }
-                                    console.log("END RESPONSE");
                                 });
-                            } 
-                        }).catch((err) =>{
-                            // catch any fetch errors
-                            if(err){
+                            })
+                            .catch(err => {
                                 console.log(err);
-                            }
-                        });
+                            });
+                        }
+                    });
+                } 
+            }).catch((err) =>{
+                // catch any fetch errors
+                if(err){
+                    console.log(err);
+                }
+            });
         }
         else if(widthInput == "" && heightInput === ""){
             // both inputs empty
@@ -2710,65 +2827,176 @@ $(document).ready(function(){
                 widthDifference = Math.abs((widthInput !== "") ? dim.w - widthInput : dim.w - origW );
 
             if(heightDifference || widthDifference){
-                    var fd = new FormData(),
-                        headers = new Headers();
+                var fd = new FormData(),
+                    headers = new Headers();
 
-                    widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
-                    heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
+                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
 
-                    fd.append("w", widthInput);
-                    fd.append("h", heightInput);
+                fd.append("w", widthInput);
+                fd.append("h", heightInput);
 
-                    // make sure the id is not undefined on server
-                    fd.append("id", getCookie("puiv"));
-                    headers.append("pragma","no-cache");
-                    headers.append("cache-control", "no-cache");
+                // make sure the id is not undefined on server
+                fd.append("id", getCookie("puiv"));
+                headers.append("pragma","no-cache");
+                headers.append("cache-control", "no-cache");
 
-                    fetch('/resizeFigure',
+                fetch('/resizeFigure',
+                    {
+                        method:'POST',
+                        body: fd,
+                        headers: headers,
+                        referrerPolicy: "no-referrer"
+                    })
+                .then((response) =>{
+                    if(response.status === 200){
+                        // read the new file and convert to data url
+                        response.blob().then((data, err)=>{
+                            // read the blob as a data URL
+                            var reader = new FileReader();
+                            reader.readAsDataURL(data);
+                            reader.onloadend = function(){
+                                // set the new image dimensions in the client
+                                myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
+                                myImage.setAttribute("width", widthInput);
+                                myImage.setAttribute("height", heightInput);
+                                bg.setAttribute("width", widthInput);
+                                bg.setAttribute("height", heightInput);
+                                svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
+
+                                displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+
+                                // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
+                                resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                                fd = new FormData();
+
+                                fd.append("id", getCookie("puiv"));
+                                fetch("/evalScalebar", 
                                 {
-                                    method:'POST',
+                                    method: 'POST',
                                     body: fd,
                                     headers: headers,
                                     referrerPolicy: "no-referrer"
                                 })
-                                .then((response) =>{
-                                    console.log(response);
+                                .then(response => {
+                                    // TODO:
+                                    response.blob().then((data, err)=> {
+                                        var reader = new FileReader();
+                                        reader.readAsText(data);
+    
+                                        reader.onloadend = function(){
+                                            var body = JSON.parse(reader.result);
 
-                                    if(response.status === 200){
-                                        // read the new file and convert to data url
-                                        response.blob().then((data, err)=>{
-                                            // read the blob as a data URL
-                                            var reader = new FileReader();
-                                            reader.readAsDataURL(data);
-                                            reader.onloadend = function(){
-                                                // set the new image dimensions in the client
-                                                myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
-                                                myImage.setAttribute("width", widthInput);
-                                                myImage.setAttribute("height", heightInput);
-                                                bg.setAttribute("width", widthInput);
-                                                bg.setAttribute("height", heightInput);
-                                                svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
-
-                                                displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
-
-                                                // TODO: adjust the scalebar and icons bu the amount of pixels that tge image was shifted
-                                                resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                                            scalePX = parseFloat(body["scalebarPX"]);
+                                            scalebarLength = parseFloat(body["scalebarLength"]);
+    
+                                            var half = parseFloat(scalebarLength)/2;
+                                            scalebarUnits = body["scalebarUnits"];
+                                            origW = parseInt(body["origW"]);
+                                            origH = parseInt(body["origH"]);
+    
+                                            TODO:
+                                            // mimic what it done to create the scalebar with these relationships
+                                            /**orig -> this func
+                                             * w -> user width
+                                             * h -> user height
+                                             * origW -> cube width dimensions
+                                             * origH -> cube height dimensions
+                                             * 
+                                             * reset variale to allow resizing later
+                                             * 
+                                             * DO THIS FOR BOTH RESIZE CALLS
+                                             */
+    
+                                            // if the scale bar is not none
+                                            if(scalePX !== 'none' && !isNaN(scalePX)){
+                                                // set the size based on how the image is drawn
+                                                if((widthInput/origW) < (heightInput/origH)){
+                                                    scaleBarIcon.setAttribute("transform",
+                                                                                    "translate(0, 175) scale(" + (scalePX/4000)* 2 * (widthInput/origW) + ')');
+                                                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
+                                                    textSize = (scalePX/4000)* 21 * (widthInput/origW);
+                                                }
+                                                else{
+                                                    scaleBarIcon.setAttribute("transform",
+                                                                                    "translate(0, 175) scale(" + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
+                                                    textSize = (scalePX/4000)* 21 * (heightInput/origH);
+                                                }
+                                                // if half the bar is less than 1 km then give it the decimal
+                                                if(half < 1){
+                                                    // set the half text and ajust based on character count
+                                                    scalebarHalf.innerHTML = half;
+                                                }
+                                                // otherwise parse it to the closest int
+                                                else{
+                                                    if(parseInt(half) === half){
+                                                        scalebarHalf.innerHTML = parseInt(half);
+                                                    }
+                                                    else{
+                                                        scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
+                                                    };
+                                                }
+                                                scalebarText.innerHTML = scalebarLength + scalebarUnits;
+                                                scalebar1.innerHTML = scalebarLength;
                                             }
-                                        });
-                                        console.log("END RESPONSE");
-                                    }
-                                    else{
-                                        console.log(response.status + " is the returned status");
-                                    }
+                                            else{
+                                                // if the scalebarPx is none disable the button
+                                                document.getElementById("scaleBarButton").setAttribute("class",
+                                                                                                        "btn btn-secondary btn-lg button disabled");
+                                                // set deafult font size for text boxes note that this is a scale value not px size 
+                                                // (px = font size * textSize)
+                                                textSize = 2;
+                                            }
                                     
-                                }).catch((err) =>{
-                                    // catch any fetch errors
-                                    if(err){
-                                        console.log(err);
-                                    }
+    
+                                            // Reset the font 
+                                            if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                                scalebarHalf.setAttribute("x","1100");
+                                            }
+                                            else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                                
+                                                if( half < 1 ){
+                                                    scalebarHalf.setAttribute("x","1050");
+                                                }
+                                                else{
+                                                    scalebarHalf.setAttribute("x","1030");
+                                                }
+                                            }
+                                            else{
+                                                console.log("scalebarHalf: " + String(parseInt(half)).length);
+                                            }
+    
+                                            if(String(parseInt(scalebarLength)).length === 2){
+                                                scalebar1.setAttribute("x","75");
+                                                scalebarText.setAttribute("x","3985");
+                                            }
+                                            else if(String(parseInt(scalebarLength)).length === 3){
+                                                scalebar1.setAttribute("x","45");
+                                                scalebarText.setAttribute("x","4000");
+                                            }   
+                                        }
+                                    });
+                                })
+                                .catch(err => {
+                                    console.log(err);
                                 });
-
-                }
+                            }
+                        });
+                    }
+                    else{
+                        console.log(response.status + " is the returned status");
+                    }
+                }).catch((err) =>{
+                    // catch any fetch errors
+                    if(err){
+                        console.log(err);
+                    }
+                });
+            }
+        }
+        else if(widthInput < 1000 || heightInput < 1000){
+            alert("At least 1 Dimensions need to be 1000 or more");
         }
     });
 

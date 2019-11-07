@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 10/29/2019
+ * @updated 11/06/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -216,6 +216,13 @@ app.get('/', function(request, response){
     // query for alert code
     let code = request.query.alertCode;
 
+    try{
+        Memory.prototype.accessMemory(id, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+
     // set the http status for official server use
     switch(code){
         case "1":
@@ -378,6 +385,13 @@ app.post('/captionWriter', async function(request, response){
     var templateText = '';
     let isTiff = false;
     
+    try {
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err) {
+        // no instance was found or other error
+    }
+
     //============== for testing only =======================
     console.log('=================== New Upload ========================');
     //=======================================================
@@ -710,8 +724,6 @@ app.post('/captionWriter', async function(request, response){
                                         newMem.lastRequest = Date.now();
 
                                         memArray.push(newMem);
-
-                                        newMem.print();
                                     }
                                     else{
                                         // add memory instance if user id is not in the array already
@@ -726,10 +738,10 @@ app.post('/captionWriter', async function(request, response){
                                             newMem.lastRequest = Date.now();
 
                                             memArray.push(newMem);
-
-                                            newMem.print();
                                         }
                                     }
+
+                                    console.log(memArray);
 
                                     // send response w/ all variables
                                     response.render('writer.ejs',
@@ -1099,6 +1111,7 @@ app.post('/imageEditor', function(request, response){
         // no instance was found
     }
     
+    
     if(uid !== undefined){
         // get image name and path
         userObject = util.getObjectFromArray(uid, cubeArray);
@@ -1195,6 +1208,9 @@ app.post('/imageEditor', function(request, response){
                         scalebarUnits = "km";
                     }
 
+                    console.log( "scalebarLength: " + scalebarLength );
+                    console.log( "scalebarPx: " + scalebarPx );
+
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
                     if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
@@ -1273,8 +1289,9 @@ app.post('/imageEditor', function(request, response){
 /**
  * This will be the link where the pow pipeline can be implimented
  */
-app.post("/pow",function(request, response){
+app.get("/pow",function(request, response){
     // TODO: POW connection link
+    var id = request.cookies["puiv"];
 });
 
 
@@ -1463,7 +1480,7 @@ app.post("/resizeFigure",function(request, response){
         
                             Promise.all(promises).then(function(){
                                 // send response
-                                // TODO: calculate the new scalebar values
+                                
                                 response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
                             
                             }).catch((err)=>{
@@ -1474,7 +1491,6 @@ app.post("/resizeFigure",function(request, response){
                         });
                     });
                 }
-                
             });
         }
         else{
@@ -1483,6 +1499,99 @@ app.post("/resizeFigure",function(request, response){
         }  
     }
 });
+
+
+/**
+ * 
+ */
+// TODO: calculate the new scalebar values
+app.post("/evalScalebar", function(request, response){
+
+    var userObject = util.getObjectFromArray(request.body.id, cubeArray);
+
+    var w,
+        h,
+        // get resolution value
+        resolution = util.getPixelResolution(userObject);
+
+    userObject.getCubeDimensions().then(dimensions => {
+        // save dimensions into local variables
+        dimensions = JSON.parse(dimensions);
+        w = dimensions.w;
+        h = dimensions.h;
+        // check and calculate user dimensions if needed
+        userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
+
+        // set variables for ejs rendering
+        var isMapProjected = util.isMapProjected(userObject.data),
+            rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+
+        // calculate image width in meters
+        if(resolution !== -1){
+            var imageMeterWidth = util.calculateWidth(resolution, w);
+
+            if(imageMeterWidth > -1){
+                // same as above for calculating scale bar
+                let x = Math.log10(imageMeterWidth/2);
+                let a = Math.floor(x);
+                let b = x - a;
+
+                // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                // check if 35% or greater, set base 2
+                // if the value is very close to a whole base on the low side 
+                //      set base to 5 and decrement the 10 base
+                // (this is to keep text from leaving image)
+                // default to 1
+                if(b >= 0.75){
+                    b = 5;
+                }
+                else if(b >= 0.35){
+                    b = 2;
+                }
+                else if(b < .05){
+                    a -= 1;
+                    b = 5;
+                }
+                else{
+                    b = 1;
+                }
+
+                var scalebarMeters = b*Math.pow(10,a);
+
+                var scalebarLength,
+                    scalebarUnits="";
+                // if the length is less than 1KM return length in meters
+                if(Number(imageMeterWidth)/1000 < 1.5){
+                    scalebarLength = scalebarMeters;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                    scalebarUnits = "m";
+                }
+                else{
+                    scalebarLength = scalebarMeters/1000;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                    scalebarUnits = "km";
+                }
+            }
+        }
+
+        console.log( "scalebarLength: " + scalebarLength );
+        console.log( "scalebarPx: " + scalebarPx );
+
+        response.send(
+            {
+                scalebarLength: scalebarLength,
+                scalebarPX: scalebarPx,
+                scalebarUnits: scalebarUnits,
+                origW: w,
+                origH: h,
+                isMapProjected: isMapProjected,
+                rotationOffset: rotationOffset
+            }).status(200);
+    });
+
+});
+
+
 
 
 /**
@@ -1513,6 +1622,36 @@ const PORT = 8080 || process.env.PORT;
 app.listen(8000);
 // serving machines on either open or closed network
 app.listen(PORT,"0.0.0.0");
+
+var interval = function() {
+    console.log("\nMemory Analysis Running");
+    memArray = Memory.prototype.checkAllDates(memArray);
+
+    if(memArray.length === 0){
+        cubeArray = [];
+        console.log(cubeArray);
+    }
+    else{
+        for(var i = 0; i < cubeArray.length; i++){
+            for( var j = 0; j < memArray.length; j++){
+                if(cubeArray[i].userId === memArray[j].userId){
+                    // do nothing
+                    break;
+                }
+                else{
+                    if(j === memArray.length - 1){
+                        cubeArray.slice(i, 1);
+                        console.log(cubeArray);
+                    }
+                }
+            }
+        }
+    }
+    
+    console.log("End Memory Analysis\n");
+}
+// set the memory managment system to check instances every 8 hours
+setInterval(interval, 28800000);
 
 // tell console status and port #
 console.log("Server is running and listen for outer connections on port " + PORT + "\n http://" + os.hostname() + ":8080/");

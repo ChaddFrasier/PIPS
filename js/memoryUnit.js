@@ -4,8 +4,8 @@
  * @class Memory Unit 
  * @alias Memory
  * 
- * @since 10/05/2019
- * @updated 10/05/2019
+ * @since 11/05/2019
+ * @updated 11/06/2019
  * 
  * @constructor void
  * 
@@ -89,17 +89,92 @@ module.exports = class Memory{
         console.log("Memory ID: " + this.memId);
         console.log("Memory User ID: " + this.userId);
         console.log("Memory Last Request: " + this.lastRequest);
+        return;
     }
 
     /**
      * @function checkDate
      */
     checkDate(){
-        let now = (new Date(Date.now() + 28800000));
+        const fs = require("fs"),
+            path = require("path");
+        let now = Date.now();
 
-        if(compareDates(this.lastRequest, now) >= 8){
-            console.log("User Has not been active in 8+ hours");
+        if(compareDates(this.lastRequest, now) >= 12){
+            
+            try{
+                fs.unlinkSync(path.join("log", this.userId + ".log"));
+            }catch(err){ /* ignore */}
+
+            let tmpArr = fs.readdirSync("./images");
+
+            tmpArr = tmpArr.concat(fs.readdirSync("./uploads"), fs.readdirSync("./csv"), fs.readdirSync("./pvl"));
+
+            tmpArr.forEach(file =>{
+                // for each file in the directory
+                if(/^.*(?<!pencilcursor|usgsLogo)\.(png|cub|csv|pgw|pvl|tif)/gm.test(file)){
+                    var fileExt = file.split(".")[ file.split(".").length -1 ];
+
+                    switch(fileExt){
+                        case "png":
+                            
+                            if( file.startsWith("r-" + this.memId) || file.startsWith("u-" + this.memId) ){
+                                fs.unlinkSync(path.join("images", file));
+                            }
+                            break;
+
+                        case "pvl":
+                                if( file.startsWith("r-" + this.memId) || file.startsWith("u-" + this.memId) ){
+                                    fs.unlinkSync(path.join("pvl", file));
+                                }
+                                break;
+
+                        case "csv":
+                                if( file.startsWith("r-" + this.memId) || file.startsWith("u-" + this.memId) ){
+                                    fs.unlinkSync(path.join("csv", file));
+                                }
+                                break;
+                                
+                        case "pgw":
+                                fs.unlinkSync(path.join("images", file));
+                                break;
+
+                        case "cub":
+                                if( file.startsWith("r-" + this.memId) || file.startsWith("u-" + this.memId) ){
+                                    fs.unlinkSync(path.join("uploads", file));
+                                }
+                                break; 
+                        case "tif":
+                            if( file.startsWith("r-" + this.memId) || file.startsWith("u-" + this.memId) ){
+                                fs.unlinkSync(path.join("uploads", file));
+                            }
+                            break;
+                    }
+                }
+            });
+            return this.memId;
         }
+        else{
+            return -1;
+        }
+    }
+
+    /**
+     * @function checkAllDate
+     */
+    checkAllDates( memArray ){
+        var returnArr = [];
+        memArray.forEach(memoryBlock => {
+            if( memoryBlock.checkDate() >= 0 ){
+                // do not add the object that was removed
+                console.log("Memory Block " + memoryBlock.memId + " has been cleared from the server");
+            }
+            else{
+                returnArr.push( memoryBlock );
+                console.log("Memory Instance " + memoryBlock.memId + " preserved");
+            }
+        });
+        return (memArray.length === returnArr.length) ? memArray : returnArr;
     }
 
     /**
@@ -146,40 +221,17 @@ module.exports = class Memory{
 }
 
 /**
- * @function arraysEqual
- * 
- * @param {array} arr1 
- * @param {array} arr2 
- * 
- * @returns bool
- * 
- * @description checks to see if the arrays are exactly equal
- */
-function arraysEqual(arr1, arr2) {
-    if(arr1.length !== arr2.length)
-        return false;
-    for(var i = arr1.length; i--;) {
-        if(arr1[i] !== arr2[i])
-            return false;
-    }
-
-    return true;
-}
-
-
-/**
  * @function compareDates
  * 
  * @param {Date} start 
  * @param {Date} end 
  * 
  * @returns hours from start to end
+ * 
  */
 function compareDates(start, end) {
     if(start === end){ return 0; }
     if(start < end){ 
         return parseFloat((end-start)/(3600000));
     }
-    
-
 }

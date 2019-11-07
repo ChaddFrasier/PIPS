@@ -5,7 +5,7 @@
  * @version 2.6.0
  * 
  * @since 06/03/2019
- * @update 09/27/2019
+ * @update 11/06/2019
  * 
  * @fileoverview 
  *      This is the utility file for The Planetary Image Publication Server  
@@ -758,7 +758,7 @@ module.exports = {
                     // write the header to the new file
                     fs.writeFileSync(path.join("log",logFileName),
                     "       U.S. Geological Survey Cloud Publication Services\n" +
-                    "                          <URL>\n\n" +
+                    "                 http://astro-pips.wr.usgs.gov/\n\n" +
                     "             Planetary Image Publication Server (PIPS)\n\n" +
                     "    Questions & Concerns:https://github.com/ChaddFrasier/PIPS/issues\n" +
                     "___________________________________________________________________\n\n" +
