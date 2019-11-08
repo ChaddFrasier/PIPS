@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 11/07/2019
+ * @updated 11/08/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.

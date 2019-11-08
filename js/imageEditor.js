@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 11/07/2019
+ * @updated 11/08/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1467,15 +1467,17 @@ function resetSingleIcon(icon, widthDif, heightDif){
                 y = parseInt(transform.split(" ")[1]);
             }
 
-            // TODO: shift everything in reltion to how much the image changes
+            // if the icon's x value is greater than half the image move the icon to the difference
             if(x > dim.w/2 && widthDif !== 0){
-                
+                // calculate a new x position
                 transX =  Math.abs(x - widthDif);
             }
             else if( widthDif === 0){
+                // oftherwise if no change then set it to x
                 transX = x;
             }
 
+            // same idea with y
             if(y > dim.h/2 && heightDif !== 0){
                 transY = Math.abs(y - heightDif);
             }
@@ -1483,19 +1485,24 @@ function resetSingleIcon(icon, widthDif, heightDif){
                 transY = y;
             }
 
+            // if the values are both changed then set it
             if(transY !== -1 && transX !== -1){
                 transform = "translate(" + transX + ", " + transY + ")";
             }
+            // if either is -1 test and set the ones that need it
             else if( transY === -1 || transX === -1){
                 transform = "translate(" + ((transX > -1) ? transX : x) + ", " + ((transY > -1) ? transY : y) + ")";
             }
             else{
+                // othewise just set it
                 transform = transform + ")";
             }
             
+            // push the new transform
             tmpArr.push(transform)
         }
         else{
+            // not translate transform so ignore it
             if(transform.indexOf(")") > -1){
                 tmpArr.push(transform);
             }
@@ -1505,6 +1512,7 @@ function resetSingleIcon(icon, widthDif, heightDif){
             
         }
     });
+    // set the icon transform from the array of transform values
     icon.setAttribute("transform", tmpArr.join(" "));
 }
 
@@ -1521,10 +1529,12 @@ function resetSingleIcon(icon, widthDif, heightDif){
  */
 function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
        
-    // grab all the icons on screen
+    // reset the draggable icons
     resetSingleIcon(northImage, widthDif, heightDif);
     resetSingleIcon(sunImage, widthDif, heightDif);
     resetSingleIcon(eyeImage, widthDif, heightDif);
+
+    // reset the draggable functions to set boundries
     makeDraggable(svg);
 }
 
