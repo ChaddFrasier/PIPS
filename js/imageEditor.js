@@ -1001,6 +1001,7 @@ function setImagePadding(val,location){
     let imageW,
         imageH;
 
+    
     // switch on the location of the padding
     switch(location){
         case 'bottom':
@@ -1019,8 +1020,7 @@ function setImagePadding(val,location){
 
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
-            document.getElementById("changeDimWidth").placeholder = w + " px";
-            document.getElementById("changeDimHeight").placeholder = imageH + " px";
+            
 
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1041,9 +1041,9 @@ function setImagePadding(val,location){
             
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
-            document.getElementById("changeDimWidth").placeholder = w + " px";
-            document.getElementById("changeDimHeight").placeholder = imageH + " px";
+            
 
+            console.log(imageH)
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1063,8 +1063,7 @@ function setImagePadding(val,location){
             
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
-            document.getElementById("changeDimWidth").placeholder = imageW + " px";
-            document.getElementById("changeDimHeight").placeholder = h + " px";
+            
 
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1085,8 +1084,7 @@ function setImagePadding(val,location){
            
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
-            document.getElementById("changeDimWidth").placeholder = imageW + " px";
-            document.getElementById("changeDimHeight").placeholder = h + " px";
+            
 
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1105,8 +1103,7 @@ function setImagePadding(val,location){
             
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + h +  " px";
-            document.getElementById("changeDimWidth").placeholder = w + " px";
-            document.getElementById("changeDimHeight").placeholder = h + " px";
+            
 
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -2661,6 +2658,9 @@ $(document).ready(function(){
             $("#scaleBarButton").mousedown();
         }
 
+        // reset the padding to 0
+        $("#resetPaddingBtn").click();
+
         // get new image dimensions
         dim.w = parseInt(displayString.split("×")[0]);
         dim.h = parseInt(displayString.split("×")[1]);
@@ -2729,6 +2729,8 @@ $(document).ready(function(){
                             bg.setAttribute("height", heightInput);
                             svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
 
+                            w = Number(widthInput);
+                            h = Number(heightInput);
                             displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
                             // shift icons
@@ -2904,6 +2906,10 @@ $(document).ready(function(){
 
                                 displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
+
+                                w = widthInput;
+                                h = heightInput;
+                                
                                 // shift the icons
                                 resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
                                 fd = new FormData();

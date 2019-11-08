@@ -1374,6 +1374,8 @@ app.post("/figureDownload", async function(request, response){
  * resize cubes and return them to the imageEditor
  */
 app.post("/resizeFigure",function(request, response){
+    console.log(request.url);
+
     // user id, and the new figure width and height
     var id = String(request.body.id),
         newWidth = parseInt(request.body.w),
@@ -1547,7 +1549,8 @@ app.post("/resizeFigure",function(request, response){
  */
 // TODO: calculate the new scalebar values
 app.post("/evalScalebar", function(request, response){
-    
+    console.log(request.url);
+
     var userObject = util.getObjectFromArray(request.body.id, cubeArray),
         w,
         h;
