@@ -1463,32 +1463,50 @@ function resetSingleIcon(icon, widthDif, heightDif){
     dim.w = parseInt(displayString.split("×")[0]);
     dim.h = parseInt(displayString.split("×")[1]);
 
-/*     console.log("Dif W: " + widthDif);
-    console.log("Dif H: " + heightDif); */
-
     // for each transform peice
     transformArr.forEach(transform => {
         // if the transform is translate
         if(transform.indexOf("translate") > -1){
             
             // get the current x and y translate values
-            var x = transform.split(",")[0].replace("translate(",""),
-                y = transform.split(",")[1];
+            var x = parseInt(transform.split(",")[0].replace("translate(","")),
+                y = parseInt(transform.split(",")[1]),
+                transX = -1, transY = -1;
 
             // chrome fails because of the translate format
             // check to see if the variable init failed
             if(!x || !y){
-                x = transform.split(" ")[0].replace("translate(",""),
-                y = transform.split(" ")[1];
+                x = parseInt(transform.split(" ")[0].replace("translate(","")),
+                y = parseInt(transform.split(" ")[1]);
             }
+
             // TODO: shift everything in reltion to how much the image changes
-            if(x >= dim.w - widthDif || y >= dim.h - heightDif){
-                transform = "translate(" + Math.abs(x - widthDif) + ", " + Math.abs(y - heightDif) + ")";
-                tmpArr.push(transform);
+            if(x > dim.w/2 && widthDif !== 0){
+                
+                transX =  Math.abs(x - widthDif);
+            }
+            else if( widthDif === 0){
+                transX = x;
+            }
+
+            if(y > dim.h/2 && heightDif !== 0){
+                transY = Math.abs(y - heightDif);
+            }
+            else if( heightDif === 0){
+                transY = y;
+            }
+
+            if(transY !== -1 && transX !== -1){
+                transform = "translate(" + transX + ", " + transY + ")";
+            }
+            else if( transY === -1 || transX === -1){
+                transform = "translate(" + ((transX > -1) ? transX : x) + ", " + ((transY > -1) ? transY : y) + ")";
             }
             else{
-                tmpArr.push(transform + ")");
+                transform = transform + ")";
             }
+            
+            tmpArr.push(transform)
         }
         else{
             if(transform.indexOf(")") > -1){
@@ -1520,7 +1538,6 @@ function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
     resetSingleIcon(northImage, widthDif, heightDif);
     resetSingleIcon(sunImage, widthDif, heightDif);
     resetSingleIcon(eyeImage, widthDif, heightDif);
-    resetSingleIcon(scaleBarIcon, widthDif, heightDif);
     makeDraggable(svg);
 }
 
@@ -2738,6 +2755,7 @@ $(document).ready(function(){
                                         // load the json structure out of the text string
                                         var body = JSON.parse(reader.result);
 
+                                        console.log(body);
                                         scalePX = parseFloat(body["scalebarPX"]);
                                         scalebarLength = parseFloat(body["scalebarLength"]);
 
@@ -2748,7 +2766,7 @@ $(document).ready(function(){
 
                                         
                                         // if the scale bar is not none
-                                        if(scalePX !== 'none' && !isNaN(scalePX)){
+                                        if(scalePX !== 'none' && !isNaN(scalePX) && half !== null){
                                             // set the size based on how the image is drawn
                                             if((widthInput/origW) < (heightInput/origH)){
                                                 scaleBarIcon.setAttribute("transform",
@@ -2788,33 +2806,35 @@ $(document).ready(function(){
                                             textSize = 2;
                                         }
                                 
-                                        // Reset the font 
-                                        if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
-                                            scalebarHalf.setAttribute("x","1100");
-                                        }
-                                        else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
-                                            
-                                            if( half < 1 ){
-                                                scalebarHalf.setAttribute("x","1050");
+                                        // Reset the font
+                                        if(half !== null && scalebarHalf !== null){
+                                            if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                                scalebarHalf.setAttribute("x","1100");
+                                            }
+                                            else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                                
+                                                if( half < 1 ){
+                                                    scalebarHalf.setAttribute("x","1050");
+                                                }
+                                                else{
+                                                    scalebarHalf.setAttribute("x","1030");
+                                                }
                                             }
                                             else{
-                                                scalebarHalf.setAttribute("x","1030");
+                                                console.log("scalebarHalf: " + String(parseInt(half)).length);
                                             }
+    
+                                            if(String(parseInt(scalebarLength)).length === 2){
+                                                scalebar1.setAttribute("x","75");
+                                                scalebarText.setAttribute("x","3985");
+                                            }
+                                            else if(String(parseInt(scalebarLength)).length === 3){
+                                                scalebar1.setAttribute("x","45");
+                                                scalebarText.setAttribute("x","4000");
+                                            }   
                                         }
-                                        else{
-                                            console.log("scalebarHalf: " + String(parseInt(half)).length);
-                                        }
-
-                                        if(String(parseInt(scalebarLength)).length === 2){
-                                            scalebar1.setAttribute("x","75");
-                                            scalebarText.setAttribute("x","3985");
-                                        }
-                                        else if(String(parseInt(scalebarLength)).length === 3){
-                                            scalebar1.setAttribute("x","45");
-                                            scalebarText.setAttribute("x","4000");
-                                        }   
+                                    } 
                                         
-                                    }
                                 });
                             })
                             .catch(err => {
@@ -2913,7 +2933,7 @@ $(document).ready(function(){
                                             origH = parseInt(body["origH"]);
     
                                             // if the scale bar is not none
-                                            if(scalePX !== 'none' && !isNaN(scalePX)){
+                                            if(scalePX !== 'none' && !isNaN(scalePX) && half !== null){
                                                 // set the size based on how the image is drawn
                                                 if((widthInput/origW) < (heightInput/origH)){
                                                     scaleBarIcon.setAttribute("transform",
@@ -2955,29 +2975,31 @@ $(document).ready(function(){
                                     
     
                                             // Reset the font 
-                                            if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
-                                                scalebarHalf.setAttribute("x","1100");
-                                            }
-                                            else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
-                                                
-                                                if( half < 1 ){
-                                                    scalebarHalf.setAttribute("x","1050");
+                                            if(half !== null && scalebarHalf !== null){
+                                                if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                                    scalebarHalf.setAttribute("x","1100");
+                                                }
+                                                else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                                    
+                                                    if( half < 1 ){
+                                                        scalebarHalf.setAttribute("x","1050");
+                                                    }
+                                                    else{
+                                                        scalebarHalf.setAttribute("x","1030");
+                                                    }
                                                 }
                                                 else{
-                                                    scalebarHalf.setAttribute("x","1030");
+                                                    console.log("scalebarHalf: " + String(parseInt(half)).length);
                                                 }
-                                            }
-                                            else{
-                                                console.log("scalebarHalf: " + String(parseInt(half)).length);
-                                            }
-    
-                                            if(String(parseInt(scalebarLength)).length === 2){
-                                                scalebar1.setAttribute("x","75");
-                                                scalebarText.setAttribute("x","3985");
-                                            }
-                                            else if(String(parseInt(scalebarLength)).length === 3){
-                                                scalebar1.setAttribute("x","45");
-                                                scalebarText.setAttribute("x","4000");
+        
+                                                if(String(parseInt(scalebarLength)).length === 2){
+                                                    scalebar1.setAttribute("x","75");
+                                                    scalebarText.setAttribute("x","3985");
+                                                }
+                                                else if(String(parseInt(scalebarLength)).length === 3){
+                                                    scalebar1.setAttribute("x","45");
+                                                    scalebarText.setAttribute("x","4000");
+                                                }
                                             }   
                                         }
                                     });

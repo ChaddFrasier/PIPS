@@ -601,7 +601,6 @@ app.post('/captionWriter', async function(request, response){
                             }
                         }
 
-                                               
                         // promise on the reduce call
                         var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum),
                             max = 2725;
@@ -615,7 +614,7 @@ app.post('/captionWriter', async function(request, response){
                             }
                             else{
                                 // new figure size is large than max
-                                if(samples * lines > 7579000){
+                                if(lines * samples > 7579000){
                                     scaleFactor = (samples > lines) ? samples/max : lines/max;
                                     promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
                                         cubeObj.logFlag, cubeObj.userId + ".log"));
@@ -628,13 +627,13 @@ app.post('/captionWriter', async function(request, response){
                             }
                             
                         }
-                        else{ // image is smaller than desired figure size
-                            
+                        else{
+                            // image is smaller than desired figure size
                             // if the new dimensions is less than the max
-                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                            if(userDim[0] * userDim[1] <= 7579000){
                                 // render image at full res
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
-                                    cubeObj.logFlag, cubeObj.userId + ".log"));
+                                    cubeObj.logFlag,cubeObj.userId + ".log"));
                             }
                             // if the new dimensions is more than the max dimensions
                             else{
@@ -647,8 +646,8 @@ app.post('/captionWriter', async function(request, response){
                                 }
                                 else{
                                     // render at full res
-                                    promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
-                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                    promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                        userObject.logFlag,userObject.userId + ".log"));
                                 }
                             }
                         }
@@ -689,7 +688,6 @@ app.post('/captionWriter', async function(request, response){
                                 // when the readPvltoStructf function resolves create data instance
                                 Promise.all(promises).then(function(cubeData){
                                 
-                                    console.log("PVL Extraction Success");
                                     // add the cube instance to the cube array if it does not already exist
                                     cubeArray = util.addCubeToArray(cubeObj,cubeArray);
                                 
@@ -739,8 +737,6 @@ app.post('/captionWriter', async function(request, response){
                                             memArray.push(newMem);
                                         }
                                     }
-
-                                    console.log(memArray);
 
                                     // send response w/ all variables
                                     response.render('writer.ejs',
@@ -837,7 +833,7 @@ app.post('/csv', function(request,response){
         // send the image associated with user
         response.download(path.join('csv',cubeObj.name.replace('.cub','.csv')),function(err){
             if(err){
-                console.log('file was not sent successfully');
+                console.log('file was not sent');
             }
             else{
                 // file sent
@@ -879,7 +875,7 @@ app.get('/csv', function(request, response){
         if(typeof(userObject)!=="number"){
             response.download(path.join('csv',userObject.name.replace('.cub','.csv')),function(err){
                 if(err){
-                    console.log('file was not sent successfully');
+                    console.log('file was not sent');
                 }
                 else{
                     // file sent
@@ -1008,7 +1004,10 @@ app.get('/imageEditor', function(request, response){
                         }
     
                         // render image page with needed data
-                        if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                        if(isWindows){ imagepath = imagepath.replace("\\","/"); }
+
+
+
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
                             response.render("imagePage.ejs", 
                             {
@@ -1145,6 +1144,7 @@ app.post('/imageEditor', function(request, response){
    else{
         var w,
             h;
+        
         // get user dimensions of cube
         userObject.getCubeDimensions()
         .then(dimensions => {
@@ -1152,6 +1152,7 @@ app.post('/imageEditor', function(request, response){
             dimensions = JSON.parse(dimensions);
             w = dimensions.w;
             h = dimensions.h;
+
             // check and calculate user dimensions if needed
             userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
 
@@ -1206,9 +1207,6 @@ app.post('/imageEditor', function(request, response){
                         var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
                         scalebarUnits = "km";
                     }
-
-                    console.log( "scalebarLength: " + scalebarLength );
-                    console.log( "scalebarPx: " + scalebarPx );
 
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
@@ -1414,7 +1412,7 @@ app.post("/resizeFigure",function(request, response){
 
 
                 // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
-                scaleFactor = (rawH <= rawH) ? rawH/newHeight : rawH/newWidth;
+                scaleFactor = (rawW <= rawH) ? rawH/newHeight : rawW/newWidth;
 
                 // image is bigger than the desired figure size
                 if(scaleFactor > 1){
@@ -1469,20 +1467,66 @@ app.post("/resizeFigure",function(request, response){
                         if(origCube){
                             userObject.name = origCube;
                         }
-                        
-                        Promise.all(promises).then(()=>{
-                            // send the reaponse
+                        promises = [];
+
+                        // get the cube name with no loading tag
+                        var logCubeName = util.getRawCube(userObject.name, userObject.userNum);
+
+                        // make promise on the isis function call
+                        promises.push(util.makeSystemCalls(userObject.name,
+                            path.join('.','uploads', userObject.name),
+                            path.join('.','pvl',userObject.name.replace('.cub','.pvl')),
+                            'images',
+                            userObject.logFlag,
+                            userObject.userId + ".log",
+                            logCubeName));
+
+                        // when isis is done read the pvl file
+                        Promise.all(promises).then(function(){
+                            //reset promises array
                             promises = [];
-                            promises.push(util.imageExtraction(util.getimagename(userObject.name, "png"),
-                                path.join(__dirname, "uploads",userObject.name), path.join(__dirname, "images"),
-                                userObject.logToFile, userObject.userId + ".log", rawCube));
-        
-                            Promise.all(promises).then(function(){
+                            // if the log flag is true log the end of the ISIS calls
+                            if(userObject.logFlag){
+                                util.endProcessRun(userObject.userId + ".log");
+                            }
+                            
+                            // make new promise on the data extraction functions
+                            promises.push(util.readPvltoStruct(userObject.name));
+
+                            // when the readPvltoStructf function resolves create data instance
+                            Promise.all(promises).then(function(cubeData){
+                            
+                                // add the cube instance to the cube array if it does not already exist
+                                cubeArray = util.addCubeToArray(userObject,cubeArray);
+                            
+                                // save data to object using setter in class
+                                userObject.data = JSON.parse(cubeData);
+                                
+                                // obtain the data for the important tags
+                                var impDataString = util.importantData(userObject.data, importantTagArr);
+
+                                // save the important data values to object using setter
+                                userObject.impData = JSON.parse(impDataString);
+                                
+                                // get the csv string
+                                let csv = util.getCSV(userObject.data);
+
+                                // get name of csv and write it to the csv folder
+                                let csvFilename = userObject.name.replace('.cub','.csv');
+
+                                // get name of possible output file
+                                let txtFilename = userObject.name.replace('.cub','_PIPS_Caption.txt');
+
+                                // write the csv data to the file
+                                fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+                
                                 // send response
                                 response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
-                            }).catch((err)=>{
-                                console.log("Error Happened: " + err);
+                            
+                            }).catch(err => {
+                                console.log(err);
                             });
+                            
                         }).catch((err)=>{
                             console.log("Error Here: " + err);
                         });
@@ -1506,7 +1550,7 @@ app.post("/evalScalebar", function(request, response){
     
     var userObject = util.getObjectFromArray(request.body.id, cubeArray),
         w,
-        h,
+        h;
     
     // get resolution value
     resolution = util.getPixelResolution(userObject);
@@ -1516,6 +1560,7 @@ app.post("/evalScalebar", function(request, response){
         dimensions = JSON.parse(dimensions);
         w = dimensions.w;
         h = dimensions.h;
+
         // check and calculate user dimensions if needed
         userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
 
@@ -1572,16 +1617,30 @@ app.post("/evalScalebar", function(request, response){
         }
 
         // send response to the server as data to handle in the callback
-        response.send(
-            {
-                scalebarLength: scalebarLength,
-                scalebarPX: scalebarPx,
-                scalebarUnits: scalebarUnits,
-                origW: w,
-                origH: h,
-                isMapProjected: isMapProjected,
-                rotationOffset: rotationOffset
-            }).status(200);
+        if(scalebarLength){
+            response.send(
+                {
+                    scalebarLength: scalebarLength,
+                    scalebarPX: scalebarPx,
+                    scalebarUnits: scalebarUnits,
+                    origW: w,
+                    origH: h,
+                    isMapProjected: isMapProjected,
+                    rotationOffset: rotationOffset
+                }).status(200);
+        }
+        else{
+            response.send(
+                {
+                    scalebarLength: 'none',
+                    scalebarPX: 'none',
+                    scalebarUnits: scalebarUnits,
+                    origW: w,
+                    origH: h,
+                    isMapProjected: isMapProjected,
+                    rotationOffset: rotationOffset
+                }).status(200);
+        }
     });
 
 });
