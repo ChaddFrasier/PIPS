@@ -1044,7 +1044,7 @@ app.get('/imageEditor', function(request, response){
                 else{
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
-                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0) {
                         response.render("imagePage.ejs", 
                         {
                             image:imagepath,
@@ -1547,7 +1547,7 @@ app.post("/resizeFigure",function(request, response){
 /**
  * 
  */
-// TODO: calculate the new scalebar values
+// TODO: COMMENT THIS
 app.post("/evalScalebar", function(request, response){
     console.log(request.url);
 
@@ -1679,6 +1679,8 @@ app.listen(8000);
 // serving machines on either open or closed network
 app.listen(PORT,"0.0.0.0");
 
+
+// TODO: comment this
 var interval = function() {
     console.log("\nMemory Analysis Running");
     memArray = Memory.prototype.checkAllDates(memArray);
