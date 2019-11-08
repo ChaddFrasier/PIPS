@@ -1021,7 +1021,6 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             
-
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1042,8 +1041,6 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             
-
-            console.log(imageH)
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1064,7 +1061,6 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             
-
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1085,7 +1081,6 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             
-
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1103,7 +1098,6 @@ function setImagePadding(val,location){
             
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + h +  " px";
-            
 
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1163,10 +1157,10 @@ function setScaleboxCorners(northDegree, sunDegree){
         let childList = northImage.childNodes;
         let offset90 = Math.round(northDegree / 90);
         /* 
-        1. each corner was given a numeric value starting from top-left and going clockwise around 
-            the image
-        2. I caculate how many times 90 goes into the degree and i shift the boxes by that amount
-        3. by adding the ossfet to the box values it tells us where that box should move to. 
+            1. each corner was given a numeric value starting from top-left and going clockwise around 
+                the image
+            2. I caculate how many times 90 goes into the degree and i shift the boxes by that amount
+            3. by adding the ossfet to the box values it tells us where that box should move to. 
         */
         for(index in childList){
             if(childList[index].classList 
@@ -1177,28 +1171,24 @@ function setScaleboxCorners(northDegree, sunDegree){
                     let newClass = placeEnum["top-left"] + offset90;
                     if(newClass > 4){newClass -= 4}
                     
-
                     childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                 }
                 else if(childList[index].classList.contains("top-right")){
                     let newClass = placeEnum["top-right"] + offset90;
                     if(newClass > 4){newClass -= 4}
                     
-
                     childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                 }
                 else if(childList[index].classList.contains("bottom-right")){
                     let newClass = placeEnum["bottom-right"] + offset90;
                     if(newClass > 4){newClass -= 4}
                     
-
                     childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                 }
                 else if(childList[index].classList.contains("bottom-left")){
                     let newClass = placeEnum["bottom-left"] + offset90;
                     if(newClass > 4){newClass -= 4}
                     
-
                     childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                 }
             }
