@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 10/29/2019
+ * @updated 11/08/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -139,12 +139,14 @@ const sharp = require("sharp");
 // include custom utility functions
 const util = require('./util.js');
 const Cube = require('./js/cubeObj.js');
+const Memory = require("./js/memoryUnit.js");
 
 // start app env
 var app = express();
 
 // global instance array for cube objects
-var cubeArray = [];
+var cubeArray = [],
+    memArray = [];
 var numUsers = 0;
 
 // use express middleware declarations
@@ -214,6 +216,13 @@ app.get('/', function(request, response){
     // query for alert code
     let code = request.query.alertCode;
 
+    try{
+        Memory.prototype.accessMemory(id, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+
     // set the http status for official server use
     switch(code){
         case "1":
@@ -255,6 +264,12 @@ app.get('/', function(request, response){
  */ 
 app.get('/tpl',function(request, response){
     // render the data
+    try{
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
     response.render('tpl.ejs');
 });
 
@@ -264,25 +279,51 @@ app.get('/tpl',function(request, response){
  * Checks to see if the file is currently on the server and sends the 
  * file for downloads it to the client
  */
-app.get("/log/*",function(request, response){
+app.get("/log/*",function(request, response) {
     console.log(request.url);
 
+    let queryString = request.query.isTest;
     var id = request.url.split("/")[request.url.split("/").length -1];
 
-    if(fs.existsSync(path.join("log", id+".log"))){
-        response.download(path.join("log",id+".log"),function(err){
-            if(err){
-                console.log("DOWNLOAD FAILED: " + err);
-                response.status(500).send("File Failed to Send").end();
-            }
-            else{
-                console.log("Download Sent");
-            }
-        });
+    id = id.split("?")[0];
+
+    try{
+        Memory.prototype.accessMemory(id, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+
+    if(queryString === undefined){
+    
+        if(fs.existsSync(path.join("log", id+".log"))){
+            response.download(path.join("log",id+".log"),function(err){
+                if(err){
+                    console.log("DOWNLOAD FAILED: " + err);
+                    response.status(500).send("File Failed to Send").end();
+                }
+                else{
+                    console.log("Download Sent");
+                }
+            });
+        }
+        else{
+            response.status(403).send("File Not Found").end();
+        }
     }
     else{
-        response.status(403).send("File Not Found").end();
+        // check to see if the file exists
+        let exists = fs.existsSync(path.join(__dirname, "log", id + ".log"));
+
+        if(exists){
+            response.sendStatus(200);
+        }   
+        else{
+            // file not found
+            response.sendStatus(404);
+        }
     }
+    
 });
 
 /**
@@ -296,8 +337,15 @@ app.get("/log/*",function(request, response){
 app.get('/captionWriter',function(request,response){
     console.log(request.path);
 
-    var userid = request.cookies['userId'];
+    var userid = request.cookies['puiv'];
 
+    try{
+        Memory.prototype.accessMemory(userid, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+    
     if(userid === undefined){
         // send response w/ all variables
         response.redirect('/?alertCode=7');
@@ -337,9 +385,16 @@ app.post('/captionWriter', async function(request, response){
     var templateText = '';
     let isTiff = false;
     
+    try {
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err) {
+        // no instance was found or other error
+    }
+
     //============== for testing only =======================
     console.log('=================== New Upload ========================');
-    //================================================
+    //=======================================================
 
     // cube file section
     try{
@@ -356,7 +411,7 @@ app.post('/captionWriter', async function(request, response){
             var cubeFile = request.files.uploadFile;
 
             //  find user id if it exists
-            var uid = request.cookies["userId"];
+            var uid = request.cookies['puiv'];
             
             // create promises array for syncronous behavior
             var promises = [];
@@ -369,12 +424,14 @@ app.post('/captionWriter', async function(request, response){
                 isTiff = false;
             }
 
+            // make sure string only contains digets and it is a proper length
+    
             // if no user id is found 
-            if(uid === undefined){
+            if(uid === undefined || !(/[\S\d]{23}/gm.test(uid) && uid.length === 23)){
                 // create a random 23 character user id
                 uid = util.createUserID(23);
                 // set cookie for the given user id (expires in just over 1 month [2628100000 miliseconds]) 
-                response.cookie('userId', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
+                response.cookie('puiv', uid, {expires: new Date(Date.now() + 2628100000), httpOnly: false});
             }
 
             // if the cubeArray is empty
@@ -402,6 +459,10 @@ app.post('/captionWriter', async function(request, response){
                 }
             }
 
+            // remove the file that was uploaded to allow for a clean file read from the fs module
+            try{fs.unlinkSync('./uploads/' + cubeObj.name);}
+            catch(err){/* Catch file error if file is not on server*/}
+            
             // save the cube upload to upload folder
             await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
                 // report error if it occurs
@@ -517,7 +578,7 @@ app.post('/captionWriter', async function(request, response){
                 var lines,
                     samples,
                     scaleFactor;
-
+   
                 // get the original dimensions of the cube file just in case scaling is required
                 fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
                     if(err){
@@ -540,31 +601,62 @@ app.post('/captionWriter', async function(request, response){
                             }
                         }
 
-                        // if the image needs to be reduced
+                        // promise on the reduce call
+                        var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum),
+                            max = 2725;
+
+                        // image is bigger than the desired figure size
                         if(scaleFactor > 1){
-                            // promise on the reduce call
-                            var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum);
-                            if(cubeObj.userDim[0] * cubeObj.userDim[1] > 4000000){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor*2.5,
-                                     cubeObj.logFlag,cubeObj.userId + ".log"));
+                            // if the new dimensions is less than the minimum and image is larger than new dimensions
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                    cubeObj.logFlag, cubeObj.userId + ".log"));
                             }
-                            else if(scaleFactor >= 1.5){
-                                promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor/1.5,
-                                     cubeObj.logFlag,cubeObj.userId + ".log"));
+                            else{
+                                // new figure size is large than max
+                                if(lines * samples > 7579000){
+                                    scaleFactor = (samples > lines) ? samples/max : lines/max;
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                                else{
+                                    // render at full res
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
                             }
+                            
                         }
-                        else if(samples * lines > 4000000){
-                            promises.push(util.reduceCube(rawCube, cubeObj.name, 2, cubeObj.logFlag,cubeObj.userId + ".log"));
+                        else{
+                            // image is smaller than desired figure size
+                            // if the new dimensions is less than the max
+                            if(userDim[0] * userDim[1] <= 7579000){
+                                // render image at full res
+                                promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                    cubeObj.logFlag,cubeObj.userId + ".log"));
+                            }
+                            // if the new dimensions is more than the max dimensions
+                            else{
+                                // render image at max res
+                                // cast the image into the max res
+                                if(lines * samples > 7579000){
+                                    scaleFactor = (samples > lines) ? samples/max : lines/max;
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
+                                        cubeObj.logFlag, cubeObj.userId + ".log"));
+                                }
+                                else{
+                                    // render at full res
+                                    promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                        userObject.logFlag,userObject.userId + ".log"));
+                                }
+                            }
                         }
                         
                         Promise.all(promises).then(function(cubeName){
                             // if function resolved with a return
                             if(cubeName.length > 0){
                                 // set the name to the returning cube
-                                let tmp = cubeObj.name;
                                 cubeObj.name = cubeName[0];
-                                /* // remove the not needed files to save server space
-                                fs.unlinkSync(path.join(__dirname, "uploads",tmp)); */
                             }
                             // reset promise array
                             promises = [];
@@ -596,7 +688,6 @@ app.post('/captionWriter', async function(request, response){
                                 // when the readPvltoStructf function resolves create data instance
                                 Promise.all(promises).then(function(cubeData){
                                 
-                                    console.log("PVL Extraction Success");
                                     // add the cube instance to the cube array if it does not already exist
                                     cubeArray = util.addCubeToArray(cubeObj,cubeArray);
                                 
@@ -620,6 +711,32 @@ app.post('/captionWriter', async function(request, response){
 
                                     // write the csv data to the file
                                     fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+
+                                    // create or update data instance
+                                    if(memArray.length === 0){
+                                        // create the new instance and add it to the array
+                                        var newMem = new Memory(cubeObj.userNum);
+
+                                        newMem.userId = cubeObj.userId;
+                                        newMem.lastRequest = Date.now();
+
+                                        memArray.push(newMem);
+                                    }
+                                    else{
+                                        // add memory instance if user id is not in the array already
+                                        if( Memory.prototype.checkMemInstances( cubeObj.userId, memArray)){
+                                            Memory.prototype.accessMemory(cubeObj.userId, memArray).updateDate();
+                                        }
+                                        else{
+                                            // create the new instance and add it to the array
+                                            var newMem = new Memory(cubeObj.userNum);
+
+                                            newMem.userId = cubeObj.userId;
+                                            newMem.lastRequest = Date.now();
+
+                                            memArray.push(newMem);
+                                        }
+                                    }
 
                                     // send response w/ all variables
                                     response.render('writer.ejs',
@@ -702,14 +819,21 @@ app.post('/captionWriter', async function(request, response){
  */
 app.post('/csv', function(request,response){
     // send download file
-    let cubeObj = util.getObjectFromArray(request.cookies["userId"],cubeArray);
+    let cubeObj = util.getObjectFromArray(request.cookies['puiv'],cubeArray);
+
+    try{
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
 
     // if the user object is found
     if(typeof(cubeObj) === "object"){
         // send the image associated with user
         response.download(path.join('csv',cubeObj.name.replace('.cub','.csv')),function(err){
             if(err){
-                console.log('file was not sent successfully');
+                console.log('file was not sent');
             }
             else{
                 // file sent
@@ -731,7 +855,14 @@ app.post('/csv', function(request,response){
 app.get('/csv', function(request, response){
     console.log(request.path);
 
-    let userId = request.cookies['userId'];
+    let userId = request.cookies['puiv'];
+
+    try{
+        Memory.prototype.accessMemory(userId, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
 
     if(userId === undefined){
         // send response w/ all variables
@@ -744,7 +875,7 @@ app.get('/csv', function(request, response){
         if(typeof(userObject)!=="number"){
             response.download(path.join('csv',userObject.name.replace('.cub','.csv')),function(err){
                 if(err){
-                    console.log('file was not sent successfully');
+                    console.log('file was not sent');
                 }
                 else{
                     // file sent
@@ -767,7 +898,14 @@ app.get('/csv', function(request, response){
 app.get('/imageEditor', function(request, response){
     console.log(request.path);
 
-    var userid= request.cookies['userId'];
+    var userid= request.cookies['puiv'];
+
+    try{
+        Memory.prototype.accessMemory(userid, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
 
     if(userid === undefined){
         // send response w/ all variables
@@ -866,7 +1004,10 @@ app.get('/imageEditor', function(request, response){
                         }
     
                         // render image page with needed data
-                        if(isWindows){ imagepath = imagepath.replace("\\","/");}
+                        if(isWindows){ imagepath = imagepath.replace("\\","/"); }
+
+
+
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
                             response.render("imagePage.ejs", 
                             {
@@ -903,7 +1044,7 @@ app.get('/imageEditor', function(request, response){
                 else{
                     // render image page with needed data
                     if(isWindows){ imagepath = imagepath.replace("\\","/");}
-                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
+                    if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0) {
                         response.render("imagePage.ejs", 
                         {
                             image:imagepath,
@@ -954,12 +1095,21 @@ app.post('/imageEditor', function(request, response){
     console.log(request.path);
 
     // prepare variables 
-    var uid = request.cookies['userId'],
+    var uid = request.cookies['puiv'],
         userObject,
         imagepath,
         data,
         resolution;
 
+
+    try{
+        Memory.prototype.accessMemory(uid, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+    
+    
     if(uid !== undefined){
         // get image name and path
         userObject = util.getObjectFromArray(uid, cubeArray);
@@ -994,6 +1144,7 @@ app.post('/imageEditor', function(request, response){
    else{
         var w,
             h;
+        
         // get user dimensions of cube
         userObject.getCubeDimensions()
         .then(dimensions => {
@@ -1001,6 +1152,7 @@ app.post('/imageEditor', function(request, response){
             dimensions = JSON.parse(dimensions);
             w = dimensions.w;
             h = dimensions.h;
+
             // check and calculate user dimensions if needed
             userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
 
@@ -1131,8 +1283,12 @@ app.post('/imageEditor', function(request, response){
     }
 });
 
+/**
+ * This will be the link where the pow pipeline can be implimented
+ */
 app.post("/pow",function(request, response){
     // TODO: POW connection link
+    var id = request.cookies["puiv"];
 });
 
 
@@ -1147,6 +1303,12 @@ app.post("/figureDownload", async function(request, response){
     var filename = request.body.downloadName,
         fileExt = filename.split(".")[filename.split(".").length - 1];
     
+    try{
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
     // set response header
     response.header("Cache-Control", "max-age=0");
 
@@ -1207,18 +1369,307 @@ app.post("/figureDownload", async function(request, response){
 });
 
 /**
+ * '/resizeFigure' handler
+ * 
+ * resize cubes and return them to the imageEditor
+ */
+app.post("/resizeFigure",function(request, response){
+    console.log(request.url);
+
+    // user id, and the new figure width and height
+    var id = String(request.body.id),
+        newWidth = parseInt(request.body.w),
+        newHeight = parseInt(request.body.h),
+        promises = [],
+        origCube,
+        max = 2725;
+
+    var userObject = util.getObjectFromArray(id, cubeArray);
+    var rawCube = util.getRawCube(userObject.name,userObject.userNum);
+
+    try{
+        Memory.prototype.accessMemory(id, memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
+
+    // make sure string only contains digets and it is a proper length
+    if(/[\S\d]{23}$/gm.test(id) && id.length === 23){
+        // if the user object is found
+        if(typeof(userObject) === "object"){
+            let workingCube = userObject.name.replace("r-", "u-");
+
+            if(workingCube !== userObject.name){
+                origCube = userObject.name;
+                userObject.name = workingCube;
+            }
+
+            // get the origional cube dimensions
+            userObject.getCubeDimensions().then((dimensions) => {
+                dimensions = JSON.parse(dimensions);
+
+                var rawW = dimensions.w,
+                    rawH = dimensions.h;
+
+
+                // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
+                scaleFactor = (rawW <= rawH) ? rawH/newHeight : rawW/newWidth;
+
+                // image is bigger than the desired figure size
+                if(scaleFactor > 1){
+                    // if the new dimensions is less than the minimum and image is larger than new dimensions
+                    if(newWidth * newHeight <= 7579000){
+                        promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                            userObject.logFlag,userObject.userId + ".log"));
+                    }
+                    else{
+                        // new figure size is large than max
+                        if(rawH * rawW > 7579000){
+                            scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
+                            promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        else{
+                            // render at full res
+                            promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                    }
+                    
+                }
+                else{
+                    // image is smaller than desired figure size
+                    // if the new dimensions is less than the max
+                    if(newWidth * newHeight <= 7579000){
+                        // render image at full res
+                        promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                            userObject.logFlag,userObject.userId + ".log"));
+                    }
+                    // if the new dimensions is more than the max dimensions
+                    else{
+                        // render image at max res
+                        // cast the image into the max res
+                        if(rawH * rawW > 7579000){
+                            scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
+                            promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                        else{
+                            // render at full res
+                            promises.push(util.reduceCube(rawCube, userObject.name, 1,
+                                userObject.logFlag,userObject.userId + ".log"));
+                        }
+                    }
+                }
+
+                if(promises){
+                    Promise.all(promises).then(() =>{
+                        // change name back
+                        if(origCube){
+                            userObject.name = origCube;
+                        }
+                        promises = [];
+
+                        // get the cube name with no loading tag
+                        var logCubeName = util.getRawCube(userObject.name, userObject.userNum);
+
+                        // make promise on the isis function call
+                        promises.push(util.makeSystemCalls(userObject.name,
+                            path.join('.','uploads', userObject.name),
+                            path.join('.','pvl',userObject.name.replace('.cub','.pvl')),
+                            'images',
+                            userObject.logFlag,
+                            userObject.userId + ".log",
+                            logCubeName));
+
+                        // when isis is done read the pvl file
+                        Promise.all(promises).then(function(){
+                            //reset promises array
+                            promises = [];
+                            // if the log flag is true log the end of the ISIS calls
+                            if(userObject.logFlag){
+                                util.endProcessRun(userObject.userId + ".log");
+                            }
+                            
+                            // make new promise on the data extraction functions
+                            promises.push(util.readPvltoStruct(userObject.name));
+
+                            // when the readPvltoStructf function resolves create data instance
+                            Promise.all(promises).then(function(cubeData){
+                            
+                                // add the cube instance to the cube array if it does not already exist
+                                cubeArray = util.addCubeToArray(userObject,cubeArray);
+                            
+                                // save data to object using setter in class
+                                userObject.data = JSON.parse(cubeData);
+                                
+                                // obtain the data for the important tags
+                                var impDataString = util.importantData(userObject.data, importantTagArr);
+
+                                // save the important data values to object using setter
+                                userObject.impData = JSON.parse(impDataString);
+                                
+                                // get the csv string
+                                let csv = util.getCSV(userObject.data);
+
+                                // get name of csv and write it to the csv folder
+                                let csvFilename = userObject.name.replace('.cub','.csv');
+
+                                // get name of possible output file
+                                let txtFilename = userObject.name.replace('.cub','_PIPS_Caption.txt');
+
+                                // write the csv data to the file
+                                fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
+                
+                                // send response
+                                response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
+                            
+                            }).catch(err => {
+                                console.log(err);
+                            });
+                            
+                        }).catch((err)=>{
+                            console.log("Error Here: " + err);
+                        });
+                    });
+                }
+            });
+        }
+        else{
+            // user object was not found on server
+            console.log("userobject not found");
+        }  
+    }
+});
+
+
+/**
+ * 
+ */
+// TODO: COMMENT THIS
+app.post("/evalScalebar", function(request, response){
+    console.log(request.url);
+
+    var userObject = util.getObjectFromArray(request.body.id, cubeArray),
+        w,
+        h;
+    
+    // get resolution value
+    resolution = util.getPixelResolution(userObject);
+
+    userObject.getCubeDimensions().then(dimensions => {
+        // save dimensions into local variables
+        dimensions = JSON.parse(dimensions);
+        w = dimensions.w;
+        h = dimensions.h;
+
+        // check and calculate user dimensions if needed
+        userObject.userDim = util.setImageDimensions([w,h],userObject.userDim);
+
+        // set variables for ejs rendering
+        var isMapProjected = util.isMapProjected(userObject.data),
+            rotationOffset = util.getRotationOffset(isMapProjected, userObject.data);
+
+        // calculate image width in meters
+        if(resolution !== -1){
+            var imageMeterWidth = util.calculateWidth(resolution, w);
+
+            if(imageMeterWidth > -1){
+                // same as above for calculating scale bar
+                let x = Math.log10(imageMeterWidth/2);
+                let a = Math.floor(x);
+                let b = x - a;
+
+                // if the decimal is 75% or more closer to a whole 10 set the base to 5
+                // check if 35% or greater, set base 2
+                // if the value is very close to a whole base on the low side 
+                //      set base to 5 and decrement the 10 base
+                // (this is to keep text from leaving image)
+                // default to 1
+                if(b >= 0.75){
+                    b = 5;
+                }
+                else if(b >= 0.35){
+                    b = 2;
+                }
+                else if(b < .05){
+                    a -= 1;
+                    b = 5;
+                }
+                else{
+                    b = 1;
+                }
+
+                var scalebarMeters = b*Math.pow(10,a);
+
+                var scalebarLength,
+                    scalebarUnits="";
+                // if the length is less than 1KM return length in meters
+                if(Number(imageMeterWidth)/1000 < 1.5){
+                    scalebarLength = scalebarMeters;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)));
+                    scalebarUnits = "m";
+                }
+                else{
+                    scalebarLength = scalebarMeters/1000;
+                    var scalebarPx = parseInt(scalebarLength / (parseFloat(resolution)/1000));
+                    scalebarUnits = "km";
+                }
+            }
+        }
+
+        // send response to the server as data to handle in the callback
+        if(scalebarLength){
+            response.send(
+                {
+                    scalebarLength: scalebarLength,
+                    scalebarPX: scalebarPx,
+                    scalebarUnits: scalebarUnits,
+                    origW: w,
+                    origH: h,
+                    isMapProjected: isMapProjected,
+                    rotationOffset: rotationOffset
+                }).status(200);
+        }
+        else{
+            response.send(
+                {
+                    scalebarLength: 'none',
+                    scalebarPX: 'none',
+                    scalebarUnits: scalebarUnits,
+                    origW: w,
+                    origH: h,
+                    isMapProjected: isMapProjected,
+                    rotationOffset: rotationOffset
+                }).status(200);
+        }
+    });
+
+});
+
+
+
+
+/**
  * '/*' catch all unknown routes
  * 
  * This is a 404 http catch all
  */
 app.get("*",function(request, response){
     
+    try{
+        Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
+    }
+    catch(err){
+        // no instance was found
+    }
     // render a 404 error in the header and send the 404 page
     response.status(404).render("404.ejs");
 });
 
-/* activate the server */
 
+/* activate the server */
 // listen on some port
 // FOR TESTING ONLY!!! should be 'const PORT = process.env.PORT || 8080;'
 const PORT = 8080 || process.env.PORT;
@@ -1227,6 +1678,37 @@ const PORT = 8080 || process.env.PORT;
 app.listen(8000);
 // serving machines on either open or closed network
 app.listen(PORT,"0.0.0.0");
+
+
+// TODO: comment this
+var interval = function() {
+    console.log("\nMemory Analysis Running");
+    memArray = Memory.prototype.checkAllDates(memArray);
+
+    if(memArray.length === 0){
+        cubeArray = [];
+        console.log(cubeArray);
+    }
+    else{
+        for(var i = 0; i < cubeArray.length; i++){
+            for( var j = 0; j < memArray.length; j++){
+                if(cubeArray[i].userId === memArray[j].userId){
+                    // do nothing
+                    break;
+                }
+                else{
+                    if(j === memArray.length - 1){
+                        cubeArray.slice(i, 1);
+                        console.log(cubeArray);
+                    }
+                }
+            }
+        }
+    }
+    console.log("End Memory Analysis\n");
+}
+// set the memory managment system to check instances every 8 hours
+setInterval(interval, 28800000);
 
 // tell console status and port #
 console.log("Server is running and listen for outer connections on port " + PORT + "\n http://" + os.hostname() + ":8080/");

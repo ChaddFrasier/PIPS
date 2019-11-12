@@ -382,7 +382,7 @@ $(document).ready(function(){
     }
 
     // try fetching the log file for the user and dont display if fetch fails to locate it
-    fetch("/log/" + getCookie("userId"),{method:"GET"})
+    fetch("/log/" + getCookie("puiv") + "?isTest=true",{method:"GET"})
     .then(function(response){
         if(Number(response.status) !== 200){
             document.getElementById("logDownloadBtn").style.display = "none";  
@@ -577,7 +577,7 @@ $(document).ready(function(){
      *          and then converting the file into to a blob
     */
     $("#logDownloadBtn").mousedown(function(event){
-        fetch("log/" + getCookie("userId"), {method:"GET"})
+        fetch("log/" + getCookie("puiv"), {method:"GET"})
             .then(function(response){
                 // convert response to blob
                 response.blob()
@@ -585,7 +585,7 @@ $(document).ready(function(){
                     // create the download link
                     var a = document.createElement('a');
                     // set the file name
-                    a.download = getCookie("userId") + ".log";
+                    a.download = getCookie("puiv") + ".log";
                     // set the href to the object url
                     a.href = URL.createObjectURL(blob);
                     a.target = "__blank";

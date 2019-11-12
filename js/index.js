@@ -139,27 +139,16 @@ function loaderActivate(){
             // 300dpi at 3 inches (300px/in)
             heightInputBox.value = 1500;
             widthInputBox.value = 1500;
-            loader.style.visibility = 'visible';
-            var div = document.createElement("div");
-            div.style.background = "rgba(0,0,0,.5)";
-            div.style.width = "100vw";
-            div.style.height = "110%";
-            div.style.position = "absolute";
-            div.style.top = "0";
-            document.body.insertBefore(div,this.firstChild);
-            document.uploadForm.submit();
         }
-        else{
-            loader.style.visibility = 'visible';
-            var div = document.createElement("div");
-            div.style.background = "rgba(0,0,0,.5)";
-            div.style.width = "100vw";
-            div.style.height = "110%";
-            div.style.position = "absolute";
-            div.style.top = "0";
-            document.body.insertBefore(div,this.firstChild);
-            document.uploadForm.submit();
-        }
+        loader.style.visibility = 'visible';
+        var div = document.createElement("div");
+        div.style.background = "rgba(0,0,0,.5)";
+        div.style.width = "100vw";
+        div.style.height = "125%";
+        div.style.position = "absolute";
+        div.style.top = "0";
+        document.body.insertBefore(div,this.firstChild);
+        document.uploadForm.submit();
     }
 }
 
