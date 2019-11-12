@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 11/08/2019
+ * @updated 11/12/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -110,7 +110,6 @@ function makeDraggable(event){
         outlineMin = .125,
         scale;
     
-        
     // sets boundries for draggable objects when confined based on the view box
     // minX = x of viewbox
     var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
@@ -1653,8 +1652,6 @@ function getMarkerId(id, inc){
     }
 }
 
-
-
 /** ----------------------------- End Helper Function ---------------------------------------------------- */
 
 /** --------------------------------- Draw Functions ----------------------------------------------------- */
@@ -2147,7 +2144,6 @@ $(document).ready(function(){
         var mainbox = document.getElementsByClassName("mainbox-center");
 
         mainbox[0].appendChild(window);
-
     });
 
 
@@ -2278,8 +2274,7 @@ $(document).ready(function(){
         else{
             // filename does not fit the reg exp
             console.log("REGEXP evaluated to false");
-        }
-        
+        }   
     }
 
     /**
@@ -2541,7 +2536,6 @@ $(document).ready(function(){
                     $(id).parent().remove();
                 }
             }
-            
             elem.remove();
         }
         else{
@@ -2668,7 +2662,7 @@ $(document).ready(function(){
         // if either of the inputs is not empty and more than 1000 and new dimensions are not the same as before
         if((widthInput !== "" || heightInput !== "")
             && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
-            && (dim.w !== widthInput || dim.h !== heightInput)){
+            && (dim.w !== widthInput || dim.h !== heightInput)) {
             
             // get user id from browser cookie
             let id = getCookie("puiv");
@@ -2700,7 +2694,6 @@ $(document).ready(function(){
             // calculate difference
             var heightDifference = dim.h - heightInput,
                 widthDifference = dim.w - widthInput;
-
 
             fetch('/resizeFigure',
                 {
@@ -2862,6 +2855,8 @@ $(document).ready(function(){
             dim.w = parseInt(displayString.split("×")[0]);
             dim.h = parseInt(displayString.split("×")[1]);
 
+            widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+            heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
 
             var heightDifference = (heightInput !== "") ? dim.h - heightInput : dim.h - h ,
                 widthDifference = (widthInput !== "") ? dim.w - widthInput : dim.w - w ;
@@ -2869,9 +2864,6 @@ $(document).ready(function(){
             if(heightDifference || widthDifference){
                 var fd = new FormData(),
                     headers = new Headers();
-
-                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
-                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
 
                 fd.append("w", widthInput);
                 fd.append("h", heightInput);

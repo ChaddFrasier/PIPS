@@ -83,7 +83,6 @@ function getMetadata(){
             metaDataArea.value += str;
         }
     }
-
 }
 
 /**
@@ -224,16 +223,15 @@ function removeUnits(str){
             tmpArr[index] = "";
         }
     }
-
     return tmpArr.join("");
 }
 
 
 /**
- * Object prototype sort function that sorts by key length
+ * @function Object.prototype.sort
  * 
+ * @description sort the object in order of key length
  */
-
 Object.prototype.sort = function(){
     
     let keys = Object.keys(this);
@@ -251,7 +249,7 @@ Object.prototype.sort = function(){
 }
 
 
-// TODO: this fails when refreshing 
+// TODO: this fails when refreshing b/c the values in the elements have changed
 // ||||
 // VVVV
 /** 
@@ -302,6 +300,7 @@ function showMoreTags(){
     var textArea = document.getElementById("test");
     var metaTags = document.getElementById("metadataTagArea");
     var importantTags = document.getElementById("allTagArea");
+
     val = val.toString();
     if(val === "Show Important Tags"){
         // Switch to important tags
@@ -458,8 +457,9 @@ $(document).ready(function(){
     });
 
     /**
+     * @function specialCharactersBtn 'mousedown'
      * 
-     * 
+     * @description shows and removes the special characters buttons under the output box
      */
     $("#specialCharactersBtn").mousedown(function(){
         if($(this).hasClass("btn-secondary")){
@@ -475,13 +475,17 @@ $(document).ready(function(){
     });
 
 
+    /**
+     * @function templateDownloadBtn 'mousedown'
+     * 
+     * @description template download functionality with naming convention
+     */
     $("#templateDownloadBtn").mousedown( function(){
         var templateText = document.getElementById("template-text").value;
         var data = encodeURIComponent(templateText);
         
         var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
 
-        
         if(filename !== null && /^.*\.(tpl)$/gm.test(filename)){
             var a = document.createElement("a");
             a.href = "data:attachment/text," + data;
@@ -499,12 +503,119 @@ $(document).ready(function(){
 
 
     /**
+     * @function addTagBtn 'click' handler
      * 
+     * @description create a box to handle the input of a new tag
+     */
+    $("#addTagBtn").click( function() {
+        // create the elements
+        var div = document.createElement("div"),
+            title = document.createElement("h3"),
+            tagInput = document.createElement("input"),
+            tagLabel = document.createElement("label"),
+            valInput = document.createElement("input"),
+            valLabel = document.createElement("label"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button");
+
+        div.style.background = "lightgray";
+        div.style.position = "absolute";
+        div.style.left = "38%";
+        
+        div.style.top = "50%";
+        div.style.zIndex = "10";
+        div.style.width = "18%";
+        div.style.height = "18%";
+        div.style.border = "2px solid black";
+
+        tagLabel.style.position = "absolute";
+        tagLabel.style.left = "10%";
+        tagLabel.style.top = "36%";
+        tagLabel.innerHTML = "New Tag: ";
+        tagLabel.style.color = "black";
+
+        tagInput.style.position = "absolute";
+        tagInput.style.left = "35%";
+        tagInput.style.top = "35%";
+        tagInput.placeholder = "New Tag";
+
+        valLabel.style.position = "absolute";
+        valLabel.style.left = "10%";
+        valLabel.style.top = "54%";
+        valLabel.innerHTML = "New Value: ";
+        valLabel.style.color = "black";
+
+        valInput.style.position = "absolute";
+        valInput.style.left = "35%";
+        valInput.style.top = "55%";
+        valInput.placeholder = "New Value";
+
+        title.innerHTML = "Create a New Tag";
+        title.style.position = "absolute";
+        title.style.color = "black";
+        title.style.left = "19%";
+
+        cancelBtn.className = "btn btn-sm btn-danger button";
+        cancelBtn.innerHTML = "Cancel";
+        cancelBtn.style.position = "absolute";
+        cancelBtn.style.left = "10%";
+        cancelBtn.style.top = "75%";
+
+        // cancel listener
+        cancelBtn.addEventListener("mousedown", (event) => {
+            div.remove();
+        });
+
+        submitBtn.className = "btn btn-sm button";
+        submitBtn.innerHTML = "Submit";
+        submitBtn.style.position = "absolute";
+        submitBtn.style.left = "70%";
+        submitBtn.style.top = "75%";
+
+        // submit listener
+        submitBtn.addEventListener("mousedown", (event) => {
+            if(tagInput.value !== "" && valInput.value !== ""){
+                tagInput.value = tagInput.value.trim();
+                valInput.value = valInput.value.trim();
+
+                // add these values into the common tag section
+                var metadata = document.getElementById("allTagArea").value,
+                    metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
+                    newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
+                
+                let tmpArr = metadata.split("\n");
+
+                metaDataText[tagInput.value] = valInput.value;
+                tmpArr.push(newString);
+
+                document.getElementById("allTagArea").value = tmpArr.join("\n");
+                document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
+                div.remove();
+            }
+            else{
+                console.log("NOT SUBMITTED");
+            }
+        });
+
+        // add elements in order
+        div.appendChild(title)
+        div.appendChild(valLabel);
+        div.appendChild(valInput);
+        div.appendChild(tagLabel);
+        div.appendChild(tagInput);
+        div.appendChild(cancelBtn);
+        div.appendChild(submitBtn);
+        document.body.insertBefore(div,document.body.firstChild);
+    });
+
+    /**
+     * @function button[class=specChar] 'mousedown'
      * 
+     * @description take the value in the button and add it to the textbox at the location of the cursor
      */
     $("button.specChar").mousedown(function(){
 
-        var symbol = $(this).html(),
+        var symbol = String($(this).html()).trim(),
             templateText = document.getElementById("template-text").value,
             end = templateText.substring(cursorLocation, templateText.length),
             start = templateText.substring(0, cursorLocation++);

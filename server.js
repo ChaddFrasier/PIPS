@@ -630,7 +630,7 @@ app.post('/captionWriter', async function(request, response){
                         else{
                             // image is smaller than desired figure size
                             // if the new dimensions is less than the max
-                            if(userDim[0] * userDim[1] <= 7579000){
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
                                 // render image at full res
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
                                     cubeObj.logFlag,cubeObj.userId + ".log"));
@@ -646,8 +646,8 @@ app.post('/captionWriter', async function(request, response){
                                 }
                                 else{
                                     // render at full res
-                                    promises.push(util.reduceCube(rawCube, userObject.name, 1,
-                                        userObject.logFlag,userObject.userId + ".log"));
+                                    promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
+                                        cubeObj.logFlag,cubeObj.userId + ".log"));
                                 }
                             }
                         }
@@ -933,6 +933,7 @@ app.get('/imageEditor', function(request, response){
             .then(dimensions => {
                 // capture dimensions in local vars
                 dimensions = JSON.parse(dimensions);
+
                 w = dimensions.w;
                 h = dimensions.h;
 
@@ -1005,8 +1006,6 @@ app.get('/imageEditor', function(request, response){
     
                         // render image page with needed data
                         if(isWindows){ imagepath = imagepath.replace("\\","/"); }
-
-
 
                         if(userDim!== undefined && userDim[0] !== 0 && userDim[1] !== 0){
                             response.render("imagePage.ejs", 
@@ -1101,7 +1100,6 @@ app.post('/imageEditor', function(request, response){
         data,
         resolution;
 
-
     try{
         Memory.prototype.accessMemory(uid, memArray).updateDate();
     }
@@ -1123,7 +1121,6 @@ app.post('/imageEditor', function(request, response){
                 data = 'NONE';
             }
             else{
-               
                 // get resolution value
                 var resolution = util.getPixelResolution(userObject);
     
@@ -1289,6 +1286,13 @@ app.post('/imageEditor', function(request, response){
 app.post("/pow",function(request, response){
     // TODO: POW connection link
     var id = request.cookies["puiv"];
+
+    // recieve a file that tells what to do:
+        // what file to use
+        // include icons? (T or F)
+        // icon locations
+        // output type of image
+        // log output (T or F)
 });
 
 
@@ -1516,9 +1520,6 @@ app.post("/resizeFigure",function(request, response){
                                 // get name of csv and write it to the csv folder
                                 let csvFilename = userObject.name.replace('.cub','.csv');
 
-                                // get name of possible output file
-                                let txtFilename = userObject.name.replace('.cub','_PIPS_Caption.txt');
-
                                 // write the csv data to the file
                                 fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
                 
@@ -1545,9 +1546,10 @@ app.post("/resizeFigure",function(request, response){
 
 
 /**
+ * "/evalScalebar" post handler
  * 
+ * check and update the scalebar dimensions when requested
  */
-// TODO: COMMENT THIS
 app.post("/evalScalebar", function(request, response){
     console.log(request.url);
 
@@ -1649,8 +1651,6 @@ app.post("/evalScalebar", function(request, response){
 });
 
 
-
-
 /**
  * '/*' catch all unknown routes
  * 
@@ -1680,16 +1680,20 @@ app.listen(8000);
 app.listen(PORT,"0.0.0.0");
 
 
-// TODO: comment this
+// interval function to check and erase memory from the server that has not been accessed in 8 hours
 var interval = function() {
     console.log("\nMemory Analysis Running");
+
+    // check al dates at once
     memArray = Memory.prototype.checkAllDates(memArray);
 
+    // if the array is empty
     if(memArray.length === 0){
+        // reset the cube array
         cubeArray = [];
-        console.log(cubeArray);
     }
     else{
+        // otherwise parse through both arrays checking each cube against all memory instances
         for(var i = 0; i < cubeArray.length; i++){
             for( var j = 0; j < memArray.length; j++){
                 if(cubeArray[i].userId === memArray[j].userId){
@@ -1697,9 +1701,9 @@ var interval = function() {
                     break;
                 }
                 else{
+                    // remove the cube data if it is not found
                     if(j === memArray.length - 1){
                         cubeArray.slice(i, 1);
-                        console.log(cubeArray);
                     }
                 }
             }

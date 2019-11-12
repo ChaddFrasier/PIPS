@@ -87,11 +87,11 @@
                  background-color: rgba(243, 214, 176, 0.698); border: 2px solid black"> 
                     <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" 
                     style="margin: 0;" title="Help!"/>
-                    <h1 class="display-5 stroke-wide stroke-dark" style="margin: 0;float: center;font-size: 200%;">
+                    <h1 class="display-5" style="margin: 0;float: center;font-size: 200%;">
                         Write Figure Caption
                     </h1>
-                    <p class="lead text-stroke-small stroke-dark" 
-                    style="margin:0;margin-bottom:2.5rem;font-size: 100%;">
+                    <p class="lead" 
+                    style="margin:0;margin-bottom:2.5rem;font-size: 100%; color: black;">
                         Edit the text in the right box using the tags in the bottom box.
                     </p>
                 </div>
@@ -123,7 +123,7 @@
                 <div class="col-2" style="padding-left:5%; margin:auto auto;">
                     <div class="text-center" style="margin:auto auto;">
                         <button id="copyBtn" class="btn button btn-lg text-white" role="button"
-                        style="width: 100%; font-size: 60%; padding: 1%;"
+                        style="width: 100%; font-size: 65%; padding: 0%;"
                         title="Save to Clipboard">
                             Copy to Clipboard
                         </button>
@@ -240,7 +240,7 @@
             </div>
             <div style="margin-left: auto; margin-right:auto;">
                 <!-- Active Tag Box -->
-                <div class="row">
+                <div class="row" style="margin: 0; padding: 0;">
                     <div class="col-5" style="text-align: center;">
                         <label for="test" class="float-center text-center"
                         style="margin: 0; position: relative; padding: 0;">
@@ -254,15 +254,23 @@
                     <div class="col-2" style="text-align: center;">
                     </div>
                     <div class="col-5" style="text-align: center;">
-                            <label for="template-text">
-                                <h3 class="display-5 alert alert-secondary"
-                                style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h3>
-                            </label>
+                        <label for="template-text">
+                            <h3 class="display-5 alert alert-secondary"
+                            style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h3>
+                        </label>
                     </div>
                 </div>
             <div class="row" style="width: 100%; margin: auto auto; margin-bottom:1rem;"> 
                 <div class="col-5" style="width:5%; margin-left: auto; margin-right: auto;
-                text-align: center; padding:auto;">
+                text-align: center; padding:auto; margin-top: 0;">
+                    
+                    <!-- Add Tag Button -->
+                    <button id="addTagBtn" role="button" class="btn btn-lg button"
+                    style="min-width: 2rem; max-width:2rem; height: 2rem; padding:0; position: absolute;
+                    right: 4%; top: 1%;">
+                        &plus;
+                    </button>
+
                     <!-- Tag Textbox -->
                     <textarea readonly id="test" class="form-control bg-white text-dark metadata"
                         style="resize: vertical; font-size: 22px; border: 2px solid black; margin-left: auto;
@@ -274,7 +282,7 @@
                      margin-right:auto;  margin-bottom: auto; padding:1%;">
                             <!-- Search Box -->
                             <label for="filterInput" class="alert alert-light float-left" 
-                            style="color:black; width: 100%; height:auto; padding:2px; font-size: 85%;">
+                            style="margin:1%; color:black; width: 100%; height:auto; padding:1%; font-size: 85%;">
                                 <h5 style="font-size: 100%;">Search for keywords</h5>
                             </label>
                             <br/>
