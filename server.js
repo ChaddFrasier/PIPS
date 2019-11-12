@@ -630,7 +630,7 @@ app.post('/captionWriter', async function(request, response){
                         else{
                             // image is smaller than desired figure size
                             // if the new dimensions is less than the max
-                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                            if(lines * samples <= 7579000){
                                 // render image at full res
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
                                     cubeObj.logFlag,cubeObj.userId + ".log"));
@@ -1445,7 +1445,7 @@ app.post("/resizeFigure",function(request, response){
                 else{
                     // image is smaller than desired figure size
                     // if the new dimensions is less than the max
-                    if(newWidth * newHeight <= 7579000){
+                    if(rawH * rawW <= 7579000){
                         // render image at full res
                         promises.push(util.reduceCube(rawCube, userObject.name, 1,
                             userObject.logFlag,userObject.userId + ".log"));
