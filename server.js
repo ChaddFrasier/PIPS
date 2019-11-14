@@ -24,8 +24,8 @@
 
 /** READ ME BEFORE EDITING
  * ----------------------------------------------------------------------------------------------------------
- * @summary  10/04/19           Planetary Image Publication Server
- *                             ------------------------------------
+ * @summary  10/13/2019           Planetary Image Publication Server
+ *                               ------------------------------------
  * 
  *     Uploads can be in .cub or .tif and the server now has a more user friendly acceptance of dimensions
  *  by auto generating the size of the other dimensions when not given.
@@ -77,7 +77,7 @@
  *  sends the download directly to the user. This helps the download process by speeding up image processing
  *  and allowing chrome users to see a progress bar instead of having to wait for the download to finish.
  * 
- *                      (Exporting can be done in png, jpeg, svg, or tiff)
+ *                      ( Exporting can be done in png, jpeg, svg, or tiff )
  * 
  *      A progress bar has been added to the image editor for when users are downloading the figure.
  *  This is a better interface for users when a download is occuring rather than just a spinning animation.
@@ -171,7 +171,6 @@ app.use("/tpl" , express.static("tpl"));
 app.use("/tmp" , express.static('tmp'));
 app.use("/pvl " , express.static("pvl"));
 
-
 // start view engine
 app.set('view engine', 'ejs');
 
@@ -255,7 +254,7 @@ app.get('/', function(request, response){
     // render the index page w/ proper code 
     response.render("index.ejs", {alertCode: (code === undefined) ? 0 : code});
 });
- 
+
 
 /**
  * GET '/tpl'
@@ -425,7 +424,6 @@ app.post('/captionWriter', async function(request, response){
             }
 
             // make sure string only contains digets and it is a proper length
-    
             // if no user id is found 
             if(uid === undefined || !(/[\S\d]{23}/gm.test(uid) && uid.length === 23)){
                 // create a random 23 character user id
@@ -536,7 +534,11 @@ app.post('/captionWriter', async function(request, response){
             if(isTiff){
                 // promise on the tiff conversion
                 let logCubeName = util.getRawCube(cubeObj.name, cubeObj.userNum);
-                promises.push(util.tiff2Cube('uploads/' + cubeObj.name, cubeObj.logFlag, cubeObj.userId + ".log", logCubeName));
+                promises.push(util.tiff2Cube(
+                        'uploads/' + cubeObj.name,
+                        cubeObj.logFlag,
+                        cubeObj.userId + ".log",
+                        logCubeName));
             }
 
             // if the desired width and height are both given set that to be the user dimensions 
@@ -595,8 +597,9 @@ app.post('/captionWriter', async function(request, response){
                                 samples = Number(bufferArray[index + 1].split("=")[1]); // width of image
                                 lines = Number(bufferArray[index + 2].split("=")[1]); // height of image
 
-                                // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
-                                scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1] : samples/cubeObj.userDim[0];
+                                // scaleFactor is the factor that it takes to 
+                                // shrink the lowest dimension to the new dimension
+                                scaleFactor = (samples <= lines) ? lines/cubeObj.userDim[1]:samples/cubeObj.userDim[0];
                                 break;
                             }
                         }
@@ -671,10 +674,11 @@ app.post('/captionWriter', async function(request, response){
                                 'images',
                                 cubeObj.logFlag,
                                 cubeObj.userId + ".log",
-                                logCubeName));
+                                logCubeName)
+                            );
                         
                             // when isis is done read the pvl file
-                            Promise.all(promises).then(function(){
+                            Promise.all(promises).then( function(){
                                 //reset promises array
                                 promises = [];
                                 // if the log flag is true log the end of the ISIS calls
@@ -812,6 +816,7 @@ app.post('/captionWriter', async function(request, response){
     }
 });
 
+
 /**
  * POST '/csv'
  * 
@@ -846,6 +851,7 @@ app.post('/csv', function(request,response){
         response.redirect("/?alertCode=4");
     }
 });
+
 
 /**
  * GET '/csv'
@@ -889,6 +895,7 @@ app.get('/csv', function(request, response){
         }
     }
 });
+
 
 /**
  * GET '/imageEditor'
@@ -1085,6 +1092,7 @@ app.get('/imageEditor', function(request, response){
     }
 });
 
+
 /**
  * POST '/imageEditor'
  * 
@@ -1106,7 +1114,6 @@ app.post('/imageEditor', function(request, response){
     catch(err){
         // no instance was found
     }
-    
     
     if(uid !== undefined){
         // get image name and path
@@ -1293,6 +1300,39 @@ app.post("/pow",function(request, response){
         // icon locations
         // output type of image
         // log output (T or F)
+});
+
+
+/**
+ * POST '/impDataUpdate' handler
+ * 
+ * changes the impData of the user instance
+ */
+app.post("/impDataUpdate", function(request, response){
+    console.log(request.url);
+
+    var newData = JSON.parse(request.body.data),
+        userObject = util.getObjectFromArray(request.cookies["puiv"], cubeArray);
+
+    if(newData !== userObject.impData){
+        userObject.impData = newData;
+    }
+
+    response.send("SUCCESSFULLY UPDATED").status(200);
+});
+
+
+/**
+ * GET "/getData" handler
+ * 
+ * send that important data to the client
+ */
+app.get("/getData", function( request, response){
+    console.log(request.url);
+    var id = request.cookies["puiv"],
+        userObject = util.getObjectFromArray(id, cubeArray);
+
+    response.send(JSON.parse(userObject.impData));
 });
 
 
@@ -1524,7 +1564,9 @@ app.post("/resizeFigure",function(request, response){
                                 fs.writeFileSync(path.join('csv',csvFilename),csv,'utf-8');
                 
                                 // send response
-                                response.sendFile(path.join(__dirname, "images", util.getimagename(userObject.name, "png")));
+                                response.sendFile(
+                                        path.join(__dirname, "images", util.getimagename(userObject.name, "png"))
+                                    );
                             
                             }).catch(err => {
                                 console.log(err);
@@ -1679,7 +1721,6 @@ app.listen(8000);
 // serving machines on either open or closed network
 app.listen(PORT,"0.0.0.0");
 
-
 // interval function to check and erase memory from the server that has not been accessed in 8 hours
 var interval = function() {
     console.log("\nMemory Analysis Running");
@@ -1715,5 +1756,6 @@ var interval = function() {
 setInterval(interval, 28800000);
 
 // tell console status and port #
-console.log("Server is running and listen for outer connections on port " + PORT + "\n http://" + os.hostname() + ":8080/");
+console.log("Server is running and listen for outer connections on port " 
++ PORT + "\n http://" + os.hostname() + ":8080/");
 console.log("Server is running and listen locally on port " + 8000 + "\n http://localhost:8000/");

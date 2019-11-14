@@ -77,7 +77,6 @@ function getMetadata(){
     
     //'StartTime': '1997-10-20T10:58:37.46'
     for(const key of Object.keys(jsonData)){
-        //console.log('key: ' + key + ':val:' + jsonData[key]);
         if(key != undefined){  
             let str = keyToTag(key) + ": " + jsonData[key] + "\n";
             metaDataArea.value += str;
@@ -491,14 +490,12 @@ $(document).ready(function(){
             a.href = "data:attachment/text," + data;
             a.target = "__blank";
             a.download = filename;
-            console.log('output name is '+ outputName);
     
             a.click();
         }
         else if(filename !== null){
             $("#templateDownloadBtn").mousedown();
-        }
-        
+        } 
     });
 
 
@@ -510,6 +507,7 @@ $(document).ready(function(){
     $("#addTagBtn").click( function() {
         // create the elements
         var div = document.createElement("div"),
+            buttonBox = document.createElement("div"),
             title = document.createElement("h3"),
             tagInput = document.createElement("input"),
             tagLabel = document.createElement("label"),
@@ -518,6 +516,7 @@ $(document).ready(function(){
             cancelBtn = document.createElement("button"),
             submitBtn = document.createElement("button");
 
+        // design the box for adding tags
         div.style.background = "lightgray";
         div.style.position = "absolute";
         div.style.left = "38%";
@@ -533,6 +532,10 @@ $(document).ready(function(){
         tagLabel.style.top = "36%";
         tagLabel.innerHTML = "New Tag: ";
         tagLabel.style.color = "black";
+
+        buttonBox.style.width = "75%",
+        buttonBox.style.background = "transparent",
+        buttonBox.style.height = "100%";
 
         tagInput.style.position = "absolute";
         tagInput.style.left = "35%";
@@ -574,38 +577,102 @@ $(document).ready(function(){
 
         // submit listener
         submitBtn.addEventListener("mousedown", (event) => {
+            // if both values are not empty
             if(tagInput.value !== "" && valInput.value !== ""){
+                // trim extra spaces
                 tagInput.value = tagInput.value.trim();
                 valInput.value = valInput.value.trim();
 
                 // add these values into the common tag section
                 var metadata = document.getElementById("allTagArea").value,
                     metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
+                    tags = document.getElementById("metadataTagArea"),
+                    impData = JSON.parse(document.getElementById("metadata-text").value),
                     newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
                 
+                // temp array
                 let tmpArr = metadata.split("\n");
+                let impArr = tags.value.split("\n");
 
+                // loop through the important data
+                for( var i=0; i<impArr.length; i++ ) {
+                    // if the tag value is the same as the input
+                    if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
+
+                        // confirm that the user wants to change this value
+                        var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
+
+                        // if confirmed
+                        if( userChoice ) {
+                            // add the value to the array of tags
+                            impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
+                            impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
+                                                                    ? parseFloat(valInput.value)
+                                                                    : valInput.value;
+                            // form data
+                            var fd = new FormData();
+                                headers = new Headers();
+                            
+                            // append data as a string to the form
+                            fd.append("data", JSON.stringify(impData));
+
+                            // update the common data
+                            fetch("/impDataUpdate", 
+                            {
+                                method: 'POST',
+                                body: fd,
+                                headers: headers
+                            }).then(response => {
+                                response.blob().then( blob => {
+                                    // read result
+                                    var reader = new FileReader();
+                                    reader.readAsText(blob);
+    
+                                    reader.onloadend = () => {
+                                        console.log(reader.result);
+                                    };
+                                });
+                            });
+                        }
+                    }
+                }
+
+                // join the array and save it to the element
+                tags.value = impArr.join("\n");
+
+                // add the tag to the data
                 metaDataText[tagInput.value] = valInput.value;
+
+                // push the new stirng
                 tmpArr.push(newString);
 
+                // update the data on the page
+                document.getElementById("metadata-text").value = JSON.stringify(impData);
                 document.getElementById("allTagArea").value = tmpArr.join("\n");
                 document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
+                // remove the tab we created
                 div.remove();
-            }
-            else{
-                console.log("NOT SUBMITTED");
+
+                // update the tag section
+                showMoreTags();
+                showMoreTags();
             }
         });
 
         // add elements in order
-        div.appendChild(title)
+        div.appendChild(title);
+        buttonBox.appendChild(tagInput);
+        buttonBox.appendChild(valInput);
+
         div.appendChild(valLabel);
-        div.appendChild(valInput);
         div.appendChild(tagLabel);
-        div.appendChild(tagInput);
-        div.appendChild(cancelBtn);
+        div.appendChild(buttonBox);
+    
         div.appendChild(submitBtn);
+        div.appendChild(cancelBtn);
         document.body.insertBefore(div,document.body.firstChild);
+
+        tagInput.focus();
     });
 
     /**
@@ -614,16 +681,20 @@ $(document).ready(function(){
      * @description take the value in the button and add it to the textbox at the location of the cursor
      */
     $("button.specChar").mousedown(function(){
-
+        // get needed data
         var symbol = String($(this).html()).trim(),
             templateText = document.getElementById("template-text").value,
             end = templateText.substring(cursorLocation, templateText.length),
             start = templateText.substring(0, cursorLocation++);
 
+        // append the symbol to the start string
         start += symbol;
 
+        // append the two halves
         document.getElementById("template-text").value =  String(start + end);
         setOutput();
+        
+        // hide the character buttons 
         $("#specialCharactersBtn").mousedown();
     });
 
