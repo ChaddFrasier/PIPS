@@ -77,13 +77,11 @@ function getMetadata(){
     
     //'StartTime': '1997-10-20T10:58:37.46'
     for(const key of Object.keys(jsonData)){
-        //console.log('key: ' + key + ':val:' + jsonData[key]);
         if(key != undefined){  
             let str = keyToTag(key) + ": " + jsonData[key] + "\n";
             metaDataArea.value += str;
         }
     }
-
 }
 
 /**
@@ -224,16 +222,15 @@ function removeUnits(str){
             tmpArr[index] = "";
         }
     }
-
     return tmpArr.join("");
 }
 
 
 /**
- * Object prototype sort function that sorts by key length
+ * @function Object.prototype.sort
  * 
+ * @description sort the object in order of key length
  */
-
 Object.prototype.sort = function(){
     
     let keys = Object.keys(this);
@@ -251,7 +248,7 @@ Object.prototype.sort = function(){
 }
 
 
-// TODO: this fails when refreshing 
+// TODO: this fails when refreshing b/c the values in the elements have changed
 // ||||
 // VVVV
 /** 
@@ -302,6 +299,7 @@ function showMoreTags(){
     var textArea = document.getElementById("test");
     var metaTags = document.getElementById("metadataTagArea");
     var importantTags = document.getElementById("allTagArea");
+
     val = val.toString();
     if(val === "Show Important Tags"){
         // Switch to important tags
@@ -458,8 +456,9 @@ $(document).ready(function(){
     });
 
     /**
+     * @function specialCharactersBtn 'mousedown'
      * 
-     * 
+     * @description shows and removes the special characters buttons under the output box
      */
     $("#specialCharactersBtn").mousedown(function(){
         if($(this).hasClass("btn-secondary")){
@@ -475,44 +474,227 @@ $(document).ready(function(){
     });
 
 
+    /**
+     * @function templateDownloadBtn 'mousedown'
+     * 
+     * @description template download functionality with naming convention
+     */
     $("#templateDownloadBtn").mousedown( function(){
         var templateText = document.getElementById("template-text").value;
         var data = encodeURIComponent(templateText);
         
         var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
 
-        
         if(filename !== null && /^.*\.(tpl)$/gm.test(filename)){
             var a = document.createElement("a");
             a.href = "data:attachment/text," + data;
             a.target = "__blank";
             a.download = filename;
-            console.log('output name is '+ outputName);
     
             a.click();
         }
         else if(filename !== null){
             $("#templateDownloadBtn").mousedown();
-        }
-        
+        } 
     });
 
 
     /**
+     * @function addTagBtn 'click' handler
      * 
+     * @description create a box to handle the input of a new tag
+     */
+    $("#addTagBtn").click( function() {
+        // create the elements
+        var div = document.createElement("div"),
+            buttonBox = document.createElement("div"),
+            title = document.createElement("h3"),
+            tagInput = document.createElement("input"),
+            tagLabel = document.createElement("label"),
+            valInput = document.createElement("input"),
+            valLabel = document.createElement("label"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button");
+
+        // design the box for adding tags
+        div.style.background = "lightgray";
+        div.style.position = "absolute";
+        div.style.left = "38%";
+        
+        div.style.top = "50%";
+        div.style.zIndex = "10";
+        div.style.width = "18%";
+        div.style.height = "18%";
+        div.style.border = "2px solid black";
+
+        tagLabel.style.position = "absolute";
+        tagLabel.style.left = "10%";
+        tagLabel.style.top = "36%";
+        tagLabel.innerHTML = "New Tag: ";
+        tagLabel.style.color = "black";
+
+        buttonBox.style.width = "75%",
+        buttonBox.style.background = "transparent",
+        buttonBox.style.height = "100%";
+
+        tagInput.style.position = "absolute";
+        tagInput.style.left = "35%";
+        tagInput.style.top = "35%";
+        tagInput.placeholder = "New Tag";
+
+        valLabel.style.position = "absolute";
+        valLabel.style.left = "10%";
+        valLabel.style.top = "54%";
+        valLabel.innerHTML = "New Value: ";
+        valLabel.style.color = "black";
+
+        valInput.style.position = "absolute";
+        valInput.style.left = "35%";
+        valInput.style.top = "55%";
+        valInput.placeholder = "New Value";
+
+        title.innerHTML = "Create a New Tag";
+        title.style.position = "absolute";
+        title.style.color = "black";
+        title.style.left = "19%";
+
+        cancelBtn.className = "btn btn-sm btn-danger button";
+        cancelBtn.innerHTML = "Cancel";
+        cancelBtn.style.position = "absolute";
+        cancelBtn.style.left = "10%";
+        cancelBtn.style.top = "75%";
+
+        // cancel listener
+        cancelBtn.addEventListener("mousedown", (event) => {
+            div.remove();
+        });
+
+        submitBtn.className = "btn btn-sm button";
+        submitBtn.innerHTML = "Submit";
+        submitBtn.style.position = "absolute";
+        submitBtn.style.left = "70%";
+        submitBtn.style.top = "75%";
+
+        // submit listener
+        submitBtn.addEventListener("mousedown", (event) => {
+            // if both values are not empty
+            if(tagInput.value !== "" && valInput.value !== ""){
+                // trim extra spaces
+                tagInput.value = tagInput.value.trim();
+                valInput.value = valInput.value.trim();
+
+                // add these values into the common tag section
+                var metadata = document.getElementById("allTagArea").value,
+                    metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
+                    tags = document.getElementById("metadataTagArea"),
+                    impData = JSON.parse(document.getElementById("metadata-text").value),
+                    newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
+                
+                // temp array
+                let tmpArr = metadata.split("\n");
+                let impArr = tags.value.split("\n");
+
+                // loop through the important data
+                for( var i=0; i<impArr.length; i++ ) {
+                    // if the tag value is the same as the input
+                    if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
+
+                        // confirm that the user wants to change this value
+                        var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
+
+                        // if confirmed
+                        if( userChoice ) {
+                            // add the value to the array of tags
+                            impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
+                            impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
+                                                                    ? parseFloat(valInput.value)
+                                                                    : valInput.value;
+                            // form data
+                            var fd = new FormData();
+                                headers = new Headers();
+                            
+                            // append data as a string to the form
+                            fd.append("data", JSON.stringify(impData));
+
+                            // update the common data
+                            fetch("/impDataUpdate", 
+                            {
+                                method: 'POST',
+                                body: fd,
+                                headers: headers
+                            }).then(response => {
+                                response.blob().then( blob => {
+                                    // read result
+                                    var reader = new FileReader();
+                                    reader.readAsText(blob);
+    
+                                    reader.onloadend = () => {
+                                        console.log(reader.result);
+                                    };
+                                });
+                            });
+                        }
+                    }
+                }
+
+                // join the array and save it to the element
+                tags.value = impArr.join("\n");
+
+                // add the tag to the data
+                metaDataText[tagInput.value] = valInput.value;
+
+                // push the new stirng
+                tmpArr.push(newString);
+
+                // update the data on the page
+                document.getElementById("metadata-text").value = JSON.stringify(impData);
+                document.getElementById("allTagArea").value = tmpArr.join("\n");
+                document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
+                // remove the tab we created
+                div.remove();
+
+                // update the tag section
+                showMoreTags();
+                showMoreTags();
+            }
+        });
+
+        // add elements in order
+        div.appendChild(title);
+        buttonBox.appendChild(tagInput);
+        buttonBox.appendChild(valInput);
+
+        div.appendChild(valLabel);
+        div.appendChild(tagLabel);
+        div.appendChild(buttonBox);
+    
+        div.appendChild(submitBtn);
+        div.appendChild(cancelBtn);
+        document.body.insertBefore(div,document.body.firstChild);
+
+        tagInput.focus();
+    });
+
+    /**
+     * @function button[class=specChar] 'mousedown'
      * 
+     * @description take the value in the button and add it to the textbox at the location of the cursor
      */
     $("button.specChar").mousedown(function(){
-
-        var symbol = $(this).html(),
+        // get needed data
+        var symbol = String($(this).html()).trim(),
             templateText = document.getElementById("template-text").value,
             end = templateText.substring(cursorLocation, templateText.length),
             start = templateText.substring(0, cursorLocation++);
 
+        // append the symbol to the start string
         start += symbol;
 
+        // append the two halves
         document.getElementById("template-text").value =  String(start + end);
         setOutput();
+        
+        // hide the character buttons 
         $("#specialCharactersBtn").mousedown();
     });
 

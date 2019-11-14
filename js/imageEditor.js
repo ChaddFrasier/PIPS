@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 11/08/2019
+ * @updated 11/12/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -55,11 +55,12 @@ var mouseX,
 
 // create an enumerated object for setting the scaling boxes
 var placeEnum = new Object({
-        "top-left":1,
-        "top-right":2,
-        "bottom-right":3,
-        "bottom-left":4
+        "top-left": 1,
+        "top-right": 2,
+        "bottom-right": 3,
+        "bottom-left": 4
         });
+
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
 /** ---------------------------- Draggable Function ------------------------------------------------------ */
@@ -110,7 +111,6 @@ function makeDraggable(event){
         outlineMin = .125,
         scale;
     
-        
     // sets boundries for draggable objects when confined based on the view box
     // minX = x of viewbox
     var boundaryX1 = Number(svg.getAttribute('viewBox').split(" ")[0]);
@@ -374,8 +374,7 @@ function makeDraggable(event){
      * @description This runs when the mousemove event occurs
      *      This functions performs the actual icon manipulation
      *      This functions will scale icons up and down in size based on mouse motion.
-     *      It also moves icons around the screen when the dragging event is occuring 
-     *      
+     *      It also moves icons around the screen when the dragging event is occuring      
     */
     function drag(event) {
         // get the mouse x and y based on client
@@ -861,12 +860,12 @@ function getMetadata(){
 
     // parse back into JSON
     var metadataString = JSON.parse(metadata);
-    
+
     // Important Metadata Values adding degree offset for isis
     northDegree = parseFloat(metadataString['NorthAzimuth']) + 90;
     sunDegree = parseFloat(metadataString['SubSolarAzimuth'])+ 90;
     observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
-    
+
     if(isNaN(northDegree)){
         // check if it is map projected, if yes set north to 0 else
         if(isMapProjected === 'true'){
@@ -881,11 +880,20 @@ function getMetadata(){
                                                             "btn btn-secondary btn-lg button disabled");
         }
     }
+    else{
+        // disable the button if the degree was not found
+        document.getElementById('northIconFlag').setAttribute('class',
+                                                            "btn btn-lg button");
+    }
 
     if(isNaN(sunDegree)){
         // disable the button if the degree was not found
         document.getElementById('sunIconFlag').setAttribute('class',
                                                             "btn btn-secondary btn-lg button disabled");
+    }
+    else{
+        document.getElementById('sunIconFlag').setAttribute('class',
+                                                            "btn btn-lg button");
     }
 
     if(isNaN(observerDegree)){
@@ -893,14 +901,20 @@ function getMetadata(){
         document.getElementById('eyeFlag').setAttribute('class',
                                                             "btn btn-secondary btn-lg button disabled");
     }
+    else{
+        document.getElementById('eyeFlag').setAttribute('class',
+                                                            "btn btn-lg button");
+    }
 
     // if the degree value is over 360 just subtract 360 because the math is easier
-    if(northDegree>360){ northDegree-=360; }
-    if(sunDegree>360){ sunDegree-=360; }
-    if(observerDegree>360){ observerDegree-=360; }
+    if(northDegree>360){ northDegree -= 360; }
+    if(sunDegree>360){ sunDegree -= 360; }
+    if(observerDegree>360){ observerDegree -= 360; }
 
+    
     // set the scale bar corners to the correct orientation
-    setScaleboxCorners(northDegree, sunDegree);
+    setScaleboxCorners(northDegree, sunDegree, observerDegree);
+    
 }
 
 
@@ -1150,9 +1164,10 @@ function prepareCrop(clickArray){
  * @description takes the rotation angle and calculates where each corner will be for scaling
  * 
 */
-function setScaleboxCorners(northDegree, sunDegree){
+function setScaleboxCorners(northDegree, sunDegree, observerDegree){
+    
     // as long as northDegree is not NaN and not 0 we will need to adjust the boxes
-    if(!isNaN(northDegree) &&  northDegree!== 0){
+    if(!isNaN(northDegree) &&  northDegree !== 0){
         // get the child list
         let childList = northImage.childNodes;
         let offset90 = Math.round(northDegree / 90);
@@ -1191,8 +1206,9 @@ function setScaleboxCorners(northDegree, sunDegree){
                     
                     childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                 }
-            }
-            
+
+                
+            } 
         }
     }
     // same is done for each icon that rotates
@@ -1292,7 +1308,6 @@ function setScaleboxCorners(northDegree, sunDegree){
 function setIconAngle(icon, degree){
     // if the degree is no NaN
     if(!isNaN(degree)){
-
         // get the transform value if the icon object
         let transformVal = icon.getAttribute("transform");
         // get the seperate transform values in a list
@@ -1300,9 +1315,9 @@ function setIconAngle(icon, degree){
 
         // set the rotation transform and return after
         // the new transform attribute has been set
-        for(index in transformArray){
+        for( index in transformArray ) {
             
-            if(transformArray[index].indexOf("rotate") > -1){
+            if( transformArray[index].indexOf("rotate") > -1 ) {
                 var tmp = transformArray[index].split("rotate(")[1];
                 
                 tmp = tmp.replace(")"," ").trim();
@@ -1391,7 +1406,7 @@ function captureClick(x,y){
 */
 function createTimer(){
     let startTime = new Date();
-    return [ startTime.getHours(),startTime.getMinutes(),startTime.getSeconds() ];
+    return [ startTime.getHours(), startTime.getMinutes(), startTime.getSeconds() ];
 }
 
 
@@ -1497,7 +1512,6 @@ function resetSingleIcon(icon, widthDif, heightDif){
                 // othewise just set it
                 transform = transform + ")";
             }
-            
             // push the new transform
             tmpArr.push(transform)
         }
@@ -1520,14 +1534,12 @@ function resetSingleIcon(icon, widthDif, heightDif){
  * @function resetIcons
  * 
  * @param {DOM element} svg the svg element object
- * @param {number} newWidth the width inputed
- * @param {number} newHeight the height input
  * @param {number} heightDif the difference between the old and new height 
  * @param {number} widthDif the difference between the old and new weight
  * 
  * @description this function moved icons in relation to the width and height difference
  */
-function resetIcons(svg, newWidth, newHeight, heightDif, widthDif){
+function resetIcons(svg, heightDif, widthDif){
        
     // reset the draggable icons
     resetSingleIcon(northImage, widthDif, heightDif);
@@ -1613,7 +1625,7 @@ function peekTimer(startTime){
  * @description create a new mouse event for a download 
  *              and create an anchor to click on that forces a download
 */
-function triggerDownload(imgURI,filename){
+function triggerDownload(imgURI, filename){
     // create a click event
     var event = new MouseEvent('click', {
         view: window,
@@ -1653,8 +1665,6 @@ function getMarkerId(id, inc){
     }
 }
 
-
-
 /** ----------------------------- End Helper Function ---------------------------------------------------- */
 
 /** --------------------------------- Draw Functions ----------------------------------------------------- */
@@ -1672,19 +1682,18 @@ function resetDrawTool(){
     document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
     // remove half drawn lines if any
-    if(lineArr.length > 0 && clickArray.length > 1){
+    if( lineArr.length > 0 && clickArray.length > 1 ) {
         var elem = lineArr.pop();
 
-            if(elem.getAttribute("marker-end")){
-                // remove the arrow def based on marker-end value
-                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+        if(elem.getAttribute("marker-end")){
+            // remove the arrow def based on marker-end value
+            let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
 
-                if(id !== "#arrow"){
-                    $(id).parent().remove();
-                }
+            if(id !== "#arrow"){
+                $(id).parent().remove();
             }
-            
-            elem.remove();
+        }
+        elem.remove();
     }
     // reset the click array
     clickArray = [];
@@ -1740,6 +1749,135 @@ function removeKey(keysArr, key){
         }
         return returnArr;
     }
+}
+
+
+/**
+ * 
+ * @param {DOM element} icon the icon to be adjusted
+ * @param {number} newDegree the new degree where the boxes need to be
+ * @param {number} oldDegree the old degree where the boxes where set
+ */
+function adjustIconAngle( icon, newDegree, oldDegree){
+ 
+    if( oldDegree > 360 ) { oldDegree -= 360 }
+    if( newDegree > 360 ) { newDegree -= 360 }
+
+    if(!isNaN(newDegree) &&  newDegree !== 0){
+        // get the child list
+        let childList = icon.childNodes;
+        let oldOffset = Math.round(oldDegree / 90);
+        let offset90 = Math.round(newDegree / 90);
+        
+        if(newDegree > oldDegree || isNaN(oldDegree)){
+            offset90 -= (isNaN(oldOffset)) ? 0 : oldOffset;
+
+            for(index in childList){
+                if(childList[index].classList 
+                    && childList[index].classList.contains("resize") 
+                        && offset90 >= 1 && offset90 <= 4){
+                    
+                    if(childList[index].classList.contains("top-left")){
+                        let newClass = placeEnum["top-left"] + offset90;
+                        if(newClass > 4){newClass -= 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("top-right")){
+                        let newClass = placeEnum["top-right"] + offset90;
+                        if(newClass > 4){newClass -= 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-right")){
+                        let newClass = placeEnum["bottom-right"] + offset90;
+                        if(newClass > 4){newClass -= 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-left")){
+                        let newClass = placeEnum["bottom-left"] + offset90;
+                        if(newClass > 4){newClass -= 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                } 
+            }
+        }
+        else{
+            oldOffset -= offset90;
+
+            for(index in childList){
+                if(childList[index].classList 
+                    && childList[index].classList.contains("resize") 
+                        && oldOffset >= 1 && oldOffset <= 4){
+                    
+                    if(childList[index].classList.contains("top-left")){
+                        let newClass = placeEnum["top-left"] - oldOffset;
+                        if(newClass <= 0){ newClass += 4 }
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("top-right")){
+                        let newClass = placeEnum["top-right"] - oldOffset;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-right")){
+                        let newClass = placeEnum["bottom-right"] - oldOffset;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-left")){
+                        let newClass = placeEnum["bottom-left"] - oldOffset;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                } 
+            }
+        }
+            
+    } 
+}
+
+function iconPlaced( icon ){
+    var svg = document.getElementById("svgWrapper"),
+        children = svg.childNodes;
+
+        children.forEach(child => {
+            if(child === icon){
+                switch(child){
+                    case northImage:
+                        $("#northIconFlag").mousedown();
+                        break;
+                    case sunImage:
+                        $("#sunIconFlag").click();
+                        break;
+                    case eyeImage:
+                        $("#eyeFlag").click();
+                        break;
+                }
+            }
+        });
+}
+
+
+/**
+ * @function replaceAll
+ *
+ * @author Brandon Kindrick
+ * 
+ * @param {string} find the substring to replace
+ * @param {string} replace the value to replace the substring with
+ * 
+ * @description prototype string function that replaces every occurance of a string with another given value
+*/ 
+String.prototype.replaceAll = function(find, replace){
+    var str = this;
+    return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 }
 /** --------------------------------- End Draw Functions ------------------------------------------------- */
 /** ------------------------------------ Jquery Handlers ------------------------------------------------- */
@@ -1879,16 +2017,20 @@ $(document).ready(function(){
     + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>\n'
     + '<path id= "eyeIconOuter" d="M 14 30 C 14 30 50 -10 85 30 C 85 30 50 75 14 29" fill="black"'
     + 'stroke="white" style="border:0;"></path>\n'
-    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black"></ellipse>\n'
+    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black">'
+    + '</ellipse>\n'
     + '<circle id= "eyeIconPupel" r="6" cy="31" cx="50" stroke-width="2" stroke="white" fill="black"' 
     + 'style="border:0;"></circle>\n'
-    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20"stroke="black" fill="red"/>\n'
-    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20"stroke="black" fill="blue"/>\n'
-    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20"stroke="black" fill="green"/>\n' 
+    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20"stroke="black" '
+    + 'fill="red"/>\n'
+    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20"stroke="black" '
+    + 'fill="blue"/>\n'
+    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20"stroke="black" '
+    + 'fill="green"/>\n' 
     + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20"'
     + ' fill="yellow" stroke="black"/>\n</g>\n';
 
-    var scaleBarObject = '<g id="scalebarPosition"class="draggable confine scalebar"'
+    var scaleBarObject = '<g id="scalebarPosition" class="draggable confine scalebar"'
     + 'transform="translate(0, 175) scale(.1)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
     + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>\n'
@@ -2147,7 +2289,6 @@ $(document).ready(function(){
         var mainbox = document.getElementsByClassName("mainbox-center");
 
         mainbox[0].appendChild(window);
-
     });
 
 
@@ -2158,7 +2299,7 @@ $(document).ready(function(){
      *              like it did before in the old export function
      */
     function saveBtnFunction(){
-        var filename = document.getElementById("filenameInput").value + document.getElementById("fileExtSelect").value; 
+        var filename = document.getElementById("filenameInput").value + document.getElementById("fileExtSelect").value;
 
         if(/^.*\.(jpg|jpeg|png|tif|svg)$/gm.test(filename)){
             // hide the save ui div
@@ -2278,8 +2419,7 @@ $(document).ready(function(){
         else{
             // filename does not fit the reg exp
             console.log("REGEXP evaluated to false");
-        }
-        
+        }   
     }
 
     /**
@@ -2309,11 +2449,9 @@ $(document).ready(function(){
                 if(!(/^.*\.(jpg|jpeg|svg|png|tif|tiff)$/gm.test(String(this.value).toLowerCase()))){
                     alert("Enter Filname with no extension");
                     break;
-                    
                 }
             }    
-        }
-        
+        } 
     }
 
     /** --------------------------------- End Export Functions ------------------------------------------- */
@@ -2511,7 +2649,6 @@ $(document).ready(function(){
      * @function undoLine 'mousedown' event handler
      * 
      * @description remove the last added instance of the lines
-     * 
     */
     $("#undoLine").on("mousedown",function(){
         if(lineArr.length > 0 && clickArray.length > 1){
@@ -2541,7 +2678,6 @@ $(document).ready(function(){
                     $(id).parent().remove();
                 }
             }
-            
             elem.remove();
         }
         else{
@@ -2668,7 +2804,7 @@ $(document).ready(function(){
         // if either of the inputs is not empty and more than 1000 and new dimensions are not the same as before
         if((widthInput !== "" || heightInput !== "")
             && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
-            && (dim.w !== widthInput || dim.h !== heightInput)){
+            && (dim.w !== widthInput || dim.h !== heightInput)) {
             
             // get user id from browser cookie
             let id = getCookie("puiv");
@@ -2700,7 +2836,6 @@ $(document).ready(function(){
             // calculate difference
             var heightDifference = dim.h - heightInput,
                 widthDifference = dim.w - widthInput;
-
 
             fetch('/resizeFigure',
                 {
@@ -2734,7 +2869,7 @@ $(document).ready(function(){
                             displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
                             // shift icons
-                            resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                            resetIcons(svg, heightDifference, widthDifference);
                             fd = new FormData();
 
                             fd.append("id", id);
@@ -2757,7 +2892,6 @@ $(document).ready(function(){
                                         // load the json structure out of the text string
                                         var body = JSON.parse(reader.result);
 
-                                        console.log(body);
                                         scalePX = parseFloat(body["scalebarPX"]);
                                         scalebarLength = parseFloat(body["scalebarLength"]);
 
@@ -2772,14 +2906,18 @@ $(document).ready(function(){
                                             // set the size based on how the image is drawn
                                             if((widthInput/origW) < (heightInput/origH)){
                                                 scaleBarIcon.setAttribute("transform",
-                                                                                "translate(0, 175) scale(" + (scalePX/4000)* 2 * (widthInput/origW) + ')');
-                                                // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
+                                                    "translate(0, 175) scale(" 
+                                                    + (scalePX/4000)* 2 * (widthInput/origW) + ')');
+                                                // set text box font to 11X the scale of the scale bar
+                                                // to account for the change in pixel sizes 
                                                 textSize = (scalePX/4000)* 21 * (widthInput/origW);
                                             }
                                             else{
                                                 scaleBarIcon.setAttribute("transform",
-                                                                                "translate(0, 175) scale(" + (scalePX/4000)* 2 * (heightInput/origH) + ')');
-                                                // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
+                                                                    "translate(0, 175) scale(" 
+                                                                    + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                // set text box font to 11X the scale of the scale bar to 
+                                                // account for the change in pixel sizes
                                                 textSize = (scalePX/4000)* 21 * (heightInput/origH);
                                             }
                                             // if half the bar is less than 1 km then give it the decimal
@@ -2802,18 +2940,21 @@ $(document).ready(function(){
                                         else{
                                             // if the scalebarPx is none disable the button
                                             document.getElementById("scaleBarButton").setAttribute("class",
-                                                                                                    "btn btn-secondary btn-lg button disabled");
-                                            // set deafult font size for text boxes note that this is a scale value not px size 
+                                                                        "btn btn-secondary btn-lg button disabled");
+                                            // set deafult font size for text boxes note that
+                                            // this is a scale value not px size 
                                             // (px = font size * textSize)
                                             textSize = 2;
                                         }
                                 
                                         // Reset the font
                                         if(half !== null && scalebarHalf !== null){
-                                            if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                            if(String(parseInt(half)).length === 1 && half >= 1 
+                                                && parseInt(half) === half){
                                                 scalebarHalf.setAttribute("x","1100");
                                             }
-                                            else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                            else if(String(parseInt(half)).length === 3 || half < 1 
+                                                || parseInt(half) !== half){
                                                 
                                                 if( half < 1 ){
                                                     scalebarHalf.setAttribute("x","1050");
@@ -2862,6 +3003,8 @@ $(document).ready(function(){
             dim.w = parseInt(displayString.split("×")[0]);
             dim.h = parseInt(displayString.split("×")[1]);
 
+            widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+            heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
 
             var heightDifference = (heightInput !== "") ? dim.h - heightInput : dim.h - h ,
                 widthDifference = (widthInput !== "") ? dim.w - widthInput : dim.w - w ;
@@ -2869,9 +3012,6 @@ $(document).ready(function(){
             if(heightDifference || widthDifference){
                 var fd = new FormData(),
                     headers = new Headers();
-
-                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
-                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
 
                 fd.append("w", widthInput);
                 fd.append("h", heightInput);
@@ -2906,16 +3046,15 @@ $(document).ready(function(){
 
                                 displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
-
                                 w = widthInput;
                                 h = heightInput;
                                 
                                 // shift the icons
-                                resetIcons(svg, widthInput, heightInput, heightDifference, widthDifference);
+                                resetIcons(svg, heightDifference, widthDifference);
                                 fd = new FormData();
 
                                 fd.append("id", getCookie("puiv"));
-                                fetch("/evalScalebar", 
+                                fetch("/evalScalebar",
                                 {
                                     method: 'POST',
                                     body: fd,
@@ -2943,14 +3082,18 @@ $(document).ready(function(){
                                                 // set the size based on how the image is drawn
                                                 if((widthInput/origW) < (heightInput/origH)){
                                                     scaleBarIcon.setAttribute("transform",
-                                                                                    "translate(0, 175) scale(" + (scalePX/4000)* 2 * (widthInput/origW) + ')');
-                                                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes 
+                                                                        "translate(0, 175) scale(" 
+                                                                        + (scalePX/4000)* 2 * (widthInput/origW) +')');
+                                                    // set text box font to 11X the scale of the scale bar
+                                                    // to account for the change in pixel sizes 
                                                     textSize = (scalePX/4000)* 21 * (widthInput/origW);
                                                 }
                                                 else{
                                                     scaleBarIcon.setAttribute("transform",
-                                                                                    "translate(0, 175) scale(" + (scalePX/4000)* 2 * (heightInput/origH) + ')');
-                                                    // set text box font to 11X the scale of the scale bar to account for the change in pixel sizes
+                                                                    "translate(0, 175) scale(" 
+                                                                    + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                    // set text box font to 11X the scale of the scale bar
+                                                    // to account for the change in pixel sizes
                                                     textSize = (scalePX/4000)* 21 * (heightInput/origH);
                                                 }
                                                 // if half the bar is less than 1 km then give it the decimal
@@ -2973,19 +3116,20 @@ $(document).ready(function(){
                                             else{
                                                 // if the scalebarPx is none disable the button
                                                 document.getElementById("scaleBarButton").setAttribute("class",
-                                                                                                        "btn btn-secondary btn-lg button disabled");
-                                                // set deafult font size for text boxes note that this is a scale value not px size 
-                                                // (px = font size * textSize)
+                                                                        "btn btn-secondary btn-lg button disabled");
+                                                // set deafult font size for text boxes note that this 
+                                                // is a scale value not px size (px = font size * textSize)
                                                 textSize = 2;
                                             }
-                                    
-    
+
                                             // Reset the font 
                                             if(half !== null && scalebarHalf !== null){
-                                                if(String(parseInt(half)).length === 1 && half >= 1 && parseInt(half) === half){
+                                                if(String(parseInt(half)).length === 1 
+                                                    && half >= 1 && parseInt(half) === half){
                                                     scalebarHalf.setAttribute("x","1100");
                                                 }
-                                                else if(String(parseInt(half)).length === 3 || half < 1 || parseInt(half) !== half){
+                                                else if(String(parseInt(half)).length === 3 
+                                                    || half < 1 || parseInt(half) !== half){
                                                     
                                                     if( half < 1 ){
                                                         scalebarHalf.setAttribute("x","1050");
@@ -3072,6 +3216,10 @@ $(document).ready(function(){
         
     });
 
+    // for testing
+    window.addEventListener("mousedown", (event) => {
+        console.log(event.target);
+    });
 
     /**
      * @function scaleBarButton 'mousedown' event handler
@@ -3394,7 +3542,7 @@ $(document).ready(function(){
                 sunAnimation.style.webkitTransition = ".4s";
                 
                 setIconAngle(sunImage, sunDegree);
-                makeDraggable(svg);  
+                makeDraggable(svg); 
             }
             clickArray = [];
         }
@@ -3946,5 +4094,133 @@ $(document).ready(function(){
             // reset the padding to 0
             $("#resetPaddingBtn").click();
         }
+    });
+});
+
+/**
+ * @function window 'pageshow' event handler
+ * 
+ * @description run the logic to start the page
+*/
+$(window).bind('pageshow', function(event){
+
+    // call to fetch the data from the server
+    fetch("/getData",
+    {
+        method: "GET"
+    }).then( response => {
+        // convert to blob
+        response.blob()
+        .then( (data) => {
+            // read blob as text
+            var reader = new FileReader();
+            reader.readAsText(data);
+            reader.onloadend = () => {
+                let currentData = document.getElementById("metadata-text").innerHTML
+                    .replaceAll("&lt;", "<")
+                    .replaceAll("&gt;", ">"),
+
+                    keyArr = [];
+
+                // test the rotation values
+                if(currentData !== reader.result) {
+                    var object = JSON.parse(reader.result),
+                        object2 = JSON.parse(currentData);
+
+                    // find each value that changed
+                    for (const key in object) {
+                        if (object[key] !== object2[key]) {
+                            // find the keys that where changed
+                            keyArr.push(key);
+                        }
+                    }
+
+                    // adjust the icons that need to be ajusted
+                    keyArr.forEach(key => {
+                        switch( key ) {
+                            case "NorthAzimuth":
+                                northDegree = parseFloat(object[key]) + 90;
+                                
+                                if(isNaN(northDegree)){
+                                    // check if it is map projected, if yes set north to 0 else
+                                    if(isMapProjected === 'true'){
+                                        let rotateOffset = parseFloat("<%=rotationOffset %>");            
+                                        if(!isNaN(rotateOffset)){
+                                            northDegree = 0 + rotateOffset;
+                                            setIconAngle(northImage ,northDegree);
+                                        }
+                                    }
+                                    else{
+                                        // disable the button if the degree was not found
+                                        iconPlaced(northImage);
+                                        document.getElementById('northIconFlag').setAttribute('class',
+                                                                            "btn btn-secondary btn-lg button disabled");
+                                    }
+                                }
+                                else{
+                                    // disable the button if the degree was not found
+                                    document.getElementById('northIconFlag').setAttribute('class',
+                                                                                        "btn btn-lg button");
+                                    setIconAngle(northImage ,northDegree);
+                                    adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
+                                    
+                                    $("#northIconFlag").mousedown();
+                                    $("#northIconFlag").mousedown();
+                                }
+                                break;
+
+                            case "SubSolarAzimuth":
+                                
+                                sunDegree = parseFloat(object[key]) + 90;
+                                console.log(sunDegree)
+
+                                if(isNaN(sunDegree)){
+                                    // disable the button if the degree was not found
+                                    iconPlaced(sunImage);
+                                    document.getElementById('sunIconFlag').setAttribute('class',
+                                                                            "btn btn-secondary btn-lg button disabled");
+                                }
+                                else{
+                                    document.getElementById('sunIconFlag').setAttribute('class',
+                                                                                        "btn btn-lg button");
+                                    setIconAngle( sunImage, sunDegree );
+                                    adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
+
+                                    $("#sunIconFlag").click();
+                                    $("#sunIconFlag").click();
+                                }
+                                
+                                break;
+
+                            case "SubSpacecraftGroundAzimuth":
+                            
+                                observerDegree = parseFloat(object[key]) + 90;
+
+                                console.log(observerDegree);
+
+                                if(isNaN(observerDegree)){
+                                    // disable the button if the degree was not found
+                                    iconPlaced(eyeImage);
+                                    document.getElementById('eyeFlag').setAttribute('class',
+                                                                    "btn btn-secondary btn-lg button disabled");
+                                }
+                                else{
+                                    document.getElementById('eyeFlag').setAttribute('class',
+                                                                                        "btn btn-lg button");
+                                    setIconAngle( eyeImage, observerDegree );
+                                    adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
+                                    
+                                    $("#eyeFlag").click();
+                                    $("#eyeFlag").click();
+                                }
+                                break;
+                        }
+                    });
+
+                    // set the new data to the area where the data is being held on the client
+                    document.getElementById("metadata-text").innerHTML = reader.result;
+                } 
+            }
+        });
     });
 });/** ------------------------------------ End Jquery Handlers ------------------------------------------ */

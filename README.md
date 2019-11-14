@@ -96,7 +96,7 @@ pages to guide you if you become confused.
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
 choose a template file preset using the buttons in the template box.
-Hit the 'What is a TPL File?' button to read all about what a template file for the server is and how to make one.
+Hit the 'What is a TPL File?' button to read all about what a template file is for on the server and how to make one.
 Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
 types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
 check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
@@ -110,13 +110,16 @@ from the cube header. The bottom left box is where the tags from the usable ISIS
 there value. Copy and paste the tags into your editing box to switch the keys with the data values. The 'Show All Tags'
 button will show every peice of data that could be extracted from the cube, so if you are looking for something 
 specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
-words in the data by typeing in the search box to the left.
+words in the data by typeing in the search box to the left. You can add custom tags by using the green plus 
+button in the tag box. Users can change the values of common tags by typing the tag name into the new tag UI and
+entering the new value for it.
 You can save several things from this page, you can download the finished caption with the embedded
-ISIS data, you can download the log file which contains the results from the ISIS program calls executed
-on the server, or you can download the data as a CSV in Tag-Value format. If you do not see a 'Save ISIS
-Logs' button in the center of the title box then you have no log file on the server. Lasty, you can copy all the 
-text in the output box by clicking the save to clipboard button, then just paste the text wherever it needs to live.
-The user can also add special characters by using the sigma button at the top of the output box.
+ISIS data, you can save the raw template file, you can download the log file which contains the results from the
+ISIS program calls executed on the server, or you can download the data as a CSV in Tag-Value format.
+If you do not see a 'Save ISIS Logs' button in the center of the title box then you have no log file on the server.
+Lasty, you can copy all the text in the output box by clicking the save to clipboard button, then just paste the 
+text wherever it needs to live. The user can also add special characters by using the sigma button at the top of 
+the output box. Place the pointer where you want to place the icon and then hit the button to add the icon.
 ![Current Writer Page](https://i.imgur.com/Paw8YJi.png)
 
 
@@ -141,8 +144,9 @@ when you first click the button, the webpage will prompt you to type what you wa
 You can add padding to the image at one of the four sides, type the numbr of pixels you would like to
 pad the image and a location to place the pixels. To remove the padding either delete the numbers
 in the text box or hit the reset button.
+Users can now change the figure size after upload. Padding is reset whenever the figure size changes.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
-Accepted file export types include svg, tif, png, jpg, and jpeg.
+Accepted file export types include svg, tif, png, and jpg.
 ![Current Edit Page](https://i.imgur.com/M8ZKKfB.png)
 
 #### Hot Keys

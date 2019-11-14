@@ -144,7 +144,7 @@ function loaderActivate(){
         var div = document.createElement("div");
         div.style.background = "rgba(0,0,0,.5)";
         div.style.width = "100vw";
-        div.style.height = "125%";
+        div.style.height = "100%";
         div.style.position = "absolute";
         div.style.top = "0";
         document.body.insertBefore(div,this.firstChild);
