@@ -3215,12 +3215,12 @@ $(document).ready(function(){
         }
         
     });
-
+/* 
     // for testing
     window.addEventListener("mousedown", (event) => {
         console.log(event.target);
     });
-
+ */
     /**
      * @function scaleBarButton 'mousedown' event handler
      * 
