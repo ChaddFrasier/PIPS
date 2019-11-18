@@ -338,6 +338,7 @@ module.exports = {
             var isisCall = "reduce";
             var from = path.join(".","uploads",cubeName);
             var to = path.join(".","uploads",cubeName.replace("u-","r-"));
+            
             // log variables
             var command = undefined,
                 statusCode =  undefined,
