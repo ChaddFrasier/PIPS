@@ -1001,6 +1001,97 @@ function loadImageAsURL(url, callback) {
 }
 
 
+function setTransform( icon, transformTarget, value){
+    
+    var transformString = icon.getAttribute("transform"),
+        arr = transformString.split(") ");
+
+    for( var i = 0; i < arr.length; i++){
+        if(arr[i].indexOf(transformTarget) > -1){
+            arr[i] = transformTarget+"(" + value.toString();
+        }
+    }
+
+    icon.setAttribute("transform", arr.join(") "));
+}
+
+function parseTransform( transformString, target ){
+    if(transformString === "" || transformString == undefined){
+        return -1;
+    }
+    
+    var arr = transformString.split(") ");
+
+    for( var i = 0; i < arr.length; i++){
+        if(arr[i].indexOf(target) > -1){
+            var tmp = arr[i].split(target+"(")[1].split(", ");
+
+            tmp = [Number(tmp[0]), Number(tmp[1])]
+            return tmp;
+        }
+    }
+}
+
+function shiftIcons( viewboxArr ){
+    var children = svg.childNodes;
+    var translate,
+        xMin = parseFloat(viewboxArr[0]),
+        yMin = parseFloat(viewboxArr[1]),
+        xMax = parseFloat(viewboxArr[2]),
+        yMax = parseFloat(viewboxArr[3]);
+
+    for( var i = 0; i < children.length; i++){
+        // TODO: shift in relation to the size of the icon width and heigth
+        try {
+            if(children[i].getAttribute("id")){ 
+                if(children[i].getAttribute("id").indexOf("north") > -1){
+                    // get the icon translate
+                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
+                
+                }
+                else if(children[i].getAttribute("id").indexOf("sun") > -1){
+                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
+
+                }
+                else if(children[i].getAttribute("id").indexOf("eye") > -1){
+                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
+                }
+
+                console.log(translate[0] + " : " + translate[1]);
+                console.log("XMIN: " + xMin);
+                console.log("XMAX: " + xMax);
+                console.log("YMIN: " + yMin);
+                console.log("YMAX: " + yMax);
+
+                if(translate[0] <= xMin + 50){
+                    // icon's x value is bellow the viewbox bound
+                    setTransform(children[i], "translate", [Number(translate[0]) + 50 + Math.abs(Number(translate[0])-xMin),
+                                                            Number(translate[1])]);
+                }
+                else if(translate[0] >= (xMax + xMin)){
+                    // icon's x value is greater than the width
+                    setTransform(children[i], "translate", [Number(translate[0]) - 50 - Math.abs(Number(translate[0])-xMax),
+                                                            Number(translate[1])]);
+                }
+
+                if(translate[1] <= yMin + 50){
+                    // icon's x value is bellow the viewbox bound
+                    setTransform(children[i], "translate", [Number(translate[0]), Math.abs(Number(translate[1])-yMin)
+                                                                 + 50 + Number(translate[1])]);
+                }
+                else if(translate[1] >= (yMax + yMin)){
+                    // icon's x value is greater than the width
+                    setTransform(children[i], "translate", [Number(translate[0]), Number(translate[1]) 
+                                                            - Math.abs(Number(translate[1])-yMax) - 50]);
+                }
+            }
+        }
+        catch( err ){ /* nothing */ }
+    }
+}
+
+
+
 /**
  * @function setImagePadding
  * 
@@ -1017,6 +1108,7 @@ function setImagePadding(val,location){
 
     
     // switch on the location of the padding
+
     switch(location){
         case 'bottom':
             // get the new image height for the box and background
@@ -1035,6 +1127,7 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             
+            shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1055,6 +1148,7 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
             
+            shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1075,6 +1169,7 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             
+            shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1095,6 +1190,7 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
             
+            shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
@@ -1113,6 +1209,7 @@ function setImagePadding(val,location){
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + h +  " px";
 
+            shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
     }
@@ -1840,7 +1937,54 @@ function adjustIconAngle( icon, newDegree, oldDegree){
             }
         }
             
-    } 
+    }
+    else{
+        // find where the current rotation is and undo the rotation
+        if(!isNaN(oldDegree)){
+            let oldOffset90 = parseFloat(oldDegree / 90).toFixed(3);
+            if( isNaN(oldOffset90)) { oldOffset90 = 0; }
+        
+            oldOffset90 = parseInt(oldOffset90 % 4);
+            let childList = icon.childNodes;
+
+
+            for(index in childList){
+                if(childList[index].classList 
+                    && childList[index].classList.contains("resize") 
+                        && oldOffset90 >= 1 && oldOffset90 <= 4){
+                    
+                    if(childList[index].classList.contains("top-left")){
+                        let newClass = placeEnum["top-left"] - oldOffset90;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        console.log("conrer 1: " + newClass);
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("top-right")){
+                        let newClass = placeEnum["top-right"] - oldOffset90;
+                        if(newClass <= 0){ newClass += 4 }
+                        
+                        console.log("conrer 2: " + newClass);
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-right")){
+                        let newClass = placeEnum["bottom-right"] - oldOffset90;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        console.log("conrer 3: " + newClass);
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                    else if(childList[index].classList.contains("bottom-left")){
+                        let newClass = placeEnum["bottom-left"] - oldOffset90;
+                        if(newClass <= 0){newClass += 4}
+                        
+                        console.log("conrer 4: " + newClass);
+                        childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
+                    }
+                } 
+            }
+        }
+    }
 }
 
 function iconPlaced( icon ){
@@ -2218,9 +2362,10 @@ $(document).ready(function(){
             cancelBtn = document.createElement("button"),
             saveBtn = document.createElement("button");
 
-        window.style.background = "lightgrey";
+        window.className = "shadowbox";
         window.style.width = "400px";
-        window.style.height = "150px";
+        window.style.color = "black";
+        window.style.height = "125px";
         window.style.border = "2px solid black";
         window.style.position = "absolute";
         window.style.left = "40%";
@@ -2228,19 +2373,22 @@ $(document).ready(function(){
         window.style.borderRadius = "10px";
         window.innerHTML = "Save File";
         
-        box.style.padding = "1%";
-        box.style.background = "smokewhite";
+        box.style.padding = "0%";
+        box.style.display = "flex";
+        box.style.background = "transparent";
         box.style.width = "100%";
-        box.style.height = "85%";
+        box.style.height = "20%";
         box.style.borderTop = "1px solid black";
         box.style.left = "0%";
-        box.style.top = "15%";
+        box.style.top = "25%";
         box.innerHTML = "Filename: ";
+        box.style.textAlign = "left";
 
         inputtext.type = "text";
         inputtext.style.margin = "auto auto";
-        inputtext.style.width = "75%";
-        inputtext.style.marginTop = "1rem";
+        inputtext.style.marginLeft = "5%";
+        inputtext.style.width = "85%";
+        inputtext.style.marginTop = "1%";
         inputtext.style.fontSize = "12px";
         inputtext.id = "filenameInput";
         inputtext.value = displayCube.replace(".cub", "_fig");
@@ -2256,21 +2404,23 @@ $(document).ready(function(){
         optionsvg.innerHTML = ".svg";
 
         select.style.right = "10px";
-        select.style.top = "75px";
-        select.style.position = "absolute";
+        select.style.margin = "0";
+        select.style.marginTop = "1%";
+        select.style.height = "25px";
         select.id = "fileExtSelect";
 
         cancelBtn.style.position = "absolute";
         cancelBtn.style.bottom = "5px";
         cancelBtn.innerHTML = "Cancel";
         cancelBtn.className = "btn btn-md button";
+        cancelBtn.style.left = "25%";
         cancelBtn.style.background = "red";
         cancelBtn.id = "cancelBtn";
         cancelBtn.addEventListener("click", cancelBtnFunction);
 
         saveBtn.style.position = "absolute";
         saveBtn.style.bottom = "5px";
-        saveBtn.style.left = "55%";
+        saveBtn.style.right = "25%";
         saveBtn.innerHTML = "Save";
         saveBtn.className = "btn btn-md button";
         saveBtn.addEventListener("click", saveBtnFunction);
@@ -2369,6 +2519,9 @@ $(document).ready(function(){
                                     div.className = "jumbotron text-center float-center";
                                     div.style.width = "25rem";
                                     div.style.height= "auto";
+                                    div.style.position = "absolute";
+                                    div.style.left = "45%";
+                                    div.style.top = "45%";
                                     div.innerHTML = responseText;
                                     // attach a button to the div so the user can remove the div if they want
                                     var btn = document.createElement("button");
@@ -3215,12 +3368,13 @@ $(document).ready(function(){
         }
         
     });
-/* 
-    // for testing
+ 
+    // for testing 
+    // TODO: REMOVE THIS WHEN NO LONGER NEEDED
     window.addEventListener("mousedown", (event) => {
         console.log(event.target);
     });
- */
+ 
     /**
      * @function scaleBarButton 'mousedown' event handler
      * 
@@ -4138,21 +4292,24 @@ $(window).bind('pageshow', function(event){
                     // adjust the icons that need to be ajusted
                     keyArr.forEach(key => {
                         switch( key ) {
-                            case "NorthAzimuth":
-                                northDegree = parseFloat(object[key]) + 90;
-                                
+                            case "NorthAzimuth":    
+                                northDegree = (isNaN(parseFloat(object[key]) + 90))? object[key] : parseFloat(object[key]) + 90;
+                
                                 if(isNaN(northDegree)){
                                     // check if it is map projected, if yes set north to 0 else
                                     if(isMapProjected === 'true'){
+                                        console.log("Map Projected: ");
                                         let rotateOffset = parseFloat("<%=rotationOffset %>");            
-                                        if(!isNaN(rotateOffset)){
-                                            northDegree = 0 + rotateOffset;
-                                            setIconAngle(northImage ,northDegree);
-                                        }
+                                        northDegree = (!isNaN(0 + rotateOffset) ? 0 + rotateOffset : 0 );
+                                        setIconAngle(northImage ,northDegree);
+                                        adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     }
                                     else{
+                                        console.log("NOT Map Projected: ");
                                         // disable the button if the degree was not found
                                         iconPlaced(northImage);
+                                        setIconAngle(northImage , 0);
+                                        adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                         document.getElementById('northIconFlag').setAttribute('class',
                                                                             "btn btn-secondary btn-lg button disabled");
                                     }
@@ -4172,11 +4329,13 @@ $(window).bind('pageshow', function(event){
                             case "SubSolarAzimuth":
                                 
                                 sunDegree = parseFloat(object[key]) + 90;
-                                console.log(sunDegree)
 
                                 if(isNaN(sunDegree)){
                                     // disable the button if the degree was not found
                                     iconPlaced(sunImage);
+                                    setIconAngle( sunImage, 0 );
+                                    adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
+
                                     document.getElementById('sunIconFlag').setAttribute('class',
                                                                             "btn btn-secondary btn-lg button disabled");
                                 }
@@ -4196,13 +4355,13 @@ $(window).bind('pageshow', function(event){
                             
                                 observerDegree = parseFloat(object[key]) + 90;
 
-                                console.log(observerDegree);
-
                                 if(isNaN(observerDegree)){
                                     // disable the button if the degree was not found
                                     iconPlaced(eyeImage);
                                     document.getElementById('eyeFlag').setAttribute('class',
                                                                     "btn btn-secondary btn-lg button disabled");
+                                    setIconAngle( eyeImage, 0 );
+                                    adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
                                 }
                                 else{
                                     document.getElementById('eyeFlag').setAttribute('class',
