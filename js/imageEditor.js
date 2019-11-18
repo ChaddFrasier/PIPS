@@ -2,10 +2,10 @@
  * @file imageEditor.js
  * 
  * @author Chadd Frasier
- * @version 2.0
+ * @version 2.2
  * 
  * @since 09/20/2019
- * @updated 11/12/2019
+ * @updated 11/18/2019
  * 
  * @requires Jquery 2.0.0
  * 
