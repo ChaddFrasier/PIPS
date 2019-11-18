@@ -77,7 +77,7 @@
  *  sends the download directly to the user. This helps the download process by speeding up image processing
  *  and allowing chrome users to see a progress bar instead of having to wait for the download to finish.
  * 
- *                      ( Exporting can be done in png, jpeg, svg, or tiff )
+ *                      ( Exporting can be done in png, jpg, svg, or tif )
  * 
  *      A progress bar has been added to the image editor for when users are downloading the figure.
  *  This is a better interface for users when a download is occuring rather than just a spinning animation.
