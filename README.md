@@ -2,15 +2,6 @@
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
 -------------------------------------------------------------------------------------------------------------
-- [Introduction](#Introduction)
-- [Install](#Installing)
-- [Developing](#Developing)
-- [Contributing](#Contributing)
-- [Manual](#Manual)
-- [Hotkeys](#Hot-Keys)
-- [Licensing](#Licensing)
-- [Links](#Links)
-
 ### Introduction
 
 This is a server that is supported by USGS's ISIS3 on the backend, its purpose is to bring the 
@@ -51,7 +42,24 @@ install and run this code using Docker CE on any operating system.
 3. And lastly start the container by running the image: `docker run --name pips -p 8080:8080 chaddfrasier/pips-usgs`
 
 
-## Developing
+
+## Contributing
+
+When contributing to this project we ask that you create a new pull request for 
+any changes that you would like to make, after review by the repository leads your
+request will either be merged or closed without merge depending on what has been done. 
+Any request will be considered.
+
+Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js)
+file before contributing to understand what is currently working, do not depricate any functions without
+consent from the repository managers.
+
+Post and issue if you wish to become a contributor stating who you are 
+and why you feel you could benefit the project. 
+Also feel post issues if you find bugs or have suggestions to better the project.
+
+
+## Developing 
 
 In order to develop on this project you will first need to install ISIS3, and Node.js/npm.
 
@@ -71,20 +79,6 @@ ISIS you can pull down the server code and run.
 Then you can start developing.
 Start the server with the command `node server` in the project directory.
 
-## Contributing
-
-When contributing to this project we ask that you create a new pull request for 
-any changes that you would like to make, after review by the repository leads your
-request will either be merged or closed without merge depending on what has been done. 
-Any request will be considered.
-
-Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js)
-file before contributing to understand what is currently working, do not depricate any functions without
-consent from the repository managers.
-
-Post and issue if you wish to become a contributor stating who you are 
-and why you feel you could benefit the project. 
-Also feel post issues if you find bugs or have suggestions to better the project.
 
 ## Manual
 
@@ -184,6 +178,8 @@ Project Home:[Github](https://github.com/ChaddFrasier/PIPS),[DockerHub](https://
 Issue Tracker: [Issues/Bugs](https://github.com/ChaddFrasier/PIPS/issues)
 
 Related Repos: [ISIS3](https://github.com/USGS-Astrogeology/ISIS3), [Dockerbuild](https://github.com/ChaddFrasier/PIPS_Docker)
+
+Author Site: [Chadd Frasier](https://www.cefns.nau.edu/~cmf339/ChaddFrasier/)
 
 -----------------------------------------------------------------------------------------------------------------------
 @ChaddFrasier GitHub

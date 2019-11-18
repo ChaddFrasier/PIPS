@@ -517,7 +517,7 @@ $(document).ready(function(){
             submitBtn = document.createElement("button");
 
         // design the box for adding tags
-        div.style.background = "lightgray";
+        div.className = "shadowbox";
         div.style.position = "absolute";
         div.style.left = "38%";
         

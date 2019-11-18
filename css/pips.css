@@ -23,6 +23,43 @@ body,html {
     margin: auto 0;
 }
 
+.shadowbox {
+    width:100px;
+    text-align:center;    
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	color: #ffffff;
+	padding: 10px 20px;
+	background: -moz-linear-gradient(
+		top,
+		#dfdede 0%,
+		#c0bfbf 50%,
+		#a7a4a4 92%,
+		#929292);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#dfdede),
+		color-stop(0.50, #c0bfbf),
+		color-stop(0.92, #a7a4a4),
+		to(#929292));
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: 1px solid rgb(0, 0, 0);
+	-moz-box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
+	-webkit-box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
+	box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
+	text-shadow:
+		1px 1px 2px rgba(000,000,000,0.7),
+		0px 1px 0px rgba(255,255,255,0.4);
+}
+
 text.user {
     letter-spacing: 0px;
     font-style: normal;
