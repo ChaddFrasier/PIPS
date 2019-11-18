@@ -383,6 +383,7 @@ app.post('/captionWriter', async function(request, response){
     // prepare the variables for response to user
     var templateText = '';
     let isTiff = false;
+    var maxPixelRes = 6000000;
     
     try {
         Memory.prototype.accessMemory(request.cookies["puiv"], memArray).updateDate();
@@ -606,18 +607,18 @@ app.post('/captionWriter', async function(request, response){
 
                         // promise on the reduce call
                         var rawCube = util.getRawCube(cubeObj.name,cubeObj.userNum),
-                            max = 2725;
+                            max = 2350;
 
                         // image is bigger than the desired figure size
                         if(scaleFactor > 1){
                             // if the new dimensions is less than the minimum and image is larger than new dimensions
-                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= 7579000){
+                            if(cubeObj.userDim[0] * cubeObj.userDim[1] <= maxPixelRes){
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
                                     cubeObj.logFlag, cubeObj.userId + ".log"));
                             }
                             else{
                                 // new figure size is large than max
-                                if(lines * samples > 7579000){
+                                if(lines * samples > maxPixelRes){
                                     scaleFactor = (samples > lines) ? samples/max : lines/max;
                                     promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
                                         cubeObj.logFlag, cubeObj.userId + ".log"));
@@ -633,7 +634,7 @@ app.post('/captionWriter', async function(request, response){
                         else{
                             // image is smaller than desired figure size
                             // if the new dimensions is less than the max
-                            if(lines * samples <= 7579000){
+                            if(lines * samples <= maxPixelRes){
                                 // render image at full res
                                 promises.push(util.reduceCube(rawCube, cubeObj.name, 1,
                                     cubeObj.logFlag,cubeObj.userId + ".log"));
@@ -642,7 +643,7 @@ app.post('/captionWriter', async function(request, response){
                             else{
                                 // render image at max res
                                 // cast the image into the max res
-                                if(lines * samples > 7579000){
+                                if(lines * samples > maxPixelRes){
                                     scaleFactor = (samples > lines) ? samples/max : lines/max;
                                     promises.push(util.reduceCube(rawCube, cubeObj.name, scaleFactor,
                                         cubeObj.logFlag, cubeObj.userId + ".log"));
@@ -1365,48 +1366,67 @@ app.post("/figureDownload", async function(request, response){
         else{
             if(fileExt === "png" || fileExt === "jpg" || fileExt === "jpeg"){
                 // use sharp Module to convert to png from data buffer
-                await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
-                .png()
-                .toFile(path.join("tmp",filename),function(err, info){
-                    if(err){
-                        console.log("Sharp Error: " + err);
-                    }
-                    else{
-                        response.download(path.join("tmp",filename),function(err){
-                            if(err){
-                                console.log("Download Error: " + err);
-                            }
-                            else{
-                                // remove the files from temp
-                                fs.unlinkSync(path.join("tmp",request.files.upl.name));
-                                fs.unlinkSync(path.join("tmp",filename));
-                            }
-                        });
-                    }
-                }).end();
+                try{
+                    await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                    .png()
+                    .toFile(path.join("tmp",filename),function(err, info){
+                        if(err){
+                            console.log("Sharp Error: " + err);
+                            response.sendStatus(500);
+                        }
+                        else{
+                            response.download(path.join("tmp",filename),function(err){
+                                if(err){
+                                    console.log("Download Error: " + err);
+                                    response.sendStatus(500);
+                                }
+                                else{
+                                    // remove the files from temp
+                                    fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                                    fs.unlinkSync(path.join("tmp",filename));
+                                }
+                            });
+                        }
+                    }).end();
+                }
+                catch( err ){
+                    console.log("Error In Conversion");
+                    response.sendStatus(500);                 
+                }
+                
             }
             else{
                 // Otherwise it will be a tiff
                 // use sharp Module to convert to tiff from data buffer
-                await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
-                .tiff()
-                .toFile(path.join("tmp",filename),function(err, info){
-                    if(err){
-                        console.log("Sharp Error: " + err);
-                    }
-                    else{
-                        response.download(path.join("tmp",filename),function(err){
-                            if(err){
-                                console.log("Download Error: " + err);
-                            }
-                            else{
-                                // remove files from tmp
-                                fs.unlinkSync(path.join("tmp",request.files.upl.name));
-                                fs.unlinkSync(path.join("tmp",filename));
-                            }
-                        });
-                    }
-                }).end();
+                try{
+                    await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                    .tiff()
+                    .toFile(path.join("tmp",filename),function(err, info){
+                        if(err){
+                            console.log("Sharp Error: " + err);
+                            response.sendStatus(500);
+                        }
+                        else{
+                            response.download(path.join("tmp",filename),function(err){
+                                if(err){
+                                    response.status(500).send(err);
+                                    console.log("Download Error: " + err);
+                                    response.sendStatus(500);
+                                }
+                                else{
+                                    // remove files from tmp
+                                    fs.unlinkSync(path.join("tmp",request.files.upl.name));
+                                    fs.unlinkSync(path.join("tmp",filename));
+                                }
+                            });
+                        }
+                    }).end();
+                }
+                catch( err ){
+                    console.log("Error in tif conversion");
+                    response.sendStatus(500);
+                }
+                
             }
         }
     });    
@@ -1420,13 +1440,14 @@ app.post("/figureDownload", async function(request, response){
 app.post("/resizeFigure",function(request, response){
     console.log(request.url);
 
+    var maxPixelRes = 6000000;
     // user id, and the new figure width and height
     var id = String(request.body.id),
         newWidth = parseInt(request.body.w),
         newHeight = parseInt(request.body.h),
         promises = [],
         origCube,
-        max = 2725;
+        max = 2350;
 
     var userObject = util.getObjectFromArray(id, cubeArray);
     var rawCube = util.getRawCube(userObject.name,userObject.userNum);
@@ -1463,13 +1484,13 @@ app.post("/resizeFigure",function(request, response){
                 // image is bigger than the desired figure size
                 if(scaleFactor > 1){
                     // if the new dimensions is less than the minimum and image is larger than new dimensions
-                    if(newWidth * newHeight <= 7579000){
+                    if(newWidth * newHeight <= maxPixelRes){
                         promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
                             userObject.logFlag,userObject.userId + ".log"));
                     }
                     else{
                         // new figure size is large than max
-                        if(rawH * rawW > 7579000){
+                        if(rawH * rawW > maxPixelRes){
                             scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
                             promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
                                 userObject.logFlag,userObject.userId + ".log"));
@@ -1485,7 +1506,7 @@ app.post("/resizeFigure",function(request, response){
                 else{
                     // image is smaller than desired figure size
                     // if the new dimensions is less than the max
-                    if(rawH * rawW <= 7579000){
+                    if(rawH * rawW <= maxPixelRes){
                         // render image at full res
                         promises.push(util.reduceCube(rawCube, userObject.name, 1,
                             userObject.logFlag,userObject.userId + ".log"));
@@ -1494,7 +1515,7 @@ app.post("/resizeFigure",function(request, response){
                     else{
                         // render image at max res
                         // cast the image into the max res
-                        if(rawH * rawW > 7579000){
+                        if(rawH * rawW > maxPixelRes){
                             scaleFactor = (rawW > rawH) ? rawW/max : rawH/max;
                             promises.push(util.reduceCube(rawCube, userObject.name, scaleFactor,
                                 userObject.logFlag,userObject.userId + ".log"));
