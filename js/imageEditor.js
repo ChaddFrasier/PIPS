@@ -1001,6 +1001,15 @@ function loadImageAsURL(url, callback) {
 }
 
 
+/**
+ * @function setTransform
+ * 
+ * @param {DOM element} icon the icon to change the transform of 
+ * @param {string} transformTarget the transform name that we want to set
+ * @param {*} value unknown input type of value [best type os string]
+ * 
+ * @description sets the translate of the given icon
+ */
 function setTransform( icon, transformTarget, value){
     
     var transformString = icon.getAttribute("transform"),
@@ -1015,6 +1024,17 @@ function setTransform( icon, transformTarget, value){
     icon.setAttribute("transform", arr.join(") "));
 }
 
+
+/**
+ * @function parseTransform
+ * 
+ * @param {string} transformString the string of the transform 
+ * @param {string} target transform target name
+ * 
+ * @description gets the values from the transform string given
+ * 
+ * @returns an array of the translate
+ */
 function parseTransform( transformString, target ){
     if(transformString === "" || transformString == undefined){
         return -1;
@@ -1032,6 +1052,14 @@ function parseTransform( transformString, target ){
     }
 }
 
+
+/**
+ * @function shiftIcons
+ * 
+ * @param {array} viewboxArr viewBox array in the form of: [xMin, xMin, xMax, yMax] 
+ * 
+ * @description shifts the icons back into the svg area when it is outside
+ */
 function shiftIcons( viewboxArr ){
     var children = svg.childNodes;
     var translate,
@@ -1850,10 +1878,13 @@ function removeKey(keysArr, key){
 
 
 /**
+ * @function adjustIconAngle
  * 
  * @param {DOM element} icon the icon to be adjusted
  * @param {number} newDegree the new degree where the boxes need to be
  * @param {number} oldDegree the old degree where the boxes where set
+ * 
+ * @description shift the icon scaleboxes to the proper side of the icon based on the rotation
  */
 function adjustIconAngle( icon, newDegree, oldDegree){
  
@@ -1956,29 +1987,26 @@ function adjustIconAngle( icon, newDegree, oldDegree){
                     if(childList[index].classList.contains("top-left")){
                         let newClass = placeEnum["top-left"] - oldOffset90;
                         if(newClass <= 0){newClass += 4}
-                        
-                        console.log("conrer 1: " + newClass);
+
                         childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                     }
                     else if(childList[index].classList.contains("top-right")){
                         let newClass = placeEnum["top-right"] - oldOffset90;
+
                         if(newClass <= 0){ newClass += 4 }
-                        
-                        console.log("conrer 2: " + newClass);
+
                         childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                     }
                     else if(childList[index].classList.contains("bottom-right")){
                         let newClass = placeEnum["bottom-right"] - oldOffset90;
                         if(newClass <= 0){newClass += 4}
-                        
-                        console.log("conrer 3: " + newClass);
+
                         childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                     }
                     else if(childList[index].classList.contains("bottom-left")){
                         let newClass = placeEnum["bottom-left"] - oldOffset90;
                         if(newClass <= 0){newClass += 4}
                         
-                        console.log("conrer 4: " + newClass);
                         childList[index].setAttribute("class","resize " + getNameWithVal(newClass));
                     }
                 } 
@@ -1987,12 +2015,25 @@ function adjustIconAngle( icon, newDegree, oldDegree){
     }
 }
 
+
+/**
+ * @function iconPlaced
+ * 
+ * @param {DOM element} icon the element that we want to remove if it is placed 
+ * 
+ * @description This is a more effective way of removing the icons because calling the listener will reset the 
+ *              button UI for us
+ */
 function iconPlaced( icon ){
+    // init vars
     var svg = document.getElementById("svgWrapper"),
         children = svg.childNodes;
 
+        // parse through the children of the svg
         children.forEach(child => {
+            // check if the child is the icon
             if(child === icon){
+                // check which icon it is and remove it
                 switch(child){
                     case northImage:
                         $("#northIconFlag").mousedown();
@@ -4298,14 +4339,12 @@ $(window).bind('pageshow', function(event){
                                 if(isNaN(northDegree)){
                                     // check if it is map projected, if yes set north to 0 else
                                     if(isMapProjected === 'true'){
-                                        console.log("Map Projected: ");
                                         let rotateOffset = parseFloat("<%=rotationOffset %>");            
                                         northDegree = (!isNaN(0 + rotateOffset) ? 0 + rotateOffset : 0 );
                                         setIconAngle(northImage ,northDegree);
                                         adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     }
                                     else{
-                                        console.log("NOT Map Projected: ");
                                         // disable the button if the degree was not found
                                         iconPlaced(northImage);
                                         setIconAngle(northImage , 0);
