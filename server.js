@@ -10,7 +10,7 @@
  * @description This is the main handler for the PIP Server  by USGS.
  * 
  * @since 05/31/2019
- * @updated 11/08/2019
+ * @updated 11/15/2019
  *
  * @todo 9 have a POST '/pow' link that calculates data and creates an image based
  *         on preset defaults and a data file for input.
@@ -1449,6 +1449,7 @@ app.post("/resizeFigure",function(request, response){
         origCube,
         max = 2350;
 
+    //  get user object
     var userObject = util.getObjectFromArray(id, cubeArray);
     var rawCube = util.getRawCube(userObject.name,userObject.userNum);
 
@@ -1666,7 +1667,7 @@ app.post("/evalScalebar", function(request, response){
                     b = 1;
                 }
 
-                var scalebarMeters = b*Math.pow(10,a);
+                var scalebarMeters = b * Math.pow(10,a);
 
                 var scalebarLength,
                     scalebarUnits="";
@@ -1739,6 +1740,7 @@ const PORT = 8080 || process.env.PORT;
 
 // localhost listening on 8000
 app.listen(8000);
+
 // serving machines on either open or closed network
 app.listen(PORT,"0.0.0.0");
 
