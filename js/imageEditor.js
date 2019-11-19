@@ -1209,7 +1209,7 @@ function shiftIcons( viewboxArr ){
                 
             }
         }
-        catch( err ){ /* nothing */ console.log(err) }
+        catch( err ){ /* nothing */ }
     }
 }
 
@@ -3505,11 +3505,6 @@ $(document).ready(function(){
         
     });
  
-    // for testing 
-    // TODO: REMOVE THIS WHEN NO LONGER NEEDED
-    window.addEventListener("mousedown", (event) => {
-        console.log(event.target);
-    });
  
     /**
      * @function scaleBarButton 'mousedown' event handler
