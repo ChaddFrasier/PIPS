@@ -5,7 +5,7 @@
  * @version 2.2
  * 
  * @since 09/20/2019
- * @updated 11/18/2019
+ * @updated 11/19/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1041,16 +1041,21 @@ function parseTransform( transformString, target ){
     }
     
     var arr = transformString.split(") ");
-
     for( var i = 0; i < arr.length; i++){
         if(arr[i].indexOf(target) > -1){
-            if(arr[i].split(target+"(")[1].split(", ").length > 1){
+            if(arr[i].split(target+"(")[1].split(", ").length > 1 || arr[i].split(target+"(")[1].split(",").length > 1){
                 var tmp = arr[i].split(target+"(")[1].split(", ");
 
-                console.log(tmp + " : " + arr[i].split(target+"(")[1]);
-                console.log(tmp === arr[i].split(target+"(")[1]);
-                tmp = [Number(tmp[0]), Number(tmp[1])]
+                if(tmp.length === 1){ tmp = arr[i].split(target+"(")[1].split(","); }
+                tmp = [parseFloat(tmp[0]), parseFloat(tmp[1])]
                 return tmp;
+            }
+            else if(arr[i].split(target+"(")[1].split(" ").length > 1){
+
+                tmp = [parseFloat(arr[i].split(target+"(")[1].split(" ")[0]),
+                 parseFloat(arr[i].split(target+"(")[1].split(" ")[1])];
+
+                 return tmp;
             }
             else{
                 return parseFloat(arr[i].split(target+"(")[1]);
@@ -1071,6 +1076,8 @@ function parseTransform( transformString, target ){
 function shiftIcons( viewboxArr ){
     var children = svg.childNodes;
     var translate,
+        iconRotation,
+        iconScale,
         iconWidth,
         iconHeight,
         xMin = parseFloat(viewboxArr[0]),
@@ -1078,80 +1085,131 @@ function shiftIcons( viewboxArr ){
         xMax = parseFloat(viewboxArr[2]),
         yMax = parseFloat(viewboxArr[3]);
 
-    for( var i = 0; i < children.length; i++){
-        // TODO: shift in relation to the size of the icon width and heigth
+    for( var i = 0; i < children.length; i++ ){
         try {
-            if(children[i].getAttribute("id")){
-                if(children[i].getAttribute("id").indexOf("north") > -1){
-                    // get icon width & height
-                    iconWidth = children[i].getBBox().width
-                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
-                    iconHeight = children[i].getBBox().height
-                                            * parseTransform(children[i].getAttribute("transform"), "scale");
+            if( children[i].getAttribute("id") ){
 
-                    // get the icon translate
-                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
+                // get icon scale in a manner that works for all browsers
+                iconScale = parseFloat(parseTransform(children[i].getAttribute("transform"), "scale"));
+
+                // get icon width & height
+                iconWidth = children[i].getBBox().width
+                            * iconScale
+                iconHeight = children[i].getBBox().height
+                            * iconScale;
+                                    
+                // get icon rotation
+                iconRotation = parseTransform( children[i].getAttribute("transform"), "rotate" );
+                // get icon rotation
+                translate = parseTransform( children[i].getAttribute("transform"), "translate" );
+
+            
+                if(children[i].getAttribute("id").indexOf("scale") > -1){
+                    // set scalebar rotation to 0 because that the same as nothing
+                    iconRotation = 0;
+                }
+
+                // get a rough estimate of where the top left of the svg icon is located
+                iconRotation = parseFloat(iconRotation/90);
+
+                if( !isNaN(translate[0]) && !isNaN(translate[1]) 
+                        && !isNaN(xMax) && !isNaN(xMin)
+                        && !isNaN(yMax) && !isNaN(yMin)){
+                    // when icon is up
+                    if(iconRotation !== -1 && (iconRotation < .5 || iconRotation >= 3.5) ){
+                        if(translate[0] <= xMin){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(xMin),
+                                                                    Number(translate[1])]);
+                        }
+                        else if( translate[0] >= (xMax + xMin) - iconWidth ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number((xMax + xMin) - iconWidth),
+                                                                    Number(translate[1])]);
+                        }
+
+                        if(translate[1] <= yMin){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(translate[0]), Number(yMin)]);
+                        }
+                        else if(translate[1] >= (yMax + yMin) - iconHeight ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number(translate[0]), Number((yMax + yMin) - iconHeight)]);
+                        }
+                    }
+                    // when icon is to the right
+                    else if(iconRotation !== -1 && (iconRotation < 1.5 && iconRotation >= .5) ){
+
+                        if(translate[0] <= xMin + iconHeight){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(xMin + iconHeight),
+                                                                    Number(translate[1])]);
+                        }
+                        else if( translate[0] >= (xMax + xMin) ){
+                    
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number((xMax + xMin)),
+                                                                    Number(translate[1])]);
+                        }
+
+                        if(translate[1] <= yMin){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(translate[0]), Number(yMin)]);
+                        }
+                        else if(translate[1] >= (yMax + yMin) - iconWidth ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number(translate[0]), Number((yMax + yMin) - iconWidth)]);
+                        }
+                    }
+                    // when icon is down
+                    else if(iconRotation !== -1 && (iconRotation < 2.5 && iconRotation >= 1.5) ){
+                        if(translate[0] <= xMin + iconWidth){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(xMin + iconWidth),
+                                                                    Number(translate[1])]);
+                        }
+                        else if( translate[0] >= (xMax + xMin) ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number((xMax + xMin)),
+                                                                    Number(translate[1])]);
+                        }
+
+                        if(translate[1] <= yMin + iconHeight*2){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(translate[0]), Number(yMin + iconHeight)]);
+                        }
+                        else if(translate[1] >= (yMax + yMin) ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number(translate[0]), Number((yMax + yMin))]);
+                        }
+                    }
+                    // when icon is left
+                    else if(iconRotation !== -1 && (iconRotation < 3.5 && iconRotation >= 2.5) ){
+                        if(translate[0] <= xMin){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(xMin),
+                                                                    Number(translate[1])]);
+                        }
+                        else if( translate[0] >= (xMax + xMin) - iconHeight ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number((xMax + xMin) - iconHeight),
+                                                                    Number(translate[1])]);
+                        }
+
+                        if(translate[1] <= yMin + iconWidth){
+                            // icon's x value is bellow the viewbox bound
+                            setTransform(children[i], "translate", [Number(translate[0]), Number(yMin + iconWidth)]);
+                        }
+                        else if(translate[1] >= (yMax + yMin) ){
+                            // icon's x value is greater than the width
+                            setTransform(children[i], "translate", [Number(translate[0]), Number((yMax + yMin))]);
+                        }
+                    }
+                }
                 
-                }
-                else if(children[i].getAttribute("id").indexOf("sun") > -1){
-                    // get icon width & height
-                    iconWidth = children[i].getBBox().width
-                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
-                    iconHeight = children[i].getBBox().height
-                                            * parseTransform(children[i].getAttribute("transform"), "scale");
-
-                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
-
-                }
-                else if(children[i].getAttribute("id").indexOf("eye") > -1){
-                    // get icon width & height
-                    iconWidth = children[i].getBBox().width
-                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
-                    iconHeight = children[i].getBBox().height
-                                            * parseTransform(children[i].getAttribute("transform"), "scale");
-
-                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
-                }
-                else if(children[i].getAttribute("id").indexOf("scale") > -1){
-                    // get icon width & height
-                    iconWidth = children[i].getBBox().width
-                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
-                    iconHeight = children[i].getBBox().height
-                                            * parseTransform(children[i].getAttribute("transform"), "scale");
-
-                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
-                }
-
-                console.log("width = " + iconWidth + " : height = " + iconHeight + " :::: " + children[i].getAttribute("id"));
-                console.log("XMIN: " + xMin);
-                console.log("XMAX: " + xMax);
-                console.log("YMIN: " + yMin);
-                console.log("YMAX: " + yMax);
-
-                if(translate[0] <= xMin){
-                    // icon's x value is bellow the viewbox bound
-                    setTransform(children[i], "translate", [Number(translate[0]) + 50 + Math.abs(Number(translate[0])-xMin),
-                                                            Number(translate[1])]);
-                }
-                else if(translate[0] >= (xMax + xMin)){
-                    // icon's x value is greater than the width
-                    setTransform(children[i], "translate", [Number(translate[0]) - 50 - Math.abs(Number(translate[0])-xMax),
-                                                            Number(translate[1])]);
-                }
-
-                if(translate[1] <= yMin + 50){
-                    // icon's x value is bellow the viewbox bound
-                    setTransform(children[i], "translate", [Number(translate[0]), Math.abs(Number(translate[1])-yMin)
-                                                                 + 50 + Number(translate[1])]);
-                }
-                else if(translate[1] >= (yMax + yMin)){
-                    // icon's x value is greater than the width
-                    setTransform(children[i], "translate", [Number(translate[0]), Number(translate[1]) 
-                                                            - Math.abs(Number(translate[1])-yMax) - 50]);
-                }
             }
         }
-        catch( err ){ /* nothing */ }
+        catch( err ){ /* nothing */ console.log(err) }
     }
 }
 
