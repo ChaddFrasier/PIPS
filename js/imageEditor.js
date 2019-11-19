@@ -1044,10 +1044,18 @@ function parseTransform( transformString, target ){
 
     for( var i = 0; i < arr.length; i++){
         if(arr[i].indexOf(target) > -1){
-            var tmp = arr[i].split(target+"(")[1].split(", ");
+            if(arr[i].split(target+"(")[1].split(", ").length > 1){
+                var tmp = arr[i].split(target+"(")[1].split(", ");
 
-            tmp = [Number(tmp[0]), Number(tmp[1])]
-            return tmp;
+                console.log(tmp + " : " + arr[i].split(target+"(")[1]);
+                console.log(tmp === arr[i].split(target+"(")[1]);
+                tmp = [Number(tmp[0]), Number(tmp[1])]
+                return tmp;
+            }
+            else{
+                return parseFloat(arr[i].split(target+"(")[1]);
+            }
+            
         }
     }
 }
@@ -1063,6 +1071,8 @@ function parseTransform( transformString, target ){
 function shiftIcons( viewboxArr ){
     var children = svg.childNodes;
     var translate,
+        iconWidth,
+        iconHeight,
         xMin = parseFloat(viewboxArr[0]),
         yMin = parseFloat(viewboxArr[1]),
         xMax = parseFloat(viewboxArr[2]),
@@ -1071,27 +1081,54 @@ function shiftIcons( viewboxArr ){
     for( var i = 0; i < children.length; i++){
         // TODO: shift in relation to the size of the icon width and heigth
         try {
-            if(children[i].getAttribute("id")){ 
+            if(children[i].getAttribute("id")){
                 if(children[i].getAttribute("id").indexOf("north") > -1){
+                    // get icon width & height
+                    iconWidth = children[i].getBBox().width
+                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
+                    iconHeight = children[i].getBBox().height
+                                            * parseTransform(children[i].getAttribute("transform"), "scale");
+
                     // get the icon translate
                     translate = parseTransform(children[i].getAttribute("transform"), "translate");
                 
                 }
                 else if(children[i].getAttribute("id").indexOf("sun") > -1){
+                    // get icon width & height
+                    iconWidth = children[i].getBBox().width
+                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
+                    iconHeight = children[i].getBBox().height
+                                            * parseTransform(children[i].getAttribute("transform"), "scale");
+
                     translate = parseTransform(children[i].getAttribute("transform"), "translate");
 
                 }
                 else if(children[i].getAttribute("id").indexOf("eye") > -1){
+                    // get icon width & height
+                    iconWidth = children[i].getBBox().width
+                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
+                    iconHeight = children[i].getBBox().height
+                                            * parseTransform(children[i].getAttribute("transform"), "scale");
+
+                    translate = parseTransform(children[i].getAttribute("transform"), "translate");
+                }
+                else if(children[i].getAttribute("id").indexOf("scale") > -1){
+                    // get icon width & height
+                    iconWidth = children[i].getBBox().width
+                                                 * parseTransform(children[i].getAttribute("transform"), "scale");
+                    iconHeight = children[i].getBBox().height
+                                            * parseTransform(children[i].getAttribute("transform"), "scale");
+
                     translate = parseTransform(children[i].getAttribute("transform"), "translate");
                 }
 
-                console.log(translate[0] + " : " + translate[1]);
+                console.log("width = " + iconWidth + " : height = " + iconHeight + " :::: " + children[i].getAttribute("id"));
                 console.log("XMIN: " + xMin);
                 console.log("XMAX: " + xMax);
                 console.log("YMIN: " + yMin);
                 console.log("YMAX: " + yMax);
 
-                if(translate[0] <= xMin + 50){
+                if(translate[0] <= xMin){
                     // icon's x value is bellow the viewbox bound
                     setTransform(children[i], "translate", [Number(translate[0]) + 50 + Math.abs(Number(translate[0])-xMin),
                                                             Number(translate[1])]);
