@@ -586,6 +586,7 @@ app.post('/captionWriter', async function(request, response){
                 fs.readFile(path.join("./uploads",cubeObj.name),(err, data)=>{
                     if(err){
                         console.log("READING ERROR: " + err);
+                        response.redirect('/?alertCode=5');
                     }
                     else{
                         // get an array of the first 10% and the data (where the lines and sample data is located)
