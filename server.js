@@ -175,7 +175,7 @@ app.use("/pvl " , express.static("pvl"));
 app.set('view engine', 'ejs');
 
 // erase uneeded files before server startup
-try{
+try {
     exec('rm ./images/*.pgw');
     exec('rm ./uploads/*');
     exec('rm ./pvl/*.pvl');
@@ -193,6 +193,18 @@ try{
             .test(fileArr[index])){
             // remove the file
             fs.unlinkSync(path.join('images',fileArr[index]));
+        }
+    }
+
+    // get the list of files in the tpl dir
+    fileArr = fs.readdirSync("./tpl");
+    // loop throught then and delete the file if it matchest this regexp
+    for(index in fileArr){
+        // regexp uses negativelookbehind to ensure the image file is not one of the required file strings
+        if(/^.*(?<!compositeDefault|default|mapDefault|mosaicDefault)\.(tpl)$/gm
+            .test(fileArr[index])){
+            // remove the file
+            fs.unlinkSync(path.join('tpl',fileArr[index]));
         }
     }
 }
@@ -1751,6 +1763,22 @@ var interval = function() {
 
     // check al dates at once
     memArray = Memory.prototype.checkAllDates(memArray);
+
+    try{
+        // get the list of files in the tpl dir
+        fileArr = fs.readdirSync("./tpl");
+        // loop throught then and delete the file if it matchest this regexp
+        for(index in fileArr){
+            // regexp uses negativelookbehind to ensure the image file is not one of the required file strings
+            if(/^.*(?<!compositeDefault|default|mapDefault|mosaicDefault)\.(tpl)$/gm
+                .test(fileArr[index])){
+                // remove the file
+                fs.unlinkSync(path.join('tpl',fileArr[index]));
+            }
+        }
+    }catch( err ){
+        // no files found by that name or tpl folder cannot be found
+    }
 
     // if the array is empty
     if(memArray.length === 0){
