@@ -248,6 +248,13 @@ Object.prototype.sort = function(){
 }
 
 
+function string2Element(string, element){
+    var element = document.createElement(element);
+    element.innerHTML = string;
+    return element;
+}
+
+
 // TODO: this fails when refreshing b/c the values in the elements have changed
 // ||||
 // VVVV
@@ -259,7 +266,8 @@ Object.prototype.sort = function(){
  * @description set the output of the template to the caption area
 */
 function output(rawText){
-    var outputArea = document.getElementById("template-text-output");
+    var outputArea = document.getElementById("template-text-output"),
+    download = rawText;
 
     // get both data objects
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
@@ -268,23 +276,40 @@ function output(rawText){
     // combine the JSONs into 1 object
     allMetaData = Object.assign(allMetaData, impData);
 
+    rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
+
     for(const key of Object.keys(allMetaData.sort())){
         if(rawText.indexOf(key.trim()) > -1){
             let val = getMetadataVal(key);
             if(hasUnits(val)){
                 val = removeUnits(val);
             }
-            rawText = rawText.replaceAll(key,val);
+
+            download = download.replaceAll(key, val.trim());
+
+            // convert to red color parargraph element
+            val = string2Element(val, "p");
+            val.style.color = "red";
+            val.style.padding = "0";
+            val.style.margin = "0";
+            val.style.width = "auto";
+            val.style.display = "inline-flex";
+            val.style.fontSize = "inherit";
+            val.style.textAlign = "left";
+            val.style.verticalAlign = "bottom";
+
+            rawText = rawText.replaceAll(key,val.outerHTML);
         }
     }
 
     //set the innerHTML for the last(output) textarea
-    outputArea.innerHTML = rawText.trim();
-
+    outputArea.innerHTML = rawText;
+    
     //update the download link to the new text
-    var finalResult = outputArea.value;
+    var copyBox = document.getElementById("copyBtnText");
+    copyBox.innerHTML = download;
     var tpl = document.getElementById("link");
-    tpl.href = 'data:attachment/text,' + encodeURIComponent(finalResult);
+    tpl.href = 'data:attachment/text,' + encodeURIComponent(download);
     tpl.target = '_blank';
     tpl.download = outputName;
 }
@@ -429,7 +454,8 @@ $(document).ready(function(){
     */
     $("#copyBtn").on("mousedown",function(){
         // get the output field
-        var output = document.getElementById("template-text-output");
+        var output = document.getElementById("copyBtnText");
+        output.style.visibility = "visible";
         // call the select function
         output.select();
         // select for touch screens
@@ -438,6 +464,7 @@ $(document).ready(function(){
         // call the copy function
         document.execCommand("copy");
 
+        output.style.visibility = "hidden";
         // set up the alert to inform the user
         var alert = document.createElement("div");
         alert.className = "alert alert-success";
