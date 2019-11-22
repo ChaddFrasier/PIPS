@@ -327,10 +327,9 @@
                         <!-- Editing Box-->
                         <div id="template" class="float-right text-center form-group"
                          style="margin-left: auto; margin-right: auto; width: 100%;">
-                            <textarea id="template-text" class="form-control bg-white text-dark" rows="7" spellcheck="true"
-                                style="resize: vertical; font-size: 22px; border: 2px solid black;" title="Edit Here">
-                                <%=templateText%>
-                            </textarea>
+                            <div id="template-text" contenteditable="true" class="form-control bg-white text-dark" rows="7" spellcheck="true"
+                                style="resize: vertical; overflow-y: scroll; font-size: 22px; border: 2px solid black;" title="Edit Here"><%=templateText%>
+                            </div>
                         </div>
                     </div>
                 </div>

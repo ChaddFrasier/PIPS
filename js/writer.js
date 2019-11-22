@@ -60,7 +60,7 @@ function filterTags(){
  * @description sets the value of the output to the template and then calls output() 
 */
 function setOutput(){
-    let getTemplate = document.getElementById("template-text").value;
+    let getTemplate = document.getElementById("template-text").innerText;
     output(getTemplate);
 }
             
@@ -70,7 +70,7 @@ function setOutput(){
  * @description parse out the important tags and populate the tag area
 */
 function getMetadata(){
-    var metaDataString = document.getElementById("metadata-text").value;
+    var metaDataString = document.getElementById("metadata-text").innerText;
     var metaDataArea = document.getElementById("metadataTagArea");
     metaDataArea.value = "";
     var jsonData = JSON.parse(metaDataString);
@@ -122,7 +122,7 @@ function keyToTag(key){
 function getMetadataVal(key){
     // get both data objects
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
-    var impData = JSON.parse(document.getElementById("metadata-text").value);
+    var impData = JSON.parse(document.getElementById("metadata-text").innerText);
 
     // combine the JSONs into 1 object
     allMetaData = Object.assign(allMetaData,impData);
@@ -269,9 +269,10 @@ function output(rawText){
     var outputArea = document.getElementById("template-text-output"),
     download = rawText;
 
+    console.log(rawText);
     // get both data objects
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
-    var impData = JSON.parse(document.getElementById("metadata-text").value);
+    var impData = JSON.parse(document.getElementById("metadata-text").innerText);
 
     // combine the JSONs into 1 object
     allMetaData = Object.assign(allMetaData, impData);
@@ -388,6 +389,8 @@ function hideAnimaton(alert){
         }, 2000);
 }
 
+
+
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
 // runs this code after the page is loaded
@@ -455,6 +458,8 @@ $(document).ready(function(){
     $("#copyBtn").on("mousedown",function(){
         // get the output field
         var output = document.getElementById("copyBtnText");
+
+        output.value = output.innerHTML;
         output.style.visibility = "visible";
         // call the select function
         output.select();
@@ -462,7 +467,7 @@ $(document).ready(function(){
         output.setSelectionRange(0,99999);
 
         // call the copy function
-        document.execCommand("copy");
+        console.log(document.execCommand("copy"));
 
         output.style.visibility = "hidden";
         // set up the alert to inform the user
@@ -497,6 +502,7 @@ $(document).ready(function(){
             $(this).addClass("btn-secondary");
             document.getElementById("specialCharBox").style.display = "block";
             cursorLocation = document.getElementById("template-text").selectionStart;
+            console.log(document.getElementById("template-text"));
         }
     });
 
@@ -710,7 +716,7 @@ $(document).ready(function(){
     $("button.specChar").mousedown(function(){
         // get needed data
         var symbol = String($(this).html()).trim(),
-            templateText = document.getElementById("template-text").value,
+            templateText = document.getElementById("template-text").innerText,
             end = templateText.substring(cursorLocation, templateText.length),
             start = templateText.substring(0, cursorLocation++);
 
@@ -718,7 +724,7 @@ $(document).ready(function(){
         start += symbol;
 
         // append the two halves
-        document.getElementById("template-text").value =  String(start + end);
+        document.getElementById("template-text").innerText =  String(start + end);
         setOutput();
         
         // hide the character buttons 
@@ -825,7 +831,8 @@ $(window).bind('pageshow', function(event){
     }
 
     // trim extra space off of template file
-    document.getElementById("template-text").value = document.getElementById("template-text").value.trim();
+    document.getElementById("template-text").innerHTML =
+        document.getElementById("template-text").innerHTML.replaceAll("\n", document.createElement("br").outerHTML);
 
     // start page actions
     loadInvisible();
