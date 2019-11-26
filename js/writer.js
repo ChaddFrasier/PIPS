@@ -254,6 +254,13 @@ function string2Element(string, element){
     return element;
 }
 
+/* TESTING */
+
+
+
+
+
+/* END TESTING */
 
 // TODO: this fails when refreshing b/c the values in the elements have changed
 // ||||
@@ -501,8 +508,8 @@ $(document).ready(function(){
         else{
             $(this).addClass("btn-secondary");
             document.getElementById("specialCharBox").style.display = "block";
-            cursorLocation = document.getElementById("template-text").selectionStart;
-            console.log(document.getElementById("template-text"));
+            cursorLocation = document.getElementById("template-text").selectionEnd;
+            console.log(document.getElementById("template-text").selectionStart);
         }
     });
 
