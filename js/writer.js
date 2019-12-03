@@ -131,7 +131,7 @@ function getMetadataVal(key){
         //if the key is found
         if(datakey === key){
             //trim the data and return the result
-            return allMetaData[datakey].trim();
+            return allMetaData[ datakey ].trim();
         } 
     }
     return key;
@@ -254,13 +254,6 @@ function string2Element(string, element){
     return element;
 }
 
-/* TESTING */
-
-
-
-
-
-/* END TESTING */
 
 // TODO: this fails when refreshing b/c the values in the elements have changed
 // ||||
@@ -276,7 +269,6 @@ function output(rawText){
     var outputArea = document.getElementById("template-text-output"),
     download = rawText;
 
-    console.log(rawText);
     // get both data objects
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
     var impData = JSON.parse(document.getElementById("metadata-text").innerText);
@@ -286,8 +278,8 @@ function output(rawText){
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
-    for(const key of Object.keys(allMetaData.sort())){
-        if(rawText.indexOf(key.trim()) > -1){
+    for( const key of Object.keys(allMetaData.sort()) ){
+        if(rawText.indexOf(key.trim()) > -1) {
             let val = getMetadataVal(key);
             if(hasUnits(val)){
                 val = removeUnits(val);
@@ -397,6 +389,71 @@ function hideAnimaton(alert){
 }
 
 
+function boldenKeys(element){
+    // save cursor
+    var sel = rangy.saveSelection(element);
+    
+    var output = element.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
+
+    // get both data objects
+    var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
+    var impData = JSON.parse(document.getElementById("metadata-text").innerText);
+
+    // combine the JSONs into 1 object
+    allMetaData = Object.assign(allMetaData, impData);
+
+    for( const key of Object.keys(allMetaData.sort()) ){
+        if(output.indexOf(key) > -1 ){
+            output = boldenEachString(key, output);
+            output = removeDoubleBold(output);
+        }
+    }
+
+    element.innerHTML = output;
+    // set cursor
+    rangy.restoreSelection(sel, true);
+}
+
+function removeDoubleBold( html ){
+    while( html.indexOf("<b><b>") > -1 ){
+        html = html.replaceAll("<b><b>", "<b>").replaceAll("</b></b>","</b>");
+    }
+    return html;
+}
+
+
+function boldenEachString(key, html){
+    var wordArr = html.split("<br>");
+
+    if(wordArr){
+        for( var i = 0; i < wordArr.length; i++ ) {
+            var word = wordArr[i].split(" ");
+            for( var j = 0; j < word.length; j++ ) {
+                if( word[j] === key ) {
+                    html = html.replaceAll(key, string2Bold(key));
+                }
+                else if( word[j].indexOf(key) > -1){
+                    html = html.replaceAll(key, string2Bold(key));
+                }
+            }
+        }
+    }
+
+    return html;
+}
+
+/**
+ * 
+ * @param {*} string 
+ */
+function string2Bold(string) {
+    var b = document.createElement("b");
+
+    if(!string.indexOf("<b>") > -1){
+        b.innerHTML = string;
+    }
+    return b.outerHTML;
+}
 
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
@@ -473,9 +530,7 @@ $(document).ready(function(){
         // select for touch screens
         output.setSelectionRange(0,99999);
 
-        // call the copy function
-        console.log(document.execCommand("copy"));
-
+        document.execCommand("copy");
         output.style.visibility = "hidden";
         // set up the alert to inform the user
         var alert = document.createElement("div");
@@ -733,9 +788,7 @@ $(document).ready(function(){
         // append the two halves
         document.getElementById("template-text").innerText =  String(start + end);
         setOutput();
-        
-        // hide the character buttons 
-        $("#specialCharactersBtn").mousedown();
+    
     });
 
     /**
@@ -771,26 +824,35 @@ $(document).ready(function(){
      * 
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
-    $("#template-text").keydown( function(e){
-        if(e.keyCode === 9) { // tab was pressed
-            // get caret position/selection
-            var start = this.selectionStart;
-                end = this.selectionEnd;
-    
-            var $this = $(this);
-    
-            // set textarea value to: text before caret + tab + text after caret
-            $this.val($this.val().substring(0, start)
-                        + "\t"
-                        + $this.val().substring(end));
-    
-            // put caret at right position again
-            this.selectionStart = this.selectionEnd = start + 1;
-    
-            // prevent the focus lose
-            return false;
+    $("#template-text").keyup( function(e){
+        console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
+        console.log(e.keyCode);
+        if(e.keyCode !== 37
+            && e.keyCode !== 38
+            && e.keyCode !== 39
+            && e.keyCode !== 40 ){
+            boldenKeys(this);
         }
+        
+
+        return false;
     });
+
+
+
+    /**
+     * testing
+     
+    $(document).keydown(function (e) {
+        var thisKey = e.which;
+      
+        if (e.ctrlKey) {
+          if (thisKey == 90) alert('Undo');
+          else if (thisKey == 89) alert('Redo');
+        }
+      });
+
+*/
 
     /**
      * @function logDownloadBtn 'mousedown' listener

@@ -11,6 +11,9 @@
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+        <!-- pull rangy stuff from github lib -->
+        <script src="https://lezuse.github.io/rangy/lib/rangy-core.js"></script>
+        <script src="https://lezuse.github.io/rangy/lib/rangy-selectionsaverestore.js"></script>
         <script src="js/writer.js"></script>
     </head>
     <body>
@@ -144,7 +147,7 @@
                                 style="border: 2px solid black; background: #63585e; color: white;">Output</h3>
                             </label>
                             <p readonly id="template-text-output"
-                            class="form-control bg-white metadata lightshadowbox" 
+                            class="form-control bg-white metadata lightshadowbox text-left" 
                             style="color:black; overflow-y: scroll;font-size: 22px; border: 2px solid black;
                             display: inline-flexbox;" height="auto" title="Output">    
                         </p>
@@ -327,9 +330,8 @@
                         <!-- Editing Box-->
                         <div id="template" class="float-right text-center form-group"
                          style="margin-left: auto; margin-right: auto; width: 100%;">
-                            <div id="template-text" contenteditable="true" class="form-control bg-white text-dark" rows="7" spellcheck="true"
-                                style="resize: vertical; overflow-y: scroll; font-size: 22px; border: 2px solid black;" title="Edit Here"><%=templateText%>
-                            </div>
+                            <pre id="template-text" contenteditable="true" class="form-control bg-white text-dark text-left" rows="7" spellcheck="true"
+                                style="resize: vertical; border: 2px solid black;" title="Edit Here"><%=templateText%></pre>
                         </div>
                     </div>
                 </div>

@@ -23,6 +23,15 @@ body,html {
     margin: auto 0;
 }
 
+pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+ }
+ 
 .shadowbox {
     width:100px;
     text-align:center;    
