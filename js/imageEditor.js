@@ -1905,9 +1905,9 @@ function resetDrawTool(){
     if( lineArr.length > 0 && clickArray.length > 1 ) {
         var elem = lineArr.pop();
 
-        if(elem.getAttribute("marker-end")){
-            // remove the arrow def based on marker-end value
-            let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+        if(elem.getAttribute("marker-start")){
+            // remove the arrow def based on marker-start value
+            let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
             if(id !== "#arrow"){
                 $(id).parent().remove();
@@ -2942,9 +2942,9 @@ $(document).ready(function(){
     $("#undoLine").on("mousedown",function(){
         if(lineArr.length > 0 && clickArray.length > 1){
             let elem = lineArr.pop();
-            if(elem.getAttribute("marker-end")){
-                // remove the arrow def based on marker-end value
-                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+            if(elem.getAttribute("marker-start")){
+                // remove the arrow def based on marker-start value
+                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
                 if(id !== "#arrow"){
                     $(id).parent().remove();
@@ -2959,9 +2959,9 @@ $(document).ready(function(){
         else if(lineArr.length > 0){
             var elem = lineArr.pop();
 
-            if(elem.getAttribute("marker-end")){
-                // remove the arrow def based on marker-end value
-                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+            if(elem.getAttribute("marker-start")){
+                // remove the arrow def based on marker-start value
+                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
                 if(id !== "#arrow"){
                     $(id).parent().remove();
@@ -2990,9 +2990,9 @@ $(document).ready(function(){
         if(event.keyCode === 27 && drawFlag){
             if(lineArr.length > 0 && clickArray.length > 1){
                 let elem = lineArr.pop();
-                if(elem.getAttribute("marker-end")){
-                    // remove the arrow def based on marker-end value
-                    let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+                if(elem.getAttribute("marker-start")){
+                    // remove the arrow def based on marker-start value
+                    let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
     
                     if(id !== "#arrow"){
                         $(id).parent().remove();
@@ -4284,7 +4284,7 @@ $(document).ready(function(){
 
             if(isArrowHead){
                 // if arrow with default color 
-                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-end","url(#arrow)"); }
+                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-start","url(#arrow)"); }
                 // if the array is linger than 1 and the color is not default
                 else if(lineArr.length > 0 || userLineColor){
                     var markerId = "arrow" + lineArr.length,
@@ -4293,7 +4293,7 @@ $(document).ready(function(){
 
                     newDef.setAttribute("id", "arrowDef" + lineArr.length);
                     newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
-                    line.setAttribute("marker-end", String("url(#" + markerId + ")"));
+                    line.setAttribute("marker-start", String("url(#" + markerId + ")"));
                     (newDef.childNodes).forEach(childElem => {
                         // if the childElement has a child
                         if(childElem.childElementCount > 0){
