@@ -1,2 +1,2 @@
 This image of TargetName is a mosaic with ProjectionName features. This image is centered at IsisCube.Mapping.CenterLatitude°(N|S), IsisCube.Mapping.CenterLongitude°(E|W).
-This image was captured by the SpacecraftName during the mission phase Phase at StartTime and is at a scale of PixelResolution m/px.
+This image was captured by the SpacecraftName during the mission phase Phase and is at a scale of PixelResolution m/px.
