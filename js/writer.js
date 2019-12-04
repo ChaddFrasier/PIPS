@@ -308,6 +308,9 @@ function output(rawText){
     //update the download link to the new text
     var copyBox = document.getElementById("copyBtnText");
     copyBox.innerHTML = download;
+
+    download = download.replaceAll("&lt;","<").replaceAll("&gt;",">");
+
     var tpl = document.getElementById("link");
     tpl.href = 'data:attachment/text,' + encodeURIComponent(download);
     tpl.target = '_blank';
@@ -523,7 +526,8 @@ $(document).ready(function(){
         // get the output field
         var output = document.getElementById("copyBtnText");
 
-        output.value = output.innerHTML;
+        // replace all html codes
+        output.value = output.innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
         output.style.visibility = "visible";
         // call the select function
         output.select();
@@ -555,17 +559,37 @@ $(document).ready(function(){
      * @description shows and removes the special characters buttons under the output box
      */
     $("#specialCharactersBtn").mousedown(function(){
+        var textbox = document.getElementById("template-text");
+        
+        // focus on the box
+        textbox.focus();
+
         if($(this).hasClass("btn-secondary")){
             $(this).removeClass("btn-secondary");
-            cursorLocation = null;
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
             document.getElementById("specialCharBox").style.display = "none";
         }
         else{
             $(this).addClass("btn-secondary");
             document.getElementById("specialCharBox").style.display = "block";
-            cursorLocation = document.getElementById("template-text").selectionEnd;
-            console.log(document.getElementById("template-text").selectionStart);
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
         }
+
+        return false;
     });
 
 
@@ -575,7 +599,7 @@ $(document).ready(function(){
      * @description template download functionality with naming convention
      */
     $("#templateDownloadBtn").mousedown( function(){
-        var templateText = document.getElementById("template-text").value;
+        var templateText = document.getElementById("template-text").innerText;
         var data = encodeURIComponent(templateText);
         
         var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
@@ -777,19 +801,51 @@ $(document).ready(function(){
      */
     $("button.specChar").mousedown(function(){
         // get needed data
-        var symbol = String($(this).html()).trim(),
-            templateText = document.getElementById("template-text").innerText,
-            end = templateText.substring(cursorLocation, templateText.length),
-            start = templateText.substring(0, cursorLocation++);
+        var symbol = String($(this).html()).trim();
+        var templateField = document.getElementById("template-text");
 
-        // append the symbol to the start string
-        start += symbol;
+        if(cursorLocation){
+            // append the symbol to the start string
+            rangy.restoreSelection(cursorLocation, true);
+            var res = document.execCommand("insertText", false, symbol);
+            rangy.removeMarkers(cursorLocation);
+        }
+        else {
+            // select the last part of the text
+            cursorLocation = rangy.getSelection( templateField );
+            cursorLocation.selectAllChildren(templateField)
+            cursorLocation.collapseToEnd();
+            var res = document.execCommand( "insertText", false, symbol );
+            rangy.removeMarkers(cursorLocation);
+        }
+        
+        if(res){
+            setOutput();
+            
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
 
-        // append the two halves
-        document.getElementById("template-text").innerText =  String(start + end);
-        setOutput();
-    
+            return false;
+        }
+        else{
+            // character addition failed
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
+        }
     });
+
 
     /**
      * @function helpBtn 'mousedown' event handler
@@ -806,8 +862,17 @@ $(document).ready(function(){
      * 
      * @description set the new output value whenever a new character is added to the template
     */
-    $("#template-text").keyup(function(){
-        setOutput();
+    $("#template-text").keydown( function(e){
+        if(e.keyCode === 8){
+            // this is the delete
+            if( cursorLocation ) {
+                rangy.removeMarkers( cursorLocation );
+            }
+        }
+        else if(e.keyCode === 9){
+            // tab is clicked;
+            e.preventDefault();
+        }
     });
 
     /**
@@ -815,7 +880,7 @@ $(document).ready(function(){
      * 
      * @description set the tag section to the fitered version by calling the filterTags()
     */
-    $("#filterInput").keyup(function(){
+    $("#filterInput").keyup( function(){
         filterTags();
     });
 
@@ -827,32 +892,68 @@ $(document).ready(function(){
     $("#template-text").keyup( function(e){
         console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
         console.log(e.keyCode);
-        if(e.keyCode !== 37
-            && e.keyCode !== 38
-            && e.keyCode !== 39
-            && e.keyCode !== 40 ){
-            boldenKeys(this);
-        }
-        
+        // save new cursor location
 
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else{
+            cursorLocation = rangy.saveSelection(this);
+        }
+
+        if(e.keyCode === 37
+            || e.keyCode === 38
+            || e.keyCode === 39
+            || e.keyCode === 40 ){
+            // restore
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else if(e.keyCode === 9){
+            if( cursorLocation ){
+                // append the symbol to the start string
+                rangy.restoreSelection(cursorLocation, true);
+                var res = document.execCommand("insertText", false, "    ");
+                rangy.removeMarkers(cursorLocation);
+            }
+        }
+        else{
+            boldenKeys(this);
+            // restore
+            rangy.restoreSelection(cursorLocation, true);
+            rangy.removeMarkers(cursorLocation);
+        }
+        setOutput();
         return false;
     });
 
-
-
-    /**
-     * testing
-     
-    $(document).keydown(function (e) {
-        var thisKey = e.which;
-      
-        if (e.ctrlKey) {
-          if (thisKey == 90) alert('Undo');
-          else if (thisKey == 89) alert('Redo');
+    $("#template-text").mouseup( function(e){
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
         }
-      });
+        else if(!cursorLocation){
+            cursorLocation = rangy.saveSelection(this);
+        }
+        
+        cursorLocation.collapseToEnd();
+            
+    });
 
-*/
+    $("#template-text").focus( function(e){
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else if(!cursorLocation){
+            cursorLocation = rangy.saveSelection(this);
+        }
+        
+        boldenKeys(this);
+        return false;
+    });
+
 
     /**
      * @function logDownloadBtn 'mousedown' listener

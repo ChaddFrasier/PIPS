@@ -479,6 +479,7 @@ svg.image-image {
 }
 
 .help-box {
+    z-index: 10;
     position: absolute;
     float: left;
     margin: 0;
@@ -507,6 +508,7 @@ cite {
 }
 
 .help-box-right {
+    z-index: 10;
     float: right;
     color: black;
     position: relative;
