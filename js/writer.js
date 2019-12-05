@@ -19,6 +19,7 @@ var outputName,
     loader,
     cursorLocation;
 
+
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 /**
  * @function filterTags
@@ -278,7 +279,7 @@ function output(rawText){
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
-    for( const key of Object.keys(allMetaData.sort()) ){
+    for( const key of Object.keys( allMetaData.sort() )){
         if(rawText.indexOf(key.trim()) > -1) {
             let val = getMetadataVal(key);
             if(hasUnits(val)){
@@ -458,13 +459,77 @@ function string2Bold(string) {
     return b.outerHTML;
 }
 
+// undo redo functionality  
+
+var userHistory = {
+    object: null,
+    back: [],
+    forward: []
+};
+
+
+Object.prototype.updateBack = function(){
+    if( this.object.innerHTML.trim(" ") !== this.back[this.back.length -1] ){
+        if(this.back.length === 10){
+            this.back.shift();
+            this.back.push(this.object.innerHTML.trim(" "));
+        }
+        else{
+            this.back.push(this.object.innerHTML.trim(" "));
+        }
+    }
+    else if(this.back.length === 0){
+        this.back.push(this.object.innerHTML.trim(" "));
+    }
+}
+
+Object.prototype.updateForward = function(){
+    if( this.object.innerHTML.trim() !== this.forward[this.forward.length - 1] ){
+        if(this.forward.length === 10){
+            this.forward.shift();
+            this.forward.push(this.object.innerHTML.trim(" "));
+        }
+        else{
+            this.forward.push(this.object.innerHTML.trim(" "));
+        }
+    }
+    else if( this.forward.length === 0 ){
+        this.forward.push(this.object.innerHTML.trim(" "));
+    }
+}
+
+Object.prototype.undo = function(){
+    
+    if( this.back.length > 0 ){
+        this.object.innerHTML = this.back.pop();
+        rangy.restoreSelection(cursorLocation, true);
+    }
+
+    this.object.focus();
+}
+
+Object.prototype.redo = function(){
+    
+
+    if(this.forward.length > 0){
+        this.object.innerHTML = this.forward.pop();
+        rangy.restoreSelection(cursorLocation, true);
+    }
+    
+    this.object.focus();
+}
+
+
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
 /** ----------------------------------------- Jquery Functions ------------------------------------------- */
 // runs this code after the page is loaded
 $(document).ready(function(){
     var varDiv = document.getElementById("pageVariables"),
         goForward = false;
-    
+
+    //init history
+    userHistory.object = document.getElementById("template-text");
+
     loader = document.getElementById('loading');
 
     // grab the variables from the server
@@ -873,6 +938,10 @@ $(document).ready(function(){
             // tab is clicked;
             e.preventDefault();
         }
+
+        if(e.keyCode === 32 || e.keyCode === 8 || e.keyCode === 46){
+            userHistory.updateBack();
+        }
     });
 
     /**
@@ -883,6 +952,20 @@ $(document).ready(function(){
     $("#filterInput").keyup( function(){
         filterTags();
     });
+
+    function KeyPress(e) {
+        var evtobj = window.event? event : e
+        if (evtobj.keyCode == 90 && evtobj.ctrlKey){
+            userHistory.undo();
+            userHistory.updateForward();
+        }
+        else if (evtobj.keyCode == 89 && evtobj.ctrlKey){
+            userHistory.redo();
+            userHistory.updateBack();
+        }
+    }
+  
+    document.onkeydown = KeyPress;
 
     /** 
      * @function template-text 'keydown' listener
@@ -914,7 +997,7 @@ $(document).ready(function(){
             if( cursorLocation ){
                 // append the symbol to the start string
                 rangy.restoreSelection(cursorLocation, true);
-                var res = document.execCommand("insertText", false, "    ");
+                document.execCommand("insertText", false, "    ");
                 rangy.removeMarkers(cursorLocation);
             }
         }
@@ -925,6 +1008,10 @@ $(document).ready(function(){
             rangy.removeMarkers(cursorLocation);
         }
         setOutput();
+
+        if(e.keyCode === 8 || e.keyCode === 46){
+            userHistory.updateForward();
+        }
         return false;
     });
 
