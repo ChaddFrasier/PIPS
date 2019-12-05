@@ -41,7 +41,8 @@ function filterTags(){
         
         // for every line that contains the filtering string push the line into an array
         for(line in dataLines){
-            if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
+            if( typeof(dataLines[line]) !== "function" 
+                && dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
             {
                 filteredArray.push(dataLines[line]);
             }
@@ -214,7 +215,8 @@ function removeUnits(str){
         unitsFound = false;
 
     for(index in tmpArr){
-        if(tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1 && !unitsFound){
+        if( typeof(tmpArr[index]) === "string"
+            && (tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1) && !unitsFound){
             // remove this index and everything after
             tmpArr[index] = "";
             unitsFound = true;
@@ -248,11 +250,114 @@ Object.prototype.sort = function(){
     return sortedObject;
 }
 
-
+/**
+ * @function string2Element
+ * 
+ * @param {string} string the element to place in the bold
+ * @param {DOM element} element type of element 
+ */
 function string2Element(string, element){
     var element = document.createElement(element);
     element.innerHTML = string;
     return element;
+}
+
+/**
+ * @function isTimeFormat
+ * 
+ * @param {string} val the value to test for the time format
+ * 
+ * @description returns true if the string is in format #-#-#T#:#:#
+ */ 
+function isTimeFormat(val){
+    if(/\d+-\d+-\d+T\d+:\d+:\d+/gm.test(val)){
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @function getMonth
+ * 
+ * @param {string} month month as a number
+ * 
+ * @description return the name of the month
+ */
+function getMonth( month ){
+    month = parseInt(month);
+    switch(month){
+        case 1:
+            return "January";
+        case 2:
+            return "February";
+        case 3:
+            return "March";
+        case 4:
+            return "April";
+        case 5:
+            return "May";
+        case 6:
+            return "June";
+        case 7:
+            return "July";
+        case 8:
+            return "August";
+        case 9:
+            return "September";
+        case 10:
+            return "October";
+        case 11:
+            return "November";
+        case 12:
+            return "December";
+    }
+}
+
+/**
+ * @function buildTimeString
+ * 
+ * @param {string} h hour string
+ * @param {string} m minutes string
+ * @param {string} s second string
+ * 
+ * @description returns a time format that is human readable
+ */
+function buildTimeString(h, m, s){
+    h = parseInt(h);
+    m = parseInt(m);
+    var midday = "AM";
+    if(h > 12){
+        h -= 12;
+        midday = "PM";
+    }
+    else if(h === 0){
+        h = 12;
+    }
+
+    return String(h + ":" + m + " " + midday);
+}
+
+/**
+ * @function fixTimeString
+ * 
+ * @param {string} val
+ * 
+ * @description returns a string format of the data string 
+ */
+function fixTimeString(val){
+
+    var year = val.split("T")[0].split("-")[0],
+        month = val.split("T")[0].split("-")[1],
+        day = val.split("T")[0].split("-")[2];
+
+    
+    var hours = val.split("T")[1].split(":")[0],
+        minutes = val.split("T")[1].split(":")[1],
+        seconds = val.split("T")[1].split(":")[2];
+
+    val = getMonth(month) + " " + day + ", " + year + " at " + buildTimeString(hours, minutes, seconds);
+    
+    return val;
 }
 
 
@@ -284,6 +389,9 @@ function output(rawText){
             let val = getMetadataVal(key);
             if(hasUnits(val)){
                 val = removeUnits(val);
+            }
+            else if(isTimeFormat(val)) {
+                val = fixTimeString(val);
             }
 
             download = download.replaceAll(key, val.trim());
@@ -392,7 +500,13 @@ function hideAnimaton(alert){
         }, 2000);
 }
 
-
+/**
+ * @function boldenKeys
+ * 
+ * @param {DOM element} element 
+ * 
+ * @description parse through the text and replace all tags with bold
+ */
 function boldenKeys(element){
     // save cursor
     var sel = rangy.saveSelection(element);
@@ -418,6 +532,13 @@ function boldenKeys(element){
     rangy.restoreSelection(sel, true);
 }
 
+/**
+ * @function removeDoubleBold
+ * 
+ * @param {string} html
+ * 
+ * @description remove any double instance added by the DOM
+ */
 function removeDoubleBold( html ){
     while( html.indexOf("<b><b>") > -1 ){
         html = html.replaceAll("<b><b>", "<b>").replaceAll("</b></b>","</b>");
@@ -426,6 +547,14 @@ function removeDoubleBold( html ){
 }
 
 
+/**
+ * @function boldenEachString
+ * 
+ * @param {string} key 
+ * @param {string} html 
+ * 
+ * @description bolden every individual string that appears and matches key
+ */
 function boldenEachString(key, html){
     var wordArr = html.split("<br>");
 
@@ -447,8 +576,9 @@ function boldenEachString(key, html){
 }
 
 /**
+ * @function string2Bold
  * 
- * @param {*} string 
+ * @param {string} string the string to bolden
  */
 function string2Bold(string) {
     var b = document.createElement("b");
@@ -460,14 +590,13 @@ function string2Bold(string) {
 }
 
 // undo redo functionality  
-
 var userHistory = {
     object: null,
     back: [],
     forward: []
 };
 
-
+// update back array
 Object.prototype.updateBack = function(){
     if( this.object.innerHTML.trim(" ") !== this.back[this.back.length -1] ){
         if(this.back.length === 10){
@@ -483,6 +612,7 @@ Object.prototype.updateBack = function(){
     }
 }
 
+// update forward array
 Object.prototype.updateForward = function(){
     if( this.object.innerHTML.trim() !== this.forward[this.forward.length - 1] ){
         if(this.forward.length === 10){
@@ -498,24 +628,22 @@ Object.prototype.updateForward = function(){
     }
 }
 
+// undo the text from the back array
 Object.prototype.undo = function(){
     
     if( this.back.length > 0 ){
         this.object.innerHTML = this.back.pop();
         rangy.restoreSelection(cursorLocation, true);
     }
-
     this.object.focus();
 }
 
+// redo the text from the forward array
 Object.prototype.redo = function(){
-    
-
     if(this.forward.length > 0){
         this.object.innerHTML = this.forward.pop();
         rangy.restoreSelection(cursorLocation, true);
     }
-    
     this.object.focus();
 }
 
@@ -618,6 +746,7 @@ $(document).ready(function(){
         setTimeout(hideAnimaton, 2000, alert);
     });
 
+    
     /**
      * @function specialCharactersBtn 'mousedown'
      * 
@@ -1015,6 +1144,11 @@ $(document).ready(function(){
         return false;
     });
 
+    /**
+     * @function template-text 'mouseup' listener
+     * 
+     * @description update the cursorLocation
+     */
     $("#template-text").mouseup( function(e){
         if(cursorLocation){
             rangy.removeMarkers(cursorLocation);
@@ -1028,6 +1162,11 @@ $(document).ready(function(){
             
     });
 
+    /**
+     * @function template-text 'focus' listener
+     * 
+     * @description update the cursorLocation
+     */
     $("#template-text").focus( function(e){
         if(cursorLocation){
             rangy.removeMarkers(cursorLocation);

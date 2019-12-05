@@ -27,13 +27,13 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: 100%; font-size: 110%;">Icons</p>
+                    <p style="color: white; width: 100%; padding:0; padding-right: 5px; font-size: fit-content;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: 100%; font-size: 110%;">Annotate</p>
+                    <p style="color: black; width: 100%; padding:0; padding-right: 10px; font-size: 150%;">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black; width: 100%; font-size: 110%;">File Tools</p>
+                    <p style="color: black; width: 100%; padding:0; padding-right: 5px; font-size: fit-content;">File Tools</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
@@ -88,7 +88,7 @@
                             <label class="switch" id="sunCheckbox" style="visibility: hidden;" title="Shift + Alt + S">
                                 <input type="checkbox" id="sunCheckboxSlider" 
                                 style="margin: auto auto; margin-bottom: 0;">
-                                <span class="slider round" id="sunAnimation" ></span>
+                                <span class="slider round" id="sunAnimation"></span>
                             </label>
                         </div>
                     </div>
@@ -359,19 +359,9 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Right Bar-->
-        <div class="container mainbox-right" style="width: 15%; height:100%;">
-            <!-- Loading GIF-->
-            <div id="loading" class="float-md-right text-center lead loading-small">
-                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
-                <br>
-                <h3 id="loadingText" style="text-align: center; margin-left: 1rem;">Loading</h3>
-            </div>
-            <!--------------------------- Help Box ------------------------->
-            <div class="help-box-right" id="help-box" style="visibility: hidden; margin-right: 0;
-            height: 75%; display: inline-block;">
+            <div class="help-box" id="help-box" style="visibility: hidden; margin-right: 0;
+            height: 75%; width: 25%; display: inline-block;">
                 <button class="float-right button" id="hideBtn" 
                 style="width:auto; height:auto; border-radius: 5px; min-width: 1.75rem; min-height: 1.75rem;
                 border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
@@ -442,10 +432,23 @@
                         <p class="small-text">(Accepted Formats: png, tiff, svg, jpeg, or jpg)</p>
                 </div>
             </div>
+
+
+        </div>
+
+        <!-- Right Bar-->
+        <div class="container mainbox-right" style="width: 5%; height:100%;">
+            <!-- Loading GIF-->
+            <div id="loading" class="float-md-right text-center lead loading-small">
+                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
+                <br>
+                <h3 id="loadingText" style="text-align: center; margin-left: 1rem;">Loading</h3>
+            </div>
+            <!--------------------------- Help Box ------------------------->
         </div>
         
         <!-- Center Box-->
-        <div class="mainbox-center" style="width: 65%; height:100%; background-color: rgba(99,88,94,0.65);
+        <div class="mainbox-center" style="width: 75%; height:100%; background-color: rgba(99,88,94,0.65);
         border: 2px double rgba(255, 255,255, .65); padding: 5px;">
             <!-- Center Title Box -->
             <div class="container text-center" style="background: rgba(99, 88, 94, 0.692);
