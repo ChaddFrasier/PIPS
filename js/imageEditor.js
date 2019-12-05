@@ -829,6 +829,7 @@ function loaderActivate(){
 */
 function setOpposite(colorString){
     if(colorString === "black"){ return "white"; }
+    else if(colorString === "transparent"){ return colorString; }
     else{ return "black"; }
 }
 
