@@ -4168,7 +4168,9 @@ $(document).ready(function(){
 
     
     /**
+     * @function northImage "mouseover" event
      * 
+     * @description display the rescaling boxes over the image
      */
     northImage.addEventListener("mouseover", function(){
         // show border of rescale
@@ -4183,6 +4185,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function northImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
     northImage.addEventListener("mouseleave", function(){
         //hide border of rescale
         var children = this.childNodes;
@@ -4195,7 +4202,9 @@ $(document).ready(function(){
     });
 
     /**
+     * @function sunImage "mouseover" event
      * 
+     * @description display the rescaling boxes over the image
      */
     sunImage.addEventListener("mouseover", function(){
         // show border of rescale
@@ -4210,6 +4219,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function sunImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
     sunImage.addEventListener("mouseleave", function(){
         //hide border of rescale
         var children = this.childNodes;
@@ -4223,7 +4237,9 @@ $(document).ready(function(){
 
 
     /**
+     * @function eyeImage "mouseover" event
      * 
+     * @description display the rescaling boxes over the image
      */
     eyeImage.addEventListener("mouseover", function(){
         // show border of rescale
@@ -4238,6 +4254,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function eyeImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
     eyeImage.addEventListener("mouseleave", function(){
         //hide border of rescale
         var children = this.childNodes;
