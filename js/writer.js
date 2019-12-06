@@ -19,6 +19,7 @@ var outputName,
     loader,
     cursorLocation;
 
+
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 /**
  * @function filterTags
@@ -40,7 +41,8 @@ function filterTags(){
         
         // for every line that contains the filtering string push the line into an array
         for(line in dataLines){
-            if(dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
+            if( typeof(dataLines[line]) !== "function" 
+                && dataLines[line].toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
             {
                 filteredArray.push(dataLines[line]);
             }
@@ -131,7 +133,7 @@ function getMetadataVal(key){
         //if the key is found
         if(datakey === key){
             //trim the data and return the result
-            return allMetaData[datakey].trim();
+            return allMetaData[ datakey ].trim();
         } 
     }
     return key;
@@ -213,7 +215,8 @@ function removeUnits(str){
         unitsFound = false;
 
     for(index in tmpArr){
-        if(tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1 && !unitsFound){
+        if( typeof(tmpArr[index]) === "string"
+            && (tmpArr[index].indexOf("<") > -1 || tmpArr[index].indexOf(">") > -1) && !unitsFound){
             // remove this index and everything after
             tmpArr[index] = "";
             unitsFound = true;
@@ -247,24 +250,134 @@ Object.prototype.sort = function(){
     return sortedObject;
 }
 
-
+/**
+ * @function string2Element
+ * 
+ * @param {string} string the element to place in the bold
+ * @param {DOM element} element type of element 
+ */
 function string2Element(string, element){
     var element = document.createElement(element);
     element.innerHTML = string;
     return element;
 }
 
-/* TESTING */
+/**
+ * @function isTimeFormat
+ * 
+ * @param {string} val the value to test for the time format
+ * 
+ * @description returns true if the string is in format #-#-#T#:#:#
+ */ 
+function isTimeFormat(val){
+    if(/\d+-\d+-\d+T\d+:\d+:\d+/gm.test(val)){
+        return true;
+    }
+    return false;
+}
+
+/**
+ * @function getMonth
+ * 
+ * @param {string} month month as a number
+ * 
+ * @description return the name of the month
+ */
+function getMonth( month ){
+    month = parseInt(month);
+    switch(month){
+        case 1:
+            return "January";
+        case 2:
+            return "February";
+        case 3:
+            return "March";
+        case 4:
+            return "April";
+        case 5:
+            return "May";
+        case 6:
+            return "June";
+        case 7:
+            return "July";
+        case 8:
+            return "August";
+        case 9:
+            return "September";
+        case 10:
+            return "October";
+        case 11:
+            return "November";
+        case 12:
+            return "December";
+    }
+}
+
+/**
+ * @function buildTimeString
+ * 
+ * @param {string} h hour string
+ * @param {string} m minutes string
+ * @param {string} s second string
+ * 
+ * @description returns a time format that is human readable
+ */
+function buildTimeString(h, m, s){
+    h = parseInt(h);
+    m = parseInt(m);
+    var midday = "AM";
+    if(h > 12){
+        h -= 12;
+        midday = "PM";
+    }
+    else if(h === 0){
+        h = 12;
+    }
+
+    return String(h + ":" + m + " " + midday);
+}
+
+/**
+ * @function fixTimeString
+ * 
+ * @param {string} val
+ * 
+ * @description returns a string format of the data string 
+ */
+function fixTimeString(val){
+
+    var year = val.split("T")[0].split("-")[0],
+        month = val.split("T")[0].split("-")[1],
+        day = val.split("T")[0].split("-")[2];
+
+    
+    var hours = val.split("T")[1].split(":")[0],
+        minutes = val.split("T")[1].split(":")[1],
+        seconds = val.split("T")[1].split(":")[2];
+
+    val = getMonth(month) + " " + day + ", " + year + " at " + buildTimeString(hours, minutes, seconds);
+    
+    return val;
+}
 
 
+/**
+ * @function isDecimal
+ * 
+ * @param {string} val
+ * 
+ * @description returns true if the value is a decimal longer than 3 decimal places
+ */
+function isDecimal( val ){
+    val = parseFloat(val);
+    if( !isNaN(val) ){
+        if(/^\d*\.\d{4,}$/gm.test(val)){
+            return true;
+        }
+    }
+    return false;
+}
 
-
-
-/* END TESTING */
-
-// TODO: this fails when refreshing b/c the values in the elements have changed
-// ||||
-// VVVV
 /** 
  * @function output
  * 
@@ -276,7 +389,6 @@ function output(rawText){
     var outputArea = document.getElementById("template-text-output"),
     download = rawText;
 
-    console.log(rawText);
     // get both data objects
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
     var impData = JSON.parse(document.getElementById("metadata-text").innerText);
@@ -286,11 +398,21 @@ function output(rawText){
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
-    for(const key of Object.keys(allMetaData.sort())){
-        if(rawText.indexOf(key.trim()) > -1){
+    for( const key of Object.keys( allMetaData.sort() )){
+        if(rawText.indexOf(key.trim()) > -1) {
             let val = getMetadataVal(key);
+
             if(hasUnits(val)){
                 val = removeUnits(val);
+            }
+
+            if( isTimeFormat(val) ) {
+                // set the time strings
+                val = fixTimeString(val);
+            }
+            else if( isDecimal(val) ){
+                // fix deciamls at 3
+                val = parseFloat(val).toFixed(3);
             }
 
             download = download.replaceAll(key, val.trim());
@@ -316,6 +438,9 @@ function output(rawText){
     //update the download link to the new text
     var copyBox = document.getElementById("copyBtnText");
     copyBox.innerHTML = download;
+
+    download = download.replaceAll("&lt;","<").replaceAll("&gt;",">");
+
     var tpl = document.getElementById("link");
     tpl.href = 'data:attachment/text,' + encodeURIComponent(download);
     tpl.target = '_blank';
@@ -396,6 +521,152 @@ function hideAnimaton(alert){
         }, 2000);
 }
 
+/**
+ * @function boldenKeys
+ * 
+ * @param {DOM element} element 
+ * 
+ * @description parse through the text and replace all tags with bold
+ */
+function boldenKeys(element){
+    // save cursor
+    var sel = rangy.saveSelection(element);
+    
+    var output = element.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
+
+    // get both data objects
+    var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
+    var impData = JSON.parse(document.getElementById("metadata-text").innerText);
+
+    // combine the JSONs into 1 object
+    allMetaData = Object.assign(allMetaData, impData);
+
+    for( const key of Object.keys(allMetaData.sort()) ){
+        if(output.indexOf(key) > -1 ){
+            output = boldenEachString(key, output);
+            output = removeDoubleBold(output);
+        }
+    }
+
+    element.innerHTML = output;
+    // set cursor
+    rangy.restoreSelection(sel, true);
+}
+
+/**
+ * @function removeDoubleBold
+ * 
+ * @param {string} html
+ * 
+ * @description remove any double instance added by the DOM
+ */
+function removeDoubleBold( html ){
+    while( html.indexOf("<b><b>") > -1 ){
+        html = html.replaceAll("<b><b>", "<b>").replaceAll("</b></b>","</b>");
+    }
+    return html;
+}
+
+
+/**
+ * @function boldenEachString
+ * 
+ * @param {string} key 
+ * @param {string} html 
+ * 
+ * @description bolden every individual string that appears and matches key
+ */
+function boldenEachString(key, html){
+    var wordArr = html.split("<br>");
+
+    if(wordArr){
+        for( var i = 0; i < wordArr.length; i++ ) {
+            var word = wordArr[i].split(" ");
+            for( var j = 0; j < word.length; j++ ) {
+                if( word[j] === key ) {
+                    html = html.replaceAll(key, string2Bold(key));
+                }
+                else if( word[j].indexOf(key) > -1){
+                    html = html.replaceAll(key, string2Bold(key));
+                }
+            }
+        }
+    }
+
+    return html;
+}
+
+/**
+ * @function string2Bold
+ * 
+ * @param {string} string the string to bolden
+ */
+function string2Bold(string) {
+    var b = document.createElement("b");
+
+    if(!string.indexOf("<b>") > -1){
+        b.innerHTML = string;
+    }
+    return b.outerHTML;
+}
+
+// undo redo functionality  
+var userHistory = {
+    object: null,
+    back: [],
+    forward: []
+};
+
+// update back array
+Object.prototype.updateBack = function(){
+    if( this.object.innerHTML.trim(" ") !== this.back[this.back.length -1] ){
+        if(this.back.length === 10){
+            this.back.shift();
+            this.back.push(this.object.innerHTML.trim(" "));
+        }
+        else{
+            this.back.push(this.object.innerHTML.trim(" "));
+        }
+    }
+    else if(this.back.length === 0){
+        this.back.push(this.object.innerHTML.trim(" "));
+    }
+}
+
+// update forward array
+Object.prototype.updateForward = function(){
+    if( this.object.innerHTML.trim() !== this.forward[this.forward.length - 1] ){
+        if(this.forward.length === 10){
+            this.forward.shift();
+            this.forward.push(this.object.innerHTML.trim(" "));
+        }
+        else{
+            this.forward.push(this.object.innerHTML.trim(" "));
+        }
+    }
+    else if( this.forward.length === 0 ){
+        this.forward.push(this.object.innerHTML.trim(" "));
+    }
+}
+
+// undo the text from the back array
+Object.prototype.undo = function(){
+    
+    if( this.back.length > 0 ){
+        this.object.innerHTML = this.back.pop();
+        rangy.restoreSelection(cursorLocation, true);
+    }
+    this.object.focus();
+}
+
+// redo the text from the forward array
+Object.prototype.redo = function(){
+    if(this.forward.length > 0){
+        this.object.innerHTML = this.forward.pop();
+        rangy.restoreSelection(cursorLocation, true);
+    }
+    this.object.focus();
+}
 
 
 /** ----------------------------------------- End Basic Functions ---------------------------------------- */
@@ -404,7 +675,10 @@ function hideAnimaton(alert){
 $(document).ready(function(){
     var varDiv = document.getElementById("pageVariables"),
         goForward = false;
-    
+
+    //init history
+    userHistory.object = document.getElementById("template-text");
+
     loader = document.getElementById('loading');
 
     // grab the variables from the server
@@ -466,16 +740,15 @@ $(document).ready(function(){
         // get the output field
         var output = document.getElementById("copyBtnText");
 
-        output.value = output.innerHTML;
+        // replace all html codes
+        output.value = output.innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
         output.style.visibility = "visible";
         // call the select function
         output.select();
         // select for touch screens
         output.setSelectionRange(0,99999);
 
-        // call the copy function
-        console.log(document.execCommand("copy"));
-
+        document.execCommand("copy");
         output.style.visibility = "hidden";
         // set up the alert to inform the user
         var alert = document.createElement("div");
@@ -494,23 +767,44 @@ $(document).ready(function(){
         setTimeout(hideAnimaton, 2000, alert);
     });
 
+    
     /**
      * @function specialCharactersBtn 'mousedown'
      * 
      * @description shows and removes the special characters buttons under the output box
      */
     $("#specialCharactersBtn").mousedown(function(){
+        var textbox = document.getElementById("template-text");
+        
+        // focus on the box
+        textbox.focus();
+
         if($(this).hasClass("btn-secondary")){
             $(this).removeClass("btn-secondary");
-            cursorLocation = null;
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
             document.getElementById("specialCharBox").style.display = "none";
         }
         else{
             $(this).addClass("btn-secondary");
             document.getElementById("specialCharBox").style.display = "block";
-            cursorLocation = document.getElementById("template-text").selectionEnd;
-            console.log(document.getElementById("template-text").selectionStart);
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
         }
+
+        return false;
     });
 
 
@@ -520,7 +814,7 @@ $(document).ready(function(){
      * @description template download functionality with naming convention
      */
     $("#templateDownloadBtn").mousedown( function(){
-        var templateText = document.getElementById("template-text").value;
+        var templateText = document.getElementById("template-text").innerText;
         var data = encodeURIComponent(templateText);
         
         var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
@@ -722,21 +1016,51 @@ $(document).ready(function(){
      */
     $("button.specChar").mousedown(function(){
         // get needed data
-        var symbol = String($(this).html()).trim(),
-            templateText = document.getElementById("template-text").innerText,
-            end = templateText.substring(cursorLocation, templateText.length),
-            start = templateText.substring(0, cursorLocation++);
+        var symbol = String($(this).html()).trim();
+        var templateField = document.getElementById("template-text");
 
-        // append the symbol to the start string
-        start += symbol;
-
-        // append the two halves
-        document.getElementById("template-text").innerText =  String(start + end);
-        setOutput();
+        if(cursorLocation){
+            // append the symbol to the start string
+            rangy.restoreSelection(cursorLocation, true);
+            var res = document.execCommand("insertText", false, symbol);
+            rangy.removeMarkers(cursorLocation);
+        }
+        else {
+            // select the last part of the text
+            cursorLocation = rangy.getSelection( templateField );
+            cursorLocation.selectAllChildren(templateField)
+            cursorLocation.collapseToEnd();
+            var res = document.execCommand( "insertText", false, symbol );
+            rangy.removeMarkers(cursorLocation);
+        }
         
-        // hide the character buttons 
-        $("#specialCharactersBtn").mousedown();
+        if(res){
+            setOutput();
+            
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
+
+            return false;
+        }
+        else{
+            // character addition failed
+            // save new cursor location
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
+        }
     });
+
 
     /**
      * @function helpBtn 'mousedown' event handler
@@ -753,8 +1077,21 @@ $(document).ready(function(){
      * 
      * @description set the new output value whenever a new character is added to the template
     */
-    $("#template-text").keyup(function(){
-        setOutput();
+    $("#template-text").keydown( function(e){
+        if(e.keyCode === 8){
+            // this is the delete
+            if( cursorLocation ) {
+                rangy.removeMarkers( cursorLocation );
+            }
+        }
+        else if(e.keyCode === 9){
+            // tab is clicked;
+            e.preventDefault();
+        }
+
+        if(e.keyCode === 32 || e.keyCode === 8 || e.keyCode === 46){
+            userHistory.updateBack();
+        }
     });
 
     /**
@@ -762,35 +1099,111 @@ $(document).ready(function(){
      * 
      * @description set the tag section to the fitered version by calling the filterTags()
     */
-    $("#filterInput").keyup(function(){
+    $("#filterInput").keyup( function(){
         filterTags();
     });
+
+    function KeyPress(e) {
+        var evtobj = window.event? event : e
+        if (evtobj.keyCode == 90 && evtobj.ctrlKey){
+            userHistory.undo();
+            userHistory.updateForward();
+        }
+        else if (evtobj.keyCode == 89 && evtobj.ctrlKey){
+            userHistory.redo();
+            userHistory.updateBack();
+        }
+    }
+  
+    document.onkeydown = KeyPress;
 
     /** 
      * @function template-text 'keydown' listener
      * 
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
-    $("#template-text").keydown( function(e){
-        if(e.keyCode === 9) { // tab was pressed
-            // get caret position/selection
-            var start = this.selectionStart;
-                end = this.selectionEnd;
-    
-            var $this = $(this);
-    
-            // set textarea value to: text before caret + tab + text after caret
-            $this.val($this.val().substring(0, start)
-                        + "\t"
-                        + $this.val().substring(end));
-    
-            // put caret at right position again
-            this.selectionStart = this.selectionEnd = start + 1;
-    
-            // prevent the focus lose
-            return false;
+    $("#template-text").keyup( function(e){
+        /* console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
+        console.log(e.keyCode); 
+         */
+        // save new cursor location
+
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
         }
+        else{
+            cursorLocation = rangy.saveSelection(this);
+        }
+
+        if(e.keyCode === 37
+            || e.keyCode === 38
+            || e.keyCode === 39
+            || e.keyCode === 40 ){
+            // restore
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else if(e.keyCode === 9){
+            if( cursorLocation ){
+                // append the symbol to the start string
+                rangy.restoreSelection(cursorLocation, true);
+                document.execCommand("insertText", false, "    ");
+                rangy.removeMarkers(cursorLocation);
+            }
+        }
+        else{
+            boldenKeys(this);
+            // restore
+            rangy.restoreSelection(cursorLocation, true);
+            rangy.removeMarkers(cursorLocation);
+        }
+        setOutput();
+
+        if(e.keyCode === 8 || e.keyCode === 46){
+            userHistory.updateForward();
+        }
+        return false;
     });
+
+    /**
+     * @function template-text 'mouseup' listener
+     * 
+     * @description update the cursorLocation
+     */
+    $("#template-text").mouseup( function(e){
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else if(!cursorLocation){
+            cursorLocation = rangy.saveSelection(this);
+        }
+        
+        try{
+            cursorLocation.collapseToEnd();     
+        }catch(err){}
+    });
+
+    /**
+     * @function template-text 'focus' listener
+     * 
+     * @description update the cursorLocation
+     */
+    $("#template-text").focus( function(e){
+        if(cursorLocation){
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+        }
+        else if(!cursorLocation){
+            cursorLocation = rangy.saveSelection(this);
+        }
+        
+        boldenKeys(this);
+        setOutput();
+        return false;
+    });
+
 
     /**
      * @function logDownloadBtn 'mousedown' listener

@@ -206,6 +206,7 @@ function makeDraggable(event){
         }
         // if the event click happened on a draggable element start drag logic
         else if(selectedElement.classList.contains('draggable')){
+            console.log("DRAGGABLE");
             // set dragging flag
             dragging = true;
             // get the offset value for the translation
@@ -829,6 +830,7 @@ function loaderActivate(){
 */
 function setOpposite(colorString){
     if(colorString === "black"){ return "white"; }
+    else if(colorString === "transparent"){ return colorString; }
     else{ return "black"; }
 }
 
@@ -843,8 +845,15 @@ function setOpposite(colorString){
  * @description draws the line whenever it needs to be updated in the middle of drawing action
 */
 function drawLine(lineElement,x2,y2){
-    lineElement.setAttribute("x2", x2);
-    lineElement.setAttribute("y2",y2);
+    var transform = lineElement.getAttribute("transform");
+
+    var transX = parseInt(transform.split(") ")[0].split(",")[0].replace("translate(","")),
+        transY = parseInt(transform.split(") ")[0].split(",")[1]);
+
+    console.log("TEST: " + transX + " : " + transY);
+
+    lineElement.setAttribute("x2", x2 - transX);
+    lineElement.setAttribute("y2",y2 - transY);
 }
 
 
@@ -1905,9 +1914,9 @@ function resetDrawTool(){
     if( lineArr.length > 0 && clickArray.length > 1 ) {
         var elem = lineArr.pop();
 
-        if(elem.getAttribute("marker-end")){
-            // remove the arrow def based on marker-end value
-            let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+        if(elem.getAttribute("marker-start")){
+            // remove the arrow def based on marker-start value
+            let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
             if(id !== "#arrow"){
                 $(id).parent().remove();
@@ -2241,7 +2250,7 @@ $(document).ready(function(){
     }
 
     // string version of the icons so they can be added dynamically with a single function call 
-    var sunObjectString = '<g id="sunPosition" class="draggable confine" transform-origin="50%; 50%;"'
+    var sunObjectString = '<g id="sunPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;">\n'
     + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="10" stroke="white" fill="black"'
@@ -2250,22 +2259,22 @@ $(document).ready(function(){
     + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="white"'
     + 'fill="black"/>\n'
     + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="red"/>\n'
+    + 'style="visibility: hidden;"fill="transparent"/>\n'
     + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="blue"/>\n'
+    + 'style="visibility: hidden;"fill="transparent"/>\n'
     + '<rect class="resize bottom-right"x="220" y="220" width="100"height="100" style="visibility: hidden;'
-    + '"fill="green"/>\n'
+    + '"fill="transparent"/>\n'
     + '<rect class="resize bottom-left"x="0" y="220" width="100" height="100"'
-    + 'style="visibility: hidden;"fill="yellow"/>\n</g>\n';
+    + 'style="visibility: hidden;" fill="transparent"/>\n</g>\n';
 
-    var northObjectString = '<g id="northPosition" class="draggable confine" transform-origin="50%; 50%;"'
+    var northObjectString = '<g id="northPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="5"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
-    + 'width="100" height="100" fill="red"/>\n'
+    + 'width="100" height="100" fill="transparent"/>\n'
     + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="100"'
-    + 'fill="yellow"/>\n'
+    + 'fill="transparent"/>\n'
     + '<path id= "northIcon"  d="M 100 0 L 200 200 L 100 150 L 0 200 Z" fill="black"  stroke="white"' 
     + 'stroke-width="2" style="border:0;"></path>\n'
     + '<path id= "northIcon2"  d="M 100 0 L 0 200 L 100 150 L 100 0" fill="white"  stroke="white"' 
@@ -2273,24 +2282,24 @@ $(document).ready(function(){
     + '<path id="nLetter" d="M 50 200 L 50 0 L 150 200 L 150 0"stroke="white" stroke-width="10"'
     + 'transform="translate(0,200)"fill="black" style="border:0;"></path>\n'
     + '<rect class= "resize bottom-right"x="125" y="300" width="75" height="100"'
-    + 'style="visibility: hidden;"fill="green"/>\n'
+    + 'style="visibility: hidden;"fill="transparent"/>\n'
     + '<rect class= "resize bottom-left"x="0" y="300" width="75" height="100" style="visibility: hidden;"'
-    + 'fill="blue"/>\n</g>\n'
+    + 'fill="transparent"/>\n</g>\n'
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
     + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />\n';
 
     var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>\n'
     + '<rect class=" resize top-left" x="0" y="0" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
+    + 'style="visibility: hidden;fill:transparent; stroke:red" />\n'
     + '<rect class=" resize top-right" x="350" y="0" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
+    + 'style="visibility: hidden;fill:transparent; stroke:red" />\n'
     + '<rect class=" resize bottom-right" x="350" y="350" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15); stroke:blue" />\n'
+    + 'style="visibility: hidden;fill: transparent; stroke:red" />\n'
     + '<rect class=" resize bottom-left" x="0" y="350" width="50" height="50"'
-    + 'style="visibility: hidden;fill:rgba(245, 13, 13, 0.15);stroke:blue" />\n';
+    + 'style="visibility: hidden;fill:transparent;stroke:red" />\n';
 
-    var eyeObjectString = '<g id="eyePosition" class="draggable confine" transform-origin="50%; 50%;"'
+    var eyeObjectString = '<g id="eyePosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(150, 100) rotate(0) scale(1.18)" stroke-width="2" style="border:0; padding:0;'
     + 'pointer-events:visible;">\n'
     + '<path id="eyeArrow" x="0" y="0"'
@@ -2302,15 +2311,15 @@ $(document).ready(function(){
     + '<circle id= "eyeIconPupel" r="6" cy="31" cx="50" stroke-width="2" stroke="white" fill="black"' 
     + 'style="border:0;"></circle>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20"stroke="black" '
-    + 'fill="red"/>\n'
+    + 'fill="transparent"/>\n'
     + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20"stroke="black" '
-    + 'fill="blue"/>\n'
+    + 'fill="transparent"/>\n'
     + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20"stroke="black" '
-    + 'fill="green"/>\n' 
+    + 'fill="transparent"/>\n' 
     + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20"'
-    + ' fill="yellow" stroke="black"/>\n</g>\n';
+    + ' fill="transparent" stroke="black"/>\n</g>\n';
 
-    var scaleBarObject = '<g id="scalebarPosition" class="draggable confine scalebar"'
+    var scaleBarObject = '<g id="scalebarPosition" class="draggable confine scalebar scaleable"'
     + 'transform="translate(0, 175) scale(.1)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
     + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>\n'
@@ -2942,9 +2951,9 @@ $(document).ready(function(){
     $("#undoLine").on("mousedown",function(){
         if(lineArr.length > 0 && clickArray.length > 1){
             let elem = lineArr.pop();
-            if(elem.getAttribute("marker-end")){
-                // remove the arrow def based on marker-end value
-                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+            if(elem.getAttribute("marker-start")){
+                // remove the arrow def based on marker-start value
+                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
                 if(id !== "#arrow"){
                     $(id).parent().remove();
@@ -2959,9 +2968,9 @@ $(document).ready(function(){
         else if(lineArr.length > 0){
             var elem = lineArr.pop();
 
-            if(elem.getAttribute("marker-end")){
-                // remove the arrow def based on marker-end value
-                let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+            if(elem.getAttribute("marker-start")){
+                // remove the arrow def based on marker-start value
+                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
 
                 if(id !== "#arrow"){
                     $(id).parent().remove();
@@ -2990,9 +2999,9 @@ $(document).ready(function(){
         if(event.keyCode === 27 && drawFlag){
             if(lineArr.length > 0 && clickArray.length > 1){
                 let elem = lineArr.pop();
-                if(elem.getAttribute("marker-end")){
-                    // remove the arrow def based on marker-end value
-                    let id = elem.getAttribute("marker-end").replace("url(","").replace(")","");
+                if(elem.getAttribute("marker-start")){
+                    // remove the arrow def based on marker-start value
+                    let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
     
                     if(id !== "#arrow"){
                         $(id).parent().remove();
@@ -3593,7 +3602,7 @@ $(document).ready(function(){
             var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
             // draggable group 
-            g.setAttribute("class","draggable confine textbox");
+            g.setAttribute("class","draggable confine scaleable textbox");
             g.setAttribute("x",0);
             g.setAttribute("y",0);
             // text attributes start location
@@ -3620,6 +3629,7 @@ $(document).ready(function(){
             rect.setAttribute("height", 5);
             rect.style.visibility = "hidden";
             rect.setAttribute("class","resize bottom-left");
+            rect.setAttribute("fill","transparent");
 
             var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect2.setAttribute("x",0);
@@ -3628,6 +3638,7 @@ $(document).ready(function(){
             rect2.setAttribute("height", 5);
             rect2.style.visibility = "hidden";
             rect2.setAttribute("class","resize top-left");
+            rect2.setAttribute("fill","transparent");
 
             var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect3.setAttribute("x",10);
@@ -3636,14 +3647,14 @@ $(document).ready(function(){
             rect3.setAttribute("height", 7);
             rect3.style.visibility = "hidden";
             rect3.setAttribute("class","resize top-right");
-            rect3.setAttribute("fill","blue");
+            rect3.setAttribute("fill","transparent");
 
             var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect4.setAttribute("x",10);
             rect4.setAttribute("y",13);
             rect4.setAttribute("width", 7);
             rect4.setAttribute("height", 7);
-            rect4.setAttribute("fill","blue");
+            rect4.setAttribute("fill","transparent");
             rect4.style.visibility = "hidden";
             rect4.setAttribute("class","resize bottom-right");
             // default pointer events
@@ -3688,6 +3699,31 @@ $(document).ready(function(){
                 document.getElementById("undoText").style.visibility = "visible";
             }
             
+
+            g.addEventListener("mouseover", function(){
+                // show border of rescale
+                var children = this.childNodes;
+        
+                for(var i = 0; i < children.length; i++){
+                    if(children[i].classList && children[i].classList.contains("resize")){
+                        children[i].setAttribute("stroke", "red");
+                        children[i].style.background = "transparent";
+                        children[i].style.visibility = "visible";
+                    }
+                }
+            });
+        
+            g.addEventListener("mouseleave", function(){
+                //hide border of rescale
+                var children = this.childNodes;
+        
+                for(var i = 0; i < children.length; i++){
+                    if(children[i].classList && children[i].classList.contains("resize")){
+                        children[i].style.visibility = "hidden";
+                    }
+                }
+            });
+
         }
     });
       
@@ -3944,8 +3980,9 @@ $(document).ready(function(){
 
         // generate the new scalable draggables group dynamically 
         var g = document.createElementNS("http://www.w3.org/2000/svg","g");
+        g.innerHTML = attensionBoxObjectString;
 
-        g.setAttribute("class","draggable confine outline");
+        g.setAttribute("class","draggable confine scaleable outline");
         g.setAttribute("transform-origin","50%; 50%;");
         g.setAttribute("transform","translate(0, 0) rotate(0) scale(.5)");
         g.setAttribute("stroke-width","20");
@@ -3953,8 +3990,6 @@ $(document).ready(function(){
         g.style.padding = 0;
         g.style.pointerEvents = "visible";
         g.style.fill = "none";
-
-        g.innerHTML = attensionBoxObjectString;
         
         // set the color if needed
         if(userBoxColor){
@@ -3973,6 +4008,33 @@ $(document).ready(function(){
         if(highlightBoxArray.length > 0){
             document.getElementById("undoBox").style.visibility = "visible";
         }
+
+
+        g.addEventListener("mouseover", function(){
+            // show border of rescale
+            var children = this.childNodes;
+    
+            for(var i = 0; i < children.length; i++){
+                if(children[i].classList && children[i].classList.contains("resize")){
+                    children[i].setAttribute("stroke", "red");
+                    children[i].style.background = "transparent";
+                    children[i].style.visibility = "visible";
+                }
+            }
+        });
+    
+        g.addEventListener("mouseleave", function(){
+            //hide border of rescale
+            var children = this.childNodes;
+    
+            for(var i = 0; i < children.length; i++){
+                if(children[i].classList && children[i].classList.contains("resize")){
+                    children[i].style.visibility = "hidden";
+                }
+            }
+        });
+
+
     });
 
 
@@ -4101,6 +4163,111 @@ $(document).ready(function(){
         leftBtn.className = 'btn button btn-sm paddingBtn';
         rightBtn.className = 'btn button btn-sm paddingBtn';
         topBtn.className = 'btn button btn-sm paddingBtn'; 
+    });
+
+
+    
+    /**
+     * @function northImage "mouseover" event
+     * 
+     * @description display the rescaling boxes over the image
+     */
+    northImage.addEventListener("mouseover", function(){
+        // show border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].setAttribute("stroke", "red");
+                children[i].style.background = "transparent";
+                children[i].style.visibility = "visible";
+            }
+        }
+    });
+
+    /**
+     * @function northImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
+    northImage.addEventListener("mouseleave", function(){
+        //hide border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].style.visibility = "hidden";
+            }
+        }
+    });
+
+    /**
+     * @function sunImage "mouseover" event
+     * 
+     * @description display the rescaling boxes over the image
+     */
+    sunImage.addEventListener("mouseover", function(){
+        // show border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].setAttribute("stroke", "red");
+                children[i].style.background = "transparent";
+                children[i].style.visibility = "visible";
+            }
+        }
+    });
+
+    /**
+     * @function sunImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
+    sunImage.addEventListener("mouseleave", function(){
+        //hide border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].style.visibility = "hidden";
+            }
+        }
+    });
+
+
+    /**
+     * @function eyeImage "mouseover" event
+     * 
+     * @description display the rescaling boxes over the image
+     */
+    eyeImage.addEventListener("mouseover", function(){
+        // show border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].setAttribute("stroke", "red");
+                children[i].style.background = "transparent";
+                children[i].style.visibility = "visible";
+            }
+        }
+    });
+
+    /**
+     * @function eyeImage "mouseleave" event
+     * 
+     * @description remove the rescaling boxes over the image
+     */
+    eyeImage.addEventListener("mouseleave", function(){
+        //hide border of rescale
+        var children = this.childNodes;
+
+        for(var i = 0; i < children.length; i++){
+            if(children[i].classList && children[i].classList.contains("resize")){
+                children[i].style.visibility = "hidden";
+            }
+        }
     });
 
 
@@ -4274,17 +4441,21 @@ $(document).ready(function(){
             let isArrowHead = document.getElementById("arrowCheckboxSlider").checked,
                 NS = "http://www.w3.org/2000/svg";
 
+            
             // create the new  line dynamically and add it to the array so we can remove it later if needed
             line = document.createElementNS(NS,"line");
-            line.setAttribute("x1",mouseX);
-            line.setAttribute("y1",mouseY);
-            line.setAttribute("x2",mouseX);
-            line.setAttribute("y2",mouseY);
+            line.setAttribute("id","line" + lineArr.length);
+            line.setAttribute("class","draggable confine");
+            line.setAttribute("transform","translate(" + mouseX + ", " + mouseY + ") rotate(0)" );
+            line.setAttribute("x1",0);
+            line.setAttribute("y1",0);
+            line.setAttribute("x2",0);
+            line.setAttribute("y2",0);
             line.style.visibility = "visible";
 
             if(isArrowHead){
                 // if arrow with default color 
-                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-end","url(#arrow)"); }
+                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-start","url(#arrow)"); }
                 // if the array is linger than 1 and the color is not default
                 else if(lineArr.length > 0 || userLineColor){
                     var markerId = "arrow" + lineArr.length,
@@ -4293,7 +4464,7 @@ $(document).ready(function(){
 
                     newDef.setAttribute("id", "arrowDef" + lineArr.length);
                     newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
-                    line.setAttribute("marker-end", String("url(#" + markerId + ")"));
+                    line.setAttribute("marker-start", String("url(#" + markerId + ")"));
                     (newDef.childNodes).forEach(childElem => {
                         // if the childElement has a child
                         if(childElem.childElementCount > 0){
@@ -4319,17 +4490,22 @@ $(document).ready(function(){
             }
             
             line.style.strokeWidth = 10;
+     
             svg.appendChild(line);
 
             lineArr.push(line);
-            captureClick(mouseX,mouseY);
+            captureClick(mouseX, mouseY);
         }
         else if(drawFlag && clickArray.length > 1  
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
-            // if the line is being drawn and the seconf click happens set the final location
-            line.setAttribute("x2", mouseX);
-            line.setAttribute("y2", mouseY);
 
+            var transform = line.getAttribute("transform");
+            // if the line is being drawn and the seconf click happens set the final location
+            var transX = parseInt(transform.split(") ")[0].split(",")[0].replace("translate(","")),
+                transY = parseInt(transform.split(") ")[0].split(",")[1]);
+
+            line.setAttribute("x2", mouseX - transX);
+            line.setAttribute("y2", mouseY - transY);
             clickArray = [];
             drawFlag = false;
             // reset the button color and allow for click detection again
@@ -4381,6 +4557,7 @@ $(document).ready(function(){
         }
     });
 });
+
 
 /**
  * @function window 'pageshow' event handler

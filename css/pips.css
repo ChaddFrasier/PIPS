@@ -23,6 +23,15 @@ body,html {
     margin: auto 0;
 }
 
+pre {
+    overflow-x: auto;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+ }
+ 
 .shadowbox {
     width:100px;
     text-align:center;    
@@ -124,7 +133,7 @@ button.paddingBtn {
 }
 .menu {
     display: inline-flex;
-    width: 75%;
+    width: 78%;
     height: 85%;
     background: rgb(161, 161, 161);
     border: #000;
@@ -470,6 +479,7 @@ svg.image-image {
 }
 
 .help-box {
+    z-index: 10;
     position: absolute;
     float: left;
     margin: 0;
@@ -498,6 +508,7 @@ cite {
 }
 
 .help-box-right {
+    z-index: 10;
     float: right;
     color: black;
     position: relative;

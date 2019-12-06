@@ -572,16 +572,11 @@ app.post('/captionWriter', async function(request, response){
                 // otherwise ignore and default
                 cubeObj.userDim = [1500,1500];
             }
-            
-            // reset server tif val because conversion completed
-            isTiff = false;
 
             // after conversion finished
             Promise.all(promises).then(function(cubeName){
                 // if the return array legth is not 0 extract the new cubefile name
                 if(cubeName.length > 0){
-                    // remove the tif file that was uploaded
-                    fs.unlinkSync(cubeName[0].replace(".cub",".tif"));
                     // get cube file name
                     cubeObj.name = path.basename(cubeName[0]);
                 }
@@ -755,6 +750,10 @@ app.post('/captionWriter', async function(request, response){
                                             memArray.push(newMem);
                                         }
                                     }
+                                    
+                                    if(isTiff){
+                                        fs.unlinkSync( path.join("uploads",cubeObj.name.replace(".cub",".tif").replace("r-", "u-")) );
+                                    }
 
                                     // send response w/ all variables
                                     response.render('writer.ejs',
@@ -770,7 +769,7 @@ app.post('/captionWriter', async function(request, response){
                                     response.write('<html>PROGRAMMING SYNC ERROR</html>');
                                     response.end();
                                 });
-                            }).catch(function(errcode){
+                            }).catch( function(errcode){
                                 if(errcode === -1){
                                     // alert 8 which happens when the server is no configured properly 
                                     // (ISIS is not running)
@@ -779,10 +778,74 @@ app.post('/captionWriter', async function(request, response){
                                     response.end();
                                 }
                                 else{
-                                    // alert 6 which happens when isis failed to create an image form the cube
-                                    response.redirect('/?alertCode=6');
-                                    // end response
-                                    response.end();
+
+                                    // if the upload file is a tif
+                                    if(isTiff){                    
+                                        // convert to png
+                                        sharp(path.join("uploads",cubeObj.name.replace(".cub",".tif").replace("r-","u-")))
+                                        .png()
+                                        .toFile( path.join("images",cubeObj.name.replace(".cub",".png")),
+                                        function(err){
+                                            if(err){
+                                                console.log(err);
+                                            }
+                                            else{
+                                                fs.unlinkSync( path.join("uploads",
+                                                 cubeObj.name.replace(".cub",".tif").replace("r-","u-")) );
+
+
+                                                // create or update data instance
+                                                if(memArray.length === 0){
+                                                    // create the new instance and add it to the array
+                                                    var newMem = new Memory(cubeObj.userNum);
+
+                                                    newMem.userId = cubeObj.userId;
+                                                    newMem.lastRequest = Date.now();
+
+                                                    memArray.push(newMem);
+                                                }
+                                                else{
+                                                    // add memory instance if user id is not in the array already
+                                                    if( Memory.prototype.checkMemInstances( cubeObj.userId, memArray)){
+                                                        Memory.prototype.accessMemory(cubeObj.userId, memArray).updateDate();
+                                                    }
+                                                    else{
+                                                        // create the new instance and add it to the array
+                                                        var newMem = new Memory(cubeObj.userNum);
+
+                                                        newMem.userId = cubeObj.userId;
+                                                        newMem.lastRequest = Date.now();
+
+                                                        memArray.push(newMem);
+                                                    }
+                                                }
+
+                                                cubeArray.push(cubeObj);
+
+
+                                                // get the csv string
+                                                let csv = util.getCSV(cubeObj.data);
+                                                
+                                                // get name of possible output file
+                                                let txtFilename = cubeObj.name.replace('.cub','_PIPS_Caption.txt');
+
+                                                // send response w/ all variables
+                                                response.render('writer.ejs',
+                                                    {   templateText: templateText, 
+                                                        dictionaryString: cubeObj.impData,
+                                                        wholeData: cubeObj.data,
+                                                        csvString: csv,
+                                                        outputName: txtFilename
+                                                    });
+                                            }
+                                        });
+                                                
+                                    }else{
+                                        // alert 6 which happens when isis failed to create an image from the cube
+                                        response.redirect('/?alertCode=6');
+                                        // end response
+                                        response.end();
+                                    }                
                                 }                    
                             });    
                         }).catch(function(err){
@@ -1609,6 +1672,8 @@ app.post("/resizeFigure",function(request, response){
                             
                         }).catch((err)=>{
                             console.log("Error Here: " + err);
+                            response.sendStatus(404);
+                            response.end();
                         });
                     });
                 }
