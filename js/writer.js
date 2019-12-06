@@ -1179,8 +1179,9 @@ $(document).ready(function(){
             cursorLocation = rangy.saveSelection(this);
         }
         
-        cursorLocation.collapseToEnd();
-            
+        try{
+            cursorLocation.collapseToEnd();     
+        }catch(err){}
     });
 
     /**

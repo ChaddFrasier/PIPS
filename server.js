@@ -750,7 +750,11 @@ app.post('/captionWriter', async function(request, response){
                                             memArray.push(newMem);
                                         }
                                     }
-                                    fs.unlinkSync( path.join("uploads",cubeObj.name.replace(".cub",".tif")) );
+                                    
+                                    if(isTiff){
+                                        fs.unlinkSync( path.join("uploads",cubeObj.name.replace(".cub",".tif").replace("r-", "u-")) );
+                                    }
+
                                     // send response w/ all variables
                                     response.render('writer.ejs',
                                         { templateText: templateText, 
@@ -1668,6 +1672,8 @@ app.post("/resizeFigure",function(request, response){
                             
                         }).catch((err)=>{
                             console.log("Error Here: " + err);
+                            response.sendStatus(404);
+                            response.end();
                         });
                     });
                 }
