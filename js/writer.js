@@ -361,9 +361,23 @@ function fixTimeString(val){
 }
 
 
-// TODO: this fails when refreshing b/c the values in the elements have changed
-// ||||
-// VVVV
+/**
+ * @function isDecimal
+ * 
+ * @param {string} val
+ * 
+ * @description returns true if the value is a decimal longer than 3 decimal places
+ */
+function isDecimal( val ){
+    val = parseFloat(val);
+    if( !isNaN(val) ){
+        if(/^\d*\.\d{4,}$/gm.test(val)){
+            return true;
+        }
+    }
+    return false;
+}
+
 /** 
  * @function output
  * 
@@ -387,11 +401,18 @@ function output(rawText){
     for( const key of Object.keys( allMetaData.sort() )){
         if(rawText.indexOf(key.trim()) > -1) {
             let val = getMetadataVal(key);
+
             if(hasUnits(val)){
                 val = removeUnits(val);
             }
-            else if(isTimeFormat(val)) {
+
+            if( isTimeFormat(val) ) {
+                // set the time strings
                 val = fixTimeString(val);
+            }
+            else if( isDecimal(val) ){
+                // fix deciamls at 3
+                val = parseFloat(val).toFixed(3);
             }
 
             download = download.replaceAll(key, val.trim());
@@ -1177,6 +1198,7 @@ $(document).ready(function(){
         }
         
         boldenKeys(this);
+        setOutput();
         return false;
     });
 
