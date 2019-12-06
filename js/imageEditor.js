@@ -206,6 +206,7 @@ function makeDraggable(event){
         }
         // if the event click happened on a draggable element start drag logic
         else if(selectedElement.classList.contains('draggable')){
+            console.log("DRAGGABLE");
             // set dragging flag
             dragging = true;
             // get the offset value for the translation
@@ -844,8 +845,15 @@ function setOpposite(colorString){
  * @description draws the line whenever it needs to be updated in the middle of drawing action
 */
 function drawLine(lineElement,x2,y2){
-    lineElement.setAttribute("x2", x2);
-    lineElement.setAttribute("y2",y2);
+    var transform = lineElement.getAttribute("transform");
+
+    var transX = parseInt(transform.split(") ")[0].split(",")[0].replace("translate(","")),
+        transY = parseInt(transform.split(") ")[0].split(",")[1]);
+
+    console.log("TEST: " + transX + " : " + transY);
+
+    lineElement.setAttribute("x2", x2 - transX);
+    lineElement.setAttribute("y2",y2 - transY);
 }
 
 
@@ -4412,12 +4420,16 @@ $(document).ready(function(){
             let isArrowHead = document.getElementById("arrowCheckboxSlider").checked,
                 NS = "http://www.w3.org/2000/svg";
 
+            
             // create the new  line dynamically and add it to the array so we can remove it later if needed
             line = document.createElementNS(NS,"line");
-            line.setAttribute("x1",mouseX);
-            line.setAttribute("y1",mouseY);
-            line.setAttribute("x2",mouseX);
-            line.setAttribute("y2",mouseY);
+            line.setAttribute("id","line" + lineArr.length);
+            line.setAttribute("class","draggable confine");
+            line.setAttribute("transform","translate(" + mouseX + ", " + mouseY + ") rotate(0)" );
+            line.setAttribute("x1",0);
+            line.setAttribute("y1",0);
+            line.setAttribute("x2",0);
+            line.setAttribute("y2",0);
             line.style.visibility = "visible";
 
             if(isArrowHead){
@@ -4457,17 +4469,22 @@ $(document).ready(function(){
             }
             
             line.style.strokeWidth = 10;
+     
             svg.appendChild(line);
 
             lineArr.push(line);
-            captureClick(mouseX,mouseY);
+            captureClick(mouseX, mouseY);
         }
         else if(drawFlag && clickArray.length > 1  
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
-            // if the line is being drawn and the seconf click happens set the final location
-            line.setAttribute("x2", mouseX);
-            line.setAttribute("y2", mouseY);
 
+            var transform = line.getAttribute("transform");
+            // if the line is being drawn and the seconf click happens set the final location
+            var transX = parseInt(transform.split(") ")[0].split(",")[0].replace("translate(","")),
+                transY = parseInt(transform.split(") ")[0].split(",")[1]);
+
+            line.setAttribute("x2", mouseX - transX);
+            line.setAttribute("y2", mouseY - transY);
             clickArray = [];
             drawFlag = false;
             // reset the button color and allow for click detection again
