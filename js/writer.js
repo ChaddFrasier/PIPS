@@ -619,51 +619,64 @@ var userHistory = {
 
 // update back array
 Object.prototype.updateBack = function(){
-    if( this.object.innerHTML.trim(" ") !== this.back[this.back.length -1] ){
-        if(this.back.length === 10){
+    if( this.object.innerText.trim(" ") !== this.back[this.back.length -1] ){
+        if(this.back.length === 30){
             this.back.shift();
-            this.back.push(this.object.innerHTML.trim(" "));
+            this.back.push(this.object.innerText.trim(" "));
         }
         else{
-            this.back.push(this.object.innerHTML.trim(" "));
+            this.back.push(this.object.innerText.trim(" "));
         }
     }
     else if(this.back.length === 0){
-        this.back.push(this.object.innerHTML.trim(" "));
+        this.back.push(this.object.innerText.trim(" "));
     }
 }
 
 // update forward array
 Object.prototype.updateForward = function(){
-    if( this.object.innerHTML.trim() !== this.forward[this.forward.length - 1] ){
-        if(this.forward.length === 10){
+    if( this.object.innerText.trim() !== this.forward[this.forward.length - 1] ){
+        if(this.forward.length === 30){
             this.forward.shift();
-            this.forward.push(this.object.innerHTML.trim(" "));
+            this.forward.push(this.object.innerText.trim(" "));
         }
         else{
-            this.forward.push(this.object.innerHTML.trim(" "));
+            this.forward.push(this.object.innerText.trim(" "));
         }
     }
     else if( this.forward.length === 0 ){
-        this.forward.push(this.object.innerHTML.trim(" "));
+        this.forward.push(this.object.innerText.trim(" "));
     }
 }
 
 // undo the text from the back array
 Object.prototype.undo = function(){
-    
+    var text = this.back.pop();
     if( this.back.length > 0 ){
-        this.object.innerHTML = this.back.pop();
+        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
         rangy.restoreSelection(cursorLocation, true);
+    }
+    else
+    {
+        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
+        rangy.restoreSelection(cursorLocation, true);
+        this.back = [this.object.innerText];
     }
     this.object.focus();
 }
 
 // redo the text from the forward array
 Object.prototype.redo = function(){
+    var text = this.forward.pop();
     if(this.forward.length > 0){
-        this.object.innerHTML = this.forward.pop();
+        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
         rangy.restoreSelection(cursorLocation, true);
+    }
+    else
+    {
+        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
+        rangy.restoreSelection(cursorLocation, true);
+        this.forward = [text];
     }
     this.object.focus();
 }
@@ -676,8 +689,10 @@ $(document).ready(function(){
     var varDiv = document.getElementById("pageVariables"),
         goForward = false;
 
+    
     //init history
     userHistory.object = document.getElementById("template-text");
+    userHistory.back = [userHistory.object.innerText];
 
     loader = document.getElementById('loading');
 
@@ -1106,12 +1121,16 @@ $(document).ready(function(){
     function KeyPress(e) {
         var evtobj = window.event? event : e
         if (evtobj.keyCode == 90 && evtobj.ctrlKey){
-            userHistory.undo();
             userHistory.updateForward();
+            userHistory.undo();
+            
+            return false;
         }
         else if (evtobj.keyCode == 89 && evtobj.ctrlKey){
             userHistory.redo();
             userHistory.updateBack();
+            
+            return false;
         }
     }
   
@@ -1123,46 +1142,61 @@ $(document).ready(function(){
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
     $("#template-text").keyup( function(e){
-        /* console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
+         console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
         console.log(e.keyCode); 
-         */
+        
         // save new cursor location
-
-        if(cursorLocation){
+        if(cursorLocation) {
+            console.log(cursorLocation);
+            
             rangy.removeMarkers(cursorLocation);
             cursorLocation = rangy.saveSelection(this);
+            
         }
         else{
             cursorLocation = rangy.saveSelection(this);
         }
 
-        if(e.keyCode === 37
-            || e.keyCode === 38
-            || e.keyCode === 39
-            || e.keyCode === 40 ){
-            // restore
+        if((e.keyCode === 37 || e.keyCode === 38
+            || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey){
+            // user is sttempting to highlight contents remove html markers that identify the cursor
+            if(e.keyCode === 39 || e.keyCode === 40){
+                // adjust cursor marker to new location
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+        }
+        else if(e.keyCode === 37 || e.keyCode === 38
+            || e.keyCode === 39 || e.keyCode === 40 ){
+            // adjust cursor marker to new location
             rangy.removeMarkers(cursorLocation);
             cursorLocation = rangy.saveSelection(this);
+            setOutput();
         }
         else if(e.keyCode === 9){
             if( cursorLocation ){
-                // append the symbol to the start string
+                // append 4 spaces to the start string
                 rangy.restoreSelection(cursorLocation, true);
                 document.execCommand("insertText", false, "    ");
                 rangy.removeMarkers(cursorLocation);
+                setOutput();
             }
+        }
+        else if(e.keyCode === 8 ){
+            // save the new location of the delete cursor location
+            rangy.removeMarkers(cursorLocation);
+            cursorLocation = rangy.saveSelection(this);
+            setOutput();
         }
         else{
             boldenKeys(this);
             // restore
             rangy.restoreSelection(cursorLocation, true);
             rangy.removeMarkers(cursorLocation);
+            setOutput();
         }
-        setOutput();
+        
 
-        if(e.keyCode === 8 || e.keyCode === 46){
-            userHistory.updateForward();
-        }
         return false;
     });
 
@@ -1173,8 +1207,11 @@ $(document).ready(function(){
      */
     $("#template-text").mouseup( function(e){
         if(cursorLocation){
+            
             rangy.removeMarkers(cursorLocation);
             cursorLocation = rangy.saveSelection(this);
+            
+            
         }
         else if(!cursorLocation){
             cursorLocation = rangy.saveSelection(this);
