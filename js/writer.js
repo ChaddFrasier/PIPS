@@ -374,6 +374,9 @@ function isDecimal( val ){
         if(/^\d*\.\d{4,}$/gm.test(val)){
             return true;
         }
+        else if(/^\-\d*\.\d{4,}$/gm.test(val)){
+            return true;
+        }
     }
     return false;
 }
