@@ -529,8 +529,14 @@ function hideAnimaton(alert){
  * @description parse through the text and replace all tags with bold
  */
 function boldenKeys(element){
-    // save cursor
-    var sel = rangy.saveSelection(element);
+    // save new cursor location
+    if(cursorLocation){
+        rangy.removeMarkers(cursorLocation);
+        cursorLocation = rangy.saveSelection(this);
+    }
+    else{
+        cursorLocation = rangy.saveSelection(this);
+    }
     
     var output = element.innerHTML.replaceAll("<b>", "").replaceAll("</b>", "");
 
@@ -550,7 +556,8 @@ function boldenKeys(element){
 
     element.innerHTML = output;
     // set cursor
-    rangy.restoreSelection(sel, true);
+    rangy.restoreSelection(cursorLocation, true);
+    rangy.removeMarkers(cursorLocation);
 }
 
 /**
@@ -622,14 +629,14 @@ Object.prototype.updateBack = function(){
     if( this.object.innerText.trim(" ") !== this.back[this.back.length -1] ){
         if(this.back.length === 30){
             this.back.shift();
-            this.back.push(this.object.innerText.trim(" "));
+            this.back.push(this.object.innerText);
         }
         else{
-            this.back.push(this.object.innerText.trim(" "));
+            this.back.push(this.object.innerText);
         }
     }
     else if(this.back.length === 0){
-        this.back.push(this.object.innerText.trim(" "));
+        this.back.push(this.object.innerText);
     }
 }
 
@@ -638,47 +645,42 @@ Object.prototype.updateForward = function(){
     if( this.object.innerText.trim() !== this.forward[this.forward.length - 1] ){
         if(this.forward.length === 30){
             this.forward.shift();
-            this.forward.push(this.object.innerText.trim(" "));
+            this.forward.push(this.object.innerText);
         }
         else{
-            this.forward.push(this.object.innerText.trim(" "));
+            this.forward.push(this.object.innerText);
         }
     }
     else if( this.forward.length === 0 ){
-        this.forward.push(this.object.innerText.trim(" "));
+        this.forward.push(this.object.innerText);
     }
 }
 
 // undo the text from the back array
 Object.prototype.undo = function(){
     var text = this.back.pop();
+    console.log("TEXT IS HERE: " + text);
     if( this.back.length > 0 ){
         this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
-        rangy.restoreSelection(cursorLocation, true);
     }
     else
     {
         this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
-        rangy.restoreSelection(cursorLocation, true);
         this.back = [this.object.innerText];
     }
-    this.object.focus();
 }
 
 // redo the text from the forward array
 Object.prototype.redo = function(){
     var text = this.forward.pop();
     if(this.forward.length > 0){
-        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
-        rangy.restoreSelection(cursorLocation, true);
+        this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;   
     }
     else
     {
         this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
-        rangy.restoreSelection(cursorLocation, true);
         this.forward = [text];
     }
-    this.object.focus();
 }
 
 
@@ -1088,12 +1090,51 @@ $(document).ready(function(){
     });
 
     /**
-     * @function template-text 'keyup' event handler
+     * @function template-text 'keydown' event handler
      * 
      * @description set the new output value whenever a new character is added to the template
     */
     $("#template-text").keydown( function(e){
-        if(e.keyCode === 8){
+
+        if(e.ctrlKey && !((e.keyCode === 37 || e.keyCode === 38
+            || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey) ){
+            
+            if(cursorLocation) {
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+            }
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
+
+
+            if (e.keyCode == 90 && e.ctrlKey){
+                userHistory.updateForward();
+                userHistory.undo();
+                setOutput();
+                
+                e.preventDefault();
+                if(cursorLocation) {
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
+            }
+            else if (e.keyCode == 89 && e.ctrlKey){
+                userHistory.redo();
+                setOutput();
+                e.preventDefault();
+                if(cursorLocation) {
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
+            }
+        }else if(e.keyCode === 8){
             // this is the delete
             if( cursorLocation ) {
                 rangy.removeMarkers( cursorLocation );
@@ -1104,9 +1145,23 @@ $(document).ready(function(){
             e.preventDefault();
         }
 
-        if(e.keyCode === 32 || e.keyCode === 8 || e.keyCode === 46){
+        if(e.keyCode === 32 || e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 13){
             userHistory.updateBack();
         }
+        var pre = document.getElementById("template-text");
+        setTimeout(function() {
+            pre.focus();
+        }, 0);
+    });
+
+    $("#template-text").on("drop", (e)=> {
+        // refocus on pre
+        var pre = document.getElementById("template-text");
+        setTimeout(function() {
+            pre.focus();
+        }, 0);
+        // return true to place whatever is being dropped
+        return true;
     });
 
     /**
@@ -1118,85 +1173,61 @@ $(document).ready(function(){
         filterTags();
     });
 
-    function KeyPress(e) {
-        var evtobj = window.event? event : e
-        if (evtobj.keyCode == 90 && evtobj.ctrlKey){
-            userHistory.updateForward();
-            userHistory.undo();
-            
-            return false;
-        }
-        else if (evtobj.keyCode == 89 && evtobj.ctrlKey){
-            userHistory.redo();
-            userHistory.updateBack();
-            
-            return false;
-        }
-    }
-  
-    document.onkeydown = KeyPress;
 
     /** 
-     * @function template-text 'keydown' listener
+     * @function template-text 'keyup' listener
      * 
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
-    $("#template-text").keyup( function(e){
-         console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
+    $("#template-text").keyup( function(e) {
+        console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
         console.log(e.keyCode); 
         
-        // save new cursor location
-        if(cursorLocation) {
-            console.log(cursorLocation);
-            
-            rangy.removeMarkers(cursorLocation);
-            cursorLocation = rangy.saveSelection(this);
-            
-        }
-        else{
-            cursorLocation = rangy.saveSelection(this);
-        }
-
-        if((e.keyCode === 37 || e.keyCode === 38
-            || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey){
-            // user is sttempting to highlight contents remove html markers that identify the cursor
-            if(e.keyCode === 39 || e.keyCode === 40){
-                // adjust cursor marker to new location
+        if(!e.ctrlKey && e.keyCode !== 17){
+            // save new cursor location
+            if(cursorLocation) {
                 rangy.removeMarkers(cursorLocation);
                 cursorLocation = rangy.saveSelection(this);
             }
-        }
-        else if(e.keyCode === 37 || e.keyCode === 38
-            || e.keyCode === 39 || e.keyCode === 40 ){
-            // adjust cursor marker to new location
-            rangy.removeMarkers(cursorLocation);
-            cursorLocation = rangy.saveSelection(this);
-            setOutput();
-        }
-        else if(e.keyCode === 9){
-            if( cursorLocation ){
-                // append 4 spaces to the start string
+            else{
+                cursorLocation = rangy.saveSelection(this);
+            }
+
+            if((e.keyCode === 37 || e.keyCode === 38
+                || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey){
+                // user is sttempting to highlight contents remove html markers that identify the cursor
+                rangy.removeMarkers(cursorLocation);
+            }
+            else if(e.keyCode === 37 || e.keyCode === 38
+                || e.keyCode === 39 || e.keyCode === 40 ){
+                // adjust cursor marker to new location
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+                setOutput();
+            }
+            else if(e.keyCode === 9){
+                if( cursorLocation ){
+                    // append 4 spaces to the start string
+                    rangy.restoreSelection(cursorLocation, true);
+                    document.execCommand("insertText", false, "    ");
+                    rangy.removeMarkers(cursorLocation);
+                    setOutput();
+                }
+            }
+            else if(e.keyCode === 8 ){
+                // save the new location of the delete cursor location
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+                setOutput();
+            }
+            else{
+                boldenKeys(this);
+                // restore
                 rangy.restoreSelection(cursorLocation, true);
-                document.execCommand("insertText", false, "    ");
                 rangy.removeMarkers(cursorLocation);
                 setOutput();
             }
         }
-        else if(e.keyCode === 8 ){
-            // save the new location of the delete cursor location
-            rangy.removeMarkers(cursorLocation);
-            cursorLocation = rangy.saveSelection(this);
-            setOutput();
-        }
-        else{
-            boldenKeys(this);
-            // restore
-            rangy.restoreSelection(cursorLocation, true);
-            rangy.removeMarkers(cursorLocation);
-            setOutput();
-        }
-        
-
         return false;
     });
 
@@ -1207,19 +1238,17 @@ $(document).ready(function(){
      */
     $("#template-text").mouseup( function(e){
         if(cursorLocation){
-            
             rangy.removeMarkers(cursorLocation);
             cursorLocation = rangy.saveSelection(this);
-            
-            
         }
         else if(!cursorLocation){
             cursorLocation = rangy.saveSelection(this);
         }
-        
+
         try{
             cursorLocation.collapseToEnd();     
         }catch(err){}
+
     });
 
     /**
@@ -1227,18 +1256,22 @@ $(document).ready(function(){
      * 
      * @description update the cursorLocation
      */
-    $("#template-text").focus( function(e){
-        if(cursorLocation){
+    $("#template-text").on("focus", function(e){
+        // works for drag
+        if( cursorLocation && cursorLocation.restored ){
+            // remove markers get new location
             rangy.removeMarkers(cursorLocation);
-            cursorLocation = rangy.saveSelection(this);
+            rangy.saveSelection(this, true);
         }
-        else if(!cursorLocation){
-            cursorLocation = rangy.saveSelection(this);
+        else if( cursorLocation ) {
+            // restore the cursor
+            rangy.removeMarkers(cursorLocation);
+            rangy.restoreSelection(cursorLocation, true);
+            rangy.removeMarkers(cursorLocation);
         }
         
         boldenKeys(this);
         setOutput();
-        return false;
     });
 
 

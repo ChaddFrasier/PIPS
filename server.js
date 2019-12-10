@@ -1444,6 +1444,7 @@ app.post("/figureDownload", async function(request, response){
                 // use sharp Module to convert to png from data buffer
                 try{
                     await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
+                    .withMetadata()
                     .png()
                     .toFile(path.join("tmp",filename),function(err, info){
                         if(err){
@@ -1469,14 +1470,16 @@ app.post("/figureDownload", async function(request, response){
                     console.log("Error In Conversion");
                     response.sendStatus(500);                 
                 }
-                
             }
             else{
                 // Otherwise it will be a tiff
                 // use sharp Module to convert to tiff from data buffer
                 try{
+                    
                     await sharp(fs.readFileSync("./tmp/" + request.files.upl.name))
-                    .tiff()
+                    .tiff({ xres: parseInt(197),
+                            yres: parseInt(197),
+                        })
                     .toFile(path.join("tmp",filename),function(err, info){
                         if(err){
                             console.log("Sharp Error: " + err);

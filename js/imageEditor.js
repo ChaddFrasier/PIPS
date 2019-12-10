@@ -2618,7 +2618,7 @@ $(document).ready(function(){
                 // create the progress bar
                 var progressBar = showProgress();
 
-                if(fileExt.toLowerCase() === "svg"){
+                if(false && fileExt.toLowerCase() === "svg"){
                     growProgress(progressBar);
                     // creates an object url for the download
                     var url = DOMURL.createObjectURL(svgBlob);
