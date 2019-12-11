@@ -482,7 +482,7 @@ svg.image-image {
 }
 
 .help-box {
-    z-index: 10;
+    z-index: 40;
     position: absolute;
     float: left;
     margin: 0;
@@ -497,7 +497,7 @@ svg.image-image {
     box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
-    width: 15%;
+    width: 25%;
     height: 50%;
     overflow-y: auto;
 }
@@ -511,7 +511,7 @@ cite {
 }
 
 .help-box-right {
-    z-index: 10;
+    z-index: 40;
     float: right;
     color: black;
     position: relative;

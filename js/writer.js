@@ -873,12 +873,12 @@ $(document).ready(function(){
         // design the box for adding tags
         div.className = "shadowbox";
         div.style.position = "absolute";
-        div.style.left = "38%";
+        div.style.left = "40%";
         
         div.style.top = "50%";
-        div.style.zIndex = "10";
-        div.style.width = "18%";
-        div.style.height = "18%";
+        div.style.zIndex = "40";
+        div.style.width = "25%";
+        div.style.height = "20%";
         div.style.border = "2px solid black";
 
         tagLabel.style.position = "absolute";
@@ -1212,7 +1212,8 @@ $(document).ready(function(){
                 if( cursorLocation ){
                     // append 4 spaces to the start string
                     rangy.restoreSelection(cursorLocation, true);
-                    document.execCommand("insertText", false, "    ");
+                    // 5 spaces == tab
+                    document.execCommand("insertText", false, "     ");
                     rangy.removeMarkers(cursorLocation);
                     setOutput();
                 }
