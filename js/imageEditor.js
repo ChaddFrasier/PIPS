@@ -206,7 +206,6 @@ function makeDraggable(event){
         }
         // if the event click happened on a draggable element start drag logic
         else if(selectedElement.classList.contains('draggable')){
-            console.log("DRAGGABLE");
             // set dragging flag
             dragging = true;
             // get the offset value for the translation
@@ -850,8 +849,6 @@ function drawLine(lineElement,x2,y2){
     var transX = parseInt(transform.split(") ")[0].split(",")[0].replace("translate(","")),
         transY = parseInt(transform.split(") ")[0].split(",")[1]);
 
-    console.log("TEST: " + transX + " : " + transY);
-
     lineElement.setAttribute("x2", x2 - transX);
     lineElement.setAttribute("y2",y2 - transY);
 }
@@ -1233,32 +1230,34 @@ function shiftIcons( viewboxArr ){
  * @description adjust the svg size and viewBox as needed to add extra black pixels to one side
  * 
 */
-function setImagePadding(val,location){
+function setImagePadding(val, location){
     // image w and h vars
     let imageW,
         imageH;
 
     
-    // switch on the location of the padding
+    // get current viewBox and adjust the size of the side by how much is in the value
+    var vb = svg.getAttribute("viewBox"),
+        xMin = parseInt(vb.split(" ")[0].trim()),
+        yMin = parseInt(vb.split(" ")[1].trim()),
+        xMax = parseInt(vb.split(" ")[2].trim()),
+        yMax = parseInt(vb.split(" ")[3].trim());
 
+    // switch on the location of the padding
     switch(location){
         case 'bottom':
             // get the new image height for the box and background
-            imageH = h + val; 
+            imageH = yMax + val;
             // set the viewbox values to how on the bottom of the image
-            svg.setAttribute("viewBox", "0 0 " + w + " " + imageH);
-
+            svg.setAttribute("viewBox", xMin + " " + yMin + " " + xMax + " " + imageH);
             // set background x,y to 0 to show at the bottom of the image
-            bg.setAttribute("x",0);
-            bg.setAttribute("y",0);
-
+            bg.setAttribute("x", xMin);
+            bg.setAttribute("y", yMin);
             // adjust the height and set the width to what it should be
             bg.setAttribute("height", imageH);
-            bg.setAttribute("width",w);
-
+            bg.setAttribute("width", xMax);
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
-            
+            document.getElementById("displayCube").innerHTML = xMax + " &times; " + imageH +  " px";
             shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1266,20 +1265,17 @@ function setImagePadding(val,location){
 
         case "top":
             // get the new image height for the box and background
-            imageH = h + val;
+            imageH = yMax + val;
             // set background x,y to show padding at the right spot
-            bg.setAttribute("y",val*-1);
-            bg.setAttribute("x",0);
+            bg.setAttribute("y", parseInt(yMin - val));
+            bg.setAttribute("x", xMin);
             // adjust the height and set the width to what it should be
-            bg.setAttribute("height",imageH);
-            bg.setAttribute("width",w);
-            
+            bg.setAttribute("height", imageH);
+            bg.setAttribute("width", xMax);
             // set the viewbox values 
-            svg.setAttribute("viewBox", "0 " + String(val*-1) + " " + w + " " + imageH);
-            
+            svg.setAttribute("viewBox", xMin + " " + String(yMin - val) + " " + xMax + " " + imageH);
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = w + " &times; " + imageH +  " px";
-            
+            document.getElementById("displayCube").innerHTML = xMax + " &times; " + imageH +  " px";
             shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1287,20 +1283,17 @@ function setImagePadding(val,location){
 
         case "right":
             // get the new image width for the box and background
-            imageW = w + val;
+            imageW = xMax + val;
             // set background x,y to padding at the right spot
-            bg.setAttribute("y",0);
-            bg.setAttribute("x",0);
+            bg.setAttribute("y", yMin);
+            bg.setAttribute("x", xMin);
             // adjust the height and set the width to what it should be
-            bg.setAttribute("width",imageW);
-            bg.setAttribute("height",h);
-            
+            bg.setAttribute("width", imageW);
+            bg.setAttribute("height", yMax);
             // set the viewbox values
-            svg.setAttribute("viewBox", "0 0 "  + imageW + " " + h);
-            
+            svg.setAttribute("viewBox", xMin + " " + yMin + " " + imageW + " " + yMax);
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
-            
+            document.getElementById("displayCube").innerHTML = imageW + " &times; " + yMax +  " px";
             shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -1308,39 +1301,35 @@ function setImagePadding(val,location){
 
         case "left":
             // get the new image width for the box and background
-            imageW = w + val;
+            imageW = xMax + val;
             // set background x,y to padding at the right spot
-            bg.setAttribute("y",0);
-            bg.setAttribute("x",val*-1);
+            bg.setAttribute("y", yMin);
+            bg.setAttribute("x", parseInt(xMin - val));
             // adjust the height and set the width to what it should be
-            bg.setAttribute("width",imageW);
-            bg.setAttribute("height",h);
-            
+            bg.setAttribute("width", imageW);
+            bg.setAttribute("height", yMax);
             // set the viewbox values 
-            svg.setAttribute("viewBox",  String(val*-1)+ " 0 "  + imageW + " " + h);
-           
+            svg.setAttribute("viewBox",  String(parseInt(xMin - val)) + " " + yMin + " " + imageW + " " + yMax);
             // set the image dimensions display for the user
-            document.getElementById("displayCube").innerHTML = imageW + " &times; " + h +  " px";
-            
+            document.getElementById("displayCube").innerHTML = imageW + " &times; " + yMax +  " px";
             shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
             break;
 
         default:
+            // complete reset to how it started
+
             // set background x,y to padding at the right spot                            
             bg.setAttribute("x",0);
             bg.setAttribute("y",0);
             // adjust the height and set the width to what it should be
             bg.setAttribute("width",w);
             bg.setAttribute("height",h);
-
             // set the viewbox values
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-            
             // set the image dimensions display for the user
             document.getElementById("displayCube").innerHTML = w + " &times; " + h +  " px";
-
             shiftIcons(String(svg.getAttribute("viewBox")).split(" "));
             // call makeDraggable again to reset the boundaries of the draggable elements
             makeDraggable(svg);
@@ -2253,11 +2242,18 @@ $(document).ready(function(){
     var sunObjectString = '<g id="sunPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;">\n'
-    + '<circle id= "sunIconOuter"  r="125" cy="175" cx="150" stroke-width="10" stroke="white" fill="black"'
+    + '<circle id= "sunIconOuter"  r="100" cy="175" cx="150" stroke-width="10" stroke="black" fill="black"'
     + 'style="border:0;"></circle>\n'
-    + '<circle id= "sunIcon"  r="25" cy="175" cx="150" fill="white" stroke="black" style="border:0;"/>\n'
-    + '<path d="M 150 0 L 250 50 L 150 0 L 50 50 L 150 25 L 250 50" stroke="white"'
-    + 'fill="black"/>\n'
+    + '<path d="M 50 175 L 250 175 A 50 50 0 0 0 50 175 Z" stroke="black"'
+    + 'fill="white"/>\n'
+    + '<path d="M 0 90 L 26 109" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 76 2 L 96 51" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 20 32 L 56 71" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 0 90 L 26 109" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 300 89 L 274 105" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 224 2 L 204 51" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 280 32 L 248 71" stroke-width="10" stroke="black" fill="white"/>\n'
+    + '<path d="M 150 0 L 150 38" stroke-width="10" stroke="black" fill="white"/>\n'
     + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
     + 'style="visibility: hidden;"fill="transparent"/>\n'
     + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
@@ -2618,95 +2614,83 @@ $(document).ready(function(){
                 // create the progress bar
                 var progressBar = showProgress();
 
-                if(fileExt.toLowerCase() === "svg"){
+                
+                // create a new Form data object
+                let fd = new FormData();
+                // append a new file to the form. 
+                // upl = name of the file upload
+                // svgBlob is the raw blob image
+                // and the name of the svg file will be the user's unique id
+                fd.append("upl", svgBlob, getCookie("puiv") + ".svg");
+                // append download and canvas data to the form
+                fd.append("w",w);
+                fd.append("h",h);
+                fd.append("downloadName", filename);
+                var headers = new Headers();
+                headers.append("pragma","no-cache");
+                headers.append("cache-control", "no-cache");
+
+                // send a post request to the server attaching the formData as the body of the request
+                fetch('/figureDownload',
+                    {
+                        method:'POST',
+                        body: fd,
+                        headers: headers,
+                        referrerPolicy: "no-referrer"
+                    })
+                .then((response) =>{
                     growProgress(progressBar);
-                    // creates an object url for the download
-                    var url = DOMURL.createObjectURL(svgBlob);
-                    triggerDownload(url,filename);
-                    loader.style.visibility = "hidden";
-                    document.getElementById("loadingText").innerHTML = "Loading";
-                    setTimeout(hideProgress, 500, progressBar);
-                    DOMURL.revokeObjectURL(url);
-                    return;
-                }
-                else{
-                    // create a new Form data object
-                    let fd = new FormData();
-                    // append a new file to the form. 
-                    // upl = name of the file upload
-                    // svgBlob is the raw blob image
-                    // and the name of the svg file will be the user's unique id
-                    fd.append("upl", svgBlob, getCookie("puiv") + ".svg");
-                    // append download and canvas data to the form
-                    fd.append("w",w);
-                    fd.append("h",h);
-                    fd.append("downloadName", filename);
-                    var headers = new Headers();
-                    headers.append("pragma","no-cache");
-                    headers.append("cache-control", "no-cache");
-
-                    // send a post request to the server attaching the formData as the body of the request
-                    fetch('/figureDownload',
-                        {
-                            method:'POST',
-                            body: fd,
-                            headers: headers,
-                            referrerPolicy: "no-referrer"
-                        })
-                        .then((response) =>{
-                            growProgress(progressBar);
-                            // if the response is an error code
-                            if(response.status !== 200){
-                                // read the response as text
-                                response.text().then((responseText) =>{
-                                    // create a small div box to notify the error
-                                    let div = document.createElement("div");
-                                    div.className = "jumbotron text-center float-center";
-                                    div.style.width = "25rem";
-                                    div.style.height= "auto";
-                                    div.style.position = "absolute";
-                                    div.style.left = "45%";
-                                    div.style.top = "45%";
-                                    div.innerHTML = responseText;
-                                    // attach a button to the div so the user can remove the div if they want
-                                    var btn = document.createElement("button");
-                                    btn.className = "btn btn-danger";
-                                    btn.style.position = "relative";
-                                    btn.innerHTML = "&times;";
-                                    btn.style.width = "5rem";
-                                    // append the button to the div
-                                    div.appendChild(btn);
-                                    // then after it has been added,
-                                    // make an eventLister to remove the whole div box when the button is clicked
-                                    btn.addEventListener("click",function(event){
-                                        this.parentElement.remove();
-                                    });
-                                    // append the whole div to the document
-                                    document.body.appendChild(div);
-                                    loader.style.visibility = "hidden";
-                                    document.getElementById("loadingText").innerHTML = "Loading";
-                                    hideProgress(progressBar);
-                                });
-                            }
-                            else{
-                                // server sent back a 200
-                                response.blob().then((blob)=>{
-                                    var url = DOMURL.createObjectURL(blob);
-
-                                    triggerDownload(url,filename);
-                                    setInterval(hideProgress, 1000, progressBar);
-                                    loader.style.visibility = "hidden";
-                                    document.getElementById("loadingText").innerHTML = "Loading";
-                                    DOMURL.revokeObjectURL(url);
-                                });
-                            }
-                        }).catch((err) =>{
-                            // catch any fetch errors
-                            if(err){
-                                console.log(err);
-                            }
+                    // if the response is an error code
+                    if(response.status !== 200){
+                        // read the response as text
+                        response.text().then((responseText) =>{
+                            // create a small div box to notify the error
+                            let div = document.createElement("div");
+                            div.className = "jumbotron text-center float-center";
+                            div.style.width = "25rem";
+                            div.style.height= "auto";
+                            div.style.position = "absolute";
+                            div.style.left = "45%";
+                            div.style.top = "45%";
+                            div.innerHTML = responseText;
+                            // attach a button to the div so the user can remove the div if they want
+                            var btn = document.createElement("button");
+                            btn.className = "btn btn-danger";
+                            btn.style.position = "relative";
+                            btn.innerHTML = "&times;";
+                            btn.style.width = "5rem";
+                            // append the button to the div
+                            div.appendChild(btn);
+                            // then after it has been added,
+                            // make an eventLister to remove the whole div box when the button is clicked
+                            btn.addEventListener("click",function(event){
+                                this.parentElement.remove();
+                            });
+                            // append the whole div to the document
+                            document.body.appendChild(div);
+                            loader.style.visibility = "hidden";
+                            document.getElementById("loadingText").innerHTML = "Loading";
+                            hideProgress(progressBar);
                         });
-                }
+                    }
+                    else{
+                        // server sent back a 200
+                        response.blob().then((blob)=>{
+                            var url = DOMURL.createObjectURL(blob);
+
+                            triggerDownload(url,filename);
+                            setInterval(hideProgress, 1000, progressBar);
+                            loader.style.visibility = "hidden";
+                            document.getElementById("loadingText").innerHTML = "Loading";
+                            DOMURL.revokeObjectURL(url);
+                        });
+                    }
+                }).catch((err) =>{
+                    // catch any fetch errors
+                    if(err){
+                        console.log(err);
+                    }
+                });
             }
             else{
                 //remove the loading gif
@@ -2730,7 +2714,6 @@ $(document).ready(function(){
         this.offsetParent.remove();
         document.getElementById("loading").style.visibility = "hidden";
     }
-
 
     /**
      * @function textParser
@@ -4033,8 +4016,6 @@ $(document).ready(function(){
                 }
             }
         });
-
-
     });
 
 
@@ -4044,22 +4025,16 @@ $(document).ready(function(){
      * @description on click, checks for valid input and then calls the padding functions and changes UI
     */
     $("#bottomPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value))){
+        if( !isNaN(parseInt(paddingBoxInput.value)) && !bottomBtn.classList.contains("btn-danger") ){
             setImagePadding(parseInt(paddingBoxInput.value),'bottom');
-            padBottom = true, padLeft = false, padRight = false, padTop = false;
+            padBottom = true;
 
-            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
-
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
         else{
-            setImagePadding(parseInt(0),"none"); 
+            setImagePadding(-1 * parseInt(paddingBoxInput.value),"bottom");
             bottomBtn.className = 'btn button btn-sm paddingBtn';
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+        
             padBottom = false;  
         }
     });
@@ -4071,23 +4046,17 @@ $(document).ready(function(){
      * @description on click, checks for valid input and then calls the padding functions and changes UI
     */
     $("#topPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value))){
+        if(!isNaN(parseInt(paddingBoxInput.value)) && !topBtn.classList.contains("btn-danger")){
             setImagePadding(parseInt(paddingBoxInput.value),'top');
-            padTop = true, padLeft = false, padRight = false, padBottom = false;
+            padTop = true;
             
-            topBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
-
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
+            topBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
         else{
-            setImagePadding(parseInt(0),"none"); 
+            setImagePadding(-1 * parseInt(paddingBoxInput.value),"top"); 
             topBtn.className = 'btn button btn-sm paddingBtn';
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
-            padTop = false;  
+            
+            padTop = false;
         }
     });
 
@@ -4099,22 +4068,16 @@ $(document).ready(function(){
     */
     $("#rightPaddingBtn").on('click',function(event){
         
-        if(!isNaN(parseInt(paddingBoxInput.value))){
+        if(!isNaN(parseInt(paddingBoxInput.value)) && !rightBtn.classList.contains("btn-danger")){
             setImagePadding(parseInt(paddingBoxInput.value),'right');
-            padRight = true, padLeft = false, padBottom = false, padTop = false;
+            padRight = true;
 
-            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
-
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
         else{
-            setImagePadding(parseInt(0),"none"); 
+            setImagePadding(-1 * parseInt(paddingBoxInput.value),"right"); 
             rightBtn.className = 'btn button btn-sm paddingBtn'; 
-            leftBtn.className = 'btn button btn-sm paddingBtn';
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+            
             padRight = false; 
         } 
     });
@@ -4127,22 +4090,16 @@ $(document).ready(function(){
     */  
     $("#leftPaddingBtn").on('click',function(event){
         
-        if(!isNaN(parseInt(paddingBoxInput.value))){
+        if(!isNaN(parseInt(paddingBoxInput.value)) && !leftBtn.classList.contains("btn-danger")){
             setImagePadding(parseInt(paddingBoxInput.value),'left');
-            padLeft = true, padBottom = false, padRight=false, padTop = false;
+            padLeft = true;
             
-            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn disabled';
-            
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn';   
         }
         else{
-            setImagePadding(parseInt(0),"none"); 
+            setImagePadding(-1 * parseInt(paddingBoxInput.value),"left"); 
             leftBtn.className = 'btn button btn-sm paddingBtn'; 
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
-            rightBtn.className = 'btn button btn-sm paddingBtn';
-            topBtn.className = 'btn button btn-sm paddingBtn';
+
             padLeft = false; 
         } 
     });
@@ -4308,7 +4265,8 @@ $(document).ready(function(){
                 $("#scaleBarButton").mousedown();
             }
         }
-        else if(((keys[0] === 16 && keys[1] === 18) || (keys[1] === 16 && keys[0] === 18)) && keys.length === 3){
+        else if(((keys[0] === 16 && keys[1] === 18) 
+                || (keys[1] === 16 && keys[0] === 18)) && keys.length === 3){
             event.preventDefault();
             if(keys[2] === 76){
                 if(lineArr.length > 0){
@@ -4403,7 +4361,6 @@ $(document).ready(function(){
         mouseX = parseInt(svgP.x),
         mouseY = parseInt(svgP.y);
 
-        //console.log('MOUSE MOVING OVER SVG BOX: ' + mouseX + ': ' + mouseY);
         if( drawFlag && clickArray.length >1  
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
             drawLine(line, mouseX, mouseY);
@@ -4455,7 +4412,9 @@ $(document).ready(function(){
 
             if(isArrowHead){
                 // if arrow with default color 
-                if(!userLineColor || userLineColor === "#ffffff"){ line.setAttribute("marker-start","url(#arrow)"); }
+                if(!userLineColor || userLineColor === "#ffffff"){
+                     line.setAttribute("marker-start","url(#arrow)");
+                }
                 // if the array is linger than 1 and the color is not default
                 else if(lineArr.length > 0 || userLineColor){
                     var markerId = "arrow" + lineArr.length,
@@ -4535,13 +4494,13 @@ $(document).ready(function(){
             if(padBottom){
                 setImagePadding(parseInt(this.value),'bottom');
             }
-            else if(padRight){
+            if(padRight){
                 setImagePadding(parseInt(this.value),'right');
             }
-            else if(padLeft){
+            if(padLeft){
                 setImagePadding(parseInt(this.value),'left');
             }
-            else if(padTop){
+            if(padTop){
                 setImagePadding(parseInt(this.value),'top');
             }
         }
@@ -4552,8 +4511,6 @@ $(document).ready(function(){
                 alert("Only Accepts Positive Whole Numbers");
                 warned = true;
             }
-            // reset the padding to 0
-            $("#resetPaddingBtn").click();
         }
     });
 });
@@ -4601,7 +4558,8 @@ $(window).bind('pageshow', function(event){
                     keyArr.forEach(key => {
                         switch( key ) {
                             case "NorthAzimuth":    
-                                northDegree = (isNaN(parseFloat(object[key]) + 90))? object[key] : parseFloat(object[key]) + 90;
+                                northDegree = (isNaN(parseFloat(object[key]) + 90))
+                                            ? object[key] : parseFloat(object[key]) + 90;
                 
                                 if(isNaN(northDegree)){
                                     // check if it is map projected, if yes set north to 0 else
@@ -4681,7 +4639,6 @@ $(window).bind('pageshow', function(event){
                                 break;
                         }
                     });
-
                     // set the new data to the area where the data is being held on the client
                     document.getElementById("metadata-text").innerHTML = reader.result;
                 } 
