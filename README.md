@@ -1,4 +1,5 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" data-canonical-src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" width="800" height="400" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" data-canonical-src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" width="800" height="250"/>
+
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
 -------------------------------------------------------------------------------------------------------------
@@ -84,7 +85,7 @@ Start the server with the command `node server` in the project directory.
 This server is created to streamline the figure creation process for researchers of astrogeology. 
 Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
 key value pairs of the data that is held in the Cube headers. Help buttons are at the top right of all
-pages to guide you if you become confused. <img src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" data-canonical-src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" width="50" height="50" />
+pages to guide you if you become confused. <img src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" data-canonical-src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" width="100" height="100" />
 
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
