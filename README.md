@@ -89,7 +89,7 @@ pages to guide you if you become confused. ![helpBtn](../images/help.jpg)
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
 choose a template file pre-set using the buttons in the template box.
-Hit the 'What is a TPL File?' button to read all about what a template file is for on this server and how to make one.
+Hit the *What is a TPL File?* button to read all about what a template file is for on this server and how to make one.
 Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
 types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
 check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
@@ -101,7 +101,7 @@ The top box is the caption output which is the resulting caption with data from 
 The bottom right box is the editing box where you can type your caption and paste data tags to use ISIS data directly
 from the cube header. The tags that you use will be bolded to help you see what the server is seeing.
 The bottom left box is where the tags from the usable ISIS data will be displayed with
-there value. Copy and paste the tags into your editing box to switch the keys with the data values. The 'Show All Tags'
+there value. Copy and paste the tags into your editing box to switch the keys with the data values. The *Show All Tags*
 button will show every peice of data that could be extracted from the cube, so if you are looking for something 
 specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
 words in the data by typeing in the search box to the left. You can add custom tags by using the green plus 
@@ -110,7 +110,7 @@ entering the new value for it.
 You can save several things from this page, you can download the finished caption with the embedded
 ISIS data, you can save the raw template file, you can download the log file which contains the results from the
 ISIS program calls executed on the server, or you can download the data as a CSV in Tag-Value format.
-If you do not see a 'Save ISIS Logs' button in the center of the title box then you have no log file on the server.
+If you do not see a *Save ISIS Logs* button in the center of the title box then you have no log file on the server.
 Lasty, you can copy all the text in the output box by clicking the save to clipboard button, then just paste the 
 text wherever it needs to live. The user can also add special characters by using the sigma button at the top of 
 the output box. Place the pointer where you want to place the icon and then hit the button to add the icon.
