@@ -5,7 +5,7 @@
  * @version 2.2
  * 
  * @since 09/20/2019
- * @updated 11/19/2019
+ * @updated 12/12/2019
  * 
  * @requires Jquery 2.0.0
  * 
@@ -4242,7 +4242,7 @@ $(document).ready(function(){
 
     /**
      * @function document.keydown
-     * @todo
+     * 
      * @param {event} event the key press event
      * 
      * @description  Hotkey Handler
