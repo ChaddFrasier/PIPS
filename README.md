@@ -42,7 +42,6 @@ install and run this code using Docker CE on any operating system.
 3. And lastly start the container by running the image: `docker run --name pips -p 8080:8080 chaddfrasier/pips-usgs`
 
 
-
 ## Contributing
 
 When contributing to this project we ask that you create a new pull request for 
@@ -82,15 +81,15 @@ Start the server with the command `node server` in the project directory.
 
 ## Manual
 
-This server is created to streamline the figure creation process for researchers of Astrogeology. 
+This server is created to streamline the figure creation process for researchers of astrogeology. 
 Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
 key value pairs of the data that is held in the Cube headers. Help buttons are at the top right of all
-pages to guide you if you become confused.  
+pages to guide you if you become confused. ![helpBtn](../images/help.jpg)
 
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
-choose a template file preset using the buttons in the template box.
-Hit the 'What is a TPL File?' button to read all about what a template file is for on the server and how to make one.
+choose a template file pre-set using the buttons in the template box.
+Hit the 'What is a TPL File?' button to read all about what a template file is for on this server and how to make one.
 Choose a figure output size using the options box. Figure sizes are organized by journal title and figure 
 types accepted by the journal. The server can create log files for all the uploads, just check the Log ISIS Output
 check box to have the server generate a log file of the ISIS outputs that were recieved on the server run.
@@ -98,9 +97,10 @@ check box to have the server generate a log file of the ISIS outputs that were r
 
 
 2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
-The top box is the caption output which is the resulting caption with data from ISIS embedded. The bottom right
-box is the editing box where you can type your caption and paste data tags to use ISIS data directly
-from the cube header. The bottom left box is where the tags from the usable ISIS data will be displayed with
+The top box is the caption output which is the resulting caption with data from ISIS embedded and highlighted in red.
+The bottom right box is the editing box where you can type your caption and paste data tags to use ISIS data directly
+from the cube header. The tags that you use will be bolded to help you see what the server is seeing.
+The bottom left box is where the tags from the usable ISIS data will be displayed with
 there value. Copy and paste the tags into your editing box to switch the keys with the data values. The 'Show All Tags'
 button will show every peice of data that could be extracted from the cube, so if you are looking for something 
 specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
@@ -118,26 +118,27 @@ the output box. Place the pointer where you want to place the icon and then hit 
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
-Add a North Arrow, a Sun azimuthal Direction indicator, a scalebar for the image ,and an observer
-direction arrow by clicking the buttons with the icons. Swap colors of the icons using the check box
+Add a North Arrow, a Sun Azimuthal Direction indicator, a scalebar for the image ,and an Observer
+direction arrow by clicking the buttons in the icons tab. Swap colors of the icons using the check box
 next to each of the icons. Every icon other than the scalebar can be scaled up and down using the mouse. 
 Mouse over the corners of the object and clicking and dragging when promted to by the mouse pointer.
 All icons can be dragged around the screen to be placed where ever you would like.
-__(checkboxes are only visible when icons are on screen)__.
-Draw over icons and the image using the pencil tool. Click the pencil button and click once to place one 
+__(switches are only visible when icons are on screen)__.
+Draw over icons and the image using the pencil tool. Click the pencil button in the *Annotate* tab and click once to place one 
 end of the line, and then click a second time to place the other end of the line. Change colors of the
 line by using the color picker box next to the button. Once at least 1 line is on the screen,
-a 'Undo Line' will appear on screen. Use this to remove the last line that you drew. Use the slider to add or remove
-an arrowhead.
+a *Undo Line* button will appear on screen. Use this to remove the last line that you drew. Use the slider to add or remove
+an arrowhead. Drag lines around the screen using the mouse.
 Add outline boxes to the figure by clicking the box button and then dragging the box around the image.
 Scale the box larger and smaller by mouseing over the corners of the icon and click dragging the icon
 when prompted. Again a color picker is given to allow you to change the color of the box, and again an
-'Undo Box' button will appear if there are any on screen to allow you to remove the last added box.
+*Undo Box* button will appear if there are any on screen to allow you to remove the last added box.
 Text boxes work the exact same way, with the color picker and undo button, but the only difference is 
 when you first click the button, the webpage will prompt you to type what you want the box to say.
-You can add padding to the image at one of the four sides, type the numbr of pixels you would like to
+You can add padding to the image at one or more sides, type the number of pixels you would like to
 pad the image and a location to place the pixels. To remove the padding either delete the numbers
 in the text box or hit the reset button.
+
 Users can now change the figure size after upload. Padding is reset whenever the figure size changes.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
 Accepted file export types include svg, tif, png, and jpg.
