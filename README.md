@@ -87,7 +87,7 @@ Simply upload a cube file to the server and wait for the server to run ISIS3 com
 key value pairs of the data that is held in the Cube headers. 
 
 Help buttons are at the top right of all
-pages to guide you if you become confused. <img src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" data-canonical-src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" width="100" height="100" />
+pages to guide you if you become confused. <img src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" data-canonical-src="https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg" width="75" height="75" />
 
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
