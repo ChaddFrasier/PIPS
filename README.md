@@ -114,7 +114,7 @@ If you do not see a *Save ISIS Logs* button in the center of the title box then 
 Lasty, you can copy all the text in the output box by clicking the save to clipboard button, then just paste the 
 text wherever it needs to live. The user can also add special characters by using the sigma button at the top of 
 the output box. Place the pointer where you want to place the icon and then hit the button to add the icon.
-![Current Writer Page](https://i.imgur.com/Paw8YJi.png)
+![Current Writer Page](https://i.imgur.com/sL9IgF7.png)
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
