@@ -1235,7 +1235,9 @@ function setImagePadding(val, location){
     let imageW,
         imageH;
 
-    
+    if( isNaN(parseInt(val)) ){
+         return;   
+    }
     // get current viewBox and adjust the size of the side by how much is in the value
     var vb = svg.getAttribute("viewBox"),
         xMin = parseInt(vb.split(" ")[0].trim()),
@@ -3690,6 +3692,8 @@ $(document).ready(function(){
                 for(var i = 0; i < children.length; i++){
                     if(children[i].classList && children[i].classList.contains("resize")){
                         children[i].setAttribute("stroke", "red");
+                        children[i].setAttribute("stroke-width", ".5");
+                        children[i].setAttribute("stroke-dasharray", ".5 .5");
                         children[i].style.background = "transparent";
                         children[i].style.visibility = "visible";
                     }
@@ -4000,6 +4004,8 @@ $(document).ready(function(){
             for(var i = 0; i < children.length; i++){
                 if(children[i].classList && children[i].classList.contains("resize")){
                     children[i].setAttribute("stroke", "red");
+                    children[i].setAttribute("stroke-width", "5");
+                    children[i].setAttribute("stroke-dasharray", "5 5");
                     children[i].style.background = "transparent";
                     children[i].style.visibility = "visible";
                 }
@@ -4031,7 +4037,7 @@ $(document).ready(function(){
 
             bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
-        else{
+        else if(paddingBoxInput.value!== "" && bottomBtn.classList.contains("btn-danger")){
             setImagePadding(-1 * parseInt(paddingBoxInput.value),"bottom");
             bottomBtn.className = 'btn button btn-sm paddingBtn';
         
@@ -4052,7 +4058,7 @@ $(document).ready(function(){
             
             topBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
-        else{
+        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(-1 * parseInt(paddingBoxInput.value),"top"); 
             topBtn.className = 'btn button btn-sm paddingBtn';
             
@@ -4074,7 +4080,7 @@ $(document).ready(function(){
 
             rightBtn.className = 'btn btn-danger button btn-sm paddingBtn';
         }
-        else{
+        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(-1 * parseInt(paddingBoxInput.value),"right"); 
             rightBtn.className = 'btn button btn-sm paddingBtn'; 
             
@@ -4096,7 +4102,7 @@ $(document).ready(function(){
             
             leftBtn.className = 'btn btn-danger button btn-sm paddingBtn';   
         }
-        else{
+        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
             setImagePadding(-1 * parseInt(paddingBoxInput.value),"left"); 
             leftBtn.className = 'btn button btn-sm paddingBtn'; 
 
@@ -4136,6 +4142,8 @@ $(document).ready(function(){
         for(var i = 0; i < children.length; i++){
             if(children[i].classList && children[i].classList.contains("resize")){
                 children[i].setAttribute("stroke", "red");
+                children[i].setAttribute("stroke-width", "5");
+                children[i].setAttribute("stroke-dasharray", "5 5");
                 children[i].style.background = "transparent";
                 children[i].style.visibility = "visible";
             }
@@ -4170,6 +4178,8 @@ $(document).ready(function(){
         for(var i = 0; i < children.length; i++){
             if(children[i].classList && children[i].classList.contains("resize")){
                 children[i].setAttribute("stroke", "red");
+                children[i].setAttribute("stroke-width", "5");
+                children[i].setAttribute("stroke-dasharray", "5 5");
                 children[i].style.background = "transparent";
                 children[i].style.visibility = "visible";
             }
@@ -4205,6 +4215,8 @@ $(document).ready(function(){
         for(var i = 0; i < children.length; i++){
             if(children[i].classList && children[i].classList.contains("resize")){
                 children[i].setAttribute("stroke", "red");
+                children[i].setAttribute("stroke-width", "2");
+                children[i].setAttribute("stroke-dasharray", "2 2");
                 children[i].style.background = "transparent";
                 children[i].style.visibility = "visible";
             }
@@ -4230,7 +4242,7 @@ $(document).ready(function(){
 
     /**
      * @function document.keydown
-     * 
+     * @todo
      * @param {event} event the key press event
      * 
      * @description  Hotkey Handler
@@ -4274,13 +4286,7 @@ $(document).ready(function(){
                 }
             }
             else if(keys[2] === 79){
-                $("#eyeCheckbox").change();
-                if(document.getElementById("eyeCheckbox").checked){
-                    document.getElementById("eyeCheckbox").checked = false;
-                }
-                else{
-                    document.getElementById("eyeCheckbox").checked = true;
-                } 
+                $("#eyeCheckbox").click();
             }
             else if(keys[2] === 66){
                 if(highlightBoxArray.length !== 0){
@@ -4288,22 +4294,10 @@ $(document).ready(function(){
                 }
             }
             else if(keys[2] === 78){
-                $("#northCheckbox").change();
-                if(document.getElementById("northCheckbox").checked){
-                    document.getElementById("northCheckbox").checked = false;
-                }
-                else{
-                    document.getElementById("northCheckbox").checked = true;
-                } 
+                $("#northCheckbox").click();
             }
             else if(keys[2] === 83){
-                $("#sunCheckbox").change();
-                if(document.getElementById("sunCheckbox").checked){
-                    document.getElementById("sunCheckbox").checked = false;
-                }
-                else{
-                    document.getElementById("sunCheckbox").checked = true;
-                } 
+                $("#sunCheckbox").click();
             }
             else if(keys[2] === 84){
                 if(textBoxArray.length > 0){
@@ -4311,13 +4305,7 @@ $(document).ready(function(){
                 }
             }
             else if(keys[2] === 82){
-                $("#scaleCheckbox").change();
-                if(document.getElementById("scaleCheckbox").checked){
-                    document.getElementById("scaleCheckbox").checked = false;
-                }
-                else{
-                    document.getElementById("scaleCheckbox").checked = true;
-                }
+                $("#scaleCheckbox").click();   
             }
         }
     });
