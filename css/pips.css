@@ -443,7 +443,7 @@ label {
 
 input[type=color]:hover {
     cursor: pointer;
-    border: 1.5px double rgba(0, 0, 0, 0.452);
+    border: .5px double rgba(0, 0, 0, 0.452);
     background: rgb(189, 189, 189);
 }
 

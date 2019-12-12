@@ -468,6 +468,10 @@ app.post('/captionWriter', async function(request, response){
                     var cubeObj = new Cube('u-' + numUsers + cubeFile.name, uid);
                     cubeObj.userNum = numUsers++;
                 }
+                else {
+                    cubeObj.data = {};
+                    cubeObj.impData = {};
+                }
             }
 
             // remove the file that was uploaded to allow for a clean file read from the fs module
