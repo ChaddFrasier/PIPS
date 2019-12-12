@@ -84,7 +84,7 @@ Start the server with the command `node server` in the project directory.
 This server is created to streamline the figure creation process for researchers of astrogeology. 
 Simply upload a cube file to the server and wait for the server to run ISIS3 commands on the cube and return
 key value pairs of the data that is held in the Cube headers. Help buttons are at the top right of all
-pages to guide you if you become confused. ![helpBtn](../images/help.jpg)
+pages to guide you if you become confused. ![helpBtn](https://raw.githubusercontent.com/ChaddFrasier/PIPS/master/images/help.jpg)
 
 1. First you you will be required to upload either a Cube file (.cub) or a Tiff file (.tif) to 
 the server. You can optionally upload a template file for the server if you have used it before otherwise simply
