@@ -1,4 +1,4 @@
-<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" data-canonical-src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" width="400" height="200" />
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" data-canonical-src="https://upload.wikimedia.org/wikipedia/commons/0/08/USGS_logo.png" width="800" height="400" />
 -------------------------------------------------------------------------------------------------------------
 # PIPS: Planetary Image Publication Server
 -------------------------------------------------------------------------------------------------------------
