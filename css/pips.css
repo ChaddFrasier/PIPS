@@ -435,6 +435,18 @@ label {
     max-height: 10rem;
 }
 
+.buttonSm {
+    width:2.5rem;
+    height: auto;
+    background: #007150;
+    color: white;
+    border: 2px solid black !important;
+    overflow: hidden;
+    margin: auto auto;
+    min-width: 2.5rem;
+    min-height: 1.5rem;
+    max-height: 3rem;
+}
 .button:hover {
     background: rgba(0, 113, 79, 0.705);
     border: 2px solid rgba(0, 0, 0, 0.534) !important;
@@ -580,7 +592,7 @@ line {
 }
 
 div.row[role=table] {  
-    width: 100%;
+    width: 80%;
     height: auto;
     padding-left: 0%;
     list-style-type: none;

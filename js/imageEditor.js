@@ -2420,7 +2420,12 @@ $(document).ready(function(){
         }
         // otherwise parse it to the closest int
         else{
-            document.getElementById("scalebarHalf").innerHTML = parseInt(half);
+            if(parseInt(half) === half){
+                document.getElementById("scalebarHalf").innerHTML = parseInt(half);
+            }
+            else{
+                document.getElementById("scalebarHalf").innerHTML = parseFloat(half).toFixed(1);
+            }
         }
         document.getElementById("scalebarText").innerHTML = scalebarLength + scalebarUnits;
         document.getElementById("scalebar1").innerHTML = scalebarLength;
