@@ -34,7 +34,9 @@ var loader,
     eyeImage,
     eyeArrow,
     scaleBarIcon,
-    bg;
+    bg,
+    layerId = 0,
+    objectIds = 0;
 
 //create arrays
 var clickArray = [],
@@ -184,6 +186,15 @@ function makeDraggable(event){
         // Make sure the first transform on the element is a translate transform
         var transforms = selectedElement.transform.baseVal;
 
+        if(selectedElement.getAttribute("id") !== "svgBackground"){
+            svg.append(selectedElement);
+
+            // TODO:
+            // refect the layers of the svg in the layer browser, move 
+            // the selectedElement to the top odf the UI with box.prepend()
+            fixLayerUI(selectedElement.getAttribute("id"));
+        }
+        
         // if the element that the mousedown happened over is a resize block 
         //      and the function is not currently resizing,
         // start resize logic
@@ -1664,6 +1675,204 @@ function getCookie(cname){
 }
 
 
+
+var activeLayer;
+
+//TODO:
+/**
+ * @function updateLayers
+ * 
+ * @description searches the svg and pulls out all changable icons
+ */
+function updateLayers(el){
+
+    if(el.nodeName === "BUTTON"){
+        while(el.nodeName !== "svg"){
+            el = el.firstElementChild;
+        }  
+    }
+    var layerBrowser = document.getElementById("layerBrowser");
+    var div = document.createElement("div");
+    
+    div.setAttribute("class", "layerBox");
+    div.setAttribute("role", "button");
+    el.setAttribute("class", "layer");
+
+    // get the type of layer
+    el.style.pointerEvents = "none";
+
+    div.addEventListener("click", (event) => {
+        if(event.target.nodeName === "svg") {
+            var tar = event.target.parentElement;
+        }
+        else{
+            var tar = event.target;
+        }
+
+        if(tar){
+            var id = tar.getAttribute("id").split("layer")[1];
+
+            var targetIcon = document.getElementById(id);
+            if(targetIcon && (targetIcon.nodeName === "line" || targetIcon.nodeName === "g") ){
+                document.getElementById("svgWrapper").append(targetIcon);
+                layerBrowser.prepend(tar);
+            }
+            else{
+                layerBrowser.prepend(tar);
+                fixSVG(targetIcon.getAttribute("id"));
+            }     
+        
+            if(activeLayer) { activeLayer.style.border = "none"}
+            // set the selected element
+            activeLayer = tar;
+            activeLayer.style.border = "5px solid red";
+        }
+        
+    });
+
+
+    switch( getElementType( el ) ){
+        case "svg":
+            div.setAttribute("id", "layer" + el.getAttribute("id") );
+            div.appendChild(el);
+            layerBrowser.prepend(div);
+            break;
+
+        case "g":
+            div.setAttribute("id", "layer" + el.getAttribute("id") );
+            // check for what element it is by using the id
+            if( el.getAttribute("id") && el.getAttribute('id').indexOf("text") > -1 ){
+                div.innerHTML = el.children[0].innerHTML;
+                div.style.height = "50px";
+                div.style.color = userTextColor ? userTextColor : "#ffffff";
+                div.style.textAlign = "center";
+                el.setAttribute("transform","translate(0, 0) scale(.5)");
+                div.style.verticalAlign = "center"; 
+                layerBrowser.prepend(div);
+                break;
+            }
+            else if( el.getAttribute("id") && el.getAttribute('id').indexOf("outline") > -1 ){
+                console.log("OUTLINE RUNS")
+                var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
+                svg.setAttribute("viewBox", "0 0 100 100");
+                svg.style.padding = "0%";
+                el.firstElementChild.setAttribute("width","200");
+                el.firstElementChild.setAttribute("height","200");
+                el.setAttribute("transform","translate(0, 0) scale(.5)");
+                div.style.padding = "10%";
+                svg.appendChild(el);
+                div.appendChild(svg); 
+                layerBrowser.prepend(div);
+                break;
+            }
+        case "line":
+            var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
+            svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+            svg.pointerEvents = "none";
+            el.style.strokeWidth = "50px";
+            svg.style.padding = "0%";
+            svg.appendChild(el);
+            div.appendChild(svg); 
+            div.setAttribute("id", "layer" + el.getAttribute("id"));
+            layerBrowser.prepend(div);
+            break;
+    }
+
+    // change the id so it doesnt interupt the svg image icons 
+    el.setAttribute("id", layerId++);
+
+    if(activeLayer) { activeLayer.style.border = "none"}
+        // set the selected element
+        activeLayer = div;
+        activeLayer.style.border = "5px solid red";
+}
+
+
+function fixSVG( id ) {
+    var svg = document.getElementById("svgWrapper");
+    
+    if(id.indexOf("sun") > -1){
+        svg.append(sunImage);
+    }
+    else if(id.indexOf("north") > -1){
+        svg.append(northImage);
+    }
+    else if(id.indexOf("eye") > -1){
+        svg.append(eyeImage);
+    }
+    else if(id.indexOf("scale") > -1){
+        svg.append(scaleBarIcon);
+    }
+}
+
+/** TODO:
+ * @function fixLayerUI
+ * 
+ * @param {*} id 
+ */
+function fixLayerUI(id) {
+    var layers = document.getElementById("layerBrowser"),
+        UIBox = document.getElementById(String("layer"+id));
+
+    if(layers && UIBox){
+        layers.prepend(UIBox);
+    }
+    else{
+        if(id.indexOf("sun") > -1){
+            // move sun to top
+            UIBox = document.getElementById("layersunIconFlag"); 
+        }
+        else if(id.indexOf("eye") > -1){
+            // move sun to top
+            UIBox = document.getElementById("layereyeFlag"); 
+        }
+        else if(id.indexOf("north") > -1){
+            // move sun to top
+            UIBox = document.getElementById("layernorthIconFlag"); 
+        }
+        else if(id.indexOf("scale") > -1){
+            // move sun to top
+            UIBox = document.getElementById("layerscalebar"); 
+        }
+
+        if(UIBox){
+            layers.prepend(UIBox);
+        }
+    }
+
+    if(UIBox){
+        if(activeLayer){ activeLayer.style.border = "none"; }
+        activeLayer = UIBox;
+        activeLayer.style.border = "5px solid red";
+    }
+}
+
+function getElementType( el ){
+    if(el.nodeName){
+        return el.nodeName
+    }
+    else{
+        console.log("node name not found")
+    }
+}
+
+
+/**
+ * @function removeLayer
+ * 
+ * @description searches the svg and pulls out all changable icons
+ */
+function removeLayers(el){
+    var layerBrowser = document.getElementById("layerBrowser");
+
+    if( document.getElementById("layer" + el.getAttribute("id")) ){
+        layerBrowser.removeChild(document.getElementById("layer" + el.getAttribute("id")));
+    }
+}
+
+
+
+
 /**
  * @function resetSingleIcon
  * 
@@ -2898,6 +3107,26 @@ $(document).ready(function(){
     });
 
 
+    //TODO:
+    function setElementColor(UIBox, color, el) {
+        var svgIcon = document.getElementById( UIBox.getAttribute("id").split("layer")[1] );
+
+        svgIcon.style.stroke = color;
+        
+        if(el){
+            UIBox.remove();
+            updateLayers( el.cloneNode(true) );
+        }
+        else{
+            UIBox.remove();
+            updateLayers(el.cloneNode(true));
+        }
+    }
+
+
+
+
+
     /**
      * @function colorPickerLine 'change' event handler
      * 
@@ -2906,6 +3135,57 @@ $(document).ready(function(){
     */
     $("#colorPickerLine").change(function(){
         userLineColor = document.getElementById("colorPickerLine").value;
+
+        if(activeLayer.getAttribute("id").indexOf("line") > -1){
+            // generate the arrowhead if needed
+            var activeLine = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
+
+            if(activeLine.getAttribute("marker-start")){
+                var markerId = activeLine.getAttribute("marker-start").split("url(#")[1].replace(")","");
+
+                if(markerId === "arrow" || document.getElementById(markerId).style.fill !== userLineColor){
+                    // create a brand new def 
+                    var newId = "arrow" + layerId++,
+                    pathId = "arrowPath" + layerId++,
+                    newDef = document.getElementById("arrowDef").cloneNode();
+
+                    newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                    newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                    activeLine.setAttribute("marker-start", String("url(#" + newId + ")"));
+                    (newDef.childNodes).forEach(childElem => {
+                        // if the childElement has a child
+                        if(childElem.childElementCount > 0){
+                            childElem.setAttribute("id", newId);
+                            childElem.childNodes[1].setAttribute("fill", userLineColor);
+                            childElem.childNodes[1].setAttribute("id", pathId);
+                        }
+                    });
+                    svg.prepend(newDef);
+
+
+                    // set the stroke color if the line
+                    setElementColor(activeLayer, userLineColor, activeLine );
+                    return;
+                }
+                else{
+                    // find the def and change it
+                    var marker = document.getElementById(markerId);            
+                    
+                    marker.children[0].setAttribute("fill", userLineColor);
+                        
+                    var line = marker.children[0];
+
+
+                // set the stroke color if the line
+                setElementColor(activeLayer, userLineColor, activeLine );
+                return;
+                }
+            }
+
+
+            // set the stroke color if the line
+            setElementColor(activeLayer, userLineColor, activeLine );
+        }
     });
 
 
@@ -2917,6 +3197,14 @@ $(document).ready(function(){
     */
     $("#colorPickerBox").change(function(){
         userBoxColor = document.getElementById("colorPickerBox").value;
+
+        if(activeLayer.getAttribute("id").indexOf("outline") > -1){
+            var activeBox = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
+
+            activeBox.style.stroke = userBoxColor;
+
+            setElementColor( activeLayer, userBoxColor, activeBox );
+        }
     });
 
 
@@ -2928,6 +3216,15 @@ $(document).ready(function(){
     */
     $("#textColorPicker").on("change",function(){
         userTextColor = document.getElementById("textColorPicker").value;
+
+        if(activeLayer.getAttribute("id").indexOf("text") > -1){
+            var activeText = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
+
+            activeText.children[0].style.stroke = userTextColor;
+            activeText.children[0].style.fill = userTextColor;
+
+            setElementColor( activeLayer, userTextColor, activeText );
+        }
     });
 
     // ------------------------------ End Color Pickers -----------------------------------------------------
@@ -3003,45 +3300,6 @@ $(document).ready(function(){
         }
     });
     
-
-    /**
-     * @function undoBox 'mousedown' event handler
-     * 
-     * @description remove the last added instance of the outline boxes
-     * 
-    */
-    $("#undoBox").on("mousedown",function(){
-        if(highlightBoxArray.length > 0){
-            highlightBoxArray.pop().remove();
-        }
-        else{
-            alert("There are no boxes placed yet");
-        }
-
-        if(highlightBoxArray.length === 0){
-            document.getElementById("undoBox").style.visibility = "hidden";
-        }
-    });
-      
-
-    /**
-     * @function undoText 'mousedown' event handler
-     * 
-     * @description remove the last added instance of the text box
-     * 
-    */
-    $("#undoText").on("mousedown",function(){
-        if(textBoxArray.length > 0){
-            textBoxArray.pop().remove();
-        }
-        else{
-            alert("text has not been added");
-        }
-
-        if(textBoxArray.length === 0){
-            document.getElementById("undoText").style.visibility = "hidden";
-        }
-    });
 
     // -------------------------------- End Undo Button UI --------------------------------------------------
 
@@ -3541,7 +3799,7 @@ $(document).ready(function(){
                 scaleCheckboxSlider.style.webkitTransition = ".4s";
                 scaleAnimation.style.transition = ".4s";
                 scaleAnimation.style.webkitTransition = ".4s";
-
+                updateLayers(this.cloneNode(true));
 
                 toggleScalebar = false;
             }
@@ -3559,7 +3817,7 @@ $(document).ready(function(){
                 scaleCheckboxSlider.style.webkitTransition = "0s";
                 scaleAnimation.style.transition = "0s";
                 scaleAnimation.style.webkitTransition = "0s";
-
+                removeLayers(this.cloneNode(true).firstElementChild);
                 scaleCheckbox.style.visibility = "hidden";
                 scaleCheckboxLabel.style.visibility = "hidden";
             }
@@ -3651,6 +3909,7 @@ $(document).ready(function(){
             g.style.pointerEvents = "all"
             // set the innerHTML of the text element to user input
             text.innerHTML = textboxVal;
+
             // append the scaleing corners and text to the group in sopecific order
             g.appendChild(text);
             g.appendChild(rect);
@@ -3674,22 +3933,20 @@ $(document).ready(function(){
             
             // append the finished group graphic to the svg
             svg.appendChild(g);
+            g.setAttribute("id", "text"+objectIds++);
+            updateLayers(g.cloneNode(true));
 
             // set the scaling boxes x value to the end of the bbox
             // this auto finds the relative length of the text element
             let bbox = g.getBBox();
-            if(strlength > 1){
+            if(strlength > 1) {
                 rect3.setAttribute("x",bbox.width - 2);
                 rect4.setAttribute("x",bbox.width - 2);
             }
             // track the new text element
             textBoxArray.push(g);
-            // set the visiblity of the undo btn
-            if(textBoxArray.length > 0){
-                document.getElementById("undoText").style.visibility = "visible";
-            }
             
-
+            
             g.addEventListener("mouseover", function(){
                 // show border of rescale
                 var children = this.childNodes;
@@ -3759,7 +4016,7 @@ $(document).ready(function(){
 
                 eyeCheckbox.style.visibility = "hidden";
                 eyeCheckboxLabel.style.visibility = "hidden";
-                
+                removeLayers(this.cloneNode(true));
             }
 
             if(eyeFlag){
@@ -3783,7 +4040,7 @@ $(document).ready(function(){
                 eyeCheckboxSlider.style.webkitTransition = ".4s";
                 eyeAnimation.style.transition = ".4s";
                 eyeAnimation.style.webkitTransition = ".4s";
-
+                updateLayers(this.cloneNode(true));
                 eyeFlag = false;
                 eyeIconPlaced = true;
             }
@@ -3830,7 +4087,7 @@ $(document).ready(function(){
 
                 sunCheckbox.style.visibility = "hidden";
                 sunCheckboxLabel.style.visibility = "hidden";
-
+                removeLayers(this.cloneNode(true));
             }
             
             if(sunFlag){
@@ -3856,6 +4113,7 @@ $(document).ready(function(){
                 
                 setIconAngle(sunImage, sunDegree);
                 makeDraggable(svg); 
+                updateLayers(this.cloneNode(true));
             }
             clickArray = [];
         }
@@ -3901,7 +4159,7 @@ $(document).ready(function(){
                 northCheckboxSlider.style.transition = "0s";
                 northCheckbox.style.visibility = "hidden";
                 northLabel.style.visibility = "hidden";
-                
+                removeLayers(this.cloneNode(true));
                 northFlag = !northFlag;
             }
             
@@ -3928,6 +4186,8 @@ $(document).ready(function(){
                 northCheckboxSlider.style.transition = ".4s";
                 northCheckbox.style.visibility = "visible";
                 northLabel.style.visibility = "visible";
+
+                updateLayers(this.cloneNode(true));
             }
             clickArray = [];
         }   
@@ -3993,14 +4253,12 @@ $(document).ready(function(){
         // append the group and reset the draggable functions
         svg.appendChild(g);
         // push the object into the array for undoing
+        g.setAttribute("id", "outline"+objectIds++);   
         highlightBoxArray.push(g);
         makeDraggable(svg);
 
-        // make the undo button visible
-        if(highlightBoxArray.length > 0){
-            document.getElementById("undoBox").style.visibility = "visible";
-        }
-
+        // update the layer browser
+        updateLayers(g.cloneNode(true));
 
         g.addEventListener("mouseover", function(){
             // show border of rescale
@@ -4035,7 +4293,7 @@ $(document).ready(function(){
      * 
      * @description on click, checks for valid input and then calls the padding functions and changes UI
     */
-    $("#bottomPaddingBtn").on('click',function(event){
+    $("#bottomPaddingBtn").on('click',function( event ){
         if( !isNaN(parseInt(paddingBoxInput.value)) && !bottomBtn.classList.contains("btn-danger") ){
             setImagePadding(parseInt(paddingBoxInput.value),'bottom');
             padBottom = true;
@@ -4324,9 +4582,37 @@ $(document).ready(function(){
      * @description helps track keys being held
      */
     $(document).keyup(function(event){
+
         if(keys.length > 0){
             keys = removeKey(keys, event.keyCode);
-        } 
+        }
+
+        if(event.keyCode === 46 || event.keyCode === 8){
+            if(activeLayer){
+                var svgID = activeLayer.getAttribute("id").split("layer")[1];
+
+                var icon = document.getElementById(svgID);
+
+                if(icon.nodeName === "g" || icon.nodeName === "line"){
+                    icon.remove();
+                }
+                else if(icon.nodeName === "svg"){
+                    if(svgID.indexOf("north") > -1){
+                        $("#northIconFlag").mousedown();
+                    }
+                    else if(svgID.indexOf("sun") > -1){
+                        $("#sunIconFlag").click();
+                    }
+                    else if(svgID.indexOf("eye") > -1){
+                        $("#eyeFlag").click();
+                    }
+                    else if(svgID.indexOf("scale") > -1){
+                        $("#scaleBarButton").mousedown();
+                    }
+                }
+                activeLayer.remove();
+            }
+        }
     });
     
     // ---------------------------------- End Button Handlers -----------------------------------------------
@@ -4425,7 +4711,7 @@ $(document).ready(function(){
                             childElem.childNodes[1].setAttribute("id", pathId);
                         }
                     });
-                    svg.appendChild(newDef);
+                    svg.prepend(newDef);
                 }
             }
 
@@ -4463,12 +4749,9 @@ $(document).ready(function(){
             // reset the button color and allow for click detection again
             document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
-            if(lineArr.length > 0){
-                document.getElementById("undoLine").style.visibility = "visible";
-            }
-
             bg.className.baseVal = "";
 
+            updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
             setSvgClickDetection(svg, "all");
         }

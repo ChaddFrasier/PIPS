@@ -124,7 +124,7 @@
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
                             <button class="btn btn-lg button" id="scaleBarButton"
                             style="width:100%; padding:1%; color: black;">
-                                <svg viewBox= "0 0 25 4">
+                                <svg id="scalebar" viewBox= "0 0 25 4">
                                     <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width="1.75" 
                                     stroke="black" fill="white" ></rect>
                                     <path id="scalebarLine" d="M 15 2 L 25 2"  stroke="black" stroke-width=".75"/>
@@ -195,12 +195,6 @@
                                     <span class="slider round" id="arrowAnimation"></span>
                                 </label>
                             </div>
-                            <div class="row" style="margin: 0;">
-                                <button class="btn btn-danger btn-sm" id="undoLine" 
-                                style="visibility: hidden; width: 100%; margin-bottom: 5%;" title="Shift + Alt + L">
-                                    Undo
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <!-- Outline Box Button -->
@@ -213,8 +207,7 @@
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
                             <button class="btn btn-lg button" id="outlineBtn" 
                             style="width:100%; color:black; padding:5%;">
-                                <svg viewBox="0 0 75 50" width="100%" height="100%" style="padding: 0%;">
-                                    <rect x="0" y="0" width="75" height="50" 
+                                <svg viewBox="0 0 75 50" width="100%" height="100%" style="padding: 0%;"><rect x="0" y="0" width="75" height="50" 
                                     stroke="white" stroke-width="5" fill="transparent"></rect>
                                 </svg>
                             </button>
@@ -222,13 +215,6 @@
                         <div class="col-4" style="padding-top:2%;">
                             <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"
                             title="Change Color"/>
-                            <br/>
-                            <br/>
-                            <button class="btn btn-danger btn-sm" 
-                            style="visibility: hidden; width: 100%;margin-bottom: 5%;" id="undoBox" 
-                            title="Shift + Alt + B">
-                                Undo
-                            </button>
                         </div>
                     </div>
                     <!-- Text Tool Button -->
@@ -249,13 +235,6 @@
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%; ">
                             <input type="color" id="textColorPicker"
                             style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
-                            <br/>
-                            <br/>
-                            <button class="btn btn-danger btn-sm"
-                            style="margin-bottom: 5%;visibility: hidden; width: 100%;"
-                                id="undoText" title="Shift + Alt + T">
-                                Undo
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -437,12 +416,18 @@
         </div>
 
         <!-- Right Bar-->
-        <div class="container mainbox-right" style="width: 5%; height:100%;">
+        <div class="container mainbox-right" style="width: 5%; height:100%; padding: 5px;">
             <!-- Loading GIF-->
-            <div id="loading" class="float-md-right text-center lead loading-small">
-                <img src="../images/loading.gif" class='float-center;' height="50%" weight="auto"/>
+            <div id="loading" class="text-center lead loading-small" style="top: 0;">
+                <img src="../images/loading.gif" class='float-center' height="50%" weight="auto"/>
                 <br>
                 <h3 id="loadingText" style="text-align: center; margin-left: 1rem; color: cornsilk;">Loading</h3>
+            </div>
+
+            <br>
+            <div class="container lightshadowbox" style="margin: 0; color: black;">Layers</div>
+            <div id="layerBrowser" class="container lightshadowbox" 
+                style="width: 100%; height: 75%; padding: 0; top: 150px; border: 2px solid blue; overflow-y: scroll;">
             </div>
             <!--------------------------- Help Box ------------------------->
         </div>
@@ -518,7 +503,6 @@
                             <rect id="svgBackground" x="0" y="0" width="<%=w%>" height="<%=h%>" fill="black"/>
                             <image id="crop" style="pointer-events: none;" width="<%=w%>" height="<%=h%>" x="0" y="0"
                                 transform="scale(.25)"fill="black" xlink:href="/images/loading.gif"></image>
-                        
                         </svg>
                     </div>
                 </div> 
