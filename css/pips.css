@@ -33,8 +33,7 @@ pre {
     width: 100%;
     height: 100%;
     max-width:none;max-height:none;
- }
- 
+}
 
 .layerBox:hover {
     background: -moz-linear-gradient(
@@ -57,7 +56,7 @@ pre {
     padding: 0;
     overflow-y: auto;
     margin-bottom: 5px;
-    border-radius: 10px;
+    border-radius: 5px;
     background: -moz-linear-gradient(
 		top,
 		#a0a0a0 0%,
@@ -497,7 +496,7 @@ input[type=color]:hover {
 }
 
 input:focus {
-    outline: 2px double white;
+    outline: 1px double white;
 }
 
 input[type=color] {
@@ -505,7 +504,9 @@ input[type=color] {
     margin-top: 0;
     margin-bottom: auto;
     padding: 1%;
-    width: 75%;
+    border: 2px double rgba(0, 0, 0, 0.452);
+    min-height: 10%;
+    width: 50%;
 }
 
 input[type=checkbox]:hover {

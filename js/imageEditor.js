@@ -186,14 +186,6 @@ function makeDraggable(event){
         // Make sure the first transform on the element is a translate transform
         var transforms = selectedElement.transform.baseVal;
 
-        if(selectedElement.getAttribute("id") !== "svgBackground"){
-            svg.append(selectedElement);
-
-            // TODO:
-            // refect the layers of the svg in the layer browser, move 
-            // the selectedElement to the top odf the UI with box.prepend()
-            fixLayerUI(selectedElement.getAttribute("id"));
-        }
         
         // if the element that the mousedown happened over is a resize block 
         //      and the function is not currently resizing,
@@ -639,6 +631,7 @@ function makeDraggable(event){
      * 
     */
     function endDrag(event){
+
         if(selectedElement){
             drag(event);
             resizing = false,
@@ -705,6 +698,109 @@ function makeDraggable(event){
         }
     }        
 }
+
+
+// make div draggable
+function dragElement(elmnt) {
+    var pos2 = 0, pos4 = 0;
+    if (elmnt) {
+      /* if present, the header is where you move the DIV from:*/
+      elmnt.onmousedown = dragMouseDown;
+    }
+  
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // get the mouse cursor position at startup:
+        
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // call a function whenever the cursor moves:
+        document.onmousemove = elementDrag;
+    }
+  
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        // calculate the new cursor position:
+        pos2 = pos4 - e.clientY;
+
+        // set the element's new position:
+        if(pos2 < -65){
+            pos4 = e.clientY;
+          // mouse is moving downward
+            moveChoiceTo(elmnt,-1);
+            return dragElement(elmnt);
+        }
+        // set the element's new position:
+        else if(pos2 > 65){
+            pos4 = e.clientY;
+            // mouse is moving downward
+            moveChoiceTo(elmnt,1);
+            return dragElement(elmnt);
+        }
+    }
+  
+    function closeDragElement() {
+        /* stop moving when mouse button is released:*/
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
+
+    // TODO:
+    function moveSvgTo(id, direction) {
+        var elem_choice = document.getElementById(id.split("layer")[1]);
+        
+        if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
+            if(id.split("layer")[1].indexOf("sun")  > -1 ){
+                elem_choice = sunImage;
+            }
+            else if(id.split("layer")[1].indexOf("eye")  > -1 ){
+                elem_choice = eyeImage;
+            }
+            else if(id.split("layer")[1].indexOf("north")  > -1 ){
+                elem_choice = northImage;
+            }
+            else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
+                elem_choice = scaleBarIcon;
+            }
+        }
+
+        if(elem_choice){
+            console.log()
+            // move index of element by one either up or down
+            if (direction === -1 && elem_choice.previousSibling) {
+                let code = svg.insertBefore(elem_choice, elem_choice.previousSibling);
+                
+            } else if (direction === 1 && elem_choice.nextSibling) {
+                svg.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            }
+        }
+    }
+
+
+    // TODO:
+    function moveChoiceTo(elem_choice, direction) {
+
+        var parent = elem_choice.parentNode;
+        // move index of element by one either up or down
+        if (direction === 1 && elem_choice.previousSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.previousSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        } else if (direction === -1 && elem_choice.nextSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        }
+    }
+  }
+
+
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
 /** ------------------------------------------ Helper Function ------------------------------------------- */
@@ -1675,6 +1771,47 @@ function getCookie(cname){
 }
 
 
+function setDetectionForLayer( el, detection ){
+    var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1]);
+        
+    if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
+        let id = el.getAttribute("id");
+
+        if(id.split("layer")[1].indexOf("sun")  > -1 ){
+            elem_choice = sunImage;
+        }
+        else if(id.split("layer")[1].indexOf("eye")  > -1 ){
+            elem_choice = eyeImage;
+        }
+        else if(id.split("layer")[1].indexOf("north")  > -1 ){
+            elem_choice = northImage;
+        }
+        else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
+            elem_choice = scaleBarIcon;
+        }
+    }
+
+    let svgElements = elem_choice.childNodes;
+    
+    // for every child
+    for(index in svgElements){
+        // if the group is draggable
+        if( svgElements[index].style ){
+            // reset the pointer events
+            svgElements[index].style.pointerEvents = detection;
+            // add if that element has child nodes
+            if(svgElements[index].childNodes){
+                // do the same with its children
+                for(index2 in svgElements[index].childNodes){
+                    if(svgElements[index].childNodes[index2].classList 
+                        && svgElements[index].childNodes[index2].classList.contains("resize")){
+                        svgElements[index].childNodes[index2].style.pointerEvents = detection;
+                    }
+                }
+            }
+        }
+    }
+}
 
 var activeLayer;
 
@@ -1701,7 +1838,7 @@ function updateLayers(el){
     // get the type of layer
     el.style.pointerEvents = "none";
 
-    div.addEventListener("click", (event) => {
+    div.addEventListener("mousedown", (event) => {
         if(event.target.nodeName === "svg") {
             var tar = event.target.parentElement;
         }
@@ -1710,22 +1847,15 @@ function updateLayers(el){
         }
 
         if(tar){
-            var id = tar.getAttribute("id").split("layer")[1];
-
-            var targetIcon = document.getElementById(id);
-            if(targetIcon && (targetIcon.nodeName === "line" || targetIcon.nodeName === "g") ){
-                document.getElementById("svgWrapper").append(targetIcon);
-                layerBrowser.prepend(tar);
+            if(activeLayer) { 
+                setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+                activeLayer.style.border = "none";
             }
-            else{
-                layerBrowser.prepend(tar);
-                fixSVG(targetIcon.getAttribute("id"));
-            }     
-        
-            if(activeLayer) { activeLayer.style.border = "none"}
             // set the selected element
             activeLayer = tar;
             activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
         }
         
     });
@@ -1736,6 +1866,7 @@ function updateLayers(el){
             div.setAttribute("id", "layer" + el.getAttribute("id") );
             div.appendChild(el);
             layerBrowser.prepend(div);
+            dragElement(div);
             break;
 
         case "g":
@@ -1748,11 +1879,11 @@ function updateLayers(el){
                 div.style.textAlign = "center";
                 el.setAttribute("transform","translate(0, 0) scale(.5)");
                 div.style.verticalAlign = "center"; 
+                dragElement(div);
                 layerBrowser.prepend(div);
                 break;
             }
             else if( el.getAttribute("id") && el.getAttribute('id').indexOf("outline") > -1 ){
-                console.log("OUTLINE RUNS")
                 var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
                 svg.setAttribute("viewBox", "0 0 100 100");
                 svg.style.padding = "0%";
@@ -1762,6 +1893,7 @@ function updateLayers(el){
                 div.style.padding = "10%";
                 svg.appendChild(el);
                 div.appendChild(svg); 
+                dragElement(div);
                 layerBrowser.prepend(div);
                 break;
             }
@@ -1774,6 +1906,7 @@ function updateLayers(el){
             svg.appendChild(el);
             div.appendChild(svg); 
             div.setAttribute("id", "layer" + el.getAttribute("id"));
+            dragElement(div);
             layerBrowser.prepend(div);
             break;
     }
@@ -1781,29 +1914,17 @@ function updateLayers(el){
     // change the id so it doesnt interupt the svg image icons 
     el.setAttribute("id", layerId++);
 
-    if(activeLayer) { activeLayer.style.border = "none"}
-        // set the selected element
-        activeLayer = div;
-        activeLayer.style.border = "5px solid red";
+    if(activeLayer) { 
+        setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+        activeLayer.style.border = "none";
+    }
+    // set the selected element
+    activeLayer = div;
+    activeLayer.style.border = "5px solid red";
+    setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+    setDetectionForLayer(activeLayer, "all");
 }
 
-
-function fixSVG( id ) {
-    var svg = document.getElementById("svgWrapper");
-    
-    if(id.indexOf("sun") > -1){
-        svg.append(sunImage);
-    }
-    else if(id.indexOf("north") > -1){
-        svg.append(northImage);
-    }
-    else if(id.indexOf("eye") > -1){
-        svg.append(eyeImage);
-    }
-    else if(id.indexOf("scale") > -1){
-        svg.append(scaleBarIcon);
-    }
-}
 
 /** TODO:
  * @function fixLayerUI
@@ -1812,7 +1933,7 @@ function fixSVG( id ) {
  */
 function fixLayerUI(id) {
     var layers = document.getElementById("layerBrowser"),
-        UIBox = document.getElementById(String("layer"+id));
+        UIBox = document.getElementById(String( "layer"+id ));
 
     if(layers && UIBox){
         layers.prepend(UIBox);
@@ -1840,10 +1961,18 @@ function fixLayerUI(id) {
         }
     }
 
-    if(UIBox){
-        if(activeLayer){ activeLayer.style.border = "none"; }
-        activeLayer = UIBox;
+    if(UIBox && activeLayer && UIBox.getAttribute("id") !== activeLayer.getAttribute("id")){
+        if( activeLayer !== null ) {
+            activeLayer.style.border = "none";
+        }
+    }
+    
+    if(UIBox) {
+        activeLayer = UIBox;  
         activeLayer.style.border = "5px solid red";
+    }
+    else{
+        console.log(UIBox);
     }
 }
 
@@ -2583,7 +2712,8 @@ $(document).ready(function(){
     eyeImage = document.getElementById('eyePosition'),
     eyeArrow = document.getElementById("eyeArrow"),
     scaleBarIcon = document.getElementById('scalebarPosition'),
-    bg = document.getElementById("svgBackground");
+    bg = document.getElementById("svgBackground"),
+    layerBrowser = document.getElementById("layerBrowser");
 
     // get half the scalebar length for drawing
     let half = parseFloat(scalebarLength)/2;
@@ -3136,7 +3266,7 @@ $(document).ready(function(){
     $("#colorPickerLine").change(function(){
         userLineColor = document.getElementById("colorPickerLine").value;
 
-        if(activeLayer.getAttribute("id").indexOf("line") > -1){
+        if(activeLayer && activeLayer.getAttribute("id").indexOf("line") > -1){
             // generate the arrowhead if needed
             var activeLine = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
 
@@ -3198,7 +3328,7 @@ $(document).ready(function(){
     $("#colorPickerBox").change(function(){
         userBoxColor = document.getElementById("colorPickerBox").value;
 
-        if(activeLayer.getAttribute("id").indexOf("outline") > -1){
+        if(activeLayer && activeLayer.getAttribute("id").indexOf("outline") > -1){
             var activeBox = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
 
             activeBox.style.stroke = userBoxColor;
@@ -3217,7 +3347,7 @@ $(document).ready(function(){
     $("#textColorPicker").on("change",function(){
         userTextColor = document.getElementById("textColorPicker").value;
 
-        if(activeLayer.getAttribute("id").indexOf("text") > -1){
+        if(activeLayer && activeLayer.getAttribute("id").indexOf("text") > -1){
             var activeText = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
 
             activeText.children[0].style.stroke = userTextColor;
@@ -3275,6 +3405,60 @@ $(document).ready(function(){
     });
 
 
+
+    // TODO:
+    function moveSvgTo(id, direction) {
+        var elem_choice = document.getElementById(id.split("layer")[1]);
+        
+        if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
+            if(id.split("layer")[1].indexOf("sun")  > -1 ){
+                elem_choice = sunImage;
+            }
+            else if(id.split("layer")[1].indexOf("eye")  > -1 ){
+                elem_choice = eyeImage;
+            }
+            else if(id.split("layer")[1].indexOf("north")  > -1 ){
+                elem_choice = northImage;
+            }
+            else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
+                elem_choice = scaleBarIcon;
+            }
+        }
+
+        if(elem_choice){
+            
+            // move index of element by one either up or down
+            if (direction === -1 && elem_choice.previousSibling) {
+                svg.insertBefore(elem_choice, elem_choice.previousSibling);
+                
+            } else if (direction === 1 && elem_choice.nextSibling) {
+                svg.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            }
+        }
+    }
+
+
+    // TODO:
+    function moveChoiceTo(elem_choice, direction) {
+
+        var parent = elem_choice.parentNode;
+        // move index of element by one either up or down
+        if (direction === 1 && elem_choice.previousSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.previousSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        } else if (direction === -1 && elem_choice.nextSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        }
+    }
+
+
     /**
      * @function document 'keyup' event handler
      * 
@@ -3297,6 +3481,14 @@ $(document).ready(function(){
                 elem.remove();
                 clickArray = [];
             }
+        }
+        else if(event.keyCode === 40 && activeLayer){
+            console.log("DOWN");
+            moveChoiceTo(activeLayer,-1); 
+        }
+        else if(event.keyCode === 38 && activeLayer){
+            console.log("UP")
+            moveChoiceTo(activeLayer,1);
         }
     });
     
@@ -4503,6 +4695,21 @@ $(document).ready(function(){
     });
 
 
+
+    $(document).mousedown(function(event){
+        // unfocus the layer browser
+        if(event.target.classList 
+            && ( event.target.classList.contains("unfocus"))
+            ){
+                if(activeLayer) {
+                    setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+                    activeLayer.style.border = "none";
+                    activeLayer = null;
+                }
+
+        }
+    });
+
     /**
      * @function document.keydown
      * 
@@ -4611,6 +4818,11 @@ $(document).ready(function(){
                     }
                 }
                 activeLayer.remove();
+                activeLayer = (document.getElementById("layerBrowser").children[0] === null)
+                                ? undefined : document.getElementById("layerBrowser").children[0];
+                if(activeLayer){
+                    activeLayer.style.border = "5px solid red";
+                }
             }
         }
     });

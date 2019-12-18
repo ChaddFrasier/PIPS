@@ -18,12 +18,12 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
         <script src="js/imageEditor.js"></script>
     </head>
-    <body style="overflow-x: hidden;">
+    <body class="unfocus" style="overflow-x: hidden;">
         <!-- Left Bar-->
-        <div class="mainbox-left" style="width: 20%;">
+        <div class="mainbox-left unfocus" style="width: 20%;">
             <!-- Page Header Block-->
             <img src="../images/usgsLogo.png" class="float-md-left" width="85%" height="auto"
-                style="margin: 0%; padding: 0%">
+                style="margin: 0%; padding: 0%; pointer-events:none;">
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
@@ -37,10 +37,10 @@
                 </button>
             </div>
             <!-- Tabular Menu System -->
-            <div class="menu">
+            <div class="menu unfocus">
                 <!-- Icon UI Tab-->
-                <div id="Icons" class="tabcontent">
-                    <h4>Icon Tools</h4>
+                <div id="Icons" class="tabcontent unfocus">
+                    <h4 style="pointer-events: none;">Icon Tools</h4>
                     <!-- North Button -->
                     <div class="row" role="table" style="margin-top:0rem; border-top: 2px solid black" 
                             title="Alt + N">
@@ -160,8 +160,8 @@
                     </div>
                 </div>
                 <!-- Annotation UI Tab -->
-                <div id="Annotate" class="tabcontent" style="display: none; margin: auto auto;">
-                    <h4>Annotation Tools</h4>
+                <div id="Annotate" class="tabcontent unfocus" style="display: none; margin: auto auto;">
+                    <h4 style="pointer-events: none;">Annotation Tools</h4>
                     <!-- Draw Tool Button -->
                     <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
                         <div class="col-4" style="margin: auto auto;">
@@ -183,7 +183,7 @@
                             </button>
                         </div>
                         <div class="col-4" style="padding-top:2%;">
-                            <div class="row" style="margin: 0; margin-bottom: 25%;">
+                            <div class="row" style="margin: 0; margin-bottom: 10%;">
                                 <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
                                 value="#ffffff"/>
                             </div>
@@ -212,9 +212,9 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="col-4" style="padding-top:2%;">
-                            <input id="colorPickerBox"type="color" name="boxColor"  value="#ffffff"
-                            title="Change Color"/>
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%;">
+                            <input id="colorPickerBox" type="color" title="Change Color" name="boxColor"  
+                            value="#ffffff"/>
                         </div>
                     </div>
                     <!-- Text Tool Button -->
@@ -232,15 +232,15 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%; ">
+                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%;">
                             <input type="color" id="textColorPicker"
                             style="top: 48.5rem; left: 16rem;" value="#FFFFFF" title="Change Color">
                         </div>
                     </div>
                 </div>
                 <!-- File UI Tab -->
-                <div id="File" class="tabcontent" style="display: none;">
-                    <h4>File Manipulations</h4>
+                <div id="File" class="tabcontent unfocus" style="display: none;">
+                    <h4 style="pointer-events: none;">File Manipulations</h4>
                     <!-- Pad Image Interface -->
                     <div class="row" role="table" title="Pad Image Border">
                         <div class="row text-center">
@@ -416,7 +416,7 @@
         </div>
 
         <!-- Right Bar-->
-        <div class="container mainbox-right" style="width: 5%; height:100%; padding: 5px;">
+        <div id="rightbox" class="container mainbox-right unfocus" style="width: 5%; height:100%; padding: 5px;">
             <!-- Loading GIF-->
             <div id="loading" class="text-center lead loading-small" style="top: 0;">
                 <img src="../images/loading.gif" class='float-center' height="50%" weight="auto"/>
@@ -425,37 +425,37 @@
             </div>
 
             <br>
-            <div class="container lightshadowbox" style="margin: 0; color: black;">Layers</div>
-            <div id="layerBrowser" class="container lightshadowbox" 
-                style="width: 100%; height: 75%; padding: 0; top: 150px; border: 2px solid blue; overflow-y: scroll;">
-            </div>
-            <!--------------------------- Help Box ------------------------->
+            <!--------------------------- Layer Browser ------------------------->
+            <div class="container lightshadowbox" style="margin: 0; color: black; pointer-events: none;">Layers</div>
+            <div id="layerBrowser" class="container lightshadowbox unfocus" 
+                style="width: 100%; height: 75%; padding: 0; top: 150px; border: 2px solid blue; overflow-y: scroll;"></div>
+            
         </div>
         
         <!-- Center Box-->
-        <div class="mainbox-center" style="width: 75%; height:100%; background-color: rgba(99,88,94,0.65);
+        <div class="mainbox-center unfocus" style="width: 75%; height:100%; background-color: rgba(99,88,94,0.65);
         border: 2px double rgba(255, 255,255, .65); padding: 5px;">
             <!-- Center Title Box -->
-            <div class="container text-center" style="background: rgba(99, 88, 94, 0.692);
+            <div class="container text-center unfocus " style="background: rgba(99, 88, 94, 0.692);
             height: 13rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black; margin:0;">
                 <div class="jumbotron text-center" 
                 style="border: 2px solid black; margin:auto auto;margin-left: auto; margin-right: auto; 
                 background: rgba(243, 214, 176, 0.698); height:75%; padding: 0;">
                     <div class="row">
-                        <div class="col-4" style="width: 15%;"></div>
-                        <div class="col-4" style="text-align: center; width: 70%;">
-                            <h2 style="font-size:125%;">Edit Cube Image</h2>
-                            <h4 id="imageName"style="font-size:125%;"></h4>
-                            <h5 id="displayCube" style="font-size:125%;"><%=w%> &times; <%=h%> px</h5>
+                        <div class="col-4 unfocus" style="width: 15%;"></div>
+                        <div class="col-4 unfocus" style="text-align: center; width: 70%;">
+                            <h2 style="font-size:125%;pointer-events: none;">Edit Cube Image</h2>
+                            <h4 id="imageName"style="font-size:125%;pointer-events: none;"></h4>
+                            <h5 id="displayCube" style="font-size:125%;pointer-events: none;"><%=w%> &times; <%=h%> px</h5>
                         </div>
-                        <div class="col-4" style="width: 15%;">
+                        <div class="col-4 unfocus" style="width: 15%;">
                             <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" title="Help!" 
                             style="position: relative;"/>
                         </div>
                     </div>
                 </div>
-                <div class="row" style="width: 100%">
-                    <div class="col-4">
+                <div class="row unfocus" style="width: 100%">
+                    <div class="col-4 unfocus">
                         <a class="btn btn-primary btn-lg float-left" 
                         style="border: 2px solid black; width: auto; height: 3rem; margin-top: .5%; margin-left: 0;
                             margin-bottom:auto; "
@@ -463,8 +463,8 @@
                             Upload New File
                         </a>
                     </div>
-                    <div class="col-4" style="display: flex; margin: auto auto; padding-left: 10%;">
-                        <h5 style="width: 30%; color: white; padding-top: 2%;">Zoom Fit</h5>
+                    <div class="col-4 unfocus" style="display: flex; margin: auto auto; padding-left: 10%;">
+                        <h5 style="width: 30%; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
                         <!-- Rounded switch -->
                         <label class="switch">
                             <input id="viewOption" type="checkbox">
@@ -472,7 +472,7 @@
                         </label>
                         <h5 style="width: 30%; color: white; padding-top: 2%;">Box Fit</h5>    
                     </div>
-                    <div class="col-4">
+                    <div class="col-4 unfocus">
                         <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
                         style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .5%;
                         margin-left: auto;"
@@ -486,7 +486,7 @@
                 <!-- add progress bar here using js-->
             </div>
             <div class="row" style="margin-top:1rem; margin-bottom:0; padding:0;">
-                <div class="col">
+                <div class="col unfocus">
                     <!-----------------------Editor Box----------------------------------------------->
                     <div id="imageViewContainer" style="height: fit-content; width: auto; margin-left:auto;
                      margin-right: auto; margin-top: auto; margin-bottom: auto; padding: 0;">
