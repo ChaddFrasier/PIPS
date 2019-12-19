@@ -33,8 +33,44 @@ pre {
     width: 100%;
     height: 100%;
     max-width:none;max-height:none;
+}
+
+.layerBox:hover {
+    background: -moz-linear-gradient(
+		top,
+		#dfdede 0%,
+		#c0bfbf 50%,
+		#a7a4a4 92%,
+		#929292);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#dfdede),
+		color-stop(0.50, #c0bfbf),
+		color-stop(0.92, #a7a4a4),
+		to(#929292));
+}
+
+.layerBox {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    overflow-y: auto;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    background: -moz-linear-gradient(
+		top,
+		#a0a0a0 0%,
+		#818181 50%,
+		#625c5c 92%,
+		#696565);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#a0a0a0),
+		color-stop(0.50, #818181),
+		color-stop(0.92, #625c5c),
+		to(#696565));
  }
- 
+
 .shadowbox {
     width:100px;
     text-align:center;    
@@ -430,11 +466,23 @@ label {
     border: 2px solid black !important;
     overflow: hidden;
     margin: auto auto;
-    min-width: 5rem;
+    min-width: 2.5rem;
     min-height: 2rem;
     max-height: 10rem;
 }
 
+.buttonSm {
+    width:2.5rem;
+    height: auto;
+    background: #007150;
+    color: white;
+    border: 2px solid black !important;
+    overflow: hidden;
+    margin: auto auto;
+    min-width: 2.5rem;
+    min-height: 1.5rem;
+    max-height: 3rem;
+}
 .button:hover {
     background: rgba(0, 113, 79, 0.705);
     border: 2px solid rgba(0, 0, 0, 0.534) !important;
@@ -448,7 +496,7 @@ input[type=color]:hover {
 }
 
 input:focus {
-    outline: 2px double white;
+    outline: 1px double white;
 }
 
 input[type=color] {
@@ -456,7 +504,9 @@ input[type=color] {
     margin-top: 0;
     margin-bottom: auto;
     padding: 1%;
-    width: 75%;
+    border: 2px double rgba(0, 0, 0, 0.452);
+    min-height: 10%;
+    width: 50%;
 }
 
 input[type=checkbox]:hover {
@@ -580,7 +630,7 @@ line {
 }
 
 div.row[role=table] {  
-    width: 100%;
+    width: 90%;
     height: auto;
     padding-left: 0%;
     list-style-type: none;
