@@ -726,14 +726,14 @@ function dragElement(elmnt) {
         pos2 = pos4 - e.clientY;
 
         // set the element's new position:
-        if(pos2 < -65){
+        if(pos2 < -63){
             pos4 = e.clientY;
           // mouse is moving downward
             moveChoiceTo(elmnt,-1);
             return dragElement(elmnt);
         }
         // set the element's new position:
-        else if(pos2 > 65){
+        else if(pos2 > 63){
             pos4 = e.clientY;
             // mouse is moving downward
             moveChoiceTo(elmnt,1);
@@ -767,10 +767,9 @@ function dragElement(elmnt) {
         }
 
         if(elem_choice){
-            console.log()
             // move index of element by one either up or down
             if (direction === -1 && elem_choice.previousSibling) {
-                let code = svg.insertBefore(elem_choice, elem_choice.previousSibling);
+                svg.insertBefore(elem_choice, elem_choice.previousSibling);
                 
             } else if (direction === 1 && elem_choice.nextSibling) {
                 svg.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
@@ -1792,23 +1791,14 @@ function setDetectionForLayer( el, detection ){
     }
 
     let svgElements = elem_choice.childNodes;
-    
+    elem_choice.style.pointerEvents = detection;
+    elem_choice.style.border = "5px double yellow";
     // for every child
     for(index in svgElements){
         // if the group is draggable
-        if( svgElements[index].style ){
+        if( svgElements[index].classList && svgElements[index].classList.contains("resize") ){
             // reset the pointer events
             svgElements[index].style.pointerEvents = detection;
-            // add if that element has child nodes
-            if(svgElements[index].childNodes){
-                // do the same with its children
-                for(index2 in svgElements[index].childNodes){
-                    if(svgElements[index].childNodes[index2].classList 
-                        && svgElements[index].childNodes[index2].classList.contains("resize")){
-                        svgElements[index].childNodes[index2].style.pointerEvents = detection;
-                    }
-                }
-            }
         }
     }
 }
@@ -1848,6 +1838,7 @@ function updateLayers(el){
 
         if(tar){
             if(activeLayer) { 
+                // set all detection for every symbol
                 setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                 activeLayer.style.border = "none";
             }
@@ -2605,7 +2596,7 @@ $(document).ready(function(){
 
     var northObjectString = '<g id="northPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="5"'
-    + 'style="border:0; padding:0; pointer-events:all;">\n'
+    + 'style="border:0; padding:0; pointer-events:visible;">\n'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
     + 'width="100" height="100" fill="transparent"/>\n'
@@ -3241,20 +3232,23 @@ $(document).ready(function(){
     function setElementColor(UIBox, color, el) {
         var svgIcon = document.getElementById( UIBox.getAttribute("id").split("layer")[1] );
 
+        // chnage color of icon in svg
         svgIcon.style.stroke = color;
-        
-        if(el){
-            UIBox.remove();
-            updateLayers( el.cloneNode(true) );
+
+        if(UIBox.firstElementChild){
+            UIBox.firstElementChild.firstElementChild.style.stroke = color;
+            UIBox.firstElementChild.firstElementChild.setAttribute("marker-start",el.getAttribute("marker-start"));        
         }
         else{
-            UIBox.remove();
-            updateLayers(el.cloneNode(true));
+            UIBox.style.color = color;
         }
     }
 
 
 
+    function findLayer(layerId){
+
+    }
 
 
     /**
@@ -3482,12 +3476,17 @@ $(document).ready(function(){
                 clickArray = [];
             }
         }
+        else if(activeLayer && event.keyCode === 27){
+           
+            setSvgClickDetection(svg,"all");
+            activeLayer.style.border = "none";
+            activeLayer = null;
+            
+        }
         else if(event.keyCode === 40 && activeLayer){
-            console.log("DOWN");
             moveChoiceTo(activeLayer,-1); 
         }
         else if(event.keyCode === 38 && activeLayer){
-            console.log("UP")
             moveChoiceTo(activeLayer,1);
         }
     });
@@ -4822,6 +4821,8 @@ $(document).ready(function(){
                                 ? undefined : document.getElementById("layerBrowser").children[0];
                 if(activeLayer){
                     activeLayer.style.border = "5px solid red";
+                    setSvgClickDetection(svg, "none");
+                    setDetectionForLayer(activeLayer, "all");
                 }
             }
         }
@@ -4965,7 +4966,8 @@ $(document).ready(function(){
 
             updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
-            setSvgClickDetection(svg, "all");
+            
+            setDetectionForLayer(activeLayer,"all");
         }
     });
 
