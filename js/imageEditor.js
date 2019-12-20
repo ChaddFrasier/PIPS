@@ -1782,6 +1782,10 @@ function getCookie(cname){
 function setDetectionForLayer( el, detection ){
     if(el === null){
         setSvgClickDetection(document.getElementById("svgWrapper"), "all");
+        $("#colorPickerLine").val("#ffffff");
+        $("#textColorPicker").val("#ffffff");
+        $("#colorPickerBox").val("#ffffff");
+        return;
     }
 
     var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1]);
@@ -1814,7 +1818,6 @@ function setDetectionForLayer( el, detection ){
             svgElements[index].style.pointerEvents = detection;
             svgElements[index].setAttribute("stroke", "red");
             if(elem_choice == eyeImage){
-                console.log("eye");
                 svgElements[index].setAttribute("stroke-width", "2");
                 svgElements[index].setAttribute("stroke-dasharray", "1 1");
             }
@@ -1822,15 +1825,45 @@ function setDetectionForLayer( el, detection ){
                 // text element found
                 svgElements[index].setAttribute("stroke-width", ".5");
                 svgElements[index].setAttribute("stroke-dasharray", ".5 .5");
+                console.log(elem_choice);
+
             }
             else{
                 svgElements[index].setAttribute("stroke-width", "5");
                 svgElements[index].setAttribute("stroke-dasharray", "1.5 1.5");
+
+                if(elem_choice.getAttribute("id").indexOf("outline") > -1){
+                    // outline box element found
+                    console.log(elem_choice);
+
+                    var color = elem_choice.value;
+
+                    document.getElementById("colorPickerLine").value = "#ffffff";
+                    document.getElementById("textColorPicker").value = "#ffffff";
+                    $("#colorPickerBox").val(color);
+    
+                }
+                else{
+                    $("#colorPickerLine").val("#ffffff");
+                    $("#textColorPicker").val("#ffffff");
+                    $("#colorPickerBox").val("#ffffff");
+                }
+
+
             }
             
             svgElements[index].style.background = "transparent";
             svgElements[index].style.visibility = "visible";
         }
+    }
+
+    if(elem_choice.getAttribute("id").indexOf("line") > -1){
+        // line element found
+        console.log(elem_choice);
+        var color = elem_choice.style.stroke;
+        console.log(color)
+        $("#colorPickerLine").val(color);
+        userLineColor = color
     }
 }
 
@@ -2645,7 +2678,7 @@ $(document).ready(function(){
     + 'fill="transparent"/>\n</g>\n'
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
-    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />\n';
+    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:white" />\n';
 
     var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>\n'
     + '<rect class=" resize top-left" x="0" y="0" width="50" height="50"'
@@ -3050,7 +3083,6 @@ $(document).ready(function(){
                             else{
                                 setDetectionForLayer(null, "all");
                             }
-                            
                         });
                     }
                     else{
@@ -3058,7 +3090,7 @@ $(document).ready(function(){
                         response.blob().then((blob)=>{
                             var url = DOMURL.createObjectURL(blob);
 
-                            triggerDownload(url,filename);
+                            triggerDownload(url, filename);
                             setInterval(hideProgress, 1000, progressBar);
                             loader.style.visibility = "hidden";
                             document.getElementById("loadingText").innerHTML = "Loading";
@@ -3077,6 +3109,7 @@ $(document).ready(function(){
                     if(err){
                         console.log(err);
                     }
+
                     if(activeLayer){
                         setDetectionForLayer(activeLayer, "all");
                         activeLayer.style.border = "5px solid red";
@@ -3349,13 +3382,6 @@ $(document).ready(function(){
             UIBox.style.color = color;
         }
     }
-
-
-
-    function findLayer(layerId){
-
-    }
-
 
     /**
      * @function colorPickerLine 'change' event handler
@@ -4645,6 +4671,7 @@ $(document).ready(function(){
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                     activeLayer.style.border = "none";
                     activeLayer = null;
+                    setDetectionForLayer(activeLayer,"all");
                 }
 
         }
@@ -4734,8 +4761,9 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
-        if(event.keyCode === 46 || event.keyCode === 8){
+        if(event.keyCode === 46){
             if(activeLayer){
+                event.preventDefault();
                 var svgID = activeLayer.getAttribute("id").split("layer")[1];
 
                 var icon = document.getElementById(svgID);
@@ -5074,6 +5102,10 @@ $(window).bind('pageshow', function(event){
                     document.getElementById("metadata-text").innerHTML = reader.result;
                 } 
             }
+            // defult color pickers
+            $("#colorPickerLine").val("#ffffff");
+            $("#textColorPicker").val("#ffffff");
+            $("#colorPickerBox").val("#ffffff");
         });
     });
 });/** ------------------------------------ End Jquery Handlers ------------------------------------------ */
