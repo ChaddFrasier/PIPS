@@ -829,6 +829,15 @@ function setSvgClickDetection(svg, mouseDetect){
                     if(svgElements[index].childNodes[index2].classList 
                         && svgElements[index].childNodes[index2].classList.contains("resize")){
                         svgElements[index].childNodes[index2].style.pointerEvents = mouseDetect;
+
+                        // TODO: undo the border settings
+                        if(mouseDetect === "none"){
+                            svgElements[index].childNodes[index2].style.visibility = "hidden";
+                        }
+                        else{
+                            svgElements[index].childNodes[index2].style.visibility = "visible";
+                        }
+                        
                     }
                 }
             }
@@ -1769,8 +1778,16 @@ function getCookie(cname){
     return "";
 }
 
-
+//TODO:
 function setDetectionForLayer( el, detection ){
+    if(el === null){
+        setSvgClickDetection(document.getElementById("svgWrapper"), "all");
+        $("#colorPickerLine").val("#ffffff");
+        $("#textColorPicker").val("#ffffff");
+        $("#colorPickerBox").val("#ffffff");
+        return;
+    }
+
     var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1]);
         
     if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
@@ -1792,14 +1809,61 @@ function setDetectionForLayer( el, detection ){
 
     let svgElements = elem_choice.childNodes;
     elem_choice.style.pointerEvents = detection;
-    elem_choice.style.border = "5px double yellow";
+
     // for every child
     for(index in svgElements){
         // if the group is draggable
         if( svgElements[index].classList && svgElements[index].classList.contains("resize") ){
             // reset the pointer events
             svgElements[index].style.pointerEvents = detection;
+            svgElements[index].setAttribute("stroke", "red");
+            if(elem_choice == eyeImage){
+                svgElements[index].setAttribute("stroke-width", "2");
+                svgElements[index].setAttribute("stroke-dasharray", "1 1");
+            }
+            else if(elem_choice.getAttribute("id").indexOf("text") > -1){
+                // text element found
+                svgElements[index].setAttribute("stroke-width", ".5");
+                svgElements[index].setAttribute("stroke-dasharray", ".5 .5");
+                console.log(elem_choice);
+
+            }
+            else{
+                svgElements[index].setAttribute("stroke-width", "5");
+                svgElements[index].setAttribute("stroke-dasharray", "1.5 1.5");
+
+                if(elem_choice.getAttribute("id").indexOf("outline") > -1){
+                    // outline box element found
+                    console.log(elem_choice);
+
+                    var color = elem_choice.value;
+
+                    document.getElementById("colorPickerLine").value = "#ffffff";
+                    document.getElementById("textColorPicker").value = "#ffffff";
+                    $("#colorPickerBox").val(color);
+    
+                }
+                else{
+                    $("#colorPickerLine").val("#ffffff");
+                    $("#textColorPicker").val("#ffffff");
+                    $("#colorPickerBox").val("#ffffff");
+                }
+
+
+            }
+            
+            svgElements[index].style.background = "transparent";
+            svgElements[index].style.visibility = "visible";
         }
+    }
+
+    if(elem_choice.getAttribute("id").indexOf("line") > -1){
+        // line element found
+        console.log(elem_choice);
+        var color = elem_choice.style.stroke;
+        console.log(color)
+        $("#colorPickerLine").val(color);
+        userLineColor = color
     }
 }
 
@@ -2614,7 +2678,7 @@ $(document).ready(function(){
     + 'fill="transparent"/>\n</g>\n'
 
     var outlineObjectString = '<rect id="cropOutline" x="0" y="0" width="5" height="5"'
-    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:rgb(255,0,0);" />\n';
+    + 'style="fill:rgba(245, 13, 13, 0.15);pointer-events:none; stroke-width:2;stroke:white" />\n';
 
     var attensionBoxObjectString ='<rect id="attensionBox" x="0" y="0" width="400" height="400"/>\n'
     + '<rect class=" resize top-left" x="0" y="0" width="50" height="50"'
@@ -2917,6 +2981,10 @@ $(document).ready(function(){
         var mainbox = document.getElementsByClassName("mainbox-center");
 
         mainbox[0].appendChild(window);
+
+        // set all detection for every symbol
+        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+        activeLayer.style.border = "none";
     });
 
 
@@ -3008,6 +3076,13 @@ $(document).ready(function(){
                             loader.style.visibility = "hidden";
                             document.getElementById("loadingText").innerHTML = "Loading";
                             hideProgress(progressBar);
+                            if(activeLayer){
+                                setDetectionForLayer(activeLayer, "all");
+                                activeLayer.style.border = "5px solid red";
+                            }
+                            else{
+                                setDetectionForLayer(null, "all");
+                            }
                         });
                     }
                     else{
@@ -3015,11 +3090,18 @@ $(document).ready(function(){
                         response.blob().then((blob)=>{
                             var url = DOMURL.createObjectURL(blob);
 
-                            triggerDownload(url,filename);
+                            triggerDownload(url, filename);
                             setInterval(hideProgress, 1000, progressBar);
                             loader.style.visibility = "hidden";
                             document.getElementById("loadingText").innerHTML = "Loading";
                             DOMURL.revokeObjectURL(url);
+                            if(activeLayer){
+                                setDetectionForLayer(activeLayer, "all");
+                                activeLayer.style.border = "5px solid red";
+                            }
+                            else{
+                                setDetectionForLayer(null, "all");
+                            }
                         });
                     }
                 }).catch((err) =>{
@@ -3027,12 +3109,28 @@ $(document).ready(function(){
                     if(err){
                         console.log(err);
                     }
+
+                    if(activeLayer){
+                        setDetectionForLayer(activeLayer, "all");
+                        activeLayer.style.border = "5px solid red";
+                    }
+                    else{
+                        setDetectionForLayer(null, "all");
+                    }
                 });
             }
             else{
                 //remove the loading gif
                 loader.style.visibility = "hidden";
                 document.getElementById("loadingText").innerHTML = "Loading";
+                if(activeLayer){
+                    setDetectionForLayer(activeLayer, "all");
+                    activeLayer.style.border = "5px solid red";
+                }
+                else{
+                    setDetectionForLayer(null, "all");
+                }
+
             }
         }
         else{
@@ -3050,6 +3148,14 @@ $(document).ready(function(){
         // cancel the saving process
         this.offsetParent.remove();
         document.getElementById("loading").style.visibility = "hidden";
+
+        if(activeLayer){
+            setDetectionForLayer(activeLayer, "all");
+            activeLayer.style.border = "5px solid red";
+        }
+        else{
+            setDetectionForLayer(null, "all");
+        }
     }
 
     /**
@@ -3125,6 +3231,17 @@ $(document).ready(function(){
                 }
             }
         }
+
+        if(activeLayer) { 
+            // set all detection for every symbol
+            setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+            activeLayer.style.border = "none";
+        }
+        // set the selected element
+        activeLayer = document.getElementById("layernorthIconFlag");
+        activeLayer.style.border = "5px solid red";
+        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+        setDetectionForLayer(activeLayer, "all");
     });
 
 
@@ -3149,6 +3266,17 @@ $(document).ready(function(){
                 }
             }
         }
+
+        if(activeLayer) { 
+            // set all detection for every symbol
+            setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+            activeLayer.style.border = "none";
+        }
+        // set the selected element
+        activeLayer = document.getElementById("layersunIconFlag");
+        activeLayer.style.border = "5px solid red";
+        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+        setDetectionForLayer(activeLayer, "all");
     });
 
 
@@ -3201,6 +3329,17 @@ $(document).ready(function(){
                 }
             }
         }
+
+        if(activeLayer) { 
+            // set all detection for every symbol
+            setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+            activeLayer.style.border = "none";
+        }
+        // set the selected element
+        activeLayer = document.getElementById("layereyeFlag");
+        activeLayer.style.border = "5px solid red";
+        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+        setDetectionForLayer(activeLayer, "all");
     });
 
 
@@ -3243,13 +3382,6 @@ $(document).ready(function(){
             UIBox.style.color = color;
         }
     }
-
-
-
-    function findLayer(layerId){
-
-    }
-
 
     /**
      * @function colorPickerLine 'change' event handler
@@ -4082,8 +4214,8 @@ $(document).ready(function(){
             var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect3.setAttribute("x",10);
             rect3.setAttribute("y",1);
-            rect3.setAttribute("width", 7);
-            rect3.setAttribute("height", 7);
+            rect3.setAttribute("width", 5);
+            rect3.setAttribute("height", 5);
             rect3.style.visibility = "hidden";
             rect3.setAttribute("class","resize top-right");
             rect3.setAttribute("fill","transparent");
@@ -4091,8 +4223,8 @@ $(document).ready(function(){
             var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
             rect4.setAttribute("x",10);
             rect4.setAttribute("y",13);
-            rect4.setAttribute("width", 7);
-            rect4.setAttribute("height", 7);
+            rect4.setAttribute("width", 5);
+            rect4.setAttribute("height", 5);
             rect4.setAttribute("fill","transparent");
             rect4.style.visibility = "hidden";
             rect4.setAttribute("class","resize bottom-right");
@@ -4136,33 +4268,6 @@ $(document).ready(function(){
             }
             // track the new text element
             textBoxArray.push(g);
-            
-            
-            g.addEventListener("mouseover", function(){
-                // show border of rescale
-                var children = this.childNodes;
-        
-                for(var i = 0; i < children.length; i++){
-                    if(children[i].classList && children[i].classList.contains("resize")){
-                        children[i].setAttribute("stroke", "red");
-                        children[i].setAttribute("stroke-width", ".5");
-                        children[i].setAttribute("stroke-dasharray", ".5 .5");
-                        children[i].style.background = "transparent";
-                        children[i].style.visibility = "visible";
-                    }
-                }
-            });
-        
-            g.addEventListener("mouseleave", function(){
-                //hide border of rescale
-                var children = this.childNodes;
-        
-                for(var i = 0; i < children.length; i++){
-                    if(children[i].classList && children[i].classList.contains("resize")){
-                        children[i].style.visibility = "hidden";
-                    }
-                }
-            });
 
         }
     });
@@ -4450,32 +4555,6 @@ $(document).ready(function(){
 
         // update the layer browser
         updateLayers(g.cloneNode(true));
-
-        g.addEventListener("mouseover", function(){
-            // show border of rescale
-            var children = this.childNodes;
-    
-            for(var i = 0; i < children.length; i++){
-                if(children[i].classList && children[i].classList.contains("resize")){
-                    children[i].setAttribute("stroke", "red");
-                    children[i].setAttribute("stroke-width", "5");
-                    children[i].setAttribute("stroke-dasharray", "5 5");
-                    children[i].style.background = "transparent";
-                    children[i].style.visibility = "visible";
-                }
-            }
-        });
-    
-        g.addEventListener("mouseleave", function(){
-            //hide border of rescale
-            var children = this.childNodes;
-    
-            for(var i = 0; i < children.length; i++){
-                if(children[i].classList && children[i].classList.contains("resize")){
-                    children[i].style.visibility = "hidden";
-                }
-            }
-        });
     });
 
 
@@ -4583,118 +4662,6 @@ $(document).ready(function(){
     });
 
 
-    
-    /**
-     * @function northImage "mouseover" event
-     * 
-     * @description display the rescaling boxes over the image
-     */
-    northImage.addEventListener("mouseover", function(){
-        // show border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].setAttribute("stroke", "red");
-                children[i].setAttribute("stroke-width", "5");
-                children[i].setAttribute("stroke-dasharray", "5 5");
-                children[i].style.background = "transparent";
-                children[i].style.visibility = "visible";
-            }
-        }
-    });
-
-    /**
-     * @function northImage "mouseleave" event
-     * 
-     * @description remove the rescaling boxes over the image
-     */
-    northImage.addEventListener("mouseleave", function(){
-        //hide border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].style.visibility = "hidden";
-            }
-        }
-    });
-
-    /**
-     * @function sunImage "mouseover" event
-     * 
-     * @description display the rescaling boxes over the image
-     */
-    sunImage.addEventListener("mouseover", function(){
-        // show border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].setAttribute("stroke", "red");
-                children[i].setAttribute("stroke-width", "5");
-                children[i].setAttribute("stroke-dasharray", "5 5");
-                children[i].style.background = "transparent";
-                children[i].style.visibility = "visible";
-            }
-        }
-    });
-
-    /**
-     * @function sunImage "mouseleave" event
-     * 
-     * @description remove the rescaling boxes over the image
-     */
-    sunImage.addEventListener("mouseleave", function(){
-        //hide border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].style.visibility = "hidden";
-            }
-        }
-    });
-
-
-    /**
-     * @function eyeImage "mouseover" event
-     * 
-     * @description display the rescaling boxes over the image
-     */
-    eyeImage.addEventListener("mouseover", function(){
-        // show border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].setAttribute("stroke", "red");
-                children[i].setAttribute("stroke-width", "2");
-                children[i].setAttribute("stroke-dasharray", "2 2");
-                children[i].style.background = "transparent";
-                children[i].style.visibility = "visible";
-            }
-        }
-    });
-
-    /**
-     * @function eyeImage "mouseleave" event
-     * 
-     * @description remove the rescaling boxes over the image
-     */
-    eyeImage.addEventListener("mouseleave", function(){
-        //hide border of rescale
-        var children = this.childNodes;
-
-        for(var i = 0; i < children.length; i++){
-            if(children[i].classList && children[i].classList.contains("resize")){
-                children[i].style.visibility = "hidden";
-            }
-        }
-    });
-
-
-
     $(document).mousedown(function(event){
         // unfocus the layer browser
         if(event.target.classList 
@@ -4704,6 +4671,7 @@ $(document).ready(function(){
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                     activeLayer.style.border = "none";
                     activeLayer = null;
+                    setDetectionForLayer(activeLayer,"all");
                 }
 
         }
@@ -4793,8 +4761,9 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
-        if(event.keyCode === 46 || event.keyCode === 8){
+        if(event.keyCode === 46){
             if(activeLayer){
+                event.preventDefault();
                 var svgID = activeLayer.getAttribute("id").split("layer")[1];
 
                 var icon = document.getElementById(svgID);
@@ -5133,6 +5102,10 @@ $(window).bind('pageshow', function(event){
                     document.getElementById("metadata-text").innerHTML = reader.result;
                 } 
             }
+            // defult color pickers
+            $("#colorPickerLine").val("#ffffff");
+            $("#textColorPicker").val("#ffffff");
+            $("#colorPickerBox").val("#ffffff");
         });
     });
 });/** ------------------------------------ End Jquery Handlers ------------------------------------------ */
