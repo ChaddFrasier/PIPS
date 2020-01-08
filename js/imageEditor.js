@@ -698,8 +698,6 @@ function makeDraggable(event){
         }
     }        
 }
-
-
 // make div draggable
 function dragElement(elmnt) {
     var pos2 = 0, pos4 = 0;
@@ -798,7 +796,6 @@ function dragElement(elmnt) {
         }
     }
   }
-
 
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
@@ -1778,13 +1775,28 @@ function getCookie(cname){
     return "";
 }
 
+// TODO:
+function componentToHex(c){
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+}
+  
+function rgbToHex(r, g, b){
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
 //TODO:
 function setDetectionForLayer( el, detection ){
     if(el === null){
         setSvgClickDetection(document.getElementById("svgWrapper"), "all");
-        $("#colorPickerLine").val("#ffffff");
-        $("#textColorPicker").val("#ffffff");
-        $("#colorPickerBox").val("#ffffff");
+        $("#colorPickerLine").val("#FFFFFF");
+        $("#textColorPicker").val("#FFFFFF");
+        $("#colorPickerBox").val("#FFFFFF");
+
+        userTextColor = "#ffffff";
+        userBoxColor = "#ffffff";
+        userLineColor = "#ffffff"
+
         return;
     }
 
@@ -1825,8 +1837,6 @@ function setDetectionForLayer( el, detection ){
                 // text element found
                 svgElements[index].setAttribute("stroke-width", ".5");
                 svgElements[index].setAttribute("stroke-dasharray", ".5 .5");
-                console.log(elem_choice);
-
             }
             else{
                 svgElements[index].setAttribute("stroke-width", "5");
@@ -1834,22 +1844,40 @@ function setDetectionForLayer( el, detection ){
 
                 if(elem_choice.getAttribute("id").indexOf("outline") > -1){
                     // outline box element found
-                    console.log(elem_choice);
+                    
+                    var color = elem_choice.style.stroke,
+                        colorR = color.split(" ")[0],
+                        colorG = color.split(" ")[1],
+                        colorB = color.split(" ")[2];
+                      
+                    colorR = parseInt(colorR.split("rgb(")[1]);
+                    colorG = parseInt(colorG);
+                    colorB = parseInt(colorB);
 
-                    var color = elem_choice.value;
+                    if( !isNaN(colorR) && !isNaN(colorG) && !isNaN(colorB) ){
+                        color = rgbToHex(colorR, colorG, colorB);
+                    }
+                    else{
+                        color = "#ffffff";
+                    }
+                    $("#colorPickerLine").val("#ffffff");
+                    $("#textColorPicker").val("#ffffff");
+                    
+                    userLineColor = "#ffffff";
+                    userTextColor = "#ffffff";
 
-                    document.getElementById("colorPickerLine").value = "#ffffff";
-                    document.getElementById("textColorPicker").value = "#ffffff";
                     $("#colorPickerBox").val(color);
-    
+                    userBoxColor = color;
                 }
                 else{
                     $("#colorPickerLine").val("#ffffff");
                     $("#textColorPicker").val("#ffffff");
                     $("#colorPickerBox").val("#ffffff");
+
+                    userTextColor = "#ffffff";
+                    userBoxColor = "#ffffff";
+                    userLineColor = "#ffffff";                
                 }
-
-
             }
             
             svgElements[index].style.background = "transparent";
@@ -1857,13 +1885,52 @@ function setDetectionForLayer( el, detection ){
         }
     }
 
-    if(elem_choice.getAttribute("id").indexOf("line") > -1){
+    if(elem_choice.getAttribute("id").indexOf("line") > -1 && elem_choice.getAttribute("id").indexOf("outline") < 0){
         // line element found
-        console.log(elem_choice);
-        var color = elem_choice.style.stroke;
-        console.log(color)
+        var color = elem_choice.style.stroke,
+            colorR = color.split(" ")[0],
+            colorG = color.split(" ")[1],
+            colorB = color.split(" ")[2];
+        
+        colorR = parseInt(colorR.split("rgb(")[1]);
+        colorG = parseInt(colorG);
+        colorB = parseInt(colorB);
+
+        color = rgbToHex(colorR, colorG, colorB);
         $("#colorPickerLine").val(color);
         userLineColor = color
+
+        $("#textColorPicker").val("#ffffff");
+        $("#colorPickerBox").val("#ffffff");
+
+        userTextColor = "#ffffff";
+        userBoxColor = "#ffffff";
+    }
+    else if(elem_choice.getAttribute("id").indexOf("text") > -1 ){
+        console.log(elem_choice)
+        var color = elem_choice.firstElementChild.getAttribute("fill"),
+            colorR = color.split(" ")[0],
+            colorG = color.split(" ")[1],
+            colorB = color.split(" ")[2];
+            
+        
+        colorR = parseInt(colorR.split("rgb(")[1]);
+        colorG = parseInt(colorG);
+        colorB = parseInt(colorB);
+
+        if( !isNaN(colorR) && !isNaN(colorG) && !isNaN(colorB) ){
+            color = rgbToHex(colorR, colorG, colorB);
+        }
+
+
+        $("#colorPickerLine").val("#ffffff");
+        $("#textColorPicker").val(color);
+        $("#colorPickerBox").val("#ffffff");
+
+        userTextColor = color;
+        userBoxColor = "#ffffff";
+        userLineColor = "#ffffff";
+        console.log("THIS RUNS  " + color);
     }
 }
 
@@ -1912,7 +1979,6 @@ function updateLayers(el){
             setSvgClickDetection(document.getElementById("svgWrapper"),"none");
             setDetectionForLayer(activeLayer, "all");
         }
-        
     });
 
 
@@ -2054,9 +2120,6 @@ function removeLayers(el){
     }
 }
 
-
-
-
 /**
  * @function resetSingleIcon
  * 
@@ -2142,7 +2205,6 @@ function resetSingleIcon(icon, widthDif, heightDif){
     // set the icon transform from the array of transform values
     icon.setAttribute("transform", tmpArr.join(" "));
 }
-
 /**
  * @function resetIcons
  * 
@@ -2153,12 +2215,10 @@ function resetSingleIcon(icon, widthDif, heightDif){
  * @description this function moved icons in relation to the width and height difference
  */
 function resetIcons(svg, heightDif, widthDif){
-       
     // reset the draggable icons
     resetSingleIcon(northImage, widthDif, heightDif);
     resetSingleIcon(sunImage, widthDif, heightDif);
     resetSingleIcon(eyeImage, widthDif, heightDif);
-
     // reset the draggable functions to set boundries
     makeDraggable(svg);
 }
@@ -3428,13 +3488,10 @@ $(document).ready(function(){
                     var marker = document.getElementById(markerId);            
                     
                     marker.children[0].setAttribute("fill", userLineColor);
-                        
-                    var line = marker.children[0];
-
-
-                // set the stroke color if the line
-                setElementColor(activeLayer, userLineColor, activeLine );
-                return;
+                    
+                    // set the stroke color if the line
+                    setElementColor(activeLayer, userLineColor, activeLine );
+                    return;
                 }
             }
 
@@ -3451,7 +3508,7 @@ $(document).ready(function(){
      * @description when the color value is changed in the color picker set the global
      * 
     */
-    $("#colorPickerBox").change(function(){
+    $("#colorPickerBox").change( function(){
         userBoxColor = document.getElementById("colorPickerBox").value;
 
         if(activeLayer && activeLayer.getAttribute("id").indexOf("outline") > -1){
@@ -4539,6 +4596,7 @@ $(document).ready(function(){
         g.style.pointerEvents = "visible";
         g.style.fill = "none";
         
+        userBoxColor = $("#colorPickerBox").val();
         // set the color if needed
         if(userBoxColor){
             g.style.stroke = userBoxColor;
@@ -4671,6 +4729,11 @@ $(document).ready(function(){
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                     activeLayer.style.border = "none";
                     activeLayer = null;
+                    
+                    userBoxColor = "#ffffff";
+                    userLineColor = "#ffffff";
+                    userTextColor = "#ffffff";
+
                     setDetectionForLayer(activeLayer,"all");
                 }
 
@@ -4852,6 +4915,8 @@ $(document).ready(function(){
         mouseX = parseInt(svgP.x),
         mouseY = parseInt(svgP.y);
         
+        userLineColor = document.getElementById("colorPickerLine").value;
+
         // if the draw flag is true and length of clicks is 0
         if(drawFlag && clickArray.length === 0 
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
