@@ -1795,7 +1795,7 @@ function setDetectionForLayer( el, detection ){
 
         userTextColor = "#ffffff";
         userBoxColor = "#ffffff";
-        userLineColor = "#ffffff"
+        userLineColor = "#ffffff";
 
         return;
     }
@@ -1832,6 +1832,14 @@ function setDetectionForLayer( el, detection ){
             if(elem_choice == eyeImage){
                 svgElements[index].setAttribute("stroke-width", "2");
                 svgElements[index].setAttribute("stroke-dasharray", "1 1");
+
+                $("#colorPickerLine").val("#ffffff");
+                $("#textColorPicker").val("#ffffff");
+                $("#colorPickerBox").val("#ffffff");
+
+                userTextColor = "#ffffff";
+                userBoxColor = "#ffffff";
+                userLineColor = "#ffffff";
             }
             else if(elem_choice.getAttribute("id").indexOf("text") > -1){
                 // text element found
@@ -1907,7 +1915,6 @@ function setDetectionForLayer( el, detection ){
         userBoxColor = "#ffffff";
     }
     else if(elem_choice.getAttribute("id").indexOf("text") > -1 ){
-        console.log(elem_choice)
         var color = elem_choice.firstElementChild.getAttribute("fill"),
             colorR = color.split(" ")[0],
             colorG = color.split(" ")[1],
@@ -1930,7 +1937,15 @@ function setDetectionForLayer( el, detection ){
         userTextColor = color;
         userBoxColor = "#ffffff";
         userLineColor = "#ffffff";
-        console.log("THIS RUNS  " + color);
+    }
+    else if(elem_choice.getAttribute("id").indexOf("scalebar") > -1){
+        $("#colorPickerLine").val("#ffffff");
+        $("#textColorPicker").val("#ffffff");
+        $("#colorPickerBox").val("#ffffff");
+
+        userTextColor = "#ffffff";
+        userBoxColor = "#ffffff";
+        userLineColor = "#ffffff";
     }
 }
 
@@ -3044,7 +3059,9 @@ $(document).ready(function(){
 
         // set all detection for every symbol
         setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        activeLayer.style.border = "none";
+        if(activeLayer){
+            activeLayer.style.border = "none";
+        }
     });
 
 
@@ -3436,7 +3453,7 @@ $(document).ready(function(){
 
         if(UIBox.firstElementChild){
             UIBox.firstElementChild.firstElementChild.style.stroke = color;
-            UIBox.firstElementChild.firstElementChild.setAttribute("marker-start",el.getAttribute("marker-start"));        
+            UIBox.firstElementChild.firstElementChild.setAttribute("marker-start", el.getAttribute("marker-start"));        
         }
         else{
             UIBox.style.color = color;
