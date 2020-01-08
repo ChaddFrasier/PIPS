@@ -51,10 +51,11 @@ pre {
 }
 
 .layerBox {
-    width: 100%;
+    width: 75%;
     height: auto;
     padding: 0;
     overflow-y: auto;
+    margin:auto;
     margin-bottom: 5px;
     border-radius: 5px;
     background: -moz-linear-gradient(
@@ -173,6 +174,8 @@ button.paddingBtn {
 .menu {
     display: inline-flex;
     width: 78%;
+    min-width: 78%;
+    max-width: 800px;
     height: 85%;
     background: rgb(161, 161, 161);
     border: #000;
@@ -188,7 +191,7 @@ button.paddingBtn {
     background-color: #f1f1f1;
     width: 20%;
     height: auto;
-    margin-left: 2%;
+    margin-left: 1%;
     margin-top: 25%;
 }
 
@@ -271,8 +274,9 @@ input:checked + .slider:before {
     display: block;
     background-color: inherit;
     color: black;
-    padding: 22px 16px;
+    padding: 22px 20px;
     width: 100%;
+    min-width: 85px;
     border: none;
     outline: none;
     text-align: left;
