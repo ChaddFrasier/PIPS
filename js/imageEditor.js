@@ -1847,8 +1847,8 @@ function setDetectionForLayer( el, detection ){
                 svgElements[index].setAttribute("stroke-dasharray", ".5 .5");
             }
             else{
-                svgElements[index].setAttribute("stroke-width", "5");
-                svgElements[index].setAttribute("stroke-dasharray", "1.5 1.5");
+                svgElements[index].setAttribute("stroke-width", "7");
+                svgElements[index].setAttribute("stroke-dasharray", "1 1");
 
                 if(elem_choice.getAttribute("id").indexOf("outline") > -1){
                     // outline box element found
@@ -2734,7 +2734,7 @@ $(document).ready(function(){
     + 'style="visibility: hidden;" fill="transparent"/>\n</g>\n';
 
     var northObjectString = '<g id="northPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
-    + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="5"'
+    + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:visible;">\n'
     + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
