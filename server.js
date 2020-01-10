@@ -711,6 +711,20 @@ app.post('/captionWriter', async function(request, response){
                                     // save data to object using setter in class
                                     cubeObj.data = JSON.parse(cubeData);
                                     
+                                    // check for longitude orientation for caption
+                                    console.log(JSON.parse(cubeObj.data)["IsisCube.Mapping.LongitudeDirection"]);
+                                    if(JSON.parse(cubeObj.data)["IsisCube.Mapping.LongitudeDirection"] && JSON.parse(cubeObj.data)["IsisCube.Mapping.CenterLongitude"]){
+                                        
+                                        let dir = JSON.parse(cubeObj.data)["IsisCube.Mapping.LongitudeDirection"];
+                                        if(dir !== "PositiveEast"){
+                                            let obj = JSON.parse(cubeData);
+
+                                            obj["IsisCube.Mapping.CenterLongitude"] = String("-" + obj["IsisCube.Mapping.CenterLongitude"]);
+                                            
+                                            // set the new value of instance data
+                                            cubeObj.data = obj;
+                                        }
+                                    }
                                     // obtain the data for the important tags
                                     var impDataString = util.importantData(cubeObj.data, importantTagArr);
 

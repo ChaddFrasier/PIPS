@@ -861,7 +861,8 @@ $(document).ready(function(){
     $("#addTagBtn").click( function() {
         // create the elements
         var div = document.createElement("div"),
-            buttonBox = document.createElement("div"),
+            inputBox1 = document.createElement("div")
+            inputBox2 = document.createElement("div"),
             title = document.createElement("h3"),
             tagInput = document.createElement("input"),
             tagLabel = document.createElement("label"),
@@ -877,40 +878,44 @@ $(document).ready(function(){
         
         div.style.top = "50%";
         div.style.zIndex = "40";
-        div.style.width = "25%";
-        div.style.height = "20%";
+        div.style.width = "20%";
+        div.style.height = "25%";
         div.style.border = "2px solid black";
+
+        inputBox1.className = "row";
+        inputBox2.className = "row";
 
         tagLabel.style.position = "absolute";
         tagLabel.style.left = "10%";
         tagLabel.style.top = "36%";
+        tagLabel.style.fontSize = "150%";
         tagLabel.innerHTML = "New Tag: ";
         tagLabel.style.color = "black";
 
-        buttonBox.style.width = "75%",
-        buttonBox.style.background = "transparent",
-        buttonBox.style.height = "100%";
-
         tagInput.style.position = "absolute";
-        tagInput.style.left = "35%";
+        tagInput.style.left = "45%";
         tagInput.style.top = "35%";
+        tagInput.style.transform = "scale(1.25)";
         tagInput.placeholder = "New Tag";
 
         valLabel.style.position = "absolute";
         valLabel.style.left = "10%";
         valLabel.style.top = "54%";
+        valLabel.style.fontSize = "150%";
         valLabel.innerHTML = "New Value: ";
         valLabel.style.color = "black";
 
         valInput.style.position = "absolute";
-        valInput.style.left = "35%";
+        valInput.style.left = "45%";
+        valInput.style.transform = "scale(1.25)";
         valInput.style.top = "55%";
         valInput.placeholder = "New Value";
 
         title.innerHTML = "Create a New Tag";
-        title.style.position = "absolute";
+        title.style.position = "relative";
         title.style.color = "black";
-        title.style.left = "19%";
+        title.style.margin = "auto";
+        title.style.marginTop = "0";
 
         cancelBtn.className = "btn btn-sm btn-danger button";
         cancelBtn.innerHTML = "Cancel";
@@ -1015,15 +1020,23 @@ $(document).ready(function(){
 
         // add elements in order
         div.appendChild(title);
-        buttonBox.appendChild(tagInput);
-        buttonBox.appendChild(valInput);
 
-        div.appendChild(valLabel);
-        div.appendChild(tagLabel);
-        div.appendChild(buttonBox);
+        col = document.createElement("div");
+        col.style.width = "100%";
+        col.style.height = "15%";
+        col.style.className = "col";
+
+        inputBox1.style.marginTop = "2px";
+        inputBox2.style.marginTop = "2px";
+
+        inputBox1.appendChild(col.cloneNode().appendChild(tagLabel));
+        inputBox1.appendChild(col.cloneNode().appendChild(tagInput));
+
+        inputBox2.appendChild(col.cloneNode().appendChild(valLabel));
+        inputBox2.appendChild(col.cloneNode().appendChild(valInput));
     
-        div.appendChild(submitBtn);
-        div.appendChild(cancelBtn);
+        div.append(inputBox1, inputBox2, submitBtn, cancelBtn);
+   
         document.body.insertBefore(div,document.body.firstChild);
 
         tagInput.focus();
