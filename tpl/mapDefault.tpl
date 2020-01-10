@@ -1,2 +1,2 @@
 Pictured is a SpacecraftName map of TargetName with IsisCube.Mapping.ProjectionName features labeled. The figure was created from the image IsisCube.Archive.ProductId in mission phase Phase.
-The figure is at a scale of PixelResolution m/px and centered at IsisCube.Mapping.CenterLatitude°(N|S), IsisCube.Mapping.CenterLongitude°(E|W).
+The figure is at a scale of PixelResolution m/px and centered at IsisCube.Mapping.CenterLatitude°N, IsisCube.Mapping.CenterLongitude°E.
