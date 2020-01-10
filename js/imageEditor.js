@@ -5,7 +5,7 @@
  * @version 2.2
  * 
  * @since 09/20/2019
- * @updated 12/12/2019
+ * @updated 01/10/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -104,8 +104,8 @@ function makeDraggable(event){
         maxNorth = 2.439026,
         minSun = .3125,
         maxSun = 3.125,
-        minEye = 1.18,
-        maxEye = 11.8,
+        minEye = .5,
+        maxEye = 5,
         maxText = textSize*10,
         minText = textSize,
         iconMin,
@@ -389,15 +389,16 @@ function makeDraggable(event){
         // reset growing factor if needed
         if( elementOver && elementOver.parentElement 
             && elementOver.parentElement.classList.contains("textbox")){
-            growingFactor *= 5;
+            growingFactor *= 6;
         }
         else if(selectedElement && selectedElement.id.indexOf("eye") > -1){
-            growingFactor *=2.5;
+            growingFactor *= 3;
         }
         
         // if the selectedElement is non false then check if its an outline
         if(selectedElement){
             var isOutline = selectedElement.classList.contains("outline");
+            growingFactor *= 1.25;
         }
         
         // prevent all other mousemove events
@@ -594,8 +595,7 @@ function makeDraggable(event){
                     // set the new translate
                     transform.setTranslate(parseInt(dx),parseInt(dy));
                 }
-            }
-                
+            }     
         }
         // if the selected element is not null and the dragging flag is true
         else if (selectedElement && dragging) {
@@ -745,7 +745,15 @@ function dragElement(elmnt) {
         document.onmousemove = null;
     }
 
-    // TODO:
+    /**
+     * @function moveSvgTo
+     * 
+     * @param {string} id 
+     * @param {1 or -1} direction 
+     * 
+     * @description this function physically moves the elements based on the
+     *  direction after finding the specific layer object 
+     */
     function moveSvgTo(id, direction) {
         var elem_choice = document.getElementById(id.split("layer")[1]);
         
@@ -776,7 +784,14 @@ function dragElement(elmnt) {
     }
 
 
-    // TODO:
+    /**
+     * @function moveChoiceTo
+     * 
+     * @param {DOM element} elem_choice 
+     * @param {1 or -1} direction 
+     * 
+     * @description this function is used to move a layer object up or down in the order of the parent field
+     */
     function moveChoiceTo(elem_choice, direction) {
 
         var parent = elem_choice.parentNode;
@@ -827,7 +842,6 @@ function setSvgClickDetection(svg, mouseDetect){
                         && svgElements[index].childNodes[index2].classList.contains("resize")){
                         svgElements[index].childNodes[index2].style.pointerEvents = mouseDetect;
 
-                        // TODO: undo the border settings
                         if(mouseDetect === "none"){
                             svgElements[index].childNodes[index2].style.visibility = "hidden";
                         }
@@ -848,7 +862,6 @@ function setSvgClickDetection(svg, mouseDetect){
  * 
  * @description checks the caller page to see if it was the captionWriter, 
  *      goes back if true, otherwise calls an open to the server to get the page
- * 
 */
 function captionHandler(){
     // if the last window seen was captionWriter then go back to preserve changes
@@ -860,7 +873,6 @@ function captionHandler(){
         window.open('/captionWriter','_self');
     }
 }
-
 
 /**
  * @function growProgress
@@ -982,7 +994,9 @@ function getMetadata(){
     // Important Metadata Values adding degree offset for isis
     northDegree = parseFloat(metadataString['NorthAzimuth']) + 90;
     sunDegree = parseFloat(metadataString['SubSolarAzimuth'])+ 90;
-    observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 90;
+    // rotate 180 degrees to draw the craft in the right orientation,
+    //      then add another 90 to offset ISIS settings
+    observerDegree = parseFloat(metadataString['SubSpacecraftGroundAzimuth']) + 270;
 
     if(isNaN(northDegree)){
         // check if it is map projected, if yes set north to 0 else
@@ -1178,7 +1192,6 @@ function parseTransform( transformString, target ){
             else{
                 return parseFloat(arr[i].split(target+"(")[1]);
             }
-            
         }
     }
 }
@@ -1775,17 +1788,42 @@ function getCookie(cname){
     return "";
 }
 
-// TODO:
+/**
+ * @function componentToHex
+ * 
+ * @param {string} c 
+ * 
+ * @description this function takes a rgb compenent code and converts it into hexidecimal
+ */
 function componentToHex(c){
+    // toString with base 16
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
 }
-  
+
+/**
+ * @function rgbToHex
+ * 
+ * @param {string} r 
+ * @param {string} g 
+ * @param {string} b
+ * 
+ * @description this function converts and returns each compenet code 
+ *  to hex and then returns all peices as a string 
+ */
 function rgbToHex(r, g, b){
     return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 
-//TODO:
+/**
+ * @function setDetectionForLayer
+ * 
+ * @param {DOM element} el 
+ * @param {string} detection
+ * 
+ * @description this function converts the click detection of the 
+ *  element to what the string in detection is 
+ */
 function setDetectionForLayer( el, detection ){
     if(el === null){
         setSvgClickDetection(document.getElementById("svgWrapper"), "all");
@@ -1893,7 +1931,8 @@ function setDetectionForLayer( el, detection ){
         }
     }
 
-    if(elem_choice.getAttribute("id").indexOf("line") > -1 && elem_choice.getAttribute("id").indexOf("outline") < 0){
+    if(elem_choice.getAttribute("id").indexOf("line") > -1 
+        && elem_choice.getAttribute("id").indexOf("outline") < 0){
         // line element found
         var color = elem_choice.style.stroke,
             colorR = color.split(" ")[0],
@@ -1906,7 +1945,7 @@ function setDetectionForLayer( el, detection ){
 
         color = rgbToHex(colorR, colorG, colorB);
         $("#colorPickerLine").val(color);
-        userLineColor = color
+        userLineColor = color;
 
         $("#textColorPicker").val("#ffffff");
         $("#colorPickerBox").val("#ffffff");
@@ -1919,7 +1958,6 @@ function setDetectionForLayer( el, detection ){
             colorR = color.split(" ")[0],
             colorG = color.split(" ")[1],
             colorB = color.split(" ")[2];
-            
         
         colorR = parseInt(colorR.split("rgb(")[1]);
         colorG = parseInt(colorG);
@@ -1929,14 +1967,15 @@ function setDetectionForLayer( el, detection ){
             color = rgbToHex(colorR, colorG, colorB);
         }
 
-
-        $("#colorPickerLine").val("#ffffff");
-        $("#textColorPicker").val(color);
-        $("#colorPickerBox").val("#ffffff");
-
-        userTextColor = color;
-        userBoxColor = "#ffffff";
-        userLineColor = "#ffffff";
+        if(color){
+            $("#colorPickerLine").val("#ffffff");
+            $("#textColorPicker").val(color);
+            $("#colorPickerBox").val("#ffffff");
+    
+            userTextColor = color;
+            userBoxColor = "#ffffff";
+            userLineColor = "#ffffff";
+        }
     }
     else if(elem_choice.getAttribute("id").indexOf("scalebar") > -1){
         $("#colorPickerLine").val("#ffffff");
@@ -1951,7 +1990,7 @@ function setDetectionForLayer( el, detection ){
 
 var activeLayer;
 
-//TODO:
+// TODO: comment this function and all around  this line
 /**
  * @function updateLayers
  * 
@@ -2001,6 +2040,7 @@ function updateLayers(el){
         case "svg":
             div.setAttribute("id", "layer" + el.getAttribute("id") );
             div.appendChild(el);
+            div.style.padding = "2px 4px";
             layerBrowser.prepend(div);
             dragElement(div);
             break;
@@ -2065,7 +2105,7 @@ function updateLayers(el){
 /** TODO:
  * @function fixLayerUI
  * 
- * @param {*} id 
+ * @param {string} id 
  */
 function fixLayerUI(id) {
     var layers = document.getElementById("layerBrowser"),
@@ -2366,7 +2406,6 @@ function resetDrawTool(){
     // reset draw flag
     drawFlag = false;
     // reset the UI 
-    bg.className.baseVal = "";
     document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
     // remove half drawn lines if any
@@ -2712,25 +2751,25 @@ $(document).ready(function(){
     var sunObjectString = '<g id="sunPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 150) rotate(0) scale(.3125)"  stroke-width="7" style="border:0;'
     + 'padding:0; pointer-events:visible;">\n'
-    + '<circle id= "sunIconOuter"  r="100" cy="175" cx="150" stroke-width="10" stroke="black" fill="black"'
+    + '<circle id= "sunIconOuter"  r="95" cy="200" cx="160" stroke-width="10" stroke="white" fill="black"'
     + 'style="border:0;"></circle>\n'
-    + '<path d="M 50 175 L 250 175 A 50 50 0 0 0 50 175 Z" stroke="black"'
-    + 'fill="white"/>\n'
-    + '<path d="M 0 90 L 26 109" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 76 2 L 96 51" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 20 32 L 56 71" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 0 90 L 26 109" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 300 89 L 274 105" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 224 2 L 204 51" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 280 32 L 248 71" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<path d="M 150 0 L 150 38" stroke-width="10" stroke="black" fill="white"/>\n'
-    + '<rect class="resize top-left"x="0" y="0" width="100" height="100"'
+    + '<circle id= "sunIconOuter"  r="25" cy="200" cx="160" stroke-width="10" stroke="black" fill="white"'
+    + 'style="border:0;"></circle>\n'
+    + '<polygon points="160 400, 190 350, 170 350, 170 300, 150 300, 150 350, 130 350" stroke="white" fill="black"/>\n'
+    + '<polygon points="0 200, 60 190, 60 210" stroke="white" fill="black"/>\n'
+    + '<polygon points="320 200, 260 190, 260 210" stroke="white" fill="black"/>\n'
+    + '<polygon points="160 37, 150 97, 170 97" stroke="white" fill="black"/>\n'
+    + '<polygon points="45 89, 96 120, 79 138" stroke="white" fill="black"/>\n'
+    + '<polygon points="45 315, 77 259, 92 276" stroke="white" fill="black"/>\n'
+    + '<polygon points="265 315, 216 276, 231 261" stroke="white" fill="black"/>\n'
+    + '<polygon points="255 75, 212 123, 230 135" stroke="white" fill="black"/>\n'
+    + '<rect class="resize top-left"x="0" y="0" width="100" height="100" '
     + 'style="visibility: hidden;"fill="transparent"/>\n'
-    + '<rect class="resize top-right"x="220" y="0" width="100" height="100"'
+    + '<rect class="resize top-right"x="220" y="0" width="100" height="100" '
     + 'style="visibility: hidden;"fill="transparent"/>\n'
-    + '<rect class="resize bottom-right"x="220" y="220" width="100"height="100" style="visibility: hidden;'
+    + '<rect class="resize bottom-right"x="220" y="260" width="100"height="100" style="visibility: hidden;'
     + '"fill="transparent"/>\n'
-    + '<rect class="resize bottom-left"x="0" y="220" width="100" height="100"'
+    + '<rect class="resize bottom-left"x="0" y="260" width="100" height="100"'
     + 'style="visibility: hidden;" fill="transparent"/>\n</g>\n';
 
     var northObjectString = '<g id="northPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
@@ -2766,23 +2805,39 @@ $(document).ready(function(){
     + 'style="visibility: hidden;fill:transparent;stroke:red" />\n';
 
     var eyeObjectString = '<g id="eyePosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
-    + 'transform="translate(150, 100) rotate(0) scale(1.18)" stroke-width="2" style="border:0; padding:0;'
+    + 'transform="translate(200, 100) rotate(0) scale(.75)" stroke-width="2" style="border:0; padding:0;'
     + 'pointer-events:visible;">\n'
-    + '<path id="eyeArrow" x="0" y="0"'
-    + 'd="M 25 15 L 50 0 L 75 15 L 25 15" stroke="white" fill="black"/>\n'
-    + '<path id= "eyeIconOuter" d="M 14 30 C 14 30 50 -10 85 30 C 85 30 50 75 14 29" fill="black"'
-    + 'stroke="white" style="border:0;"></path>\n'
-    + '<ellipse id="eyeIconEllipse" cx="50" cy="31" rx="13" ry="15" stroke-width="2" fill="white" stroke="black">'
-    + '</ellipse>\n'
-    + '<circle id= "eyeIconPupel" r="6" cy="31" cx="50" stroke-width="2" stroke="white" fill="black"' 
-    + 'style="border:0;"></circle>\n'
-    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="30" height="20"stroke="black" '
+    + '<rect x="88" y="9" width="24" height="50" stroke="white" fill="black"/>\n'
+    + '<path d="M 87.5 5 L 112.5 5 A 15 10 0 0 1 112.5 10 L 87.5 10 A 50 15 0 0 1 87.5 5 Z" stroke="white" fill="black"/>\n'
+    + '<polygon points="88 60, 78 65, 122 65, 112 60" stroke="white" fill="black"/>\n'
+    + '<rect x="78" y="66" width="44" height="75" stroke="white" fill="black"/>\n'
+    + '<path d="M 78 141 L 122.5 141 A 15 10 0 0 1 122.5 146 L 78 146 A 50 15 0 0 1 78 141 Z" stroke="white" fill="black"/>\n'
+    + '<rect x="93.5" y="148" width="12.5" height="10"  stroke="white" fill="black" />\n'
+    + '<path d="M 78 160 L 122.5 160 Q 145 175, 142.5 185 L 58 185 Q 55.5 175, 78 160 Z" stroke="white" fill="black"/>\n'
+    + '<rect x="64" y="90" width="12.5" height="10" stroke="white" fill="black"/>\n'
+    + '<rect x="124" y="90" width="12.5" height="10" stroke="white" fill="black"/>\n'
+    + '<rect x="140" y="45" width="50" height="100" stroke="white" fill="black"/>\n'
+    + '<rect x="10" y="45" width="50" height="100" stroke="white" fill="black"/>\n'
+    + '<line x1="35" y1="45" x2="35" y2="145" stroke="white"/>\n'
+    + '<line x1="10" y1="65" x2="60" y2="65" stroke="white"/>\n'
+    + '<line x1="10" y1="85" x2="60" y2="85" stroke="white"/>\n'
+    + '<line x1="10" y1="105" x2="60" y2="105" stroke="white"/>\n'
+    + '<line x1="10" y1="125" x2="60" y2="125" stroke="white"/>\n'
+    + '<line x1="165" y1="45" x2="165" y2="145" stroke="white"/>\n'
+    + '<line x1="140" y1="65" x2="190" y2="65" stroke="white"/>\n'
+    + '<line x1="140" y1="85" x2="190" y2="85" stroke="white"/>\n'
+    + '<line x1="140" y1="105" x2="190" y2="105" stroke="white"/>\n'
+    + '<line x1="140" y1="125" x2="190" y2="125" stroke="white"/>\n'
+    + '<rect x="97" y="185" width="5" height="10" stroke="white" fill="black"/>\n'
+    + '<circle cx="100" cy="200" r="5" stroke="white" fill="black"/>\n'
+
+    + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"width="50" height="50"stroke="black" '
     + 'fill="transparent"/>\n'
-    + '<rect x="70" y="0" class="resize top-right" style="visibility: hidden;"width="20" height="20"stroke="black" '
+    + '<rect x="150" y="0" class="resize top-right" style="visibility: hidden;"width="50" height="50"stroke="black" '
     + 'fill="transparent"/>\n'
-    + '<rect x="70" y="35" class="resize bottom-right" style="visibility:hidden;"width="20"height="20"stroke="black" '
+    + '<rect x="150" y="150" class="resize bottom-right" style="visibility:hidden;"width="50"height="50"stroke="black" '
     + 'fill="transparent"/>\n' 
-    + '<rect x="0" y="35" class="resize bottom-left" style="visibility: hidden;"width="30" height="20"'
+    + '<rect x="0" y="150" class="resize bottom-left" style="visibility: hidden;"width="50" height="50"'
     + ' fill="transparent" stroke="black"/>\n</g>\n';
 
     var scaleBarObject = '<g id="scalebarPosition" class="draggable confine scalebar scaleable"'
@@ -3207,7 +3262,6 @@ $(document).ready(function(){
                 else{
                     setDetectionForLayer(null, "all");
                 }
-
             }
         }
         else{
@@ -3267,6 +3321,11 @@ $(document).ready(function(){
     */
     $("#hideBtn").on("mousedown", function(){
         document.getElementById("help-box").style.visibility = "hidden";
+    });
+
+
+    $(window).on("reload", function(event){
+        event.preventDefault();
     });
 
     /**
@@ -3444,7 +3503,15 @@ $(document).ready(function(){
     });
 
 
-    //TODO:
+    /**
+     * @function setElementColor
+     * 
+     * @param {DOM element} UIBox the ui element in the layer browser
+     * @param {string} color the color to use
+     * @param {DOM element} el the svg element
+     * 
+     * @description change the color of the ui layer element and the actual element
+     */
     function setElementColor(UIBox, color, el) {
         var svgIcon = document.getElementById( UIBox.getAttribute("id").split("layer")[1] );
 
@@ -3603,61 +3670,6 @@ $(document).ready(function(){
             document.getElementById("undoLine").style.visibility = "hidden";
         }
     });
-
-
-
-    // TODO:
-    function moveSvgTo(id, direction) {
-        var elem_choice = document.getElementById(id.split("layer")[1]);
-        
-        if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
-            if(id.split("layer")[1].indexOf("sun")  > -1 ){
-                elem_choice = sunImage;
-            }
-            else if(id.split("layer")[1].indexOf("eye")  > -1 ){
-                elem_choice = eyeImage;
-            }
-            else if(id.split("layer")[1].indexOf("north")  > -1 ){
-                elem_choice = northImage;
-            }
-            else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
-                elem_choice = scaleBarIcon;
-            }
-        }
-
-        if(elem_choice){
-            
-            // move index of element by one either up or down
-            if (direction === -1 && elem_choice.previousSibling) {
-                svg.insertBefore(elem_choice, elem_choice.previousSibling);
-                
-            } else if (direction === 1 && elem_choice.nextSibling) {
-                svg.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
-            }
-        }
-    }
-
-
-    // TODO:
-    function moveChoiceTo(elem_choice, direction) {
-
-        var parent = elem_choice.parentNode;
-        // move index of element by one either up or down
-        if (direction === 1 && elem_choice.previousSibling) {
-            let code = parent.insertBefore(elem_choice, elem_choice.previousSibling);
-            
-            if(code === elem_choice){
-                moveSvgTo( elem_choice.getAttribute("id"), direction);
-            }
-        } else if (direction === -1 && elem_choice.nextSibling) {
-            let code = parent.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
-            
-            if(code === elem_choice){
-                moveSvgTo( elem_choice.getAttribute("id"), direction);
-            }
-        }
-    }
-
 
     /**
      * @function document 'keyup' event handler
@@ -4262,8 +4274,8 @@ $(document).ready(function(){
             // font size
             text.setAttribute("class","user");
             // set draggable group defaults
-            g.setAttribute("height",0);
-            g.setAttribute("width",0);
+            g.setAttribute("height", 0);
+            g.setAttribute("width", 0);
             g.setAttribute("transform","translate(50, 50) rotate(0) scale("+ textSize + ")");
 
             // create rectangles on all corners for scaling the text
@@ -4330,9 +4342,9 @@ $(document).ready(function(){
             
             // append the finished group graphic to the svg
             svg.appendChild(g);
-            g.setAttribute("id", "text"+objectIds++);
+            g.setAttribute("id", "text" + objectIds++);
             updateLayers(g.cloneNode(true));
-
+            $("#colorPickerBox").val("#ffffff");
             // set the scaling boxes x value to the end of the bbox
             // this auto finds the relative length of the text element
             let bbox = g.getBBox();
@@ -4342,7 +4354,6 @@ $(document).ready(function(){
             }
             // track the new text element
             textBoxArray.push(g);
-
         }
     });
       
@@ -4737,10 +4748,13 @@ $(document).ready(function(){
     });
 
 
-    $(document).mousedown(function(event){
+    $(document).mousedown( function(event) {
         // unfocus the layer browser
+
+        console.log(event.target);
+        // TODO: this is where to put the check for cropFlag
         if(event.target.classList 
-            && ( event.target.classList.contains("unfocus"))
+            && ( event.target.classList.contains("unfocus") && !drawFlag )
             ){
                 if(activeLayer) {
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
@@ -4753,7 +4767,6 @@ $(document).ready(function(){
 
                     setDetectionForLayer(activeLayer,"all");
                 }
-
         }
     });
 
@@ -5013,7 +5026,7 @@ $(document).ready(function(){
             // reset the button color and allow for click detection again
             document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
-            bg.className.baseVal = "";
+            bg.className.baseVal = "unfocus";
 
             updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
