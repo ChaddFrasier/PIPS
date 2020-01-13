@@ -83,8 +83,8 @@
         </div>
 
         <!-- Center Box -->
-        <div class="mainbox-center" style="width: 80%; background-color: rgba(99,88,94,0.65); padding: 2rem;
-        border: 3px solid rgba(255, 255,255, .65);padding:0;">
+        <div class="mainbox-center" style="width: 80%; background-color: rgba(99,88,94,0.65);
+        border: 3px solid rgba(255, 255,255, .65); padding:0;">
             <!-- Title Box -->
             <div class="container" 
             style="height: 14rem; max-width: none; padding: 1rem; padding-top: 0; padding-bottom: 2rem;
@@ -104,19 +104,58 @@
                     </p>
                 </div>
                 <div class="row text-center">
-                    <div class="col-4">
+                    <div class="col">
                         <a class="btn btn-primary btn-lg float-left" href="/" role="button" title="Upload New File"
                             style="width: auto; height: auto; padding:5; border: 1.5px solid black;">
                             Upload New File
                         </a>
                     </div>
-                    <div class="col-4">
+                    <div class="col">
+                        <form action="/csv" method='POST' class="lg-form text-center float-left" 
+                        style="margin: 0; margin-bottom:.25rem; width:100%;">
+                            <div class="lg-form text-center" style="margin: 0;">
+                                <input type="hidden" value="<%= wholeData %>" id="passedTXT">
+                                <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
+                                <input type="submit" value="Save CSV" class="btn btn-primary btn-lg"
+                                style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                                 title="Download Data as CSV" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col">
                         <button role="button" class="btn btn-primary btn-lg" title="ISIS Log File"
                         style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
                         id="logDownloadBtn">Save ISIS Logs</button>
                     </div>
-                    <div class="col-4">
-                        <form method="POST" action="/imageEditor" class="lg-form text-right float-right" style="margin: 0;">
+                    <div class="col">
+                        <button class="btn btn-primary btn-lg" role="button" id="templateDownloadBtn"
+                        style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;" title="Save Template File">
+                            Save Template
+                        </button>
+                    </div>
+                    <div class="col">
+                        <div class="text-center" style="margin:auto auto;">
+                            <button id="copyBtn" class="btn btn-primary btn-lg text-white" role="button"
+                            style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                            title="Save to Clipboard">
+                                Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <!-- Download Button -->
+                        <form class="lg-form text-center" style="margin: auto auto; width:100%; min-width: 100%; padding:0;">
+                            <div class="form-group"  style="width: auto; height: auto;">
+                                <a class="text-white btn btn-lg btn-primary" title="Download Figure Caption"
+                                style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                                role="button" id="link" download="<%=outputName%>">
+                                   Download Caption 
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col">
+                        <form method="POST" action="/imageEditor" class="lg-form text-right" style="margin: 0;">
                             <div class="form-group">
                                 <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
                                 <input type="button" id="imagePageBtn" value="View Image" class="btn btn-primary btn-lg"
@@ -127,41 +166,33 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-2" style="padding-left:5%; margin:auto auto;">
-                    <div class="text-center" style="margin:auto auto;">
-                        <button id="copyBtn" class="btn button btn-lg text-white" role="button"
-                        style="width: 100%; font-size: 65%; padding: 0%;"
-                        title="Save to Clipboard">
-                            Copy to Clipboard
-                        </button>
-                    </div>
-                </div>
-                <div class="col-8" style="text-align: center;">
+            <div class="row" style="padding: 1%;">
+                <div class="col" style="text-align: center;">
                     <div class="container float-center" 
-                    style="margin-left: auto; margin-right: auto; width: 100%; max-width: none; display: flex;">
+                    style="margin-left: auto; margin-right: auto; width: 100%; height: auto; display: flex; padding: 0;">
                     <!-- Output Box -->
                         <div id="template-output" class="text-center form-group metadata" 
-                        style="margin: 0; width: 100%; margin:auto auto;">
+                        style="margin: 0; width: 100%; height: 100%; padding: 0;">
                             <label for="template-text-output">
                                 <h3 class="display-5 alert alert-secondary" 
                                 style="border: 2px solid black; background: #63585e; color: white;">Output</h3>
                             </label>
-                            <p readonly id="template-text-output"
-                            class="form-control bg-white metadata lightshadowbox text-left" 
-                            style="color:black; overflow-y: scroll;font-size: 22px; border: 2px solid black;
-                            display: inline-flexbox;" height="auto" title="Output">    
-                        </p>
-                        <textarea id="copyBtnText" style="visibility:hidden; color: black; z-index: -10;"></textarea>
-                            <br/>
+                            <div class="row">
+                                <p readonly id="template-text-output"
+                                    class="form-control bg-white metadata lightshadowbox text-left" 
+                                    style="color:black; overflow-y: scroll;font-size: 22px; border: 2px solid black;
+                                    display: inline-flexbox; height: 100%;" height="auto" title="Output">
+                                </p>
+                            </div>
+                        <textarea id="copyBtnText" style="display: none; color: black; z-index: -10; margin-top: 1%; margin-bottom: 0;"></textarea>
                         </div>
                         <button class="btn btn-lg button" id="specialCharactersBtn"
                          style=" margin:0; text-align: center; position:sticky; height: 2rem; padding-right: 10%;
-                        margin-top: 5%; padding:0; max-width: 2rem; min-width: 2rem;" title="Special Charaters">
+                        margin-top: 1%; padding:0; max-width: 2rem; min-width: 2rem;" title="Special Charaters">
                             &Omega;
                         </button>
                     </div>
-                    <div class="container" id="specialCharBox" style="display: none;">
+                    <div class="container" id="specialCharBox" style="display: none; margin: auto auto; margin-top: 0;">
                         <div class="row">
                             <div class="col" style="padding:0;">
                                 <button class="specChar btn btn-md button" title="Plus-Minus" style="min-width: 0;">
@@ -264,26 +295,11 @@
                             </div>
                     </div>
                 </div>
-                <div class="col-2" style="padding:0; padding-right:7%;  margin:auto auto; width: 100%;">
-                    <!-- Download Button -->
-                    <form class="lg-form text-center" style="margin: auto auto; width:100%; min-width: 100%; padding:0;">
-                        <div class="form-group" style="margin:auto auto; padding:0%; width: 100%; min-width: 100%;">
-                            <a class="text-white btn btn-lg button" title="Download Figure Caption"
-                            style="width: 100%; padding: 3%;"
-                            role="button" id="link" download="<%=outputName%>">
-                                <p style="text-align: center; padding:0; 
-                                 width: 100%; font-size: 60%; margin: auto auto; ">
-                                    Download Caption
-                                </p>
-                            </a>
-                        </div>
-                    </form>
-                </div>
             </div>
-            <div style="margin-left: auto; margin-right:auto;">
+            <div style="margin-left: auto; margin-right:auto; margin-top: 0;">
                 <!-- Active Tag Box -->
                 <div class="row" style="margin: 0; padding: 0;">
-                    <div class="col-5" style="text-align: center;">
+                    <div class="col-4" style="text-align: right;">
                         <label for="test" class="float-center text-center"
                         style="margin: 0; position: relative; padding: 0;">
                             <h3 class="display-5 alert alert-secondary" 
@@ -293,17 +309,37 @@
                             </h3>
                         </label>
                     </div>
-                    <div class="col-2" style="text-align: center;">
+                <div class="col-2" style="text-align: center; margin-bottom: 1%; margin-top: -2;">
+                        <div class="float-left" style="text-align:center; width:75%; margin: auto auto; padding:2%;">
+                                <!-- Search Box -->
+                                <label for="filterInput" class="alert alert-light float-left" 
+                                style="margin:1%; color:black; width: 100%; height:auto; padding:1%; font-size: 85%;">
+                                    <h5 style="font-size: 100%; padding: 2%;">Search for keywords</h5>
+                                </label>
+                                <br/>
+                                <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Search"
+                                style="background-color: rgba(255,255,255);  width: 100%; height:auto;
+                                text-align: inherit; margin-left: auto; margin-right: auto; color:black;
+                                    border: 1.5px solid black;" title="Filter Tags">
+                                <br/>
+                                <br/>
+                                <!-- Show All Button-->
+                                <button id="button-more-tags" class="btn btn-md button float-left"
+                                title="Change Visible Tags" style=" border: 2px solid black; margin-left: auto;
+                                margin-right:auto; margin-top:2%; width: auto; min-width:100%;font-size: 65%; padding: 1%;" 
+                                onclick="showMoreTags()">Show Important Tags</button>
+                                <br/>
+                        </div>
                     </div>
-                    <div class="col-5" style="text-align: center;">
+                    <div class="col-5" style="text-align: center; padding: 0;">
                         <label for="template-text">
                             <h3 class="display-5 alert alert-secondary"
                             style="border: 2px solid black; background: #63585e; color: white;">Edit Text</h3>
                         </label>
                     </div>
                 </div>
-            <div class="row" style="width: 100%; margin: auto auto; margin-bottom:1rem;"> 
-                <div class="col-5" style="width:5%; margin-left: auto; margin-right: auto;
+            <div class="row" style="width: 100%; margin: auto auto;"> 
+                <div class="col" style="width:5%; margin-left: auto; margin-right: auto;
                 text-align: center; padding:auto; margin-top: 0;">
                     
                     <!-- Add Tag Button -->
@@ -319,46 +355,8 @@
                         margin-right:auto;" rows="7" title="ISIS Data"></textarea> 
                 </div> 
                 
-                <div class="col-2" style="width: 100%; margin:0;">
-                    <div class="float-center" style="text-align:center; width:75%; margin: auto auto; padding:1%;">
-                            <!-- Search Box -->
-                            <label for="filterInput" class="alert alert-light float-left" 
-                            style="margin:1%; color:black; width: 100%; height:auto; padding:1%; font-size: 85%;">
-                                <h5 style="font-size: 100%; padding: 2%;">Search for keywords</h5>
-                            </label>
-                            <br/>
-                            <input id="filterInput" class="form-control-md float-left" type="text" placeholder="Search"
-                            style="background-color: rgba(255,255,255);  width: 100%; height:auto;
-                            text-align: inherit; margin-left: auto; margin-right: auto; color:black;
-                                border: 1.5px solid black;" title="Filter Tags">
-                            <br/>
-                            <br/>
-                            <!-- Show All Button-->
-                            <button id="button-more-tags" class="btn btn-md button float-left"
-                            title="Change Visible Tags" style=" border: 2px solid black; margin-left: auto;
-                            margin-right:auto; margin-top:2%; width: auto; min-width:100%;font-size: 65%; padding: 1%;" 
-                            onclick="showMoreTags()">Show Important Tags</button>
-                            <br/>
-                            <form action="/csv" method='POST' class="lg-form text-center float-left" 
-                            style="margin: 0;  margin-top:1rem; margin-bottom:.25rem; width:100%;">
-                                <div class="lg-form text-center" style="margin: 0;">
-                                    <input type="hidden" value="<%= wholeData %>" id="passedTXT">
-                                    <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                                    <input type="submit" value="Save CSV" class="btn button btn-lg"
-                                    style="width: 100%; min-width: 100%; border: 2px solid black; padding: 0px;
-                                    font-size: 65%;" title="Download Data as CSV" />
-                                </div>
-                            </form>
-                            <br/>
-                            <button class="btn btn-lg button" role="button" id="templateDownloadBtn"
-                            style="width: 100%; min-width: 100%; border: 2px solid black; padding: 0px;
-                                font-size: 65%;" title="Save Template File">
-                                    Save Template
-                                </button>
-                    </div>
-                    
-                </div>
-                <div class="col-5" style="width: 5%; margin-top: auto; margin-bottom: auto;">
+                
+                <div class="col">
                     <div class="container float-center" style="max-width:none;max-height:none;">
                         <!-- Editing Box-->
                         <div id="template" class="float-right text-center form-group"
