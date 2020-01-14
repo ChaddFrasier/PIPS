@@ -1954,11 +1954,14 @@ function setDetectionForLayer( el, detection ){
         userBoxColor = "#ffffff";
     }
     else if(elem_choice.getAttribute("id").indexOf("text") > -1 ){
-        var color = elem_choice.firstElementChild.getAttribute("fill"),
+
+        var color = (elem_choice.firstElementChild.getAttribute("stroke"))
+                    ? elem_choice.firstElementChild.getAttribute("stroke") : "#ffffff",
             colorR = color.split(" ")[0],
             colorG = color.split(" ")[1],
             colorB = color.split(" ")[2];
-        
+
+        console.log(color)
         colorR = parseInt(colorR.split("rgb(")[1]);
         colorG = parseInt(colorG);
         colorB = parseInt(colorB);
@@ -3516,10 +3519,10 @@ $(document).ready(function(){
         var svgIcon = document.getElementById( UIBox.getAttribute("id").split("layer")[1] );
 
         // chnage color of icon in svg
-        svgIcon.style.stroke = color;
+        svgIcon.setAttribute("stroke", color);
 
         if(UIBox.firstElementChild){
-            UIBox.firstElementChild.firstElementChild.style.stroke = color;
+            UIBox.firstElementChild.firstElementChild.setAttribute("stroke", color);
             UIBox.firstElementChild.firstElementChild.setAttribute("marker-start", el.getAttribute("marker-start"));        
         }
         else{
@@ -3617,8 +3620,8 @@ $(document).ready(function(){
         if(activeLayer && activeLayer.getAttribute("id").indexOf("text") > -1){
             var activeText = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
 
-            activeText.children[0].style.stroke = userTextColor;
-            activeText.children[0].style.fill = userTextColor;
+            activeText.children[0].setAttribute("stroke", userTextColor);
+            activeText.children[0].setAttribute("fill", userTextColor);
 
             setElementColor( activeLayer, userTextColor, activeText );
         }
@@ -4249,6 +4252,7 @@ $(document).ready(function(){
         // prompt for text box contents
         var textboxVal = prompt("What Should It Say?","");
         
+        userTextColor = $("#textColorPicker").val();
         if(textboxVal !== "" && textboxVal){
             
             let strlength = textboxVal.length; 
@@ -4333,8 +4337,8 @@ $(document).ready(function(){
                 text.setAttribute("fill",userTextColor);
             }
             else{
-                text.setAttribute("stroke","white");
-                text.setAttribute("fill","white");
+                text.setAttribute("stroke","#ffffff");
+                text.setAttribute("fill","#ffffff");
             }
 
             // set the stroke of the text and append the elements
@@ -4751,7 +4755,7 @@ $(document).ready(function(){
     $(document).mousedown( function(event) {
         // unfocus the layer browser
 
-        console.log(event.target);
+        //console.log(event.target);
         // TODO: this is where to put the check for cropFlag
         if(event.target.classList 
             && ( event.target.classList.contains("unfocus") && !drawFlag )

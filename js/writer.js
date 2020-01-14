@@ -662,7 +662,7 @@ Object.prototype.updateForward = function(){
 // undo the text from the back array
 Object.prototype.undo = function(){
     var text = this.back.pop();
-    console.log("TEXT IS HERE: " + text);
+    
     if( this.back.length > 0 ){
         this.object.innerHTML = (this.object.innerHTML != text) ? text : this.object.innerHTML;
     }
@@ -738,8 +738,7 @@ $(document).ready(function(){
     $(".dropdown").on("mouseover", function(event){
         var menu = event.target.nextElementSibling.nextElementSibling;
 
-        
-        this.innerHTML = this.innerHTML.replace(">","&#8964;");
+        this.innerHTML = this.innerHTML.replace("►","&#9663;");
 
         menu.style.visibility = "visible";
     });
@@ -749,10 +748,13 @@ $(document).ready(function(){
      */
     $(".menubar").on("mouseleave", function(event){
         var menuArr = document.getElementsByClassName("dropdownMenu");
+        var buttonArr = document.getElementsByClassName("dropdown");
+
+        for( var i=0; i<buttonArr.length; i++ ){
+            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        }
 
         for( var i=0; i<menuArr.length; i++ ){
-            
-            console.log(menuArr[i])
             menuArr[i].style.visibility="hidden";
         }
     });
@@ -763,12 +765,17 @@ $(document).ready(function(){
      */
     $(".dropdownMenu").on("mouseleave", function(event){
         var menu = event.target;
-
-
+        var buttonArr = document.getElementsByClassName("dropdown");
         if(menu.offsetParent && menu.offsetParent.className.indexOf("dropdownMenu") > -1){
             menu.offsetParent.style.visibility = "hidden";
         }
+        else{
+            menu.style.visibility = "hidden"
+        }
         
+        for( var i=0; i<buttonArr.length; i++ ){
+            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        }
     });
     /**
      * 
