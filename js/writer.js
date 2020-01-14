@@ -708,15 +708,83 @@ $(document).ready(function(){
         }
     }
 
+
+    var menuArr = document.getElementsByClassName("dropdownMenu");
+
+    for( var i=0; i<menuArr.length; i++ ){
+        menuArr[i].style.visibility="hidden";
+    }
+
+
     // try fetching the log file for the user and dont display if fetch fails to locate it
     fetch("/log/" + getCookie("puiv") + "?isTest=true",{method:"GET"})
     .then(function(response){
         if(Number(response.status) !== 200){
-            document.getElementById("logDownloadBtn").style.display = "none";  
+            document.getElementById("logDownloadBtn").className += " disabled";
+            document.getElementById("logDownloadBtn").style.background = "darkgrey";
+        }
+        else{
+            document.getElementById("logDownloadBtn").className = "dropdownItem btn";
+            document.getElementById("logDownloadBtn").style.background = "inherit";          
         }
     }).catch(function(err){
         console.log(err);       
     });
+
+
+    /**
+     * 
+     */
+    $(".dropdown").on("mouseover", function(event){
+        var menu = event.target.nextElementSibling.nextElementSibling;
+
+        
+        this.innerHTML = this.innerHTML.replace(">","&#8964;");
+
+        menu.style.visibility = "visible";
+    });
+
+    /**
+     * 
+     */
+    $(".menubar").on("mouseleave", function(event){
+        var menuArr = document.getElementsByClassName("dropdownMenu");
+
+        for( var i=0; i<menuArr.length; i++ ){
+            
+            console.log(menuArr[i])
+            menuArr[i].style.visibility="hidden";
+        }
+    });
+
+
+    /**
+     * 
+     */
+    $(".dropdownMenu").on("mouseleave", function(event){
+        var menu = event.target;
+
+
+        if(menu.offsetParent && menu.offsetParent.className.indexOf("dropdownMenu") > -1){
+            menu.offsetParent.style.visibility = "hidden";
+        }
+        
+    });
+    /**
+     * 
+     */
+    $(".dropdownMenu").on("mouseover", function(event){
+        var menu = event.target;
+
+        if(menu.offsetParent.className !== "col menubar"){
+            menu.offsetParent.style.visibility = "visible";
+        }
+        else
+        {
+            menu.visibility = "visible";
+        }
+    });
+
 
     /**
      * @function helpBtn 'mousedown' event handler
@@ -765,10 +833,13 @@ $(document).ready(function(){
         output.style.visibility = "visible";
         // call the select function
         output.select();
+        
         // select for touch screens
         output.setSelectionRange(0,99999);
 
-        document.execCommand("copy");
+        var code = document.execCommand("copy");
+
+    
         output.style.visibility = "hidden";
         // set up the alert to inform the user
         var alert = document.createElement("div");
@@ -1248,6 +1319,7 @@ $(document).ready(function(){
         return false;
     });
 
+
     /**
      * @function template-text 'mouseup' listener
      * 
@@ -1299,30 +1371,36 @@ $(document).ready(function(){
      *          and then converting the file into to a blob
     */
     $("#logDownloadBtn").mousedown(function(event){
-        fetch("log/" + getCookie("puiv"), {method:"GET"})
-            .then(function(response){
-                // convert response to blob
-                response.blob()
-                .then((blob) => {
-                    // create the download link
-                    var a = document.createElement('a');
-                    // set the file name
-                    a.download = getCookie("puiv") + ".log";
-                    // set the href to the object url
-                    a.href = URL.createObjectURL(blob);
-                    a.target = "__blank";
-                    // add the link
-                    document.body.appendChild(a);
-                    // start download
-                    a.click();
-                    // remove link
-                    a.remove();
-                });
-        }).catch(function(err){
-            if(err){
-                console.log(err);
-            }
-        })
+        if(this.className.indexOf("disabled") <= -1){
+            fetch("log/" + getCookie("puiv"), {method:"GET"})
+                .then(function(response){
+                    // convert response to blob
+                    response.blob()
+                    .then((blob) => {
+                        // create the download link
+                        var a = document.createElement('a');
+                        // set the file name
+                        a.download = getCookie("puiv") + ".log";
+                        // set the href to the object url
+                        a.href = URL.createObjectURL(blob);
+                        a.target = "__blank";
+                        // add the link
+                        document.body.appendChild(a);
+                        // start download
+                        a.click();
+                        // remove link
+                        a.remove();
+                    });
+            }).catch(function(err){
+                if(err){
+                    console.log(err);
+                }
+            })
+        }
+        else{
+            console.log("this is disbaled");
+        }
+        
     });
 }); // end document ready
 

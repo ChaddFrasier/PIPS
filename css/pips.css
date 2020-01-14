@@ -182,6 +182,90 @@ button.paddingBtn {
     margin-top: 25%;
 }
 
+.dropdown {
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+		#bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    width: 25%;
+    min-width: 25%;
+    z-index: 15;
+}
+
+.menubar {
+    z-index: 5;
+}
+
+.dropdownMenu {
+    color: black;
+    position: relative;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+		#bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    width: 25%;
+    min-width: 25%;
+    height: auto;
+    margin: auto;
+    border-bottom: 3px solid black;
+    border-top: 0px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+    border-radius: 5%;
+    z-index: 15;
+}
+
+.dropdownItem:hover{
+    background: -moz-linear-gradient(
+		top,
+		#fafafa 0%,
+		#ebe9e9 50%,
+		#e0dddd 92%,
+		#d6d6d6);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#fafafa),
+		color-stop(0.50, #ebe9e9),
+		color-stop(0.92, #e0dddd),
+        to(#d6d6d6));
+    color: black;
+}
+
+.dropdownItem {
+    color: black;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+		#bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    width: 100%;
+    min-width: 100%;
+    z-index: 15;
+}
+
 * { box-sizing: border-box }
 
 /* Style the tab */

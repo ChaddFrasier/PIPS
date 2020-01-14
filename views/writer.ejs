@@ -104,72 +104,74 @@
                     </p>
                 </div>
                 <div class="row text-center">
-                    <div class="col">
-                        <a class="btn btn-primary btn-lg float-left" href="/" role="button" title="Upload New File"
-                            style="width: auto; height: auto; padding:5; border: 1.5px solid black;">
-                            Upload New File
-                        </a>
-                    </div>
-                    <div class="col">
-                        <form action="/csv" method='POST' class="lg-form text-center float-left" 
-                        style="margin: 0; margin-bottom:.25rem; width:100%;">
-                            <div class="lg-form text-center" style="margin: 0;">
-                                <input type="hidden" value="<%= wholeData %>" id="passedTXT">
-                                <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
-                                <input type="submit" value="Save CSV" class="btn btn-primary btn-lg"
-                                style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
-                                 title="Download Data as CSV" />
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col">
-                        <button role="button" class="btn btn-primary btn-lg" title="ISIS Log File"
-                        style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
-                        id="logDownloadBtn">Save ISIS Logs</button>
-                    </div>
-                    <div class="col">
-                        <button class="btn btn-primary btn-lg" role="button" id="templateDownloadBtn"
-                        style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;" title="Save Template File">
-                            Save Template
-                        </button>
-                    </div>
-                    <div class="col">
-                        <div class="text-center" style="margin:auto auto;">
-                            <button id="copyBtn" class="btn btn-primary btn-lg text-white" role="button"
-                            style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
-                            title="Save to Clipboard">
-                                Copy to Clipboard
-                            </button>
+
+                    <div class="col menubar">
+                        <div id="pageMenuBtn" class="dropdown btn">
+                            Navigation Options >
+                        </div>
+                        <br>
+                        <div id="dropdownItemMenu" class="dropdownMenu">
+                                <a class="float-left btn dropdownItem" href="/" role="button" title="Upload New File"
+                                style="width: auto; height: auto; padding:5; border: 1.5px solid black;">
+                                Upload New File
+                            </a>
+                            <br>
+                            <form method="POST" action="/imageEditor" class="text-left dropdownItem" style="margin: 0; width: 100%;">            
+                                <input type="hidden" value= '<%= dictionaryString %>' name="image_string">
+                                <input type="button" id="imagePageBtn" value="View Image" class="dropdownItem btn"
+                                title="Image Editor" style="width:auto; height:auto; padding:4; border: 1.5px solid black;
+                                margin:0;" onclick="loaderActivate()"/>
+                            </form>
                         </div>
                     </div>
-                    <div class="col">
-                        <!-- Download Button -->
-                        <form class="lg-form text-center" style="margin: auto auto; width:100%; min-width: 100%; padding:0;">
-                            <div class="form-group"  style="width: auto; height: auto;">
-                                <a class="text-white btn btn-lg btn-primary" title="Download Figure Caption"
-                                style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                    <div class="col-2"></div>
+                    <div class="col menubar">
+                        <div id="fileMenuBtn" class="dropdown btn">
+                            File Options >
+                        </div>
+                        <br>
+                        <div class="dropdownMenu text-left">
+                            <form action="/csv" method='POST' class="lg-form text-left" 
+                            style="margin: 0; width:100%;border: 1.5px solid black;">
+                                <div class="lg-form" style="margin: 0;">
+                                    <input type="hidden" value="<%= wholeData %>" id="passedTXT">
+                                    <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
+                                    <input type="submit" value="Save Data as CSV" class="dropdownItem btn"
+                                    style="width: auto; height: auto; padding:5; margin:0;"
+                                     title="Download Data as CSV" />
+                                </div>
+                            </form>
+                    
+                            <button class="dropdownItem btn" role="button" id="templateDownloadBtn"
+                            style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:0;" title="Save Template File">
+                                Save Template File (.tpl)
+                            </button>
+                            <br>
+                            <button id="copyBtn" class="dropdownItem btn" role="button"
+                            style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                            title="Save to Clipboard">
+                                Copy Caption to Clipboard
+                            </button>
+                            <br>
+                            <a class="dropdownItem btn" title="Download Figure Caption"
+                                style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:0"
                                 role="button" id="link" download="<%=outputName%>">
-                                   Download Caption 
-                                </a>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col">
-                        <form method="POST" action="/imageEditor" class="lg-form text-right" style="margin: 0;">
-                            <div class="form-group">
-                                <input type="hidden" value= '<%= dictionaryString  %>' name="image_string">
-                                <input type="button" id="imagePageBtn" value="View Image" class="btn btn-primary btn-lg"
-                                title="Image Editor" style="width: auto; height: auto; padding:5; margin: 0;
-                                border: 1.5px solid black;" onclick="loaderActivate()" />
-                            </div>
-                        </form>
+                                   Download Caption as Text File
+                            </a>
+                            <br>
+                            <button role="button" class="dropdownItem btn" title="ISIS Log File"
+                                style="width: auto; height: auto; padding:5; margin:0; border: 1.5px solid black;"
+                                id="logDownloadBtn">Save ISIS Output Log
+                            </button>
+                        </div>
+                       
                     </div>
                 </div>
             </div>
             <div class="row" style="padding: 1%;">
                 <div class="col" style="text-align: center;">
                     <div class="container float-center" 
-                    style="margin-left: auto; margin-right: auto; width: 100%; height: auto; display: flex; padding: 0;">
+                    style="max-width:2500px; max-height:1500px; margin-left: auto; margin-right: auto; width: 100%; height: auto; display: flex; padding: 0;">
                     <!-- Output Box -->
                         <div id="template-output" class="text-center form-group metadata" 
                         style="margin: 0; width: 100%; height: 100%; padding: 0;">
@@ -181,10 +183,10 @@
                                 <p readonly id="template-text-output"
                                     class="form-control bg-white metadata lightshadowbox text-left" 
                                     style="color:black; overflow-y: scroll;font-size: 22px; border: 2px solid black;
-                                    display: inline-flexbox; height: 100%;" height="auto" title="Output">
+                                    display: inline-flexbox; height: 100%; padding-left: 20px;" height="auto" title="Output">
                                 </p>
                             </div>
-                        <textarea id="copyBtnText" style="display: none; color: black; z-index: -10; margin-top: 1%; margin-bottom: 0;"></textarea>
+                        <textarea id="copyBtnText" style="visibility:hidden;color:black;z-index:-10;margin-top:1%;margin-bottom: 0;"></textarea>
                         </div>
                         <button class="btn btn-lg button" id="specialCharactersBtn"
                          style=" margin:0; text-align: center; position:sticky; height: 2rem; padding-right: 10%;
