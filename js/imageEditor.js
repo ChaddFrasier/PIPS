@@ -1043,10 +1043,8 @@ function getMetadata(){
     if(sunDegree>360){ sunDegree -= 360; }
     if(observerDegree>360){ observerDegree -= 360; }
 
-    
     // set the scale bar corners to the correct orientation
-    setScaleboxCorners(northDegree, sunDegree, observerDegree);
-    
+    setScaleboxCorners(northDegree, sunDegree, observerDegree);    
 }
 
 
@@ -1861,6 +1859,7 @@ function setDetectionForLayer( el, detection ){
     elem_choice.style.pointerEvents = detection;
 
     // for every child
+    // TODO: comment this function 
     for(index in svgElements){
         // if the group is draggable
         if( svgElements[index].classList && svgElements[index].classList.contains("resize") ){
@@ -1961,7 +1960,6 @@ function setDetectionForLayer( el, detection ){
             colorG = color.split(" ")[1],
             colorB = color.split(" ")[2];
 
-        console.log(color)
         colorR = parseInt(colorR.split("rgb(")[1]);
         colorG = parseInt(colorG);
         colorB = parseInt(colorB);
