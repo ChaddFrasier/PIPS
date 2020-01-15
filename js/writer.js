@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 12/12/2019
+ * @updated 01/15/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -18,7 +18,6 @@
 var outputName,
     loader,
     cursorLocation;
-
 
 /** -------------------------------- Basic Functions ----------------------------------------------------- */
 /**
@@ -733,7 +732,9 @@ $(document).ready(function(){
 
 
     /**
+     * @function .dropdown mouseover listener
      * 
+     * @description set the UI details for the dropdown menu
      */
     $(".dropdown").on("mouseover", function(event){
         var menu = event.target.nextElementSibling.nextElementSibling;
@@ -744,7 +745,9 @@ $(document).ready(function(){
     });
 
     /**
+     * @function .menubar mouseleave listener
      * 
+     * @description set the UI details for making the dropdown menu invisible
      */
     $(".menubar").on("mouseleave", function(event){
         var menuArr = document.getElementsByClassName("dropdownMenu");
@@ -761,7 +764,9 @@ $(document).ready(function(){
 
 
     /**
+     * @function .dropdownMenu mouseleave listener
      * 
+     * @description set the UI details for making the dropdown menu invisible
      */
     $(".dropdownMenu").on("mouseleave", function(event){
         var menu = event.target;
@@ -777,8 +782,11 @@ $(document).ready(function(){
             buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
         }
     });
+    
     /**
+     * @function .dropdownMenu mouseover listener
      * 
+     * @description set the UI details to use the dropdown menu
      */
     $(".dropdownMenu").on("mouseover", function(event){
         var menu = event.target;
@@ -1299,9 +1307,9 @@ $(document).ready(function(){
             else if(e.keyCode === 37 || e.keyCode === 38
                 || e.keyCode === 39 || e.keyCode === 40 ){
                 // adjust cursor marker to new location
-                /* rangy.removeMarkers(cursorLocation);
+                rangy.removeMarkers(cursorLocation);
                 cursorLocation = rangy.saveSelection(this);
-                setOutput(); */
+                setOutput();
             }
             else if(e.keyCode === 9){
                 if( cursorLocation ){
@@ -1359,20 +1367,19 @@ $(document).ready(function(){
     $("#template-text").on("focus", function(e){
         // works for drag
         if( cursorLocation && cursorLocation.restored ){
-            console.log("cursorLocation restored");
             // remove markers get new location
             rangy.removeMarkers(cursorLocation);
-            rangy.saveSelection(this, true);
+            rangy.saveSelection(this);
+            rangy.restoreSelection(cursorLocation, true);
+
         }
         else if( cursorLocation ) {
-            console.log("cursorLocation");
             // restore the cursor
             rangy.restoreSelection(cursorLocation, true);
             rangy.removeMarkers(cursorLocation);
         }
         
         boldenKeys(this);
-        console.log("output")
         setOutput();
     });
 

@@ -291,7 +291,7 @@ button.paddingBtn {
     display: inline-block;
     width: 60px;
     height: 34px;
-    transform: scale(.75)
+    transform: scale(.6)
 }
   
 /* Hide default HTML checkbox */
@@ -366,7 +366,6 @@ input:checked + .slider:before {
     color: black;
     padding: 22px 20px;
     width: 100%;
-    min-width: 85px;
     border: none;
     outline: none;
     text-align: left;
@@ -600,7 +599,7 @@ input[type=color] {
     padding: 1%;
     border: 2px double rgba(0, 0, 0, 0.452);
     min-height: 10%;
-    width: 50%;
+    width: 100%;
 }
 
 input[type=checkbox]:hover {
