@@ -5,7 +5,7 @@
  * @version 2.2
  * 
  * @since 09/20/2019
- * @updated 01/10/2020
+ * @updated 01/15/2020
  * 
  * @requires Jquery 2.0.0
  * 
