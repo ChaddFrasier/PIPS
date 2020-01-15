@@ -237,15 +237,17 @@ Object.prototype.sort = function(){
     
     let keys = Object.keys(this);
 
+    
     keys.sort(function(a, b){
         return a.length < b.length;
     });
+   
     var sortedObject = new Object();
 
     for(let index = 0; index < keys.length; index++){
         sortedObject[ String(keys[index]) ] = this[ String(keys[index]) ];
     }
-
+    
     return sortedObject;
 }
 
@@ -396,11 +398,11 @@ function output(rawText){
     var impData = JSON.parse(document.getElementById("metadata-text").innerText);
 
     // combine the JSONs into 1 object
-    allMetaData = Object.assign(allMetaData, impData);
+    allMetaData = Object.assign(impData, allMetaData.sort());
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
-    for( const key of Object.keys( allMetaData.sort() )){
+    for( const key of Object.keys( allMetaData )){
         if(rawText.indexOf(key.trim()) > -1) {
             let val = getMetadataVal(key);
 
