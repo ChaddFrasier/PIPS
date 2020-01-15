@@ -961,7 +961,8 @@ $(document).ready(function(){
         div.className = "shadowbox";
         div.style.position = "absolute";
         div.style.left = "40%";
-        
+        div.style.maxWidth = "25%";
+        div.style.maxHeight = "25%";
         div.style.top = "50%";
         div.style.zIndex = "40";
         div.style.width = "20%";
@@ -981,7 +982,7 @@ $(document).ready(function(){
         tagInput.style.position = "absolute";
         tagInput.style.left = "45%";
         tagInput.style.top = "35%";
-        tagInput.style.transform = "scale(1.25)";
+        tagInput.style.transform = "scale(1.1)";
         tagInput.placeholder = "New Tag";
 
         valLabel.style.position = "absolute";
@@ -993,7 +994,7 @@ $(document).ready(function(){
 
         valInput.style.position = "absolute";
         valInput.style.left = "45%";
-        valInput.style.transform = "scale(1.25)";
+        valInput.style.transform = "scale(1.1)";
         valInput.style.top = "55%";
         valInput.placeholder = "New Value";
 
