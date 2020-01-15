@@ -962,11 +962,11 @@ $(document).ready(function(){
         div.style.position = "absolute";
         div.style.left = "40%";
         div.style.maxWidth = "25%";
-        div.style.maxHeight = "25%";
+        div.style.maxHeight = "20%";
         div.style.top = "50%";
         div.style.zIndex = "40";
-        div.style.width = "20%";
-        div.style.height = "25%";
+        div.style.width = "25%";
+        div.style.height = "20%";
         div.style.border = "2px solid black";
 
         inputBox1.className = "row";
