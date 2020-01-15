@@ -1190,6 +1190,7 @@ $(document).ready(function(){
     */
     $("#template-text").keydown( function(e){
 
+        console.log(e.ctrlKey);
         if(e.ctrlKey && !((e.keyCode === 37 || e.keyCode === 38
             || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey) ){
             
@@ -1237,6 +1238,9 @@ $(document).ready(function(){
         else if(e.keyCode === 9){
             // tab is clicked;
             e.preventDefault();
+        }
+        else{
+            rangy.removeMarkers(cursorLocation);
         }
 
         if(e.keyCode === 32 || e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 13){
@@ -1295,9 +1299,9 @@ $(document).ready(function(){
             else if(e.keyCode === 37 || e.keyCode === 38
                 || e.keyCode === 39 || e.keyCode === 40 ){
                 // adjust cursor marker to new location
-                rangy.removeMarkers(cursorLocation);
+                /* rangy.removeMarkers(cursorLocation);
                 cursorLocation = rangy.saveSelection(this);
-                setOutput();
+                setOutput(); */
             }
             else if(e.keyCode === 9){
                 if( cursorLocation ){
@@ -1355,18 +1359,20 @@ $(document).ready(function(){
     $("#template-text").on("focus", function(e){
         // works for drag
         if( cursorLocation && cursorLocation.restored ){
+            console.log("cursorLocation restored");
             // remove markers get new location
             rangy.removeMarkers(cursorLocation);
             rangy.saveSelection(this, true);
         }
         else if( cursorLocation ) {
+            console.log("cursorLocation");
             // restore the cursor
-            rangy.removeMarkers(cursorLocation);
             rangy.restoreSelection(cursorLocation, true);
             rangy.removeMarkers(cursorLocation);
         }
         
         boldenKeys(this);
+        console.log("output")
         setOutput();
     });
 

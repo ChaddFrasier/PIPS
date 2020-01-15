@@ -106,8 +106,20 @@
                 <div class="row text-center">
 
                     <div class="col menubar">
-                        <div id="pageMenuBtn" class="dropdown btn">
-                            Navigation Options &#x25BA;
+                        <div id="pageMenuBtn" class="dropdown btn"
+                        style="background: -moz-linear-gradient(
+                            top,
+                            #f0efef 0%,
+                            #e0dfdf 50%,
+                            #c5c5c5 92%,
+                            #bebebe);
+                        background: -webkit-gradient(
+                            linear, left top, left bottom,
+                            from(#f0efef),
+                            color-stop(0.50, #e0dfdf),
+                            color-stop(0.92, #c5c5c5),
+                            to(#bebebe));">
+                            Website Options&#x25BA;
                         </div>
                         <br>
                         <div id="dropdownItemMenu" class="dropdownMenu">
@@ -116,7 +128,8 @@
                                 Upload New File
                             </a>
                             <br>
-                            <form method="POST" action="/imageEditor" class="text-left dropdownItem" style="margin: 0; width: 100%;">            
+                            <form method="POST" action="/imageEditor" class="text-left dropdownItem" 
+                            style="margin: 0; width: 100%; background: transparent;">            
                                 <input type="hidden" value= '<%= dictionaryString %>' name="image_string">
                                 <input type="button" id="imagePageBtn" value="View Image" class="dropdownItem btn"
                                 title="Image Editor" style="width:auto; height:auto; padding:4; border: 1.5px solid black;
@@ -126,8 +139,20 @@
                     </div>
                     <div class="col-2"></div>
                     <div class="col menubar">
-                        <div id="fileMenuBtn" class="dropdown btn">
-                            File Options &#x25BA;
+                        <div id="fileMenuBtn" class="dropdown btn" 
+                        style="background: -moz-linear-gradient(
+                            top,
+                            #f0efef 0%,
+                            #e0dfdf 50%,
+                            #c5c5c5 92%,
+                            #bebebe);
+                        background: -webkit-gradient(
+                            linear, left top, left bottom,
+                            from(#f0efef),
+                            color-stop(0.50, #e0dfdf),
+                            color-stop(0.92, #c5c5c5),
+                            to(#bebebe));">
+                            File Options&#x25BA;
                         </div>
                         <br>
                         <div class="dropdownMenu text-left">
@@ -148,9 +173,10 @@
                             </button>
                             <br>
                             <button id="copyBtn" class="dropdownItem btn" role="button"
-                            style="width: auto; height: auto; padding:5; border: 1.5px solid black; margin:auto auto;"
+                            style="width: auto; height: auto; padding:5; font-size:90%;
+                             border: 1.5px solid black; margin:auto auto;"
                             title="Save to Clipboard">
-                                Copy Caption to Clipboard
+                                Copy Output to Clipboard
                             </button>
                             <br>
                             <a class="dropdownItem btn" title="Download Figure Caption"
@@ -160,7 +186,7 @@
                             </a>
                             <br>
                             <button role="button" class="dropdownItem btn" title="ISIS Log File"
-                                style="width: auto; height: auto; padding:5; margin:0; border: 1.5px solid black;"
+                                style="width: auto; height: auto; padding:5; margin:0;"
                                 id="logDownloadBtn">Save ISIS Output Log
                             </button>
                         </div>
@@ -182,14 +208,14 @@
                             <div class="row">
                                 <p readonly id="template-text-output"
                                     class="form-control bg-white metadata lightshadowbox text-left" 
-                                    style="color:black; overflow-y: scroll;font-size: 22px; border: 2px solid black;
+                                    style="color:black; min-height: 200px; overflow-y: scroll;font-size: 22px; border: 2px solid black;
                                     display: inline-flexbox; height: 100%; padding-left: 20px;" height="auto" title="Output">
                                 </p>
                             </div>
                         <textarea id="copyBtnText" style="visibility:hidden;color:black;z-index:-10;margin-top:1%;margin-bottom: 0;"></textarea>
                         </div>
                         <button class="btn btn-lg button" id="specialCharactersBtn"
-                         style=" margin:0; text-align: center; position:sticky; height: 2rem; padding-right: 10%;
+                         style=" margin:0; z-index:10; text-align: center; position:sticky; height: 2rem; padding-right: 10%;
                         margin-top: 1%; padding:0; max-width: 2rem; min-width: 2rem;" title="Special Charaters">
                             &Omega;
                         </button>
