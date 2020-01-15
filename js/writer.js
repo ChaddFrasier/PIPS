@@ -1110,24 +1110,28 @@ $(document).ready(function(){
         // add elements in order
         div.appendChild(title);
 
+        // set dimensions for col box 
         col = document.createElement("div");
         col.style.width = "100%";
         col.style.height = "15%";
         col.style.className = "col";
 
+        // set the margin for the input Boxes
         inputBox1.style.marginTop = "2px";
         inputBox2.style.marginTop = "2px";
 
+        // append the new cols with the inner elements
         inputBox1.appendChild(col.cloneNode().appendChild(tagLabel));
         inputBox1.appendChild(col.cloneNode().appendChild(tagInput));
 
         inputBox2.appendChild(col.cloneNode().appendChild(valLabel));
         inputBox2.appendChild(col.cloneNode().appendChild(valInput));
     
+        // append all needed elements in order
         div.append(inputBox1, inputBox2, submitBtn, cancelBtn);
    
+        // insert the new div box above the body's first child and focus on the first input field
         document.body.insertBefore(div,document.body.firstChild);
-
         tagInput.focus();
     });
 
@@ -1212,7 +1216,6 @@ $(document).ready(function(){
             else{
                 cursorLocation = rangy.saveSelection(this);
             }
-
 
             if (e.keyCode == 90 && e.ctrlKey){
                 userHistory.updateForward();
