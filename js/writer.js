@@ -1214,9 +1214,6 @@ $(document).ready(function(){
      * @description set the new output value whenever a new character is added to the template
     */
     $("#template-text").keydown( function(e){
-
-        console.log(e.ctrlKey);
-
         // if ctrl key is being used and arrows are not
         if(e.ctrlKey && !((e.keyCode === 37 || e.keyCode === 38
             || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey) ){
@@ -1307,7 +1304,6 @@ $(document).ready(function(){
     */
     $("#template-text").keyup( function(e) {
         console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
-        console.log(e.keyCode); 
         
         if(!e.ctrlKey && e.keyCode !== 17){
             // save new cursor location
@@ -1368,15 +1364,11 @@ $(document).ready(function(){
         if(cursorLocation){
             rangy.removeMarkers(cursorLocation);
             cursorLocation = rangy.saveSelection(this);
+            cursorLocation.deleteContents();
         }
         else if(!cursorLocation){
             cursorLocation = rangy.saveSelection(this);
         }
-
-        try{
-            cursorLocation.collapseToEnd();     
-        }catch(err){}
-
     });
 
     /**
@@ -1389,8 +1381,9 @@ $(document).ready(function(){
         if( cursorLocation && cursorLocation.restored ){
             // remove markers get new location
             rangy.removeMarkers(cursorLocation);
-            rangy.saveSelection(this);
+            cursorLocation = frangy.saveSelection(this);
             rangy.restoreSelection(cursorLocation, true);
+            rangy.removeMarkers(cursorLocation);
 
         }
         else if( cursorLocation ) {
