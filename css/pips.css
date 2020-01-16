@@ -190,7 +190,7 @@ button.paddingBtn {
 }
 
 .menubar {
-    z-index: 5;
+    pointer-events: visible;
 }
 
 .dropdownMenu {
@@ -250,6 +250,7 @@ button.paddingBtn {
 		color-stop(0.92, #e0dddd),
         to(#d6d6d6));
     color: black;
+    z-index: 6;
 }
 
 .dropdownItem {

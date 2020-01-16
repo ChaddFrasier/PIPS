@@ -12,6 +12,8 @@
  * @fileoverview This file is for all of the writer functionality in the writer.ejs file
  * 
  * @see {server.js} Read the header before editing
+ * @see {Rangy:Save-Restore-Module}
+ *      @link https://github.com/timdown/rangy/wiki/Selection-Save-Restore-Module
  */
 
 /** Variables */
@@ -235,19 +237,21 @@ function removeUnits(str){
  */
 Object.prototype.sort = function(){
     
+    // get the keys of this object
     let keys = Object.keys(this);
 
-    
+    // use the sort function to sort by key length
     keys.sort(function(a, b){
         return a.length < b.length;
     });
    
+    // populate the new object
     var sortedObject = new Object();
-
     for(let index = 0; index < keys.length; index++){
         sortedObject[ String(keys[index]) ] = this[ String(keys[index]) ];
     }
     
+    // return the ordered object
     return sortedObject;
 }
 
@@ -397,28 +401,34 @@ function output(rawText){
     var allMetaData = JSON.parse(document.getElementById("all-tag-text").value);
     var impData = JSON.parse(document.getElementById("metadata-text").innerText);
 
-    // combine the JSONs into 1 object
+    // combine the JSONs into 1 object using important objects first
     allMetaData = Object.assign(impData, allMetaData.sort());
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
+    // for each key in the array
     for( const key of Object.keys( allMetaData )){
+        // if the raw text contains the key
         if(rawText.indexOf(key.trim()) > -1) {
+            // get the metadata from the key
             let val = getMetadataVal(key);
 
+            // if this value has units
             if(hasUnits(val)){
+                // remove them
                 val = removeUnits(val);
             }
 
+            // if the value is a time string
             if( isTimeFormat(val) ) {
-                // set the time strings
+                // create the custom time strings
                 val = fixTimeString(val);
             }
             else if( isDecimal(val) ){
-                // fix deciamls at 3
+                // fix deciamls at 3 decimals
                 val = parseFloat(val).toFixed(3);
             }
-
+            // replace every instance of the key
             download = download.replaceAll(key, val.trim());
 
             // convert to red color parargraph element
@@ -1206,9 +1216,12 @@ $(document).ready(function(){
     $("#template-text").keydown( function(e){
 
         console.log(e.ctrlKey);
+
+        // if ctrl key is being used and arrows are not
         if(e.ctrlKey && !((e.keyCode === 37 || e.keyCode === 38
             || e.keyCode === 39 || e.keyCode === 40) && e.shiftKey) ){
             
+            // remove html markers in text
             if(cursorLocation) {
                 rangy.removeMarkers(cursorLocation);
                 cursorLocation = rangy.saveSelection(this);
@@ -1217,6 +1230,7 @@ $(document).ready(function(){
                 cursorLocation = rangy.saveSelection(this);
             }
 
+            // undo or redo depending on if the user is trying to use the history
             if (e.keyCode == 90 && e.ctrlKey){
                 userHistory.updateForward();
                 userHistory.undo();
