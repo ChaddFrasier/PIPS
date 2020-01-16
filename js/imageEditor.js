@@ -2,10 +2,10 @@
  * @file imageEditor.js
  * 
  * @author Chadd Frasier
- * @version 2.2
+ * @version 2.3
  * 
  * @since 09/20/2019
- * @updated 01/15/2020
+ * @updated 01/16/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -1859,17 +1859,20 @@ function setDetectionForLayer( el, detection ){
     elem_choice.style.pointerEvents = detection;
 
     // for every child
-    // TODO: comment this function 
     for(index in svgElements){
         // if the group is draggable
         if( svgElements[index].classList && svgElements[index].classList.contains("resize") ){
-            // reset the pointer events
+            // reset the pointer events and set the outline in the layer box
             svgElements[index].style.pointerEvents = detection;
             svgElements[index].setAttribute("stroke", "red");
+
+            // if the elem_choice is the observer image
             if(elem_choice == eyeImage){
+                // reset the stroke if the scale boxes in the outline box
                 svgElements[index].setAttribute("stroke-width", "2");
                 svgElements[index].setAttribute("stroke-dasharray", "1 1");
 
+                // reset all colors for the color picker
                 $("#colorPickerLine").val("#ffffff");
                 $("#textColorPicker").val("#ffffff");
                 $("#colorPickerBox").val("#ffffff");
@@ -1889,32 +1892,35 @@ function setDetectionForLayer( el, detection ){
 
                 if(elem_choice.getAttribute("id").indexOf("outline") > -1){
                     // outline box element found
-                    
                     var color = elem_choice.style.stroke,
                         colorR = color.split(" ")[0],
                         colorG = color.split(" ")[1],
                         colorB = color.split(" ")[2];
                       
+                    // break the color string apart
                     colorR = parseInt(colorR.split("rgb(")[1]);
                     colorG = parseInt(colorG);
                     colorB = parseInt(colorB);
 
+                    // if all parts exist, get the hex code
                     if( !isNaN(colorR) && !isNaN(colorG) && !isNaN(colorB) ){
                         color = rgbToHex(colorR, colorG, colorB);
                     }
                     else{
+                        // set as white
                         color = "#ffffff";
                     }
+                    // set the box colors
                     $("#colorPickerLine").val("#ffffff");
                     $("#textColorPicker").val("#ffffff");
-                    
+                    $("#colorPickerBox").val(color);
+
                     userLineColor = "#ffffff";
                     userTextColor = "#ffffff";
-
-                    $("#colorPickerBox").val(color);
                     userBoxColor = color;
                 }
                 else{
+                    // default to white
                     $("#colorPickerLine").val("#ffffff");
                     $("#textColorPicker").val("#ffffff");
                     $("#colorPickerBox").val("#ffffff");
@@ -1924,7 +1930,7 @@ function setDetectionForLayer( el, detection ){
                     userLineColor = "#ffffff";                
                 }
             }
-            
+            // otherwise set the background as transparent
             svgElements[index].style.background = "transparent";
             svgElements[index].style.visibility = "visible";
         }
@@ -1938,22 +1944,26 @@ function setDetectionForLayer( el, detection ){
             colorG = color.split(" ")[1],
             colorB = color.split(" ")[2];
         
+        // break color code
         colorR = parseInt(colorR.split("rgb(")[1]);
         colorG = parseInt(colorG);
         colorB = parseInt(colorB);
 
+        // get hex
         color = rgbToHex(colorR, colorG, colorB);
-        $("#colorPickerLine").val(color);
-        userLineColor = color;
 
+        // set the color values
+        $("#colorPickerLine").val(color);
         $("#textColorPicker").val("#ffffff");
         $("#colorPickerBox").val("#ffffff");
 
+        userLineColor = color;
         userTextColor = "#ffffff";
         userBoxColor = "#ffffff";
     }
     else if(elem_choice.getAttribute("id").indexOf("text") > -1 ){
 
+        // if stroke exists get it else set as white
         var color = (elem_choice.firstElementChild.getAttribute("stroke"))
                     ? elem_choice.firstElementChild.getAttribute("stroke") : "#ffffff",
             colorR = color.split(" ")[0],
@@ -1964,10 +1974,12 @@ function setDetectionForLayer( el, detection ){
         colorG = parseInt(colorG);
         colorB = parseInt(colorB);
 
+        // get hex
         if( !isNaN(colorR) && !isNaN(colorG) && !isNaN(colorB) ){
             color = rgbToHex(colorR, colorG, colorB);
         }
 
+        // set the output color for the box values
         if(color){
             $("#colorPickerLine").val("#ffffff");
             $("#textColorPicker").val(color);
@@ -1979,6 +1991,7 @@ function setDetectionForLayer( el, detection ){
         }
     }
     else if(elem_choice.getAttribute("id").indexOf("scalebar") > -1){
+        // for scale bar set all color boxes to white
         $("#colorPickerLine").val("#ffffff");
         $("#textColorPicker").val("#ffffff");
         $("#colorPickerBox").val("#ffffff");
@@ -1991,22 +2004,30 @@ function setDetectionForLayer( el, detection ){
 
 var activeLayer;
 
-// TODO: comment this function and all around  this line
 /**
  * @function updateLayers
+ * 
+ * @param {DOM} el the element that is being added to the svg element
  * 
  * @description searches the svg and pulls out all changable icons
  */
 function updateLayers(el){
 
+    // if button was clicked
     if(el.nodeName === "BUTTON"){
+        // loop till svg is found
         while(el.nodeName !== "svg"){
+            // set the element as the first child
             el = el.firstElementChild;
-        }  
+        }
+        // RESULTS: 
+        //      This loop will find the svg element that is inside the button element
     }
+    // get layer object and new div to go inside
     var layerBrowser = document.getElementById("layerBrowser");
     var div = document.createElement("div");
     
+    // set the needed classes for mouse events
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
     el.setAttribute("class", "layer");
@@ -2014,31 +2035,43 @@ function updateLayers(el){
     // get the type of layer
     el.style.pointerEvents = "none";
 
+    // create listener for when the div is clicked on
     div.addEventListener("mousedown", (event) => {
+        // if the target node is an svg
         if(event.target.nodeName === "svg") {
+            // get the parent
             var tar = event.target.parentElement;
         }
         else{
+            // otherwise keep the tar as the target element
             var tar = event.target;
         }
 
+        // if tar is valid
         if(tar){
+            // if activeLayer exists
             if(activeLayer) { 
                 // set all detection for every symbol
                 setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                 activeLayer.style.border = "none";
             }
-            // set the selected element
+
+            // set the selected element to the target
             activeLayer = tar;
             activeLayer.style.border = "5px solid red";
+
+            // set click detection for elements
             setSvgClickDetection(document.getElementById("svgWrapper"),"none");
             setDetectionForLayer(activeLayer, "all");
         }
     });
 
-
+    // switch on the type of element and do everything needed to create the 
+    //      UI layer div for whatever element id being added to the figure
     switch( getElementType( el ) ){
+        // if type of element is svg
         case "svg":
+            // set the div info and append the svg element inside the UI div
             div.setAttribute("id", "layer" + el.getAttribute("id") );
             div.appendChild(el);
             div.style.padding = "2px 4px";
@@ -2103,15 +2136,18 @@ function updateLayers(el){
 }
 
 
-/** TODO:
+/**
  * @function fixLayerUI
  * 
  * @param {string} id 
+ * 
+ * @description
  */
 function fixLayerUI(id) {
     var layers = document.getElementById("layerBrowser"),
         UIBox = document.getElementById(String( "layer"+id ));
 
+    // if the UIBox already exist, move it to the top of the layer element
     if(layers && UIBox){
         layers.prepend(UIBox);
     }
@@ -2138,13 +2174,16 @@ function fixLayerUI(id) {
         }
     }
 
+    // if the UIbox is not the active layer
     if(UIBox && activeLayer && UIBox.getAttribute("id") !== activeLayer.getAttribute("id")){
+        // unfocus on the active layer if the activeLayer exists
         if( activeLayer !== null ) {
             activeLayer.style.border = "none";
         }
     }
     
     if(UIBox) {
+        // set the new active layer
         activeLayer = UIBox;  
         activeLayer.style.border = "5px solid red";
     }
@@ -2153,6 +2192,13 @@ function fixLayerUI(id) {
     }
 }
 
+/**
+ * @function getElementType
+ * 
+ * @param {DOM} el the element to check
+ * 
+ * @description return the type of element if its possible
+ **/
 function getElementType( el ){
     if(el.nodeName){
         return el.nodeName
@@ -3519,10 +3565,17 @@ $(document).ready(function(){
 
         // chnage color of icon in svg
         svgIcon.setAttribute("stroke", color);
+        svgIcon.style.stroke = color;
 
         if(UIBox.firstElementChild){
-            UIBox.firstElementChild.firstElementChild.setAttribute("stroke", color);
-            UIBox.firstElementChild.firstElementChild.setAttribute("marker-start", el.getAttribute("marker-start"));        
+            if(el.getAttribute("id").indexOf("outline") > -1){
+                UIBox.firstElementChild.firstElementChild.style.stroke = color;
+            }
+            else{
+                UIBox.firstElementChild.firstElementChild.setAttribute("stroke", color);
+                UIBox.firstElementChild.firstElementChild.style.stroke = color;
+                UIBox.firstElementChild.firstElementChild.setAttribute("marker-start", el.getAttribute("marker-start"));        
+            }
         }
         else{
             UIBox.style.color = color;
@@ -3538,8 +3591,9 @@ $(document).ready(function(){
     $("#colorPickerLine").change(function(){
         userLineColor = document.getElementById("colorPickerLine").value;
 
-        if(activeLayer && activeLayer.getAttribute("id").indexOf("line") > -1){
-            // generate the arrowhead if needed
+        if(activeLayer && activeLayer.getAttribute("id").indexOf("line") > -1 
+            && !(activeLayer.getAttribute("id").indexOf("outline") > -1)){
+                // generate the arrowhead if needed
             var activeLine = document.getElementById(activeLayer.getAttribute("id").split("layer")[1]);
 
             if(activeLine.getAttribute("marker-start")){
@@ -3673,6 +3727,70 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function moveChoiceTo
+     * 
+     * @param {DOM element} elem_choice 
+     * @param {1 or -1} direction 
+     * 
+     * @description this function is used to move a layer object up or down in the order of the parent field
+     */
+    function moveChoiceTo(elem_choice, direction) {
+
+        var parent = elem_choice.parentNode;
+        // move index of element by one either up or down
+        if (direction === 1 && elem_choice.previousSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.previousSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        } else if (direction === -1 && elem_choice.nextSibling) {
+            let code = parent.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            
+            if(code === elem_choice){
+                moveSvgTo( elem_choice.getAttribute("id"), direction);
+            }
+        }
+    }
+
+    /**
+     * @function moveSvgTo
+     * 
+     * @param {string} id 
+     * @param {1 or -1} direction 
+     * 
+     * @description this function physically moves the elements based on the
+     *  direction after finding the specific layer object 
+     */
+    function moveSvgTo(id, direction) {
+        var elem_choice = document.getElementById(id.split("layer")[1]);
+        
+        if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
+            if(id.split("layer")[1].indexOf("sun")  > -1 ){
+                elem_choice = sunImage;
+            }
+            else if(id.split("layer")[1].indexOf("eye")  > -1 ){
+                elem_choice = eyeImage;
+            }
+            else if(id.split("layer")[1].indexOf("north")  > -1 ){
+                elem_choice = northImage;
+            }
+            else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
+                elem_choice = scaleBarIcon;
+            }
+        }
+
+        if(elem_choice){
+            // move index of element by one either up or down
+            if (direction === -1 && elem_choice.previousSibling) {
+                svg.insertBefore(elem_choice, elem_choice.previousSibling);
+                
+            } else if (direction === 1 && elem_choice.nextSibling) {
+                svg.insertBefore(elem_choice, elem_choice.nextSibling.nextSibling);
+            }
+        }
+    }
     /**
      * @function document 'keyup' event handler
      * 
