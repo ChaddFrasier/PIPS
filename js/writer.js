@@ -1303,7 +1303,7 @@ $(document).ready(function(){
      * @description this listener allows the user to insert tab characters into the form field without moving to the next field
     */
     $("#template-text").keyup( function(e) {
-        console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
+        //console.log("\n--------------INNERHTML: \n" + this.innerHTML + "\n-----------------------");
         
         if(!e.ctrlKey && e.keyCode !== 17){
             // save new cursor location
