@@ -99,17 +99,18 @@ check box to have the server generate a log file of the ISIS outputs that were r
 ![Current Index Page](https://i.imgur.com/Ot90QqL.png)
 
 
-2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. 
+2. Next you will be greeted with three boxes. One on the top row, and two on the bottom row. You will also see two 
+dropdown buttons that is used for navigating the pages of the website and for downloading and saving captions from the website. 
 The top box is the caption output which is the resulting caption with data from ISIS embedded and highlighted in red.
 The bottom right box is the editing box where you can type your caption and paste data tags to use ISIS data directly
 from the cube header. The tags that you use will be bolded to help you see what the server is seeing.
-The bottom left box is where the tags from the usable ISIS data will be displayed with
+The bottom left box is where the tags from the usable ISIS data will be displayed with 
 there value. Copy and paste the tags into your editing box to switch the keys with the data values. The *Show All Tags*
 button will show every peice of data that could be extracted from the cube, so if you are looking for something 
 specific try filtering through all the tags instead of only viewing the configured "Important Tags". Search for key 
 words in the data by typeing in the search box to the left. You can add custom tags by using the green plus 
 button in the tag box. Users can change the values of common tags by typing the tag name into the new tag UI and
-entering the new value for it.
+entering the new value for it. 
 You can save several things from this page, you can download the finished caption with the embedded
 ISIS data, you can save the raw template file, you can download the log file which contains the results from the
 ISIS program calls executed on the server, or you can download the data as a CSV in Tag-Value format.
@@ -117,7 +118,7 @@ If you do not see a *Save ISIS Logs* button in the center of the title box then 
 Lasty, you can copy all the text in the output box by clicking the save to clipboard button, then just paste the 
 text wherever it needs to live. The user can also add special characters by using the sigma button at the top of 
 the output box. Place the pointer where you want to place the icon and then hit the button to add the icon.
-![Current Writer Page](https://i.imgur.com/sL9IgF7.png)
+![Current Writer Page](https://i.imgur.com/ZPSRUzq.png)
 
 
 3. Lastly, edit your image into an easily readable and printable figure using icons and other annotation features.
@@ -129,23 +130,24 @@ All icons can be dragged around the screen to be placed where ever you would lik
 __(switches are only visible when icons are on screen)__.
 Draw over icons and the image using the pencil tool. Click the pencil button in the *Annotate* tab and click once to place one 
 end of the line, and then click a second time to place the other end of the line. Change colors of the
-line by using the color picker box next to the button. Once at least 1 line is on the screen,
-a *Undo Line* button will appear on screen. Use this to remove the last line that you drew. Use the slider to add or remove
+line by using the color picker box next to the button. Use the slider to add or remove
 an arrowhead. Drag lines around the screen using the mouse.
 Add outline boxes to the figure by clicking the box button and then dragging the box around the image.
 Scale the box larger and smaller by mouseing over the corners of the icon and click dragging the icon
-when prompted. Again a color picker is given to allow you to change the color of the box, and again an
-*Undo Box* button will appear if there are any on screen to allow you to remove the last added box.
-Text boxes work the exact same way, with the color picker and undo button, but the only difference is 
+when prompted. Again a color picker is given to allow you to change the color of the box.
+Text boxes work the exact same way, with the color picker, but the only difference is 
 when you first click the button, the webpage will prompt you to type what you want the box to say.
 You can add padding to the image at one or more sides, type the number of pixels you would like to
 pad the image and a location to place the pixels. To remove the padding either delete the numbers
 in the text box or hit the reset button.
+The layer browser will allow users to delete objects by clicking them and when the layer UI has a red border 
+hit the *Delete* key. Users can also click the active layer and use the up and down arrow keys or mouse to
+drag the objects to different layers in the svg image. 
 
 Users can now change the figure size after upload. Padding is reset whenever the figure size changes.
 And lastly, you can export the figure you create by clicking the blue save button at the very bottom.
 Accepted file export types include svg, tif, png, and jpg.
-![Current Edit Page](https://i.imgur.com/M8ZKKfB.png)
+![Current Edit Page](https://i.imgur.com/2S8TiCM.png)
 
 #### Hot Keys
 
