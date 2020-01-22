@@ -834,6 +834,14 @@ function setSvgClickDetection(svg, mouseDetect){
         if(svgElements[index].classList && svgElements[index].classList.contains("draggable")){
             // reset the pointer events
             svgElements[index].style.pointerEvents = mouseDetect;
+
+            if( document.getElementById("scalebarBG") && mouseDetect === "all"){
+                document.getElementById("scalebarBG").style.visibility = "visible";
+            }
+            else if(svgElements[index].id.indexOf("scalebar") > -1){
+                // reset layers
+                document.getElementById("scalebarBG").style.visibility = "hidden";  
+            }
             // add if that element has child nodes
             if(svgElements[index].childNodes){
                 // do the same with its children
@@ -1852,6 +1860,8 @@ function setDetectionForLayer( el, detection ){
         }
         else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
             elem_choice = scaleBarIcon;
+            document.getElementById("scalebarBG").style.visibility = "visible";
+            document.getElementById("scalebarBG").style.stroke = "red";
         }
     }
 
@@ -2891,7 +2901,7 @@ $(document).ready(function(){
     var scaleBarObject = '<g id="scalebarPosition" class="draggable confine scalebar scaleable"'
     + 'transform="translate(0, 175) scale(.1)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:all;">\n'
-    + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden;"></rect>\n'
+    + '<rect x="0" y="0" id="scalebarBG" width="4325" height="500" style="visibility:hidden; stroke:red; fill:transparent;"></rect>\n'
     + '<rect x="150" y="200" id="scalebarOuter" width="4000" height="300"stroke-width="20" stroke="white"'
     + 'fill="black" ></rect>\n'
     + '<path id="scalebarLine" d="M 2150 350 L 4150 350"  stroke="white" stroke-width="50"/>\n'
@@ -2999,7 +3009,7 @@ $(document).ready(function(){
                 document.getElementById("scalebarHalf").innerHTML = parseFloat(half).toFixed(1);
             }
         }
-        document.getElementById("scalebarText").innerHTML = scalebarLength + scalebarUnits;
+        document.getElementById("scalebarText").innerHTML = scalebarLength + " " +scalebarUnits;
         document.getElementById("scalebar1").innerHTML = scalebarLength;
     }
     else{
@@ -3192,7 +3202,7 @@ $(document).ready(function(){
                 var data = 
                     '<?xml version="1.1" encoding="UTF-8"?>\n'
                     + (new XMLSerializer()).serializeToString(svg);
-                
+            
                 // creates a blob from the encoded svg and sets the type of the blob to and image svg
                 var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
                 
@@ -4009,7 +4019,7 @@ $(document).ready(function(){
                                                     scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
                                                 }
                                             }
-                                            scalebarText.innerHTML = scalebarLength + scalebarUnits;
+                                            scalebarText.innerHTML = scalebarLength + " " + scalebarUnits;
                                             scalebar1.innerHTML = scalebarLength;
                                         }
                                         else{
@@ -4185,7 +4195,7 @@ $(document).ready(function(){
                                                         scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
                                                     };
                                                 }
-                                                scalebarText.innerHTML = scalebarLength + scalebarUnits;
+                                                scalebarText.innerHTML = scalebarLength + " " + scalebarUnits;
                                                 scalebar1.innerHTML = scalebarLength;
                                             }
                                             else{

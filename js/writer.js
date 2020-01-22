@@ -840,7 +840,7 @@ $(document).ready(function(){
         }
         else{
             // this line of code only works assuming the image button is the first form on the page
-            let imageForm = document.getElementsByTagName("form")[0];
+            let imageForm = document.getElementsByTagName("form")[1];
             goForward = true;
             imageForm.submit();
         }

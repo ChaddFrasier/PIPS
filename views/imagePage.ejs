@@ -27,26 +27,26 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: 90%; padding:0; padding-right: 5px; margin: 0; font-size: 120%;">Icons</p>
+                    <p style="color: white; width: 90%; position: absolute; left: 10px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: 90%; padding:0; padding-right: 25px; margin: 0; font-size: 110%;">Annotate</p>
+                    <p style="color: black; width: 90%; padding:0; left: 10px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black; width: 90%; padding:0; padding-right: 5px; margin: 0; font-size: 120%;">File Tools</p>
+                    <p style="color: black;  position: absolute; left: 10px;width: 90%; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
             <div class="menu unfocus">
                 <!-- Icon UI Tab-->
                 <div id="Icons" class="tabcontent unfocus">
-                    <h4 style="pointer-events: none;">Icon Tools</h4>
+                    <h4 style=" color:white; pointer-events: none;font-size: large;">Icon Tools</h4>
                     <!-- North Button -->
                     <div class="row" role="table" style="margin-top:0rem; border-top: 2px solid black" 
                             title="Alt + N">
                         <div class="col-4" style="margin: auto auto;">
                             <p class="float-left" style="padding-left: 2% ;margin-right:.5rem; height: 100%; font-size: 70%;">
-                                North Azimuthal<br/>Direction
+                                North Azimuthal Direction
                             </p>
                         </div>
                         <div class="col-4" style="text-align:center; margin: auto auto; padding: 2%;">
@@ -161,7 +161,7 @@
                 </div>
                 <!-- Annotation UI Tab -->
                 <div id="Annotate" class="tabcontent unfocus" style="display: none; margin: auto auto;">
-                    <h4 style="pointer-events: none;">Annotation Tools</h4>
+                    <h4 style="color:white; pointer-events:none; font-size: large;">Annotation Tools</h4>
                     <!-- Draw Tool Button -->
                     <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
                         <div class="col-4" style="margin: auto auto;">
@@ -187,13 +187,15 @@
                                 <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
                                 value="#ffffff"/>
                             </div>
+                            <br>
                             <div class="row" style="padding-left: 20%;">
-                                <p id="arrowCheckboxLabel" style="margin: auto 0; font-size: 50%; width: 100%;">Add Arrow Head</p>
                                 <label class="switch" id="arrowCheckbox" title="Add an Arrowhead">
                                     <input type="checkbox" id="arrowCheckboxSlider"
                                     style="margin: auto auto; margin-bottom: 0;">
                                     <span class="slider round" id="arrowAnimation"></span>
                                 </label>
+                                <br>
+                                <p id="arrowCheckboxLabel" style="margin: auto 0; font-size: 50%; width: 100%;">Add Arrow Head</p>
                             </div>
                         </div>
                     </div>
@@ -240,7 +242,7 @@
                 </div>
                 <!-- File UI Tab -->
                 <div id="File" class="tabcontent unfocus" style="display: none;">
-                    <h4 style="pointer-events: none;">File Manipulations</h4>
+                    <h4 style="color:white; pointer-events: none; font-size: large;">File Manipulations</h4>
                     <!-- Pad Image Interface -->
                     <div class="row" role="table" title="Pad Image Border">
                         <div class="row text-center">
@@ -264,25 +266,25 @@
                         </div>
                         <div class="row" style="width: 100%; padding: .5%; margin: 1px;">
                             <div class="col-3" style="padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: 70%;" id="topPaddingBtn"
+                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="topPaddingBtn"
                                     title="Top of Image">
                                     Top 
                                 </button>
                             </div>
                             <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: 70%;" id="bottomPaddingBtn"
+                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="bottomPaddingBtn"
                                     title="Bottom of Image">
                                     Bottom 
                                 </button>
                             </div>
                             <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: 70%;" id="leftPaddingBtn"
+                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="leftPaddingBtn"
                                     title="Left Side of Image">
                                     Left 
                                 </button>
                             </div>
                             <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: 70%;" id="rightPaddingBtn"
+                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="rightPaddingBtn"
                                     title="Right Side of Image">
                                     Right 
                                 </button>
@@ -364,22 +366,22 @@
                 </div>
                 <br/>
                 <div class="row lead" style="width:auto; height: auto;">
-                    2. <cite> Drag icons</cite> around the image with the mouse.
+                    2. <cite> Drag icons and lines</cite> around the image with the mouse.
                 </div>
                 <br/>
                 <div class="row lead">
-                    3. <cite>Scale</cite>any icons and text by mousing over the corners of the object.
+                    3. <cite>Scale</cite>any icons and text by mousing over the corners of the object (outlined in red).
                 </div>
                 <br/>
                 <div class="row lead">
-                    4. <cite>Draw</cite> lines using the Pencil Tool.  
+                    4. <cite>Draw</cite> lines using the Pencil Tool.
                     <p class="small-text">(Click 1 time to place the head of the line. Click again to finish drawing.)
                     </p>
                 </div>
                 <br/>
                 <div class="row lead">
                     5. Use the <cite> Esc key</cite> 
-                    to remove the head after the first click when using the pencil tool.
+                    to remove the head of a line after the first click when using the pencil tool.
                 </div>
                 <br/>
                 <div class="row lead">
@@ -388,7 +390,7 @@
                 <br/>
                 <div class="row lead">
                     7. Use the <cite>Color Pickers</cite> to change the color of the adjacent objects.  
-                        <p class="small-text">(Text, Pencil Tool, and Outline Boxes)</p> 
+                        <p class="small-text">(Text, Pencil Tool, or Outline Boxes)</p> 
                 </div>
                 <br/>
                 <div class="row lead">
@@ -398,7 +400,7 @@
                 <br/>
                 <div class="row lead">
                     9. <cite>Padding</cite> can be added to the image by typing the amount 
-                    of pixels you want to add, and then selecting a location.  
+                    of pixels you want to add, and then selecting a location(s).  
                 </div>
                 <br/>
                 <div class="row lead">
@@ -408,7 +410,12 @@
                 <br/>
                 <div class="row lead">
                     11. Click the <cite>Save Figure</cite> button to save the new figure in an accepted format.
-                        <p class="small-text">(Accepted Formats: png, tiff, svg, jpeg, or jpg)</p>
+                        <p class="small-text">(Accepted Formats: png, tiff, svg, or jpg)</p>
+                </div>
+                <br>
+                <div class="row lead">
+                    12. Use the <cite>Layer Box</cite> on the right side of the screen to change the layer that icons appear
+                     on by clicking and dragging layer objects up and down. <cite>Delete</cite> the active layer by hitting the Delete key 
                 </div>
             </div>
 
@@ -444,9 +451,9 @@
                     <div class="row">
                         <div class="col-4 unfocus" style="width: 15%;"></div>
                         <div class="col-4 unfocus" style="text-align: center; width: 70%;">
-                            <h2 style="font-size:125%;pointer-events: none;">Edit Cube Image</h2>
-                            <h4 id="imageName"style="font-size:125%;pointer-events: none;"></h4>
-                            <h5 id="displayCube" style="font-size:125%;pointer-events: none;"><%=w%> &times; <%=h%> px</h5>
+                            <h2 style="font-size:medium;pointer-events: none;">Edit Cube Image</h2>
+                            <h4 id="imageName"style="font-size:small;pointer-events: none;"></h4>
+                            <h5 id="displayCube" style="font-size:medium;pointer-events: none;"><%=w%> &times; <%=h%> px</h5>
                         </div>
                         <div class="col-4 unfocus" style="width: 15%;">
                             <img src="/images/help.jpg" class="float-right helpBtn" id="helpBtn" title="Help!" 
@@ -456,25 +463,25 @@
                 </div>
                 <div class="row unfocus" style="width: 100%">
                     <div class="col-4 unfocus">
-                        <a class="btn btn-primary btn-lg float-left" 
-                        style="border: 2px solid black; width: auto; height: 3rem; margin-top: .5%; margin-left: 0;
+                        <a class="btn dropdownItem btn-lg float-left" 
+                        style="border: 2px solid black; width: auto; height: 3rem; margin-top: .75%; margin-left: 0;
                             margin-bottom:auto; "
                         href="/" role="button" title="Start Over">
                             Upload New File
                         </a>
                     </div>
-                    <div class="col-4 unfocus" style="display: flex; margin: auto auto; padding-left: 10%;">
-                        <h5 style="width: 30%; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
+                    <div class="col-4 unfocus" style="display: flex; margin: auto auto; padding-left: 8%;">
+                        <h5 style="width: 30%; font-size:large; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
                         <!-- Rounded switch -->
-                        <label class="switch">
+                        <label class="switch" style="scale: 1.15;">
                             <input id="viewOption" type="checkbox">
                             <span class="slider round"></span>
                         </label>
-                        <h5 style="width: 30%; color: white; padding-top: 2%;">Box Fit</h5>    
+                        <h5 style="width: 30%; color: white; padding-top: 2%; font-size: large">Box Fit</h5>    
                     </div>
                     <div class="col-4 unfocus">
-                        <button class="btn btn-primary btn-lg float-right" onclick="captionHandler()"
-                        style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .5%;
+                        <button class="btn dropdownItem btn-lg float-right" onclick="captionHandler()"
+                        style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .75%;
                         margin-left: auto;"
                         title="Go Back">
                             View Caption
