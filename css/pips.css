@@ -32,7 +32,8 @@ pre {
     word-wrap: break-word;
     width: 100%;
     height: 100%;
-    max-width:none;max-height:none;
+    max-width:none;
+    max-height:none;
 }
 
 .layerBox:hover {
@@ -53,9 +54,13 @@ pre {
 .layerBox {
     width: 75%;
     height: auto;
+    max-height: 100px;
+    max-width: 100px;
+    min-height: 50px;
+    min-width: 50px;
     padding: 0;
-    overflow-y: auto;
-    margin:auto;
+    overflow-y: hidden;
+    margin:inherit;
     margin-bottom: 5px;
     border-radius: 5px;
     background: -moz-linear-gradient(

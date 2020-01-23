@@ -27,13 +27,13 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: 90%; position: absolute; left: 10px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
+                    <p style="color: white; width: auto; position: absolute; left: 10px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: 90%; padding:0; left: 10px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
+                    <p style="color: black; width: auto; padding:0; left: 10px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black;  position: absolute; left: 10px;width: 90%; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
+                    <p style="color: black;  position: absolute; left: 10px;width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
@@ -433,9 +433,9 @@
 
             <br>
             <!--------------------------- Layer Browser ------------------------->
-            <div class="container lightshadowbox" style="margin: 0; color: black; pointer-events: none;">Layers</div>
+            <div id="layerLabel" class="container lightshadowbox" style="margin: 0; color: black; pointer-events: none;">Layers</div>
             <div id="layerBrowser" class="container shadowbox unfocus" 
-                style="width: 100%; height: 75%; padding: 0; top: 150px; border: 2px solid blue; overflow-y: scroll;"></div>
+                style="max-width: none; margin: auto auto; width: 100%; height: 75%; min-height: 75px; padding: 0; top: 150px; border: 2px solid blue; overflow: scroll;"></div>
             
         </div>
         
@@ -489,10 +489,10 @@
                     </div>  
                 </div>
             </div>
-            <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 0;">
+            <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 10px;">
                 <!-- add progress bar here using js-->
             </div>
-            <div class="row" style="margin-top:1rem; margin-bottom:0; padding:0;">
+            <div class="row" style="margin-top:10px; margin-bottom:0; padding:0;">
                 <div class="col unfocus">
                     <!-----------------------Editor Box----------------------------------------------->
                     <div id="imageViewContainer" style="height: fit-content; width: auto; margin-left:auto;

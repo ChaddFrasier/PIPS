@@ -700,7 +700,7 @@ function makeDraggable(event){
 }
 // make div draggable
 function dragElement(elmnt) {
-    var pos2 = 0, pos4 = 0;
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
     if (elmnt) {
       /* if present, the header is where you move the DIV from:*/
       elmnt.onmousedown = dragMouseDown;
@@ -710,8 +710,9 @@ function dragElement(elmnt) {
         e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
-        
+        pos3 = e.clientX;
         pos4 = e.clientY;
+
         document.onmouseup = closeDragElement;
         // call a function whenever the cursor moves:
         document.onmousemove = elementDrag;
@@ -722,17 +723,20 @@ function dragElement(elmnt) {
         e.preventDefault();
         // calculate the new cursor position:
         pos2 = pos4 - e.clientY;
+        pos1 = pos3 - e.clientX;
 
         // set the element's new position:
-        if(pos2 < -63){
+        if(pos2 < -63 || pos1 < -100){
             pos4 = e.clientY;
+            pos3 = e.clientX;
           // mouse is moving downward
             moveChoiceTo(elmnt,-1);
             return dragElement(elmnt);
         }
         // set the element's new position:
-        else if(pos2 > 63){
+        else if(pos2 > 63 || pos1 > 100){
             pos4 = e.clientY;
+            pos3 = e.clientX;
             // mouse is moving downward
             moveChoiceTo(elmnt,1);
             return dragElement(elmnt);
@@ -2110,8 +2114,9 @@ function updateLayers(el){
                 el.firstElementChild.setAttribute("width","200");
                 el.firstElementChild.setAttribute("height","200");
                 el.setAttribute("transform","translate(0, 0) scale(.5)");
-                div.style.padding = "10%";
+                div.style.padding = "10px";
                 svg.appendChild(el);
+                svg.style.width = "auto";
                 div.appendChild(svg); 
                 dragElement(div);
                 layerBrowser.prepend(div);
@@ -2709,6 +2714,68 @@ function iconPlaced( icon ){
 }
 
 
+
+// TODO:
+
+function setScreen( type ){
+    var layerUI = document.getElementById("layerBrowser"),
+        layerLabel = document.getElementById("layerLabel"),
+        progressBar = document.getElementById("progressBarBox");
+    switch(type){
+        case "half": // set half screen
+
+            // dimensions
+            layerUI.style.height = "auto";
+            layerUI.style.margin = "2px";
+            layerUI.style.display = "flex";
+
+            // move the Layer Tab above the svg image
+            document.getElementsByClassName("mainbox-center")[0].insertBefore(layerUI, progressBar);
+            // set the right box width to 0%
+            document.getElementsByClassName("mainbox-right")[0].style.width = "0%";
+            document.getElementsByClassName("mainbox-right")[0].style.display = "none";
+
+            document.getElementsByClassName("mainbox-center")[0].style.marginRight = "0";
+            document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+
+            // set the width of the left box to 18% + 7%
+            document.getElementsByClassName("mainbox-left")[0].style.width = "25%";
+            break;
+
+        default: // set full screen
+
+            layerUI.style.height = "75%";
+            layerUI.style.display = "block";
+            layerUI.style.margin = "auto auto";
+
+            // move the Layer Tab to the right if svg image
+            layerLabel.insertAdjacentElement("afterend",layerUI);
+            // set the right box width to 7%
+            document.getElementsByClassName("mainbox-right")[0].style.width = "7%";
+            document.getElementsByClassName("mainbox-right")[0].style.display = "block";
+
+            document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
+            document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+
+            // set the width of the left box back to 18%
+            document.getElementsByClassName("mainbox-left")[0].style.width = "18%";
+            break;
+
+    }
+}
+
+
+function checkScreen(){
+    if(parseInt(screen.width/2) <= window.innerWidth){
+        // run the function to change the ui to full page mode
+        setScreen("full");
+    }
+    else{
+        // run the function to set the half screen UI
+        setScreen("half");
+    }
+}
+
 /**
  * @function replaceAll
  *
@@ -2728,6 +2795,10 @@ String.prototype.replaceAll = function(find, replace){
 
 /** When Document is loaded initialize the Jquery functions */
 $(document).ready(function(){
+
+    // set the timmer for the UI orientation detection
+    setInterval(checkScreen, 1000);
+
 
     // get image dimensions form the hidden div
     var dimDiv = document.getElementById("imageDimensions"),
@@ -3370,6 +3441,7 @@ $(document).ready(function(){
     /** --------------------------------- End Export Functions ------------------------------------------- */
 
     /** ---------------------------------- UI Interactions ----------------------------------------------- */
+
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
      * @function hideBtn 'mousedown' event handler
