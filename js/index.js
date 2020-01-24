@@ -165,6 +165,53 @@ function showHelp(btn){
     document.getElementById("help-box").style.visibility = "visible";
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
+
+/**
+ * @function createCookie
+ * 
+ * @param {string} cookieName 
+ * @param {string w/ no spaces} cookieValue the value that the cookie holds 
+ *          Note: if there are spaces in the value then you must encodeURICompenent(value) before calling 
+ * @param {number} daysToExpire 0 to reset 1 otherwise; could be anything though 
+ */
+function createCookie(cookieName,cookieValue,daysToExpire){
+    var date = new Date();
+    date.setTime(date.getTime()+(daysToExpire*24*60*60*1000));
+    document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toGMTString();
+}
+
+/**
+ * @function getCookie
+ * 
+ * @param {string} cname the name of the cookie value to find
+ * 
+ * @description reads all browser cookies and finds the cookie value with the given name
+ * 
+*/
+function getCookie(cname){
+    // atach the '=' to the name
+    var name = cname + "=";
+    // get the string version of the object
+    var decodedCookie = decodeURIComponent(document.cookie);
+    // get array of every cookie found
+    var cookieArr = decodedCookie.split(';');
+    // loop through the cookies and match the name
+    for(var i = 0; i < cookieArr.length; i++){
+        var cookie = cookieArr[i];
+        // if the first character is a space, find the start of the cookie name
+        while (cookie.charAt(0) == ' '){
+            // get a substring of the cookie with the ' ' removed
+            cookie = cookie.substring(1);
+        }
+        // if the cookie string contains the cname+'='
+        if (cookie.indexOf(name) == 0){
+            // return that cookie
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    // not found
+    return "";
+}
 /** ------------------------------------------ End Functions --------------------------------------------- */
 
 /** ------------------------------------------- Jquery --------------------------------------------------- */
@@ -190,6 +237,12 @@ $(document).ready(function(){
     }
 
 
+    if(getCookie("uscap") != ""){
+        createCookie("uscap","",0);
+    }
+    if(getCookie("usimg") != ""){
+        createCookie("usimg","",0);
+    }
     /**
      * @function helpBtn 'mousedown' event handler
      * 

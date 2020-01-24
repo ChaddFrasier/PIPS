@@ -386,6 +386,20 @@ function isDecimal( val ){
     return false;
 }
 
+/**
+ * @function createCookie
+ * 
+ * @param {string} cookieName 
+ * @param {string w/ no spaces} cookieValue the value that the cookie holds 
+ *          Note: if there are spaces in the value then you must encodeURICompenent(value) before calling 
+ * @param {number} daysToExpire 0 to reset 1 otherwise; could be anything though 
+ */
+function createCookie(cookieName,cookieValue,daysToExpire){
+    var date = new Date();
+    date.setTime(date.getTime()+(daysToExpire*24*60*60*1000));
+    document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toGMTString();
+}
+
 /** 
  * @function output
  * 
@@ -406,10 +420,11 @@ function output(rawText){
 
     rawText = rawText.replaceAll("\n", document.createElement("br").outerHTML);
 
+
     // for each key in the array
     for( const key of Object.keys( allMetaData )){
         // if the raw text contains the key
-        if(rawText.indexOf(key.trim()) > -1) {
+        if(rawText.indexOf(key.trim()) > -1 && key != " " && key != "") {
             // get the metadata from the key
             let val = getMetadataVal(key);
 
@@ -705,7 +720,15 @@ $(document).ready(function(){
     var varDiv = document.getElementById("pageVariables"),
         goForward = false;
 
-    
+        /* TODO: this function runs on history.back in chrome
+                - check for cookie
+                    - yes: update the text
+                    - no: use the default 
+        */
+       if(getCookie("uscap") && getCookie("uscap") !== ""){
+        console.log(decodeURIComponent(getCookie("uscap")));
+        document.getElementById("template-text").innerHTML = decodeURIComponent(getCookie("uscap"));
+    }
     //init history
     userHistory.object = document.getElementById("template-text");
     userHistory.back = [userHistory.object.innerText];
@@ -830,6 +853,10 @@ $(document).ready(function(){
      *              the image page when the user was there last
     */
     $("#imagePageBtn").mousedown(function(){
+        let text = document.getElementById("template-text").innerText.replaceAll("&gt;",">").replaceAll("&lt;","<")
+        // update the cookie to the new template text
+        createCookie("uscap",encodeURIComponent(text),.25);
+
         // if the image page is the last page
         if(document.referrer.indexOf("/imageEditor") > -1){
             window.history.back();
