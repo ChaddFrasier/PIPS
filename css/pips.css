@@ -175,6 +175,9 @@ text.user {
 
 button.paddingBtn {
     min-width: 2rem;
+    max-width: 5rem;
+    min-height: 2rem;
+    max-width: 5rem;
 }
 .menu {
     display: inline-flex;
@@ -196,7 +199,7 @@ button.paddingBtn {
 }
 
 .menubar {
-    pointer-events: visible;
+    pointer-events: all;
 }
 
 .dropdownMenu {
@@ -233,31 +236,14 @@ button.paddingBtn {
 		#fafafa 0%,
 		#ebe9e9 50%,
 		#e0dddd 92%,
-		#d6d6d6);
+		#d6d6d6) !important;
 	background: -webkit-gradient(
 		linear, left top, left bottom,
 		from(#fafafa),
 		color-stop(0.50, #ebe9e9),
 		color-stop(0.92, #e0dddd),
-        to(#d6d6d6));
+        to(#d6d6d6)) !important;
     color: black;
-}
-
-.dropdownItem :active{
-    background: -moz-linear-gradient(
-		top,
-		#fafafa 0%,
-		#ebe9e9 50%,
-		#e0dddd 92%,
-		#d6d6d6);
-	background: -webkit-gradient(
-		linear, left top, left bottom,
-		from(#fafafa),
-		color-stop(0.50, #ebe9e9),
-		color-stop(0.92, #e0dddd),
-        to(#d6d6d6));
-    color: black;
-    z-index: 6;
 }
 
 .dropdownItem {
@@ -267,13 +253,13 @@ button.paddingBtn {
 		#f0efef 0%,
 		#e0dfdf 50%,
 		#c5c5c5 92%,
-		#bebebe);
+		#bebebe) !important;
 	background: -webkit-gradient(
 		linear, left top, left bottom,
 		from(#f0efef),
 		color-stop(0.50, #e0dfdf),
 		color-stop(0.92, #c5c5c5),
-        to(#bebebe));
+        to(#bebebe)) !important;
     width: 100%;
     min-width: 150px;
     max-width: 400px;
@@ -574,9 +560,11 @@ label {
     border: 2px solid black !important;
     overflow: hidden;
     margin: auto auto;
-    min-width: 2.5rem;
-    min-height: 2rem;
-    max-height: 10rem;
+    min-width: 50px;
+    max-width: 5rem;
+    min-height: 50px;
+    max-height: 5rem;
+    
 }
 
 .buttonSm {

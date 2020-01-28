@@ -1431,36 +1431,37 @@ $(document).ready(function(){
      *          and then converting the file into to a blob
     */
     $("#logDownloadBtn").mousedown(function(event){
-        if(this.className.indexOf("disabled") <= -1){
-            fetch("log/" + getCookie("puiv"), {method:"GET"})
-                .then(function(response){
-                    // convert response to blob
-                    response.blob()
-                    .then((blob) => {
-                        // create the download link
-                        var a = document.createElement('a');
-                        // set the file name
-                        a.download = getCookie("puiv") + ".log";
-                        // set the href to the object url
-                        a.href = URL.createObjectURL(blob);
-                        a.target = "__blank";
-                        // add the link
-                        document.body.appendChild(a);
-                        // start download
-                        a.click();
-                        // remove link
-                        a.remove();
-                    });
-            }).catch(function(err){
-                if(err){
-                    console.log(err);
-                }
-            })
+        if(event.which === 1){
+            if(this.className.indexOf("disabled") <= -1){
+                fetch("log/" + getCookie("puiv"), {method:"GET"})
+                    .then(function(response){
+                        // convert response to blob
+                        response.blob()
+                        .then((blob) => {
+                            // create the download link
+                            var a = document.createElement('a');
+                            // set the file name
+                            a.download = getCookie("puiv") + ".log";
+                            // set the href to the object url
+                            a.href = URL.createObjectURL(blob);
+                            a.target = "__blank";
+                            // add the link
+                            document.body.appendChild(a);
+                            // start download
+                            a.click();
+                            // remove link
+                            a.remove();
+                        });
+                }).catch(function(err){
+                    if(err){
+                        console.log(err);
+                    }
+                })
+            }
+            else{
+                console.log("this is disbaled");
+            }
         }
-        else{
-            console.log("this is disbaled");
-        }
-        
     });
 }); // end document ready
 

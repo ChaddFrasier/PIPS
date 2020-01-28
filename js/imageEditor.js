@@ -869,6 +869,382 @@ function setSvgClickDetection(svg, mouseDetect){
 }
 
 
+function fixImage( cookieVal ){
+    if(cookieVal && cookieVal != "{}"){
+        // when this data structure comes back parse over the keys
+        //  and change the icons transform and color to what it was when the data was saved
+        // buttons and ui layers need to reflect the proper image
+        let data = JSON.parse(cookieVal);
+        let keys = Object.keys(data);
+
+        for( let i=0; i < keys.length; i++ ){
+            let key = keys[i],
+                val = data[key];
+            switch(key){
+                case "northPosition":
+                    $("#northIconFlag").mousedown();
+                    // check to see if the color needs to be changed
+                    document.getElementById(key).setAttribute("transform",val['transform']);
+                    // check if the box was chekced or not and fix it
+                    if( val["checked"] ){
+                        document.getElementById("northCheckboxSlider").click();
+                    }
+                    break;
+                
+                case "sunPosition":
+                    $("#sunIconFlag").click();
+                    // check to see if the color needs to be changed
+                    document.getElementById(key).setAttribute("transform",val['transform']);
+                    // check if the box was chekced or not and fix it 
+                    if( val["checked"] ){
+                        document.getElementById("sunCheckboxSlider").click();
+                    }      
+                    break;
+                
+                case "eyePosition":
+                    $("#eyeFlag").click();
+                    // check to see if the color needs to be changed
+                    document.getElementById(key).setAttribute("transform",val['transform']);
+                    // check if the box was chekced or not and fix it
+                    if( val["checked"] ){
+                        document.getElementById("eyeCheckboxSlider").click();
+                    }
+                    break;
+
+                case "scalebarPosition":
+                    $("#scaleBarButton").mousedown();
+                    // check to see if the color needs to be changed
+                    document.getElementById(key).setAttribute("transform",val['transform']);
+                    // check if the box was chekced or not and fix it
+                    if( val["checked"] ){
+                        document.getElementById("scaleCheckboxSlider").click();
+                    }
+                    break;
+
+                default:
+                    if(key.indexOf("outline") > -1){
+                        var color = val["color"],
+                        colorR = color.split(" ")[0],
+                        colorG = color.split(" ")[1],
+                        colorB = color.split(" ")[2];
+                      
+                        // break the color string apart
+                        colorR = parseInt(colorR.split("rgb(")[1]);
+                        colorG = parseInt(colorG);
+                        colorB = parseInt(colorB);
+                        
+                        $("#colorPickerBox").val(rgbToHex(colorR, colorG, colorB));
+                        $("#outlineBtn").mousedown();
+
+                        document.getElementById(activeLayer.id.replace("layer",""))
+                                                    .setAttribute("transform", val['transform']);
+                    }
+                    else if(key.indexOf("text") > -1){
+                        var color = val["color"],
+                        colorR = color.split(" ")[0],
+                        colorG = color.split(" ")[1],
+                        colorB = color.split(" ")[2];
+                      
+                        // break the color string apart
+                        colorR = parseInt(colorR.split("rgb(")[1]);
+                        colorG = parseInt(colorG);
+                        colorB = parseInt(colorB);
+                        // TODO:
+                        // 1. make a function to create a text box automatically given 
+                        //    color, text on the inside, and transform
+                        createNewElement("text",[color, val["innerHTML"], val["transform"]]);
+                    }
+                    else if(key.indexOf("line") > -1){
+                        var color = val["color"],
+                        colorR = color.split(" ")[0],
+                        colorG = color.split(" ")[1],
+                        colorB = color.split(" ")[2];
+                      
+                        // break the color string apart
+                        colorR = parseInt(colorR.split("rgb(")[1]);
+                        colorG = parseInt(colorG);
+                        colorB = parseInt(colorB);
+                        color = rgbToHex(colorR, colorG, colorB);
+                        // TODO:
+                        // 1. make a function to create a line automatically given 
+                        //    color, text on the inside, and transform
+                        // OR
+                        // 2. could maybe be done using outerHTML and just appending it to the body
+                        console.log(val["transform"])
+                        console.log(val["coords"])
+                        console.log(color)
+                        console.log(val["marker-start"])
+                        createNewElement("line", [color, val["transform"], val["coords"], val["marker-start"]])
+                    }
+                    else{
+                        console.log(key)
+                    }
+                    break;
+            }
+        }
+        return true;
+    }
+    else{
+        console.log("no cookie found");
+        return false;
+    }
+}
+
+//TODO: this function will need to extract the data needed for each object seperatly 
+    // also include all the defs except the default one
+
+    // icons -> transform, checkboxChecked
+    // outline -> transform, stroke
+    // text -> transform, stroke
+
+function createDataRepresentation(childArr){
+    var returnObj = {};
+    let tmp = "";
+    for(let i = 0; i < childArr.length; i++){
+        switch(childArr[i].nodeName){
+            case "g":
+                switch(childArr[i].id){
+                    // buttons store everything that is needed to reset the button icons
+                    case "northPosition":
+                        tmp = { 'transform': childArr[i].getAttribute("transform"),
+                            'checked': document.getElementById("northCheckboxSlider").checked
+                            }
+                        break;
+                    case "sunPosition":
+                        tmp = { 'transform': childArr[i].getAttribute("transform"),
+                            'checked': document.getElementById("sunCheckboxSlider").checked
+                            }
+                        break;
+
+                    case "eyePosition":
+                        tmp = { 'transform': childArr[i].getAttribute("transform"),
+                            'checked': document.getElementById("eyeCheckboxSlider").checked
+                            }
+                        break;
+
+                    case "scalebarPosition":
+                        tmp = { 'transform': childArr[i].getAttribute("transform"),
+                            'checked': document.getElementById("scaleCheckboxSlider").checked
+                            }
+                        break;
+
+                    default:
+                        if(childArr[i].firstElementChild.nodeName === "rect"){
+                            tmp = { 
+                                    'transform': childArr[i].getAttribute("transform"),
+                                    'color': childArr[i].style.stroke
+                                    }
+                        }
+                        else{
+                            // text element is being restored
+                            tmp = {
+                                'transform': childArr[i].getAttribute("transform"),
+                                'color': childArr[i].firstElementChild.getAttribute("stroke"),
+                                'innerHTML':childArr[i].firstElementChild.innerHTML
+                                }
+                        }
+                        
+                        break;    
+                }
+
+                returnObj[childArr[i].id] = tmp;    
+                break;
+
+            case "line":
+
+                tmp = { 'transform': childArr[i].getAttribute("transform"),
+                        'color': childArr[i].style.stroke,
+                        'marker-start': childArr[i].getAttribute("marker-start"),
+                        'coords': [childArr[i].getAttribute("x1"), childArr[i].getAttribute("y1"),
+                                    childArr[i].getAttribute("x2"), childArr[i].getAttribute("y2")]
+                        }
+    
+                returnObj[childArr[i].id] = tmp;
+                break;
+        }
+    }
+
+    return JSON.stringify(returnObj);
+}
+
+function createNewElement(elementType, argv){
+    switch(elementType){
+        case "text":
+            // text has 3 args, the transform, the color and the innerHTML
+            if(argv.length === 3)
+            {
+                // correct amount of args
+                
+                // Draw the scaleable and draggable group with the new text element dynamically
+                var text = document.createElementNS("http://www.w3.org/2000/svg","text"),
+                    g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                // draggable group 
+                g.setAttribute("class","draggable confine scaleable textbox");
+                g.setAttribute("x",0);
+                g.setAttribute("y",0);
+                // text attributes start location
+                text.setAttribute("x",0);
+                text.setAttribute("y",15);
+                // text offset location
+                text.setAttribute("dx",0);
+                text.setAttribute("dy",0);
+
+                // default the letter spacing for all browsers
+                text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
+                // font size
+                text.setAttribute("class","user");
+                // set draggable group defaults
+                g.setAttribute("height", 0);
+                g.setAttribute("width", 0);
+
+                // set the transform
+                g.setAttribute("transform",argv[2]);
+
+                // create rectangles on all corners for scaling the text
+                var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect.setAttribute("x",0);
+                rect.setAttribute("y",13);
+                rect.setAttribute("width", 5);
+                rect.setAttribute("height", 5);
+                rect.style.visibility = "hidden";
+                rect.setAttribute("class","resize bottom-left");
+                rect.setAttribute("fill","transparent");
+
+                var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect2.setAttribute("x",0);
+                rect2.setAttribute("y",1);
+                rect2.setAttribute("width", 5);
+                rect2.setAttribute("height", 5);
+                rect2.style.visibility = "hidden";
+                rect2.setAttribute("class","resize top-left");
+                rect2.setAttribute("fill","transparent");
+
+                var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect3.setAttribute("x",10);
+                rect3.setAttribute("y",1);
+                rect3.setAttribute("width", 5);
+                rect3.setAttribute("height", 5);
+                rect3.style.visibility = "hidden";
+                rect3.setAttribute("class","resize top-right");
+                rect3.setAttribute("fill","transparent");
+
+                var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect4.setAttribute("x",10);
+                rect4.setAttribute("y",13);
+                rect4.setAttribute("width", 5);
+                rect4.setAttribute("height", 5);
+                rect4.setAttribute("fill","transparent");
+                rect4.style.visibility = "hidden";
+                rect4.setAttribute("class","resize bottom-right");
+                // default pointer events
+                g.style.pointerEvents = "all"
+
+                // set the innerHTML of the text element to arg 1
+                text.innerHTML = argv[1];
+
+                // append the scaleing corners and text to the group in sopecific order
+                g.appendChild(text);
+                g.appendChild(rect);
+                g.appendChild(rect2);
+                g.appendChild(rect3);
+                g.appendChild(rect4);
+
+
+                text.setAttribute("stroke", argv[0]);
+                text.setAttribute("fill", argv[0]);
+
+                // set the stroke of the text and append the elements
+                text.setAttribute("stroke-width","1");
+
+                svg.appendChild(g);
+                g.setAttribute("id", "text" + objectIds++);
+                
+                // add the new element to he layer browser
+                updateLayers(g.cloneNode(true));
+
+                $("#colorPickerBox").val("#ffffff");
+                // set the scaling boxes x value to the end of the bbox
+                // this auto finds the relative length of the text element
+                let bbox = g.getBBox();
+                if(argv[1].length > 1) {
+                    rect3.setAttribute("x", bbox.width - 2);
+                    rect4.setAttribute("x", bbox.width - 2);
+                }
+                // track the new text element
+                textBoxArray.push(g);
+            }
+
+            break;
+        
+        case "line":
+            if(argv.length === 4){
+                let markerStart = argv[3],
+                NS = "http://www.w3.org/2000/svg";
+
+            
+            let tmpArray = argv[2];
+
+            // create the new  line dynamically and add it to the array so we can remove it later if needed
+            line = document.createElementNS(NS,"line");
+            line.setAttribute("id","line" + lineArr.length);
+            line.setAttribute("class","draggable confine");
+            line.setAttribute("transform",  argv[1] );
+            line.setAttribute("x1", tmpArray[0]);
+            line.setAttribute("y1", tmpArray[1]);
+            line.setAttribute("x2", tmpArray[2]);
+            line.setAttribute("y2", tmpArray[3]);
+            line.style.visibility = "visible";
+
+            if(markerStart !== null){
+                // if arrow with default color 
+                if(!argv[1] || argv[1] === "#ffffff"){
+                     line.setAttribute("marker-start","url(#arrow)");
+                }
+                // if the array is linger than 1 and the color is not default
+                else if(lineArr.length > 0 || argv[1] !== "#ffffff"){
+                    var markerId = "arrow" + lineArr.length,
+                        pathId = "arrowPath" + lineArr.length,
+                        newDef = document.getElementById("arrowDef").cloneNode();
+
+                    newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                    newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                    line.setAttribute("marker-start", String("url(#" + markerId + ")"));
+                    (newDef.childNodes).forEach(childElem => {
+                        // if the childElement has a child
+                        if(childElem.childElementCount > 0){
+                            childElem.setAttribute("id", markerId);
+                            childElem.childNodes[1].setAttribute("fill", argv[0]);
+                            childElem.childNodes[1].setAttribute("id", pathId);
+                        }
+                    });
+                    svg.prepend(newDef);
+                }
+            }
+
+            // check to see if it is a custom color
+            if(argv[1]){
+                line.style.stroke = argv[0];
+                if(pathId){
+                    document.getElementById(pathId).style.fill = argv[0];
+                    document.getElementById(pathId).style.stroke = argv[0];
+                }
+            }
+            else{
+                line.style.stroke = "white";
+            }
+            
+            line.style.strokeWidth = 10;
+     
+            svg.appendChild(line);
+
+            lineArr.push(line);
+            updateLayers(line.cloneNode());
+            }
+            break;
+    }
+}
+
 /**
  * @function captionHandler
  * 
@@ -876,8 +1252,12 @@ function setSvgClickDetection(svg, mouseDetect){
  *      goes back if true, otherwise calls an open to the server to get the page
 */
 function captionHandler(){
+    // update cookie
+    createCookie("usimg", encodeURIComponent(createDataRepresentation(svg.childNodes)), .5);
+
     // if the last window seen was captionWriter then go back to preserve changes
     if(document.referrer.indexOf("/captionWriter") > -1){
+        // go back
         window.history.back();
     }
     else{
@@ -2099,7 +2479,7 @@ function updateLayers(el){
             if( el.getAttribute("id") && el.getAttribute('id').indexOf("text") > -1 ){
                 div.innerHTML = el.children[0].innerHTML;
                 div.style.height = "50px";
-                div.style.color = userTextColor ? userTextColor : "#ffffff";
+                div.style.color = el.children[0].getAttribute("stroke") ? el.children[0].getAttribute("stroke") : "#ffffff";
                 div.style.textAlign = "center";
                 el.setAttribute("transform","translate(0, 0) scale(.5)");
                 div.style.verticalAlign = "center"; 
@@ -2716,49 +3096,54 @@ function iconPlaced( icon ){
 
 
 // TODO:
-
+var halfScreen = false;
 function setScreen( type ){
     var layerUI = document.getElementById("layerBrowser"),
         layerLabel = document.getElementById("layerLabel"),
         progressBar = document.getElementById("progressBarBox");
     switch(type){
         case "half": // set half screen
+            if(!halfScreen){
+                // dimensions
+                layerUI.style.height = "auto";
+                layerUI.style.margin = "2px";
+                layerUI.style.display = "flex";
 
-            // dimensions
-            layerUI.style.height = "auto";
-            layerUI.style.margin = "2px";
-            layerUI.style.display = "flex";
+                // move the Layer Tab above the svg image
+                document.getElementsByClassName("mainbox-center")[0].insertBefore(layerUI, progressBar);
+                // set the right box width to 0%
+                document.getElementsByClassName("mainbox-right")[0].style.width = "0%";
+                document.getElementsByClassName("mainbox-right")[0].style.display = "none";
 
-            // move the Layer Tab above the svg image
-            document.getElementsByClassName("mainbox-center")[0].insertBefore(layerUI, progressBar);
-            // set the right box width to 0%
-            document.getElementsByClassName("mainbox-right")[0].style.width = "0%";
-            document.getElementsByClassName("mainbox-right")[0].style.display = "none";
+                document.getElementsByClassName("mainbox-center")[0].style.marginRight = "0";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
 
-            document.getElementsByClassName("mainbox-center")[0].style.marginRight = "0";
-            document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
-
-            // set the width of the left box to 18% + 7%
-            document.getElementsByClassName("mainbox-left")[0].style.width = "25%";
+                // set the width of the left box to 18% + 7%
+                document.getElementsByClassName("mainbox-left")[0].style.width = "25%";
+                halfScreen = !halfScreen;
+            }
             break;
 
         default: // set full screen
 
-            layerUI.style.height = "75%";
-            layerUI.style.display = "block";
-            layerUI.style.margin = "auto auto";
-
-            // move the Layer Tab to the right if svg image
-            layerLabel.insertAdjacentElement("afterend",layerUI);
-            // set the right box width to 7%
-            document.getElementsByClassName("mainbox-right")[0].style.width = "7%";
-            document.getElementsByClassName("mainbox-right")[0].style.display = "block";
-
-            document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
-            document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
-
-            // set the width of the left box back to 18%
-            document.getElementsByClassName("mainbox-left")[0].style.width = "18%";
+            if(halfScreen){
+                layerUI.style.height = "75%";
+                layerUI.style.display = "block";
+                layerUI.style.margin = "auto auto";
+    
+                // move the Layer Tab to the right if svg image
+                layerLabel.insertAdjacentElement("afterend",layerUI);
+                // set the right box width to 7%
+                document.getElementsByClassName("mainbox-right")[0].style.width = "7%";
+                document.getElementsByClassName("mainbox-right")[0].style.display = "block";
+    
+                document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+    
+                // set the width of the left box back to 18%
+                document.getElementsByClassName("mainbox-left")[0].style.width = "18%";
+                halfScreen = !halfScreen;
+            }
             break;
 
     }
@@ -2775,6 +3160,21 @@ function checkScreen(){
         setScreen("half");
     }
 }
+
+/**
+ * @function createCookie
+ * 
+ * @param {string} cookieName 
+ * @param {string w/ no spaces} cookieValue the value that the cookie holds 
+ *          Note: if there are spaces in the value then you must encodeURICompenent(value) before calling 
+ * @param {number} daysToExpire 0 to reset 1 otherwise; could be anything though 
+ */
+function createCookie(cookieName,cookieValue,daysToExpire){
+    var date = new Date();
+    date.setTime(date.getTime()+(daysToExpire*24*60*60*1000));
+    document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toGMTString();
+}
+
 
 /**
  * @function replaceAll
@@ -2798,7 +3198,6 @@ $(document).ready(function(){
 
     // set the timmer for the UI orientation detection
     setInterval(checkScreen, 1000);
-
 
     // get image dimensions form the hidden div
     var dimDiv = document.getElementById("imageDimensions"),
@@ -2903,7 +3302,7 @@ $(document).ready(function(){
     var northObjectString = '<g id="northPosition" class="draggable confine scaleable" transform-origin="50%; 50%;"'
     + 'transform="translate(100, 100) rotate(0) scale(.2439026)" stroke-width="10"'
     + 'style="border:0; padding:0; pointer-events:visible;">\n'
-    + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" fill="black"/>\n'
+    + '<rect x="0" y="0" id="northBG"style="visibility: visible;"width="200" height="400" stroke="black" fill="black"/>\n'
     + '<rect x="0" y="0" class="resize top-left" style="visibility: hidden;"'
     + 'width="100" height="100" fill="transparent"/>\n'
     + '<rect x="100" y="0" class="resize top-right" style="visibility: hidden;"width="100" height="100"'
@@ -3139,6 +3538,7 @@ $(document).ready(function(){
 
     // set the arrow directions and recieve the data
     getMetadata();
+
 
     /** ------------------------------- Export Functions ------------------------------------------------- */
 
@@ -3440,7 +3840,8 @@ $(document).ready(function(){
 
     /** --------------------------------- End Export Functions ------------------------------------------- */
 
-    /** ---------------------------------- UI Interactions ----------------------------------------------- */
+    /** ---------------------------------- Cache Function ----------------------------------------------- */
+  
 
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
@@ -5125,6 +5526,29 @@ $(document).ready(function(){
     });
 
 
+    function markerExists( color ){
+        let markers = document.querySelectorAll("marker");
+
+        markers.forEach((el) => {
+            if(color === el.firstElementChild.getAttribute("fill")){
+                return true;
+            };
+        });
+        return false;
+    }
+
+    function getMarkerStartFor( color ){
+        let markers = document.querySelectorAll("marker");
+
+        markers.forEach((el) => {
+            if(color === el.firstElementChild.getAttribute("fill")){
+                return el.getAttribute("id");
+            };
+        });
+    }
+
+
+
     /**
      * @function svgWrapper 'click' event handler
      * 
@@ -5171,11 +5595,15 @@ $(document).ready(function(){
 
             if(isArrowHead){
                 // if arrow with default color 
-                if(!userLineColor || userLineColor === "#ffffff"){
+                if(userLineColor === "#ffffff" || !userLineColor ){
                      line.setAttribute("marker-start","url(#arrow)");
+                }
+                else if( markerExists(userLineColor) ){
+                    line.setAttribute("marker-start", getMarkerStartFor(userLineColor));
                 }
                 // if the array is linger than 1 and the color is not default
                 else if(lineArr.length > 0 || userLineColor){
+
                     var markerId = "arrow" + lineArr.length,
                     pathId = "arrowPath" + lineArr.length,
                     newDef = document.getElementById("arrowDef").cloneNode();
@@ -5279,6 +5707,9 @@ $(document).ready(function(){
  * @description run the logic to start the page
 */
 $(window).bind('pageshow', function(event){
+
+    // update the image based on the cookie
+    fixImage(getCookie("usimg"));
 
     // call to fetch the data from the server
     fetch("/getData",
