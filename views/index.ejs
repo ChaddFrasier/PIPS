@@ -134,9 +134,8 @@
                                     <div class="row">
                                         <div class="col-2" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
                                         <div class="col-6" style="padding: 0; padding-left: 10%;">
-                                            <label class="switch index">
-                                                <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N"
-                                                style="left:0;">
+                                            <label class="switch index" style="right: 0;">
+                                                <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N">
                                                 <span class="slider round" id="logAnimation"></span>
                                             </label> 
                                         </div>
@@ -275,14 +274,14 @@
                                         </label>
                                         <br/>
                                         <button type="button" id="mosaicBtn" class="template btn btn-md button" 
-                                        style="width: 100%">Mosaic</button>
+                                        style="width: 100%; max-width:none; font-size: small">Mosaic</button>
                                     </div>
                                     <div class="col">
                                         <label for="mapProjectedBtn" style="font-size: medium; color:black;">
                                                 Template 2
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small;"
                                          id="mapProjectedBtn">Map Projected</button>
                                     </div>
                                     <div class="col">
@@ -290,7 +289,7 @@
                                                 Template 3
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small"
                                         id="compositeBtn">Composite</button>
                                     </div>
                                     <!-- Placeholder buttons for more templates later -->
@@ -328,7 +327,7 @@
                         <!-- Submit button -->
                         <div class="row" style="height: 10%; margin-top: 1%;">
                             <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                                style="width: auto; margin:auto auto; border: 1px solid black;" 
+                                style="width: auto; margin:auto auto;  font-size: small; border: 1px solid black;" 
                                 title="Submit Upload" onclick="loaderActivate()" />
                         </div>
                     </form>

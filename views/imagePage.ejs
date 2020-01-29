@@ -27,13 +27,13 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: auto; position: absolute; left: 10px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
+                    <p style="color: white; width: auto; position: absolute; left: 10px; top:210px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: auto; padding:0; left: 10px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
+                    <p style="color: black; width: auto; padding:0; left: 10px; top: 258px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black;  position: absolute; left: 10px;width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
+                    <p style="color: black;  position: absolute; left: 10px; top: 300px; width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
@@ -46,7 +46,7 @@
                             title="Alt + N">
                         <div class="col-4" style="margin: auto auto;">
                             <p class="float-left" style="padding-left: 2% ;margin-right:.5rem; height: 100%; font-size: 70%;">
-                                North Azimuthal Direction
+                                North Direction
                             </p>
                         </div>
                         <div class="col-4" style="text-align:center; margin: auto auto; padding: 2%;">
@@ -60,7 +60,7 @@
                             </svg>
                         </div>
                         <div class="col-4" style="padding-right: 20%;">
-                            <p id="northCheckboxLabel" style="visibility: hidden; font-size: 100%;">Toggle Color</p>
+                            <p id="northCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
                             <label class="switch" id="northCheckbox" style="visibility: hidden;" title="Shift + Alt + N">
                                 <input type="checkbox" id="northCheckboxSlider"
                                 style="margin: auto auto; margin-bottom: 0;">
@@ -72,7 +72,7 @@
                     <div class="row" role="table"title="Alt + S" style="padding-bottom: 1%;">
                         <div class="col-4" style="margin: auto auto;">
                             <p class="float-left" style="padding-left: 3%;margin-right: .5rem; height: 80%; font-size: 70%;">
-                                Sun Azimuthal<br/>Direction
+                                Sun<br/>Direction
                             </p>
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
@@ -84,7 +84,7 @@
                             </svg>
                         </div>
                         <div class="col-4" style="padding-right: 20%;">
-                            <p id="sunCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <p id="sunCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
                             <label class="switch" id="sunCheckbox" style="visibility: hidden;" title="Shift + Alt + S">
                                 <input type="checkbox" id="sunCheckboxSlider" 
                                 style="margin: auto auto; margin-bottom: 0;">
@@ -96,7 +96,7 @@
                     <div class="row" role="table" title="Alt + O">
                         <div class="col-4" style="margin: auto auto;">
                             <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: 70%; padding-left: 3%;">
-                                Observer Azimuthal<br/>Direction
+                                Observer<br/>Direction
                             </p>
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
@@ -109,7 +109,7 @@
                             </svg>
                         </div>
                         <div class="col-4" style="padding-right: 20%;">
-                            <p id="eyeCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <p id="eyeCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
                             <label class="switch" id="eyeCheckbox" style="visibility: hidden;" title="Shift + Alt + O">
                                 <input type="checkbox" id="eyeCheckboxSlider" 
                                 style="margin: auto auto; margin-bottom: 0;">
@@ -123,7 +123,7 @@
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 2%;">
                             <button class="btn btn-lg button" id="scaleBarButton"
-                            style="width:100%; padding:1%; color: black; min-width: 4rem; min-height: 1rem; padding-top: 0;">
+                            style="width:100%; padding:1%; color: black; min-width: 4rem; padding-top: 0;">
                                 <svg id="scalebar" viewBox= "0 0 25 4">
                                     <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width="1.75" 
                                     stroke="black" fill="white" ></rect>
@@ -150,7 +150,7 @@
                             </button>
                         </div>
                         <div class="col-4">
-                            <p id="scaleCheckboxLabel" style="visibility: hidden;">Toggle Color</p>
+                            <p id="scaleCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
                             <label class="switch" id="scaleCheckbox" style="visibility: hidden;" title="Shift + Alt + R">
                                 <input type="checkbox" id="scaleCheckboxSlider"
                                 style="margin: auto auto; margin-bottom: 0;">
@@ -170,8 +170,8 @@
                             </p>
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button id="pencilIconFlag" class="btn btn-lg button" style="padding: 0; width:100%;">
-                                <svg viewBox="10 5 100 100" width="100%" height="100%" style="padding:0;">
+                            <button id="pencilIconFlag" class="btn btn-lg button" style="padding: 3px; width:100%;">
+                                <svg viewBox="10 8 100 100" width="100%" height="100%" style="padding:0;">
                                     <rect x="75" y="-25" width="9%" height="75%" fill="black"
                                     stroke="black" transform="rotate(35)"></rect>
                                     <rect x="86" y="-25" width="3%" height="75%" fill="black"
@@ -195,7 +195,7 @@
                                     <span class="slider round" id="arrowAnimation"></span>
                                 </label>
                                 <br>
-                                <p id="arrowCheckboxLabel" style="margin: auto 0; font-size: 50%; width: 100%;">Add Arrow Head</p>
+                                <p id="arrowCheckboxLabel" style="margin: auto 0; font-size: 75%; width: 100%;">Add Arrow Head</p>
                             </div>
                         </div>
                     </div>
@@ -208,8 +208,9 @@
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
                             <button class="btn btn-lg button" id="outlineBtn" 
-                            style="width:100%; color:black; padding:5%;">
-                                <svg viewBox="0 0 75 50" width="100%" height="100%" style="padding: 0%;"><rect x="0" y="0" width="75" height="50" 
+                            style="width:100%; color:black; padding:2%;">
+                                <svg viewBox="-3 -10 80 60" width="100%" height="100%" style="padding: 5px;">
+                                    <rect x="0" y="0" width="73" height="50" 
                                     stroke="white" stroke-width="5" fill="transparent"></rect>
                                 </svg>
                             </button>
@@ -227,7 +228,7 @@
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
                             <button class="btn btn-lg button" id="textBtn" 
                             style="width:100%; color: black; padding: 10%;">
-                                <svg viewBox="0 0 20 10" width="100%">
+                                <svg viewBox="-2 -4 23 15" width="100%">
                                     <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
                                     fill="transparent"></rect>
                                     <text x="3" y="8" font-size="9">Aa</text>
@@ -258,7 +259,7 @@
                                 id="paddingInput" type="text" placeholder="Pad Pixels"/>
                             </div>
                             <div class="col-4" style="padding:0;">
-                                <button  style=" width: 100%;" class="btn btn-danger btn-md button paddingBtn"
+                                <button  style=" width: 100%; font-size: small;" class="btn btn-danger btn-md button paddingBtn"
                                 id="resetPaddingBtn" title="Reset Padding">
                                     Reset
                                 </button>
@@ -312,7 +313,7 @@
                         </div>
                         <div class="col-4" style="padding: 1%; padding-top: 0; margin: auto auto;">
                             <button id="resizeUpdateBtn" class="btn btn-lg button"
-                            style="width: 100%; padding: 1%; font-size: 100%;">
+                            style="width: 100%; padding: 1%; font-size: small;">
                                 Update
                             </button>
                         </div>
@@ -328,7 +329,7 @@
                             </div>
                             <div class="col-8" style="margin: auto auto;">
                                 <button class="btn btn-primary btn-lg button"
-                                style="height: 75%;margin: auto auto;" id="exportBtn">
+                                style="height: 50%; margin: auto auto;" id="exportBtn">
                                     <svg viewBox="0 0 100 100" stroke-width="10">
                                         <path d="M 5 40 L 5 95 L 95 95 L 95 40" stroke="black" fill="transparent"/>
                                         <path d="M 50 20 L 50 90 L 70 60 L 50 90 L 30 60 L 50 91" stroke-width="8"
