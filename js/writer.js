@@ -754,12 +754,12 @@ $(document).ready(function(){
     fetch("/log/" + getCookie("puiv") + "?isTest=true",{method:"GET"})
     .then(function(response){
         if(Number(response.status) !== 200){
-            document.getElementById("logDownloadBtn").className += " disabled";
-            document.getElementById("logDownloadBtn").style.background = "darkgrey";
+            document.getElementById("logDownloadBtn").classList.add("disabled");
+            document.getElementById("logDownloadBtn").style.background = "grey";
         }
         else{
             document.getElementById("logDownloadBtn").className = "dropdownItem btn";
-            document.getElementById("logDownloadBtn").style.background = "inherit";          
+            document.getElementById("logDownloadBtn").style.background = "inherit";
         }
     }).catch(function(err){
         console.log(err);       

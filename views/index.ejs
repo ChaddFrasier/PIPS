@@ -20,56 +20,57 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script src="js/index.js"></script>
     </head>
-    <body style="overflow-x: hidden;">
-        <!-- left -->
-        <div class="mainbox-left" style="width: 15%; height: 100%; padding:0;">
-            <!-- USGS Logo -->
-            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto" 
-            style="margin: 0%; padding: 0%">
-            <br>
-            <!-- Help Box -->
-            <div id="help-box" class="help-box float-left" 
-            style="visibility: hidden; width:25%; bottom: 20%; position: absolute; margin-left: 1%; margin-right:0;">
-                <button class="float-right button" id="hideBtn" 
-                style="width: 1.75rem; min-width:1.75rem; min-height:1.75rem; height:auto; border-radius: 5px; 
-                border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-                background-color: rgba(39, 109, 200); color: darkred;">
-                    &times;
-                </button>
-                <div class="container title" style="background: whitesmoke; ">
-                    <cite>Upload Walkthough</cite>
-                </div>
-                <div class="row lead">
-                     1. Select the cube or tiff file you would like to use in your figure. (No Larger than 2GB)
-                    <p class="small-text">Uploading a .tif file will take longer than a cube file</p>
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline;">
-                     2. Select the figure and image size from the buttons in the box<br/><br/>
-                                       2a. Leave both boxes blank to default to 500dpi at 3 inches.<br/><br/>
-                                       2b. You can also input custom dimensions smaller that 5000 px in both directions
-                </div>
-                <br/>
-                <br/>
-                <div class="row lead">
-                    3. If you would like to view the ISIS Process outputs check the 'Log To File' checkbox in the options box.
-                </div>
-                <br/>
-                <div class="row lead"> 4. Select a template file default from the option buttons or upload your own.
-                    <a href="/tpl" style="background-color: transparent;">
-                        What is a Template File?</a> <br/>
-                    <p class="small-text"> (leave it blank to start with the server default)</p>
-                </div>
-                
-                <br/>
-                <div class="row lead"> 5. Click Upload.</div>
-            </div>
-        </div>
+    <body style="overflow-x: hidden; height: 100%;">
+        
 
         <!-- center -->
-        <div class="mainbox-center" style="width: 75%; height: 100%; background-color: rgba(99,88,94,0.65); padding: 1rem;
-        margin: 0 0 0 15%; border: 3px solid rgba(255, 255,255, .65)">
-            <div class="row">
+        <div class="mainbox-center" style="width: 100%; height: 100%; background-color: rgba(99,88,94,0.65); padding: 1rem;
+        margin: 0 0 0 0; border: 3px solid rgba(255, 255,255, .65)">
+        <!-- USGS Logo -->
+        <div style="position: relative; top: 0; left: 0; width: 300px; height: auto;">
+            <img src="../images/usgsLogo.png" class="float-md-left" width="75%" height="auto" 
+            style="margin: 0%; padding: 0%; top: 20px; position:absolute">    
+        </div>
+        
+        <br>
+        <!-- Help Box -->
+        <div id="help-box" class="help-box float-left" 
+        style="visibility: hidden; width:25%; bottom: 20%; position: absolute; margin-left: 1%; margin-right:0;">
+            <button class="float-right button" id="hideBtn" 
+            style="width: 1.75rem; min-width:1.75rem; min-height:1.75rem; height:auto; border-radius: 5px; 
+            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+            background-color: rgba(39, 109, 200); color: darkred;">
+                &times;
+            </button>
+            <div class="container title" style="background: whitesmoke; ">
+                <cite>Upload Walkthough</cite>
+            </div>
+            <div class="row lead">
+                 1. Select the cube or tiff file you would like to use in your figure. (No Larger than 2GB)
+                <p class="small-text">Uploading a .tif file will take longer than a cube file</p>
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline;">
+                 2. Select the figure and image size from the buttons in the box<br/><br/>
+                                   2a. Leave both boxes blank to default to 500dpi at 3 inches.<br/><br/>
+                                   2b. You can also input custom dimensions smaller that 5000 px in both directions
+            </div>
+            <br/>
+            <br/>
+            <div class="row lead">
+                3. If you would like to view the ISIS Process outputs check the 'Log To File' checkbox in the options box.
+            </div>
+            <br/>
+            <div class="row lead"> 4. Select a template file default from the option buttons or upload your own.
+                <a href="/tpl" style="background-color: transparent;">
+                    What is a Template File?</a> <br/>
+                <p class="small-text"> (leave it blank to start with the server default)</p>
+            </div>
+            
+            <br/>
+            <div class="row lead"> 5. Click Upload.</div>
+        </div>
+            <div class="row" style="width: 65%; margin: auto;">
                 <div class="text-center stroke-wide" style="border: 0px solid black; margin: auto auto;">
                     <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1>
                     <h4 class="display-5" style="color: white">
@@ -97,7 +98,7 @@
                 </div>
             </div>
             <br/>
-            <div class="row" style="height: 80%;">
+            <div class="row" style="height: 85%;">
                 <!-- Input Area -->
                 <div class="container float-center" style="margin-left:auto; margin-right: auto;">
                     <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
@@ -345,67 +346,65 @@
             <p id="alertCode"><%= alertCode %></p>
         </div>
 
-        <!-- right-->
-        <div class="mainbox-right">
-            <!-- Alert Boxes -->
-            <div id="info-alert" style= "visibility:hidden; position:absolute; right: 0; top: 45%;" 
-            class = "alert alert-success text-center alertBoxes">
-                <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                    &times;
-                </button>
-                Upload a .cub file
-            </div>
-            
-            <div id="fail-alert" style= "visibility:hidden; position:absolute; top: 66%; right: 0%;" 
-            class = "alert alert-primary text-center">
-                <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                    &times;
-                </button>
-                Previous User has no server data. Start with Upload.
-            </div>
-            <div id="fail-image" style= "visibility:hidden; position:absolute; right:0; top: 59%;" 
-            class = "alert alert-danger text-center">
-                <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                    &times;
-                </button>
-                Failed to create image from Upload.
-            </div>
-            <div id="fail-upload" style= "visibility:hidden; position:absolute; right: 0; top: 59%;" 
-            class = "alert alert-danger text-center">
-                <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
-                    &times;
-                </button>
-                Failed to Upload.
-            </div>
-            <div id="tplAlert" style= 'visibility:hidden; position:absolute;right: 0; top: 52%;' 
-            class = "alert alert-success text-center" role="alert">
-                <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
-                onclick="setNotVisible(this)">
-                    &times;
-                </button>
-                        
-                Template must be (.tpl) or left blank.
-            </div>
     
-            <div id="server-timeout" style= 'visibility:hidden; position:absolute; top: 66%; right: 0%;' 
-            class = "alert alert-primary text-center" role="alert">
-                    <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
-                    onclick="setNotVisible(this)">
-                    &times;
-                    </button>
-                            
-                    Unknown User: Please Upload a Cube to Begin.
-                </div>
-    
-            <div id="server-isis" style= 'visibility:hidden; position:absolute; top: 8%; right: 0%;' 
-            class = "alert alert-dark text-center" role="alert">
+        <!-- Alert Boxes -->
+        <div id="info-alert" style= "visibility:hidden; position:absolute; right: 0; top: 45%;" 
+        class = "alert alert-success text-center alertBoxes">
+            <button id="infoBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Upload a .cub file
+        </div>
+        
+        <div id="fail-alert" style= "visibility:hidden; position:absolute; top: 66%; right: 0%;" 
+        class = "alert alert-primary text-center">
+            <button id="failBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Previous User has no server data. Start with Upload.
+        </div>
+        <div id="fail-image" style= "visibility:hidden; position:absolute; right:0; top: 59%;" 
+        class = "alert alert-danger text-center">
+            <button id="failImageBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Failed to create image from Upload.
+        </div>
+        <div id="fail-upload" style= "visibility:hidden; position:absolute; right: 0; top: 59%;" 
+        class = "alert alert-danger text-center">
+            <button id="failUploadBtn"class = "close" aria-hidden = "true" onclick="setNotVisible(this)">
+                &times;
+            </button>
+            Failed to Upload.
+        </div>
+        <div id="tplAlert" style= 'visibility:hidden; position:absolute;right: 0; top: 52%;' 
+        class = "alert alert-success text-center" role="alert">
+            <button id="tplBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+            onclick="setNotVisible(this)">
+                &times;
+            </button>
+                    
+            Template must be (.tpl) or left blank.
+        </div>
+
+        <div id="server-timeout" style= 'visibility:hidden; position:absolute; top: 66%; right: 0%;' 
+        class = "alert alert-primary text-center" role="alert">
                 <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
                 onclick="setNotVisible(this)">
-                    &times;
+                &times;
                 </button>
                         
-                Server Error: ISIS3 is not running.
+                Unknown User: Please Upload a Cube to Begin.
             </div>
+
+        <div id="server-isis" style= 'visibility:hidden; position:absolute; top: 8%; right: 0%;' 
+        class = "alert alert-dark text-center" role="alert">
+            <button id="timeBtn" class = "close" data-dismiss = "alert" aria-hidden = "true" 
+            onclick="setNotVisible(this)">
+                &times;
+            </button>
+                    
+            Server Error: ISIS3 is not running.
         </div>
     </body>
 </html>

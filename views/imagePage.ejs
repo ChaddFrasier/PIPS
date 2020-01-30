@@ -27,13 +27,13 @@
             <!-- New UI with a tabular menu -->
             <div class="tabs">
                 <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: auto; position: absolute; left: 10px; top:210px; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
+                    <p style="color: white; width: auto; position: absolute; left: 10px; top:auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: auto; padding:0; left: 10px; top: 258px; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
+                    <p style="color: black; width: auto; padding:0; left: 10px; top: auto; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
                 </button>
                 <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black;  position: absolute; left: 10px; top: 300px; width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
+                    <p style="color: black;  position: absolute; left: 10px; top: auto; width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
                 </button>
             </div>
             <!-- Tabular Menu System -->
@@ -473,13 +473,13 @@
                         </a>
                     </div>
                     <div class="col-4 unfocus" style="display: flex; margin: auto auto; padding-left: 8%;">
-                        <h5 style="width: 30%; font-size:large; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
+                        <h5 style="width: 30%; font-size:medium; text-align:left; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
                         <!-- Rounded switch -->
-                        <label class="switch" style="scale: 1.15;">
+                        <label class="switch" style="scale: 1.15; left: 0;">
                             <input id="viewOption" type="checkbox">
                             <span class="slider round"></span>
                         </label>
-                        <h5 style="width: 30%; color: white; padding-top: 2%; font-size: large">Box Fit</h5>    
+                        <h5 style="width: 30%; color: white; padding-top: 2%; font-size: medium">Box Fit</h5>    
                     </div>
                     <div class="col-4 unfocus">
                         <button class="btn dropdownItem btn-lg float-right" onclick="captionHandler()"

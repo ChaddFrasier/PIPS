@@ -18,76 +18,72 @@
         <script src="js/writer.js"></script>
     </head>
     <body>
-        <!-- Left Box -->
-        <div class="mainbox-left" style="width: 10%;">
-            <img src="../images/usgsLogo.png" class="float-md-left" width="100%" height="auto" 
-            style="margin: 0%; padding: 0%">
-            <br>
-
-            <!-- Help Box -->
-            <div class="help-box" id="help-box" style="visibility: hidden;
-             margin-right: 2%; margin-top: 10%; padding-bottom: 0;">
-                <button class="float-right button" id="hideBtn" 
-                style="width: 1.75rem; height:1.75rem; min-width: 1.75rem; min-height: 1.75rem; border-radius: 5px; 
-                border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-                background-color: rgba(39, 109, 200); color: darkred;">
-                    &times;
-                </button>
-                <div class="container title" style="background: whitesmoke;">
-                    <cite>Help</cite>
-                </div>
-                <div class="row lead" style="display: inline"> 
-                    1. <cite>Edit</cite> your caption in the bottom right box.
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline">
-                    2. <cite>Copy & Paste</cite> tags from the bottom left box into your caption. 
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline"> 3. <cite>Add Custom Keys</cite> 
-                    by clicking the green plus button in the left box and filling out the required fields.
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline"> 4. <cite>Search</cite> 
-                    for key words in the current tags by typing in the search bar.
-                    <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline"> 
-                    5. <cite>Download</cite> the finished text you created or export the data as a csv file.
-                    <p class="small-text">(Use the 'Save to Clipboard' button to copy the output box)</p>
-                </div> 
-                <br/>
-                <div class="row lead" style="display: inline">
-                    6. <cite>Save ISIS Logs</cite> by clicking the 'Save ISIS Logs' Button in the center of the top bar.
-                        <p class="small-text">
-                            (If there is no 'Save ISIS Logs' button, that is because there is no log for you on the server)
-                        </p>
-                </div>
-                <br/>
-                <div class="row lead" style="display: inline">
-                        7. <cite>Special Characters</cite> can be added using the small button above the output box.
-                        Place the cursor where the character goes and then use the buttons to add a character.
-                   </div>
+        <!-- Help Box -->
+        <div class="help-box" id="help-box" style="visibility: hidden;
+            margin-right: 2%; margin-top: 10%; padding-bottom: 0;">
+            <button class="float-right button" id="hideBtn" 
+            style="width: 1.75rem; height:1.75rem; min-width: 1.75rem; min-height: 1.75rem; border-radius: 5px; 
+            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+            background-color: rgba(39, 109, 200); color: darkred;">
+                &times;
+            </button>
+            <div class="container title" style="background: whitesmoke;">
+                <cite>Help</cite>
             </div>
+            <div class="row lead" style="display: inline"> 
+                1. <cite>Edit</cite> your caption in the bottom right box.
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline">
+                2. <cite>Copy & Paste</cite> tags from the bottom left box into your caption. 
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline"> 3. <cite>Add Custom Keys</cite> 
+                by clicking the green plus button in the left box and filling out the required fields.
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline"> 4. <cite>Search</cite> 
+                for key words in the current tags by typing in the search bar.
+                <p class="small-text">(If you cannot find a tag, try clicking the 'Show All Tags' Button)</p>
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline"> 
+                5. <cite>Download</cite> the finished text you created or export the data as a csv file.
+                <p class="small-text">(Use the 'Save to Clipboard' button to copy the output box)</p>
+            </div> 
+            <br/>
+            <div class="row lead" style="display: inline">
+                6. <cite>Save ISIS Logs</cite> by clicking the 'Save ISIS Logs' Button in the center of the top bar.
+                    <p class="small-text">
+                        (If there is no 'Save ISIS Logs' button, that is because there is no log for you on the server)
+                    </p>
+            </div>
+            <br/>
+            <div class="row lead" style="display: inline">
+                    7. <cite>Special Characters</cite> can be added using the small button above the output box.
+                    Place the cursor where the character goes and then use the buttons to add a character.
+                </div>
         </div>
             
-        <!-- Right Box-->
-        <div class="mainbox-right" style=" height:75%; width: 10%;">
-            <!-- Loading Gif-->
-            <div id="loading" class="text-center loading-small">
-                <img src="../images/loading.gif" class='float-center;' height="100%" weight="auto"/>
-                <br>
-                <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
-            </div>
+        
+        <!-- Loading Gif-->
+        <div id="loading" class="text-center loading-small">
+            <img src="../images/loading.gif" class='float-center;' height="10%" weight="auto"/>
+            <br>
+            <h3 style="color: white; text-align: center; margin-left: 1rem;">Loading</h3>
         </div>
+    
 
         <!-- Center Box -->
-        <div class="mainbox-center" style="width: 80%; background-color: rgba(99,88,94,0.65);
+        <div class="mainbox-center" style="width: 100%; background-color: rgba(99,88,94,0.65);
         border: 3px solid rgba(255, 255,255, .65); padding:0;">
+
+        <img src="../images/usgsLogo.png" class="float-md-left" width="10%" height="auto" 
+        style="margin: 0%; padding: 0%">
+
             <!-- Title Box -->
             <div class="container"
-            style="height: 14rem; max-width: none; padding: 1rem; padding-top: 0; padding-bottom: 2rem;
+            style="height: 14rem; max-width: 1250px; padding: 1rem; padding-top: 0; padding-bottom: 2rem;
             border-right:1px; border-bottom: 2px; border: solid black; margin-bottom: 1rem; 
             background: rgba(99, 88, 94, 0.746)"> 
                 <div class="jumbotron text-center" style="height: 60%; padding: 2rem; width: inherit; 
@@ -322,7 +318,7 @@
                         <div class="float-left" style="text-align:center; width:75%; margin: auto auto; padding:2%;">
                                 <!-- Search Box -->
                                 <label for="filterInput" class="alert alert-light float-left" 
-                                style="margin:0%; color:black; width: 100%; height:auto; padding:5px;">
+                                style="margin:0%; color:black; width: 100%; height:auto; padding:3px;">
                                     <h5 style="font-size: small;">Search for keywords</h5>
                                 </label>
                                 <br/>
@@ -365,8 +361,8 @@
                 </div> 
                 
                 
-                <div class="col">
-                    <div class="container float-center" style="max-width:none;max-height:none;">
+                <div class="col" style="text-align: right;">
+                    <div class="container" style="max-width:none;max-height:none;">
                         <!-- Editing Box-->
                         <div id="template" class="float-right text-center form-group"
                          style="margin-left: auto; margin-right: auto; width: 100%; height: 250px;">
@@ -383,41 +379,39 @@
             <p id="outputName"><%=outputName%></p>
         </div>
             
-            <!-- Invisible Boxes -->
-            <div id="metadata" style = "display: none;" class="text-center green-border-focus">
-                <label for="metadata-text">
-                    <h2>Metadata Output DICTSTRING </h2>
-                </label>
-                <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
-                    style="resize: vertical; font-size: 22px;"><%= dictionaryString %>
-                </textarea>
-            </div>
-            
-            <div id="tags"  style = "display: none;" class="text-center green-border-focus">
-                <label for="all-tag-text">
-                    <h2>All Tag Info CSVSTRING</h2>
-                </label>
-                <textarea readonly id="all-tag-text" class="form-control bg-white text-dark"
-                    style="resize: vertical; font-size: 22px;"><%= wholeData %></textarea>
-            </div>
+        <!-- Invisible Boxes -->
+        <div id="metadata" style = "display: none;" class="text-center green-border-focus">
+            <label for="metadata-text">
+                <h2>Metadata Output DICTSTRING </h2>
+            </label>
+            <textarea readonly id="metadata-text" class="form-control bg-white text-dark"
+                style="resize: vertical; font-size: 22px;"><%= dictionaryString %>
+            </textarea>
+        </div>
+        
+        <div id="tags"  style = "display: none;" class="text-center green-border-focus">
+            <label for="all-tag-text">
+                <h2>All Tag Info CSVSTRING</h2>
+            </label>
+            <textarea readonly id="all-tag-text" class="form-control bg-white text-dark"
+                style="resize: vertical; font-size: 22px;"><%= wholeData %></textarea>
+        </div>
 
-            <div id="metadata-tags"  style = "display: none;" class="text-center green-border-focus">
-                <label for="metadataTagArea">
-                    <h2>Metadata Tags</h2>
-                </label>
-                <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark"
-                    style="resize: vertical; font-size: 22px;"></textarea>
-            </div>
+        <div id="metadata-tags"  style = "display: none;" class="text-center green-border-focus">
+            <label for="metadataTagArea">
+                <h2>Metadata Tags</h2>
+            </label>
+            <textarea readonly id="metadataTagArea" class="form-control bg-white text-dark"
+                style="resize: vertical; font-size: 22px;"></textarea>
+        </div>
 
-            <div id="important-tags" style = "display: none;" class="text-center green-border-focus">
-                <label for="allTagArea">
-                    <h2>allTagArea</h2>
-                </label>
-                <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
-                    style="resize: vertical; font-size: 22px;"></textarea>
-            </div>
-            <!-- End Invisible Boxes -->
-
-            <br/>
+        <div id="important-tags" style = "display: none;" class="text-center green-border-focus">
+            <label for="allTagArea">
+                <h2>allTagArea</h2>
+            </label>
+            <textarea readonly id="allTagArea" class="form-control bg-white text-dark"
+                style="resize: vertical; font-size: 22px;"></textarea>
+        </div>
+        <!-- End Invisible Boxes -->
     </body>
 </html>

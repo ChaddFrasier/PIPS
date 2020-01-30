@@ -268,6 +268,10 @@ button.paddingBtn {
     z-index: 15;
 }
 
+.disabled {
+    background: grey !important;
+}
+
 * { box-sizing: border-box }
 
 /* Style the tab */
