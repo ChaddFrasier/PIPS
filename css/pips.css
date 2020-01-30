@@ -264,8 +264,19 @@ button.paddingBtn {
     width: 100%;
     min-width: 150px;
     max-width: 400px;
-    border: 1.5px solid black;
     z-index: 15;
+    padding:5; 
+    border: 1.5px solid black !important; 
+    margin:0;
+}
+
+.sidebar {
+    position: relative;
+    background: red;
+    height: auto;
+    display: none;
+    width: 90%;
+    left: 100%;
 }
 
 .disabled {

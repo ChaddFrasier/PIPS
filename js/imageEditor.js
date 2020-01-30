@@ -1183,63 +1183,63 @@ function createNewElement(elementType, argv){
                 NS = "http://www.w3.org/2000/svg";
 
             
-            let tmpArray = argv[2];
+                let tmpArray = argv[2];
 
-            // create the new  line dynamically and add it to the array so we can remove it later if needed
-            line = document.createElementNS(NS,"line");
-            line.setAttribute("id","line" + lineArr.length);
-            line.setAttribute("class","draggable confine");
-            line.setAttribute("transform",  argv[1] );
-            line.setAttribute("x1", tmpArray[0]);
-            line.setAttribute("y1", tmpArray[1]);
-            line.setAttribute("x2", tmpArray[2]);
-            line.setAttribute("y2", tmpArray[3]);
-            line.style.visibility = "visible";
+                // create the new  line dynamically and add it to the array so we can remove it later if needed
+                line = document.createElementNS(NS,"line");
+                line.setAttribute("id","line" + lineArr.length);
+                line.setAttribute("class","draggable confine");
+                line.setAttribute("transform",  argv[1] );
+                line.setAttribute("x1", tmpArray[0]);
+                line.setAttribute("y1", tmpArray[1]);
+                line.setAttribute("x2", tmpArray[2]);
+                line.setAttribute("y2", tmpArray[3]);
+                line.style.visibility = "visible";
 
-            if(markerStart !== null){
-                // if arrow with default color 
-                if(!argv[1] || argv[1] === "#ffffff"){
-                     line.setAttribute("marker-start","url(#arrow)");
+                if(markerStart !== null){
+                    // if arrow with default color 
+                    if(!argv[1] || argv[1] === "#ffffff"){
+                        line.setAttribute("marker-start","url(#arrow)");
+                    }
+                    // if the array is linger than 1 and the color is not default
+                    else if(lineArr.length > 0 || argv[1] !== "#ffffff"){
+                        var markerId = "arrow" + lineArr.length,
+                            pathId = "arrowPath" + lineArr.length,
+                            newDef = document.getElementById("arrowDef").cloneNode();
+
+                        newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                        newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                        line.setAttribute("marker-start", String("url(#" + markerId + ")"));
+                        (newDef.childNodes).forEach(childElem => {
+                            // if the childElement has a child
+                            if(childElem.childElementCount > 0){
+                                childElem.setAttribute("id", markerId);
+                                childElem.childNodes[1].setAttribute("fill", argv[0]);
+                                childElem.childNodes[1].setAttribute("id", pathId);
+                            }
+                        });
+                        svg.prepend(newDef);
+                    }
                 }
-                // if the array is linger than 1 and the color is not default
-                else if(lineArr.length > 0 || argv[1] !== "#ffffff"){
-                    var markerId = "arrow" + lineArr.length,
-                        pathId = "arrowPath" + lineArr.length,
-                        newDef = document.getElementById("arrowDef").cloneNode();
 
-                    newDef.setAttribute("id", "arrowDef" + lineArr.length);
-                    newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
-                    line.setAttribute("marker-start", String("url(#" + markerId + ")"));
-                    (newDef.childNodes).forEach(childElem => {
-                        // if the childElement has a child
-                        if(childElem.childElementCount > 0){
-                            childElem.setAttribute("id", markerId);
-                            childElem.childNodes[1].setAttribute("fill", argv[0]);
-                            childElem.childNodes[1].setAttribute("id", pathId);
-                        }
-                    });
-                    svg.prepend(newDef);
+                // check to see if it is a custom color
+                if(argv[1]){
+                    line.style.stroke = argv[0];
+                    if(pathId){
+                        document.getElementById(pathId).style.fill = argv[0];
+                        document.getElementById(pathId).style.stroke = argv[0];
+                    }
                 }
-            }
-
-            // check to see if it is a custom color
-            if(argv[1]){
-                line.style.stroke = argv[0];
-                if(pathId){
-                    document.getElementById(pathId).style.fill = argv[0];
-                    document.getElementById(pathId).style.stroke = argv[0];
+                else{
+                    line.style.stroke = "white";
                 }
-            }
-            else{
-                line.style.stroke = "white";
-            }
-            
-            line.style.strokeWidth = 10;
-     
-            svg.appendChild(line);
+                
+                line.style.strokeWidth = 10;
+        
+                svg.appendChild(line);
 
-            lineArr.push(line);
-            updateLayers(line.cloneNode());
+                lineArr.push(line);
+                updateLayers(line.cloneNode());
             }
             break;
     }
@@ -1401,33 +1401,33 @@ function getMetadata(){
         else{
             // disable the button if the degree was not found
             document.getElementById('northIconFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
         }
     }
     else{
         // disable the button if the degree was not found
         document.getElementById('northIconFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     if(isNaN(sunDegree)){
         // disable the button if the degree was not found
         document.getElementById('sunIconFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
     }
     else{
         document.getElementById('sunIconFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     if(isNaN(observerDegree)){
         // disable the button if the degree was not found
         document.getElementById('eyeFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
     }
     else{
         document.getElementById('eyeFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     // if the degree value is over 360 just subtract 360 because the math is easier
@@ -2129,21 +2129,6 @@ function captureClick(x,y){
     clickArray.push(x);
     clickArray.push(y);
 }       
- 
-
-/**
- * @function createTimer
- * 
- * @description captures and returns the current time values 
- * 
- * @returns {array} [hrs,mins,secs]
- * 
-*/
-function createTimer(){
-    let startTime = new Date();
-    return [ startTime.getHours(), startTime.getMinutes(), startTime.getSeconds() ];
-}
-
 
 /**
  * @function getCookie
@@ -2409,13 +2394,12 @@ function updateLayers(el){
 
     // if button was clicked
     if(el.nodeName === "BUTTON"){
-        // loop till svg is found
-        while(el.nodeName !== "svg"){
-            // set the element as the first child
-            el = el.firstElementChild;
-        }
-        // RESULTS: 
-        //      This loop will find the svg element that is inside the button element
+        console.log(el)
+        // get the svg element that is hidden in the html using the id of the button and layer tacked on
+        // document.getElementById(el.id + 'layer')
+    
+        // RESULTS:
+        //      This loop will find the svg element that is created from the button
     }
     // get layer object and new div to go inside
     var layerBrowser = document.getElementById("layerBrowser");
@@ -2602,6 +2586,8 @@ function getElementType( el ){
         console.log("node name not found")
     }
 }
+
+
 
 
 /**
@@ -2848,7 +2834,7 @@ function resetDrawTool(){
     // reset draw flag
     drawFlag = false;
     // reset the UI 
-    document.getElementById("pencilIconFlag").className = "btn btn-lg button";
+    document.getElementById("pencilIconFlag").className = "dropdownItem btn";
 
     // remove half drawn lines if any
     if( lineArr.length > 0 && clickArray.length > 1 ) {
@@ -3431,6 +3417,12 @@ $(document).ready(function(){
     // get half the scalebar length for drawing
     let half = parseFloat(scalebarLength)/2;
 
+    var menuArr = document.getElementsByClassName("dropdownMenu");
+
+    for( var i=0; i<menuArr.length; i++ ){
+        menuArr[i].style.visibility="hidden";
+    }
+
     // start the draggable svg element
     makeDraggable(svg);
 
@@ -3485,7 +3477,7 @@ $(document).ready(function(){
     else{
         // if the scalebarPx is none disable the button
         document.getElementById("scaleBarButton").setAttribute("class",
-                                                                "btn btn-secondary btn-lg button disabled");
+                                                                "dropdownItem btn disabled");
         // set deafult font size for text boxes note that this is a scale value not px size 
         // (px = font size * textSize)
         textSize = 2;
@@ -3842,7 +3834,74 @@ $(document).ready(function(){
 
     /** ---------------------------------- Cache Function ----------------------------------------------- */
   
+    /**
+     * @function .dropdown mouseover listener
+     * 
+     * @description set the UI details for the dropdown menu
+     */
+    $(".dropdown").on("mouseover", function(event){
+        var menu = event.target.nextElementSibling.nextElementSibling;
 
+        this.innerHTML = this.innerHTML.replace("►","&#9663;");
+
+        menu.style.visibility = "visible";
+    });
+
+    /**
+     * @function .menubar mouseleave listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
+    $(".menubar").on("mouseleave", function(event){
+        var menuArr = document.getElementsByClassName("dropdownMenu");
+        var buttonArr = document.getElementsByClassName("dropdown");
+
+        for( var i=0; i<buttonArr.length; i++ ){
+            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        }
+
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility="hidden";
+        }
+    });
+
+
+    /**
+     * @function .dropdownMenu mouseleave listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
+    $(".dropdownMenu").on("mouseleave", function(event){
+        var menu = event.target;
+        var buttonArr = document.getElementsByClassName("dropdown");
+        if(menu.offsetParent && menu.offsetParent.className.indexOf("dropdownMenu") > -1){
+            menu.offsetParent.style.visibility = "hidden";
+        }
+        else{
+            menu.style.visibility = "hidden"
+        }
+        
+        for( var i=0; i<buttonArr.length; i++ ){
+            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        }
+    });
+    
+    /**
+     * @function .dropdownMenu mouseover listener
+     * 
+     * @description set the UI details to use the dropdown menu
+     */
+    $(".dropdownMenu").on("mouseover", function(event){
+        var menu = event.target;
+
+        if(menu.offsetParent.className !== "col menubar"){
+            menu.offsetParent.style.visibility = "visible";
+        }
+        else
+        {
+            menu.visibility = "visible";
+        }
+    });
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
      * @function hideBtn 'mousedown' event handler
@@ -4099,6 +4158,9 @@ $(document).ready(function(){
                             childElem.childNodes[1].setAttribute("id", pathId);
                         }
                     });
+                    if(markerId !== "arrow"){
+                        document.getElementById(markerId).parentElement.remove();
+                    }
                     svg.prepend(newDef);
 
 
@@ -4113,7 +4175,7 @@ $(document).ready(function(){
                     marker.children[0].setAttribute("fill", userLineColor);
                     
                     // set the stroke color if the line
-                    setElementColor(activeLayer, userLineColor, activeLine );
+                    setElementColor( activeLayer, userLineColor, activeLine );
                     return;
                 }
             }
@@ -4498,7 +4560,7 @@ $(document).ready(function(){
                                         else{
                                             // if the scalebarPx is none disable the button
                                             document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "btn btn-secondary btn-lg button disabled");
+                                                                        "dropdownItem btn disabled");
                                             // set deafult font size for text boxes note that
                                             // this is a scale value not px size 
                                             // (px = font size * textSize)
@@ -4674,7 +4736,7 @@ $(document).ready(function(){
                                             else{
                                                 // if the scalebarPx is none disable the button
                                                 document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "btn btn-secondary btn-lg button disabled");
+                                                                        "dropdownItem btn disabled");
                                                 // set deafult font size for text boxes note that this 
                                                 // is a scale value not px size (px = font size * textSize)
                                                 textSize = 2;
@@ -4798,7 +4860,7 @@ $(document).ready(function(){
             if(toggleScalebar){
                 // add bar and toggle the boolean
                 svg.appendChild(scaleBarIcon);
-                this.className = "btn btn-danger btn-lg button";
+                
 
                 scaleCheckbox.style.visibility = "visible";
                 scaleCheckboxLabel.style.visibility = "visible";
@@ -4819,7 +4881,7 @@ $(document).ready(function(){
                 // remove the bar and reset toggleValue
                 scaleBarIcon.remove();
                 toggleScalebar = true;
-                this.className = "btn btn-lg button";
+                
 
                 scaleCheckbox.style.transition = "0s";
                 scaleCheckbox.style.webkitTransition = "0s";
@@ -4988,7 +5050,7 @@ $(document).ready(function(){
                 eyeImage.remove();
                 eyeImage.style.visibility = 'hidden';
                 eyeFlag = !eyeFlag;
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
 
                 eyeCheckbox.style.transition = "0s";
                 eyeCheckbox.style.webkitTransition = "0s";
@@ -5012,7 +5074,7 @@ $(document).ready(function(){
                 svg.appendChild(eyeImage);
                 setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
+                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
 
                 document.getElementById("eyeCheckbox").style.visibility = "visible";
                 document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
@@ -5058,7 +5120,7 @@ $(document).ready(function(){
                 sunIconPlaced = !sunIconPlaced;
                 sunImage.style.visibility = 'hidden';
                 sunImage.remove();
-                document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById('sunIconFlag').setAttribute('class',"dropdownItem btn");
                 sunFlag = false;
 
                 sunCheckbox.style.transition = "0s";
@@ -5083,7 +5145,7 @@ $(document).ready(function(){
                 sunFlag = false;
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
+                                                                        "dropdownItem btn");
                 sunCheckbox.style.visibility = "visible";
                 sunCheckboxLabel.style.visibility = "visible";
 
@@ -5133,7 +5195,7 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northImage.remove();
                 northImage.style.visibility = 'hidden';
-                document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById('northIconFlag').setAttribute('class',"dropdownItem btn");
                 northLabel.style.transition = "0s";
                 northCheckbox.style.transition = "0s";
                 northLabel.style.webkitTransition = "0s";
@@ -5160,7 +5222,7 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");                                 
+                                                                        "dropdownItem btn");                                 
                 northLabel.style.transition = ".4s";
                 northCheckbox.style.transition = ".4s";
                 northLabel.style.webkitTransition = ".4s";
@@ -5194,7 +5256,6 @@ $(document).ready(function(){
             // start drawing
             bg.className.baseVal = "draw";
             drawFlag = true;
-            document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
 
             // loop through all children and children of the children and set the pointer 
             // events to none so the draw function does not get interfiered with
@@ -5239,7 +5300,7 @@ $(document).ready(function(){
         // append the group and reset the draggable functions
         svg.appendChild(g);
         // push the object into the array for undoing
-        g.setAttribute("id", "outline"+objectIds++);   
+        g.setAttribute("id", "outline" + objectIds++);   
         highlightBoxArray.push(g);
         makeDraggable(svg);
 
@@ -5358,8 +5419,7 @@ $(document).ready(function(){
         //console.log(event.target);
         // TODO: this is where to put the check for cropFlag
         if(event.target.classList 
-            && ( event.target.classList.contains("unfocus") && !drawFlag )
-            ){
+            && ( event.target.classList.contains("unfocus") && !drawFlag)){
                 if(activeLayer) {
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                     activeLayer.style.border = "none";
@@ -5466,6 +5526,13 @@ $(document).ready(function(){
                 var icon = document.getElementById(svgID);
 
                 if(icon.nodeName === "g" || icon.nodeName === "line"){
+                    if(icon.nodeName === "line"){
+                        if(icon.getAttribute("marker-start") && icon.getAttribute("marker-start") !== "url(#arrow)")
+                        {
+                            let def = document.getElementById(icon.getAttribute("marker-start").replace("url(#","").replace(")",""));
+                            def.parentElement.remove();  
+                        }
+                    }
                     icon.remove();
                 }
                 else if(icon.nodeName === "svg"){
@@ -5530,7 +5597,9 @@ $(document).ready(function(){
         let markers = document.querySelectorAll("marker");
 
         markers.forEach((el) => {
+            
             if(color === el.firstElementChild.getAttribute("fill")){
+                console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
                 return true;
             };
         });
@@ -5654,8 +5723,6 @@ $(document).ready(function(){
             line.setAttribute("y2", mouseY - transY);
             clickArray = [];
             drawFlag = false;
-            // reset the button color and allow for click detection again
-            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
             bg.className.baseVal = "unfocus";
 

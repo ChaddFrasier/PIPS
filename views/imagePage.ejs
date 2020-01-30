@@ -50,7 +50,7 @@
                             </p>
                         </div>
                         <div class="col-4" style="text-align:center; margin: auto auto; padding: 2%;">
-                            <svg id="northIconFlag" role="button" class="btn btn-lg button" viewBox="0 0 100 100"
+                            <svg id="northIconFlag1" role="button" class="btn btn-lg button" viewBox="0 0 100 100"
                              stroke-width="3" style=" margin:auto auto; width: 100%; padding: 5%;">
                                 <path d="M 50 0 L 85 65 L 50 50 L 50 0" stroke="black" fill="black"/>
                                 <path d="M 50 0 L 15 65 L 50 50 L 50 0" fill="none" stroke="black"/>
@@ -77,7 +77,7 @@
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
                             <svg class="btn btn-lg button" style="width: 100%; padding: 1%;" 
-                            viewBox="0 0 50 50"role="button" id="sunIconFlag" stroke-width="3">
+                            viewBox="0 0 50 50"role="button" id="sunIconFlag1" stroke-width="3">
                                 <circle cx="25" cy="25" r="5" stroke="black" stroke-width="1"></circle>
                                 <circle cx="25" cy="25" r="20" stroke="black" fill="transparent">
                                 </circle>
@@ -100,7 +100,7 @@
                             </p>
                         </div>
                         <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
-                            <svg class="btn btn-lg button" id="eyeFlag"  style="width: 100%; padding: 1%;" 
+                            <svg class="btn btn-lg button" id="eyeFlag1"  style="width: 100%; padding: 1%;" 
                             viewBox="0 0 100 100" stroke-width="5">
                                 <path d="M 0 51 C 0 50 50 0 100 51" fill="none" stroke="black"></path>
                                 <path d="M 0 49 C 0 50 49 100 100 49" fill="none" stroke="black"></path>
@@ -122,7 +122,7 @@
                             <p class="float-left" style="font-size: 80%;">Scalebar</p>
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 2%;">
-                            <button class="btn btn-lg button" id="scaleBarButton"
+                            <button class="btn btn-lg button" id="scaleBarButton1"
                             style="width:100%; padding:1%; color: black; min-width: 4rem; padding-top: 0;">
                                 <svg id="scalebar" viewBox= "0 0 25 4">
                                     <rect x="0" y="0" id="scalebarOuter" width="25" height="4" stroke-width="1.75" 
@@ -170,7 +170,7 @@
                             </p>
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button id="pencilIconFlag" class="btn btn-lg button" style="padding: 3px; width:100%;">
+                            <button id="pencilIconFlag1" class="btn btn-lg button" style="padding: 3px; width:100%;">
                                 <svg viewBox="10 8 100 100" width="100%" height="100%" style="padding:0;">
                                     <rect x="75" y="-25" width="9%" height="75%" fill="black"
                                     stroke="black" transform="rotate(35)"></rect>
@@ -207,7 +207,7 @@
                             </p>
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button class="btn btn-lg button" id="outlineBtn" 
+                            <button class="btn btn-lg button" id="outlineBtn1" 
                             style="width:100%; color:black; padding:2%;">
                                 <svg viewBox="-3 -10 80 60" width="100%" height="100%" style="padding: 5px;">
                                     <rect x="0" y="0" width="73" height="50" 
@@ -226,7 +226,7 @@
                             <p class="float-left" style="font-size: 80%;">Text Tool</p>
                         </div>
                         <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button class="btn btn-lg button" id="textBtn" 
+                            <button class="btn btn-lg button" id="textBtn1" 
                             style="width:100%; color: black; padding: 10%;">
                                 <svg viewBox="-2 -4 23 15" width="100%">
                                     <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
@@ -329,7 +329,7 @@
                             </div>
                             <div class="col-8" style="margin: auto auto;">
                                 <button class="btn btn-primary btn-lg button"
-                                style="height: 50%; margin: auto auto;" id="exportBtn">
+                                style="height: 50%; margin: auto auto;" id="exportBtn2">
                                     <svg viewBox="0 0 100 100" stroke-width="10">
                                         <path d="M 5 40 L 5 95 L 95 95 L 95 40" stroke="black" fill="transparent"/>
                                         <path d="M 50 20 L 50 90 L 70 60 L 50 90 L 30 60 L 50 91" stroke-width="8"
@@ -464,7 +464,7 @@
                     </div>
                 </div>
                 <div class="row unfocus" style="width: 100%">
-                    <div class="col-4 unfocus">
+                    <div class="col unfocus">
                         <a class="btn dropdownItem btn-lg float-left" 
                         style="border: 2px solid black; width: auto; height: 3rem; margin-top: .75%; margin-left: 0;
                             margin-bottom:auto; "
@@ -472,16 +472,146 @@
                             Upload New File
                         </a>
                     </div>
-                    <div class="col-4 unfocus" style="display: flex; margin: auto auto; padding-left: 8%;">
-                        <h5 style="width: 30%; font-size:medium; text-align:left; color: white; padding-top: 2%; pointer-events: none;">Zoom Fit</h5>
-                        <!-- Rounded switch -->
-                        <label class="switch" style="scale: 1.15; left: 0;">
-                            <input id="viewOption" type="checkbox">
-                            <span class="slider round"></span>
-                        </label>
-                        <h5 style="width: 30%; color: white; padding-top: 2%; font-size: medium">Box Fit</h5>    
+
+                    <div class="col" style="vertical-align: middle;">
+                        <div id="fileMenuBtn" class="dropdown btn" 
+                        style="background: -moz-linear-gradient(
+                            top,
+                            #f0efef 0%,
+                            #e0dfdf 50%,
+                            #c5c5c5 92%,
+                            #bebebe);
+                        background: -webkit-gradient(
+                            linear, left top, left bottom,
+                            from(#f0efef),
+                            color-stop(0.50, #e0dfdf),
+                            color-stop(0.92, #c5c5c5),
+                            to(#bebebe));">
+                            Icons&#x25BA;
+                        </div>
+                            <br>
+                        <div class="dropdownMenu text-left">
+                            <div class="sidebar dropdownItem">
+                                Toggle Color
+                            </div>
+                            <button class="dropdownItem btn" role="button" id="northIconFlag" title="North Arrow">
+                                North Arrow
+                            </button>
+                            <br>
+                            <div class="sidebar dropdownItem">
+                                Toggle Color
+                            </div>
+                            <button class="dropdownItem btn" role="button" id="sunIconFlag" title="Sun Arrow">
+                                Sun Arrow
+                            </button>
+                            <br>
+                            <div class="sidebar dropdownItem">
+                                Toggle Color
+                            </div>
+                            <button class="dropdownItem btn" role="button" id="eyeFlag" title="Observer Direction">
+                                Observer Direction
+                            </button>
+                            <br>
+                            <div class="sidebar dropdownItem">
+                                Toggle Color
+                            </div>
+                            <button class="dropdownItem btn" role="button" id="scaleBarButton" title="Scalebar">
+                                Scalebar
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-4 unfocus">
+                    <div class="col" style="vertical-align: middle;">
+                        <div id="fileMenuBtn" class="dropdown btn" 
+                            style="background: -moz-linear-gradient(
+                                top,
+                                #f0efef 0%,
+                                #e0dfdf 50%,
+                                #c5c5c5 92%,
+                                #bebebe);
+                            background: -webkit-gradient(
+                                linear, left top, left bottom,
+                                from(#f0efef),
+                                color-stop(0.50, #e0dfdf),
+                                color-stop(0.92, #c5c5c5),
+                                to(#bebebe));">
+                                Annotate&#x25BA;
+                            </div>
+                            <br>
+                            <div class="dropdownMenu text-left">
+                                <button class="dropdownItem btn" role="button" id="outlineBtn" title="Save Template File">
+                                    Outline Box
+                                </button>
+                                <button class="dropdownItem btn" role="button" id="textBtn" title="Save Template File">
+                                    Text Box
+                                </button>
+                                <button class="dropdownItem btn" role="button" id="pencilIconFlag" title="Save Template File">
+                                    Draw Tool
+                                </button>
+                            </div>
+                    </div>
+                    <div class="col" style="vertical-align: middle;">
+                        <div id="fileMenuBtn" class="dropdown btn" 
+                            style="background: -moz-linear-gradient(
+                                top,
+                                #f0efef 0%,
+                                #e0dfdf 50%,
+                                #c5c5c5 92%,
+                                #bebebe);
+                            background: -webkit-gradient(
+                                linear, left top, left bottom,
+                                from(#f0efef),
+                                color-stop(0.50, #e0dfdf),
+                                color-stop(0.92, #c5c5c5),
+                                to(#bebebe));">
+                                View&#x25BA;
+                            </div>
+                            <br>
+                            <div class="dropdownMenu text-left">
+                                <button class="dropdownItem btn" role="button" id="fullscreenBtn" title="Change Image View" 
+                                onclick="document.getElementById('viewOption').click();">
+                                    Fullscreen
+                                </button>
+                            </div>
+                    </div>
+
+                    <div class="col" style="vertical-align: middle;">
+                        <div id="fileMenuBtn" class="dropdown btn" 
+                            style="background: -moz-linear-gradient(
+                                top,
+                                #f0efef 0%,
+                                #e0dfdf 50%,
+                                #c5c5c5 92%,
+                                #bebebe);
+                            background: -webkit-gradient(
+                                linear, left top, left bottom,
+                                from(#f0efef),
+                                color-stop(0.50, #e0dfdf),
+                                color-stop(0.92, #c5c5c5),
+                                to(#bebebe));">
+                                File&#x25BA;
+                        </div>
+                        <br>
+                        <div class="dropdownMenu text-left">
+                            <button class="dropdownItem btn" role="button" id="padImageBtn" title="Export Figure">
+                                Pad Image
+                            </button>
+                            <br>
+                            <button class="dropdownItem btn" role="button" id="resizeFigureBtn" title="Export Figure">
+                                Resize Figure
+                            </button>
+                            <br>
+                            <button class="dropdownItem btn" role="button" id="exportBtn" title="Export Figure">
+                                Export Figure
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <label class="switch" style="scale: 1.15; left: 0; visibility: hidden;">
+                        <input id="viewOption" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                       
+                    <div class="col unfocus">
                         <button class="btn dropdownItem btn-lg float-right" onclick="captionHandler()"
                         style="border: 2px solid black; width: auto; height: 3rem; margin-right:0; margin-top: .75%;
                         margin-left: auto;"
