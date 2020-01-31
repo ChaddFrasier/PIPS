@@ -2213,7 +2213,7 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
-    var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1]);
+    var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1].replace("Svg",""));
         
     if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
         let id = el.getAttribute("id");
@@ -2392,14 +2392,24 @@ var activeLayer;
  */
 function updateLayers(el){
 
+    var tmpEl;
     // if button was clicked
     if(el.nodeName === "BUTTON"){
-        console.log(el)
+        
+        let id = el.getAttribute("id") + "Svg";
         // get the svg element that is hidden in the html using the id of the button and layer tacked on
-        // document.getElementById(el.id + 'layer')
-    
+        tmpEl = document.getElementById(id).cloneNode(document.getElementById(id));
         // RESULTS:
         //      This loop will find the svg element that is created from the button
+        tmpEl.setAttribute("class", "layer");
+        tmpEl.style.visibility = "visible";
+        // get the type of layer
+        tmpEl.style.pointerEvents = "none";
+    }
+    else{
+        el.setAttribute("class", "layer");
+        // get the type of layer
+        el.style.pointerEvents = "none";
     }
     // get layer object and new div to go inside
     var layerBrowser = document.getElementById("layerBrowser");
@@ -2408,10 +2418,6 @@ function updateLayers(el){
     // set the needed classes for mouse events
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
-    el.setAttribute("class", "layer");
-
-    // get the type of layer
-    el.style.pointerEvents = "none";
 
     // create listener for when the div is clicked on
     div.addEventListener("mousedown", (event) => {
@@ -2448,10 +2454,10 @@ function updateLayers(el){
     //      UI layer div for whatever element id being added to the figure
     switch( getElementType( el ) ){
         // if type of element is svg
-        case "svg":
+        case "BUTTON":
             // set the div info and append the svg element inside the UI div
-            div.setAttribute("id", "layer" + el.getAttribute("id") );
-            div.appendChild(el);
+            div.setAttribute("id", "layer" + tmpEl.getAttribute("id") );
+            div.appendChild(tmpEl);
             div.style.padding = "2px 4px";
             layerBrowser.prepend(div);
             dragElement(div);
@@ -2588,18 +2594,18 @@ function getElementType( el ){
 }
 
 
-
-
 /**
  * @function removeLayer
  * 
  * @description searches the svg and pulls out all changable icons
  */
 function removeLayers(el){
-    var layerBrowser = document.getElementById("layerBrowser");
+    let layerBrowser = document.getElementById("layerBrowser");
 
-    if( document.getElementById("layer" + el.getAttribute("id")) ){
-        layerBrowser.removeChild(document.getElementById("layer" + el.getAttribute("id")));
+    let layerId = "layer" + el.getAttribute("id") + "Svg";
+
+    if( document.getElementById(layerId) ){
+        layerBrowser.removeChild(document.getElementById(layerId));
     }
 }
 
@@ -2835,6 +2841,7 @@ function resetDrawTool(){
     drawFlag = false;
     // reset the UI 
     document.getElementById("pencilIconFlag").className = "dropdownItem btn";
+    bg.className.baseVal = "unfocus";
 
     // remove half drawn lines if any
     if( lineArr.length > 0 && clickArray.length > 1 ) {
@@ -3161,6 +3168,14 @@ function createCookie(cookieName,cookieValue,daysToExpire){
     document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toGMTString();
 }
 
+function viewButtonHandler(el){
+    document.getElementById('viewOption').click();
+    if(el.classList.contains("active")){
+        el.classList.remove("active");
+    }else{
+        el.classList.add("active");
+    }
+}
 
 /**
  * @function replaceAll
@@ -3183,7 +3198,7 @@ String.prototype.replaceAll = function(find, replace){
 $(document).ready(function(){
 
     // set the timmer for the UI orientation detection
-    setInterval(checkScreen, 1000);
+    setInterval(checkScreen, 800);
 
     // get image dimensions form the hidden div
     var dimDiv = document.getElementById("imageDimensions"),
@@ -3417,10 +3432,14 @@ $(document).ready(function(){
     // get half the scalebar length for drawing
     let half = parseFloat(scalebarLength)/2;
 
-    var menuArr = document.getElementsByClassName("dropdownMenu");
+    let menuArr = document.getElementsByClassName("dropdownMenu");
+    let sidebarArr = document.getElementsByClassName("sidebarParent");
 
     for( var i=0; i<menuArr.length; i++ ){
         menuArr[i].style.visibility="hidden";
+    }
+    for( var i=0; i<sidebarArr.length; i++ ){
+        sidebarArr[i].style.visibility="hidden";
     }
 
     // start the draggable svg element
@@ -3840,12 +3859,27 @@ $(document).ready(function(){
      * @description set the UI details for the dropdown menu
      */
     $(".dropdown").on("mouseover", function(event){
+        let menuArr = document.getElementsByClassName("dropdownMenu");
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
         var menu = event.target.nextElementSibling.nextElementSibling;
+
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility = "hidden";
+            if(menuArr[i] != menu){
+                menuArr[i].parentElement.firstElementChild.innerHTML = 
+                menuArr[i].parentElement.firstElementChild.innerHTML.replace("▿", "&#9658;");
+            }
+        }
+
 
         this.innerHTML = this.innerHTML.replace("►","&#9663;");
 
         menu.style.visibility = "visible";
     });
+
 
     /**
      * @function .menubar mouseleave listener
@@ -3855,6 +3889,7 @@ $(document).ready(function(){
     $(".menubar").on("mouseleave", function(event){
         var menuArr = document.getElementsByClassName("dropdownMenu");
         var buttonArr = document.getElementsByClassName("dropdown");
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
 
         for( var i=0; i<buttonArr.length; i++ ){
             buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
@@ -3863,37 +3898,57 @@ $(document).ready(function(){
         for( var i=0; i<menuArr.length; i++ ){
             menuArr[i].style.visibility="hidden";
         }
+
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+    });
+
+    $(".dropdownItem").on("mouseover", (event)=>{
+        var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
+
+        if(sidebar){
+            sidebar.style.visibility = "visible";
+        }
     });
 
 
-    /**
-     * @function .dropdownMenu mouseleave listener
-     * 
-     * @description set the UI details for making the dropdown menu invisible
-     */
-    $(".dropdownMenu").on("mouseleave", function(event){
-        var menu = event.target;
-        var buttonArr = document.getElementsByClassName("dropdown");
-        if(menu.offsetParent && menu.offsetParent.className.indexOf("dropdownMenu") > -1){
-            menu.offsetParent.style.visibility = "hidden";
+    $(".dropdownItem").on("mouseleave", (event)=>{
+        var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
         }
-        else{
-            menu.style.visibility = "hidden"
-        }
-        
-        for( var i=0; i<buttonArr.length; i++ ){
-            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        if(sidebar){
+            sidebar.style.visibility = "hidden";
         }
     });
-    
+
+    $(".sidebar").on( "click", ( event )=>{
+        let target = event.target;
+        if(target.parentElement.parentElement.parentElement.firstElementChild
+            .getAttribute("id").indexOf("annotate") <= -1){
+            if( !target.classList.contains("active") ){
+                target.classList.add("active");
+            }
+            else{
+                target.classList.remove("active");
+            }
+        }
+    });
+
+
     /**
      * @function .dropdownMenu mouseover listener
      * 
      * @description set the UI details to use the dropdown menu
      */
     $(".dropdownMenu").on("mouseover", function(event){
+
+        let menuArr = document.getElementsByClassName("dropdownMenu");
         var menu = event.target;
 
+    
         if(menu.offsetParent.className !== "col menubar"){
             menu.offsetParent.style.visibility = "visible";
         }
@@ -3964,10 +4019,12 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layernorthIconFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layernorthIconFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");    
+        }
     });
 
 
@@ -3999,10 +4056,13 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layersunIconFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layersunIconFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
+        }
+        
     });
 
 
@@ -4062,10 +4122,13 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layereyeFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layereyeFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
+        }
+        
     });
 
 
@@ -4246,7 +4309,7 @@ $(document).ready(function(){
             }
             elem.remove();
             svg.className.baseVal = "image-image float-center";
-            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
+            document.getElementById("pencilIconFlag").className = "dropdownItem btn";
             drawFlag = false;
             clickArray = [];
         }
@@ -4874,6 +4937,7 @@ $(document).ready(function(){
                 scaleAnimation.style.transition = ".4s";
                 scaleAnimation.style.webkitTransition = ".4s";
                 updateLayers(this.cloneNode(true));
+                this.classList.add("active");
 
                 toggleScalebar = false;
             }
@@ -4891,9 +4955,10 @@ $(document).ready(function(){
                 scaleCheckboxSlider.style.webkitTransition = "0s";
                 scaleAnimation.style.transition = "0s";
                 scaleAnimation.style.webkitTransition = "0s";
-                removeLayers(this.cloneNode(true).firstElementChild);
+                removeLayers(this.cloneNode(true));
                 scaleCheckbox.style.visibility = "hidden";
                 scaleCheckboxLabel.style.visibility = "hidden";
+                this.classList.remove("active");
             }
         }
     });
@@ -5074,7 +5139,7 @@ $(document).ready(function(){
                 svg.appendChild(eyeImage);
                 setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
-                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
+                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn active");
 
                 document.getElementById("eyeCheckbox").style.visibility = "visible";
                 document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
@@ -5145,7 +5210,7 @@ $(document).ready(function(){
                 sunFlag = false;
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
-                                                                        "dropdownItem btn");
+                                                                        "dropdownItem btn active");
                 sunCheckbox.style.visibility = "visible";
                 sunCheckboxLabel.style.visibility = "visible";
 
@@ -5179,6 +5244,8 @@ $(document).ready(function(){
             northAnimation = document.getElementById("northAnimation"),
             northCheckboxSlider = document.getElementById("northCheckboxSlider"),
             northCheckbox = document.getElementById("northCheckbox");
+
+            console.log(document.getElementById("northIconFlag"));
 
         if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
@@ -5222,7 +5289,7 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "dropdownItem btn");                                 
+                                                                        "dropdownItem btn active");                                 
                 northLabel.style.transition = ".4s";
                 northCheckbox.style.transition = ".4s";
                 northLabel.style.webkitTransition = ".4s";
@@ -5250,12 +5317,14 @@ $(document).ready(function(){
    $("#pencilIconFlag").on('mousedown',function(){
         // clear all draw instance data if the flag is true
         if(drawFlag){
+            this.classList.remove("active")
             resetDrawTool();
         }
         else{
             // start drawing
             bg.className.baseVal = "draw";
             drawFlag = true;
+            this.classList.add("active")
 
             // loop through all children and children of the children and set the pointer 
             // events to none so the draw function does not get interfiered with
@@ -5572,6 +5641,19 @@ $(document).ready(function(){
     */
     $('#svgWrapper').mousemove(function(event){
                 
+
+        // hide the menu buttons
+        let menuArr = document.getElementsByClassName("dropdownMenu");
+        let sidebarArr = document.getElementsByClassName("sidebarParent");
+
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility="hidden";
+        }
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+
+
         // set event variables
         var t = event.target;
         var x = event.clientX;
@@ -5725,11 +5807,12 @@ $(document).ready(function(){
             drawFlag = false;
 
             bg.className.baseVal = "unfocus";
+            document.getElementById("pencilIconFlag").classList.remove("active");
 
             updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
             
-            setDetectionForLayer(activeLayer,"all");
+            setDetectionForLayer(activeLayer, "all");
         }
     });
 

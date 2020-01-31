@@ -193,9 +193,10 @@ button.paddingBtn {
 
 .dropdown {
     background: transparent;
-    width: 30%;
-    min-width: 200px;
-    max-width: 400px;
+    width: 100%;
+    min-width: 50px;
+    max-width: 200px;
+    margin: 0;
     z-index: 15;
 }
 
@@ -222,7 +223,7 @@ button.paddingBtn {
     height: auto;
     min-width: 200px;
     max-width: 400px;
-    margin: auto;
+    margin: 0 0;
     border-bottom: 3px solid black;
     border-top: 0px solid black;
     border-left: 0px solid black;
@@ -270,12 +271,71 @@ button.paddingBtn {
     margin:0;
 }
 
+.menuBtnBox {
+    vertical-align: bottom;
+    text-align: left;
+    min-width: 100px;
+    max-width: 400px;
+    width: auto;
+    margin: 0 0;
+    padding: 0;
+    max-width: 400px;
+    min-width: 100px;
+}
+
 .sidebar {
     position: relative;
-    background: red;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+		#bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    border: 1.5px solid grey !important; 
+    text-align: center;
+    border-radius: 5px;
+    min-height: 30px;
+    height: 100%;
+}
+
+.sidebar:hover{
+    background: -moz-linear-gradient(
+		top,
+		#fafafa 0%,
+		#ebe9e9 50%,
+		#e0dddd 92%,
+		#d6d6d6) ;
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#fafafa),
+		color-stop(0.50, #ebe9e9),
+		color-stop(0.92, #e0dddd),
+        to(#d6d6d6)) ;
+    color: black;
+}
+.sidebar.active {
+    background: grey;
+    color: white !important;
+}
+
+.dropdownItem.active {
+    background:grey !important;
+    color: white !important;
+}
+.sidebarParent {
+    position: absolute;
     height: auto;
-    display: none;
+    display: block;
+    text-align: left;
     width: 90%;
+    height: auto;
+    min-height: 50px;
     left: 100%;
 }
 
@@ -603,12 +663,6 @@ label {
     cursor: pointer;
 }
 
-input[type=color]:hover {
-    cursor: pointer;
-    border: .5px double rgba(0, 0, 0, 0.452);
-    background: rgb(189, 189, 189);
-}
-
 input:focus {
     outline: 1px double white;
 }
@@ -617,10 +671,11 @@ input[type=color] {
     margin: auto auto;
     margin-top: 0;
     margin-bottom: auto;
-    padding: 1%;
+    padding: 1px;
     border: 2px double rgba(0, 0, 0, 0.452);
-    min-height: 10%;
-    width: 100%;
+    min-height: 80%;
+    max-width: 90%;
+    pointer-events: none;
 }
 
 input[type=checkbox]:hover {
