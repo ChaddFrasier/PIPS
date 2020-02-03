@@ -5,7 +5,7 @@
  * @version 2.3
  * 
  * @since 09/20/2019
- * @updated 01/16/2020
+ * @updated 02/03/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -80,7 +80,7 @@ var placeEnum = new Object({
  * will not register the bpoundry of the svg sapce.
  * 
 */
-function makeDraggable(event){
+function makeDraggable( event ) {
         
     // get svg element
     var svg = event;
@@ -698,12 +698,13 @@ function makeDraggable(event){
         }
     }        
 }
+
 // make div draggable
-function dragElement(elmnt) {
+function dragElement( el ) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (elmnt) {
+    if (el) {
       /* if present, the header is where you move the DIV from:*/
-      elmnt.onmousedown = dragMouseDown;
+      el.onmousedown = dragMouseDown;
     }
   
     function dragMouseDown(e) {
@@ -730,16 +731,16 @@ function dragElement(elmnt) {
             pos4 = e.clientY;
             pos3 = e.clientX;
           // mouse is moving downward
-            moveChoiceTo(elmnt,-1);
-            return dragElement(elmnt);
+            moveChoiceTo(el,-1);
+            return dragElement(el);
         }
         // set the element's new position:
         else if(pos2 > 63 || pos1 > 100){
             pos4 = e.clientY;
             pos3 = e.clientX;
             // mouse is moving downward
-            moveChoiceTo(elmnt,1);
-            return dragElement(elmnt);
+            moveChoiceTo(el,1);
+            return dragElement(el);
         }
     }
   
@@ -787,7 +788,6 @@ function dragElement(elmnt) {
         }
     }
 
-
     /**
      * @function moveChoiceTo
      * 
@@ -814,7 +814,7 @@ function dragElement(elmnt) {
             }
         }
     }
-  }
+}
 
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
@@ -2306,7 +2306,7 @@ function setDetectionForLayer( el, detection ){
 
                     userTextColor = "#ffffff";
                     userBoxColor = "#ffffff";
-                    userLineColor = "#ffffff";                
+                    userLineColor = "#ffffff";
                 }
             }
             // otherwise set the background as transparent
@@ -2750,35 +2750,6 @@ function openToolBox(event, id){
 
 
 /**
- * @function peekTimer
- * 
- * @param {array} startTime the array of time values to calculate the difference [hrs,mins,secs]
- * 
- * @description captures he current time and figures out how long it has been since the passed startTime
-*/
-function peekTimer(startTime){
-    // get the end data values and calculate the difference in the startTime
-    let endTime = new Date(),
-        hrs = parseFloat(endTime.getHours()) - parseFloat(startTime[0]),
-        mins = parseFloat(endTime.getMinutes()) - parseFloat(startTime[1]),
-        secs = parseFloat(endTime.getSeconds()) - parseFloat(startTime[2]);
-
-    // if the difference is negative decriment the next highest value
-    // and add 60 to the negative
-    if(secs < 0){
-        secs = 60 + secs;
-        mins -= 1;
-    }
-    else if(mins < 0){
-        mins = 60 + mins;
-        hrs -= 1;
-    }
-    // return the fixed times 
-    return String(hrs) + ":" + String(mins) + ":" + String(secs);
-}
-
-
-/**
  * @function triggerDownload
  * 
  * @param {string} imgURI the download URL for the image data
@@ -3109,10 +3080,8 @@ function setScreen( type ){
                 document.getElementsByClassName("mainbox-right")[0].style.display = "none";
 
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "0";
-                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "100%";
 
-                // set the width of the left box to 18% + 7%
-                document.getElementsByClassName("mainbox-left")[0].style.width = "25%";
                 halfScreen = !halfScreen;
             }
             break;
@@ -3131,10 +3100,8 @@ function setScreen( type ){
                 document.getElementsByClassName("mainbox-right")[0].style.display = "block";
     
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
-                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "92%";
     
-                // set the width of the left box back to 18%
-                document.getElementsByClassName("mainbox-left")[0].style.width = "18%";
                 halfScreen = !halfScreen;
             }
             break;
@@ -3200,7 +3167,7 @@ $(document).ready(function(){
     // set the timmer for the UI orientation detection
     setInterval(checkScreen, 800);
 
-    // get image dimensions form the hidden div
+    // get image dimensions form the hidden divs
     var dimDiv = document.getElementById("imageDimensions"),
         origH,
         origW,
@@ -3209,28 +3176,14 @@ $(document).ready(function(){
         imageSrc,
         displayCube;
         
-    let padBottom = false,
-        padTop = false,
-        padLeft = false,
-        padRight = false;
 
     // variables for keeping track of the outline boxes
     var highlightBoxArray = [],
         userBoxColor;
 
-    let bottomBtn = document.getElementById("bottomPaddingBtn"),
-        topBtn = document.getElementById("topPaddingBtn"),
-        rightBtn = document.getElementById("rightPaddingBtn"),
-        leftBtn = document.getElementById("leftPaddingBtn");
-
-    // get padding input box and other important DOM elements for export
-    var paddingBoxInput = document.getElementById("paddingInput");
-
+    // get important DOM elements for export
     bg = document.getElementById("svgBackground");
     
-    // init the padding value
-    paddingBoxInput.value = '';
-        
     // set all flags to false to start
     var sunIconPlaced = false,
         northIconPlaced = false,
@@ -3539,8 +3492,7 @@ $(document).ready(function(){
     // set defaults
     outlineBox.style.visibility = 'hidden';
 
-    document.getElementById("changeDimWidth").placeholder = w + " px";
-    document.getElementById("changeDimHeight").placeholder = h + " px";
+    
     // set loader to invisible
     loadInvisible();
 
@@ -3945,7 +3897,6 @@ $(document).ready(function(){
      */
     $(".dropdownMenu").on("mouseover", function(event){
 
-        let menuArr = document.getElementsByClassName("dropdownMenu");
         var menu = event.target;
 
     
@@ -4291,50 +4242,7 @@ $(document).ready(function(){
     // ------------------------------ End Color Pickers -----------------------------------------------------
         
     // -------------------------------- Undo Button UI ------------------------------------------------------
-    /**
-     * @function undoLine 'mousedown' event handler
-     * 
-     * @description remove the last added instance of the lines
-    */
-    $("#undoLine").on("mousedown",function(){
-        if(lineArr.length > 0 && clickArray.length > 1){
-            let elem = lineArr.pop();
-            if(elem.getAttribute("marker-start")){
-                // remove the arrow def based on marker-start value
-                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
-
-                if(id !== "#arrow"){
-                    $(id).parent().remove();
-                }
-            }
-            elem.remove();
-            svg.className.baseVal = "image-image float-center";
-            document.getElementById("pencilIconFlag").className = "dropdownItem btn";
-            drawFlag = false;
-            clickArray = [];
-        }
-        else if(lineArr.length > 0){
-            var elem = lineArr.pop();
-
-            if(elem.getAttribute("marker-start")){
-                // remove the arrow def based on marker-start value
-                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
-
-                if(id !== "#arrow"){
-                    $(id).parent().remove();
-                }
-            }
-            elem.remove();
-        }
-        else{
-            alert("No lines drawn");
-        }
-
-        if(lineArr.length === 0){
-            document.getElementById("undoLine").style.visibility = "hidden";
-        }
-    });
-
+    
     /**
      * @function moveChoiceTo
      * 
@@ -4907,11 +4815,7 @@ $(document).ready(function(){
      * 
     */
     $("#scaleBarButton").on("mousedown", function(){
-        var scaleCheckbox = document.getElementById("scaleCheckbox"),
-            scaleCheckboxLabel = document.getElementById("scaleCheckboxLabel"),
-            scaleCheckboxSlider = document.getElementById("scaleCheckboxSlider"),
-            scaleAnimation = document.getElementById("scaleAnimation");
-
+        
         // if the scalebar btn is not disabled
         if(!this.classList.contains("disabled")){
             // clear all draw instance data if the flag is true
@@ -4924,18 +4828,6 @@ $(document).ready(function(){
                 // add bar and toggle the boolean
                 svg.appendChild(scaleBarIcon);
                 
-
-                scaleCheckbox.style.visibility = "visible";
-                scaleCheckboxLabel.style.visibility = "visible";
-
-                scaleCheckbox.style.transition = ".4s";
-                scaleCheckbox.style.webkitTransition = ".4s";
-                scaleCheckboxLabel.style.transition = ".4s";
-                scaleCheckboxLabel.style.webkitTransition = ".4s";
-                scaleCheckboxSlider.style.transition = ".4s";
-                scaleCheckboxSlider.style.webkitTransition = ".4s";
-                scaleAnimation.style.transition = ".4s";
-                scaleAnimation.style.webkitTransition = ".4s";
                 updateLayers(this.cloneNode(true));
                 this.classList.add("active");
 
@@ -4946,18 +4838,7 @@ $(document).ready(function(){
                 scaleBarIcon.remove();
                 toggleScalebar = true;
                 
-
-                scaleCheckbox.style.transition = "0s";
-                scaleCheckbox.style.webkitTransition = "0s";
-                scaleCheckboxLabel.style.transition = "0s";
-                scaleCheckboxLabel.style.webkitTransition = "0s";
-                scaleCheckboxSlider.style.transition = "0s";
-                scaleCheckboxSlider.style.webkitTransition = "0s";
-                scaleAnimation.style.transition = "0s";
-                scaleAnimation.style.webkitTransition = "0s";
                 removeLayers(this.cloneNode(true));
-                scaleCheckbox.style.visibility = "hidden";
-                scaleCheckboxLabel.style.visibility = "hidden";
                 this.classList.remove("active");
             }
         }
@@ -5096,11 +4977,6 @@ $(document).ready(function(){
      * 
     */
     $('#eyeFlag').click(function(){
-        var eyeCheckbox = document.getElementById("eyeCheckbox"),
-            eyeCheckboxLabel = document.getElementById("eyeCheckboxLabel"),
-            eyeCheckboxSlider = document.getElementById("eyeCheckboxSlider"),
-            eyeAnimation = document.getElementById("eyeAnimation");
-
         if(!document.getElementById("eyeFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -5117,17 +4993,6 @@ $(document).ready(function(){
                 eyeFlag = !eyeFlag;
                 document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
 
-                eyeCheckbox.style.transition = "0s";
-                eyeCheckbox.style.webkitTransition = "0s";
-                eyeCheckboxLabel.style.transition = "0s";
-                eyeCheckboxLabel.style.webkitTransition = "0s";
-                eyeCheckboxSlider.style.transition = "0s";
-                eyeCheckboxSlider.style.webkitTransition = "0s";
-                eyeAnimation.style.transition = "0s";
-                eyeAnimation.style.webkitTransition = "0s";
-
-                eyeCheckbox.style.visibility = "hidden";
-                eyeCheckboxLabel.style.visibility = "hidden";
                 removeLayers(this.cloneNode(true));
             }
 
@@ -5140,18 +5005,6 @@ $(document).ready(function(){
                 setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
                 document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn active");
-
-                document.getElementById("eyeCheckbox").style.visibility = "visible";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
-
-                eyeCheckbox.style.transition = ".4s";
-                eyeCheckbox.style.webkitTransition = ".4s";
-                eyeCheckboxLabel.style.transition = ".4s";
-                eyeCheckboxLabel.style.webkitTransition = ".4s";
-                eyeCheckboxSlider.style.transition = ".4s";
-                eyeCheckboxSlider.style.webkitTransition = ".4s";
-                eyeAnimation.style.transition = ".4s";
-                eyeAnimation.style.webkitTransition = ".4s";
                 updateLayers(this.cloneNode(true));
                 eyeFlag = false;
                 eyeIconPlaced = true;
@@ -5167,10 +5020,6 @@ $(document).ready(function(){
      * 
     */
     $('#sunIconFlag').click(function(){
-        var sunCheckbox = document.getElementById("sunCheckbox"),
-            sunCheckboxLabel = document.getElementById("sunCheckboxLabel"),
-            sunCheckboxSlider = document.getElementById("sunCheckboxSlider"),
-            sunAnimation = document.getElementById("sunAnimation");
 
         if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
             
@@ -5187,18 +5036,6 @@ $(document).ready(function(){
                 sunImage.remove();
                 document.getElementById('sunIconFlag').setAttribute('class',"dropdownItem btn");
                 sunFlag = false;
-
-                sunCheckbox.style.transition = "0s";
-                sunCheckbox.style.webkitTransition = "0s";
-                sunCheckboxLabel.style.transition = "0s";
-                sunCheckboxLabel.style.webkitTransition = "0s";
-                sunCheckboxSlider.style.transition = "0s";
-                sunCheckboxSlider.style.webkitTransition = "0s";
-                sunAnimation.style.transition = "0s";
-                sunAnimation.style.webkitTransition = "0s";
-
-                sunCheckbox.style.visibility = "hidden";
-                sunCheckboxLabel.style.visibility = "hidden";
                 removeLayers(this.cloneNode(true));
             }
             
@@ -5211,18 +5048,7 @@ $(document).ready(function(){
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
                                                                         "dropdownItem btn active");
-                sunCheckbox.style.visibility = "visible";
-                sunCheckboxLabel.style.visibility = "visible";
 
-                sunCheckbox.style.transition = ".4s";
-                sunCheckbox.style.webkitTransition = ".4s";
-                sunCheckboxLabel.style.transition = ".4s";
-                sunCheckboxLabel.style.webkitTransition = ".4s";
-                sunCheckboxSlider.style.transition = ".4s";
-                sunCheckboxSlider.style.webkitTransition = ".4s";
-                sunAnimation.style.transition = ".4s";
-                sunAnimation.style.webkitTransition = ".4s";
-                
                 setIconAngle(sunImage, sunDegree);
                 makeDraggable(svg); 
                 updateLayers(this.cloneNode(true));
@@ -5240,13 +5066,7 @@ $(document).ready(function(){
      * 
     */
     $('#northIconFlag').on('mousedown',function(){
-        var northLabel = document.getElementById("northCheckboxLabel"),
-            northAnimation = document.getElementById("northAnimation"),
-            northCheckboxSlider = document.getElementById("northCheckboxSlider"),
-            northCheckbox = document.getElementById("northCheckbox");
-
-            console.log(document.getElementById("northIconFlag"));
-
+    
         if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -5263,16 +5083,7 @@ $(document).ready(function(){
                 northImage.remove();
                 northImage.style.visibility = 'hidden';
                 document.getElementById('northIconFlag').setAttribute('class',"dropdownItem btn");
-                northLabel.style.transition = "0s";
-                northCheckbox.style.transition = "0s";
-                northLabel.style.webkitTransition = "0s";
-                northCheckbox.style.webkitTransition = "0s";
-                northAnimation.style.webkitTransition = "0s";
-                northAnimation.style.transition = "0s";
-                northCheckboxSlider.style.webkitTransition = "0s";
-                northCheckboxSlider.style.transition = "0s";
-                northCheckbox.style.visibility = "hidden";
-                northLabel.style.visibility = "hidden";
+                
                 removeLayers(this.cloneNode(true));
                 northFlag = !northFlag;
             }
@@ -5290,17 +5101,7 @@ $(document).ready(function(){
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
                                                                         "dropdownItem btn active");                                 
-                northLabel.style.transition = ".4s";
-                northCheckbox.style.transition = ".4s";
-                northLabel.style.webkitTransition = ".4s";
-                northCheckbox.style.webkitTransition = ".4s";
-                northAnimation.style.webkitTransition = ".4s";
-                northAnimation.style.transition = ".4s";
-                northCheckboxSlider.style.webkitTransition = ".4s";
-                northCheckboxSlider.style.transition = ".4s";
-                northCheckbox.style.visibility = "visible";
-                northLabel.style.visibility = "visible";
-
+                
                 updateLayers(this.cloneNode(true));
             }
             clickArray = [];
@@ -5378,107 +5179,162 @@ $(document).ready(function(){
     });
 
 
-    /**
-     * @function bottomPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#bottomPaddingBtn").on('click',function( event ){
-        if( !isNaN(parseInt(paddingBoxInput.value)) && !bottomBtn.classList.contains("btn-danger") ){
-            setImagePadding(parseInt(paddingBoxInput.value),'bottom');
-            padBottom = true;
+    //TODO:
+    function addPadding(){
+        var leftPad =  document.getElementById("leftPaddingCheckbox").checked,
+            rightPad = document.getElementById("rightPaddingCheckbox").checked,
+            topPad = document.getElementById("topPaddingCheckbox").checked,
+            bottomPad = document.getElementById("bottomPaddingCheckbox").checked,
+            input = parseInt(document.getElementById("paddingInput").value);
 
-            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn';
+        if(input){
+
+            if(leftPad){
+                setImagePadding(input,"left");
+            }
+
+            if(rightPad){
+                setImagePadding(input,"right");
+            }
+
+            if(topPad){
+                setImagePadding(input,"top");
+            }
+
+            if(bottomPad){
+                setImagePadding(input,"bottom");
+            }
         }
-        else if(paddingBoxInput.value!== "" && bottomBtn.classList.contains("btn-danger")){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"bottom");
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
+
+        // close tab
+        this.offsetParent.remove()
+    }
+
+    /**TODO:
+     * @function padImageBtn 'click' event handler
+     * 
+     * @description 
+    */
+    $("#padImageBtn").on('click',function(event){
+        // create the input box for the padding
+        var div = document.createElement("div"),
+            flexbox = document.createElement("div"),
+            pxInput = document.createElement("input"),
+            title = document.createElement("h2"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button"),
+            leftPaddingCheckbox = document.createElement("input"),
+            rightPaddingCheckbox,
+            topPaddingCheckbox,
+            bottomPaddingCheckbox,
+            leftPaddingLabel = document.createElement("h4"),
+            rightPaddingLabel,
+            topPaddingLabel,
+            bottomPaddingLabel;
+  
+        // reset padding
+        setImagePadding(0,"all");
+
+        leftPaddingCheckbox.setAttribute("type","checkbox");
+        leftPaddingCheckbox.style.margin = "auto auto";
+        leftPaddingCheckbox.style.textAlign = "center";
+        leftPaddingCheckbox.style.transform = "scale(1.5)";
+
+        rightPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+        topPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+        bottomPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+
+        leftPaddingCheckbox.setAttribute("id", "leftPaddingCheckbox");
+        rightPaddingCheckbox.setAttribute("id", "rightPaddingCheckbox");
+        bottomPaddingCheckbox.setAttribute("id", "bottomPaddingCheckbox");
+        topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
+
+        /* Labels */
+        leftPaddingLabel.style.margin = "auto auto";
+        leftPaddingLabel.style.textAlign = "center";
+        rightPaddingLabel = leftPaddingLabel.cloneNode(true);
+        topPaddingLabel = leftPaddingLabel.cloneNode(true);
+        bottomPaddingLabel = leftPaddingLabel.cloneNode(true);
+
+        leftPaddingLabel.innerHTML = "Left";
+        rightPaddingLabel.innerHTML = "Right";
+        topPaddingLabel.innerHTML = "Top";
+        bottomPaddingLabel.innerHTML = "Bottom";
+
+        div.setAttribute("class","padding-input-box");
+
+        flexbox.className = "flex-box";
+
+        var flexbox2 = flexbox.cloneNode(true),
+            flexbox3 = flexbox.cloneNode(true),
+            flexbox4 = flexbox.cloneNode(true);
+
+        pxInput.className = "padding-input";
+        pxInput.placeholder = "How many pixels?";
+        pxInput.setAttribute("id","paddingInput");
         
-            padBottom = false;  
-        }
+        pxInput.setAttribute("type", "text");
+
+        flexbox.appendChild(pxInput);
+        
+        title.innerHTML = "Add Padding to Image";
+        title.style.width = "100%";
+        title.style.height = "auto";
+        title.style.textAlign = "center";
+
+
+        cancelBtn.className = "btn btn-secondary btn-md";
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.style.margin = "auto auto";
+
+        cancelBtn.addEventListener("click",cancelBtnFunction);
+        submitBtn.addEventListener("click", addPadding);
+
+        submitBtn.className = "btn btn-success btn-md";
+        submitBtn.innerText = "Submit";
+        submitBtn.style.margin = "auto auto";
+
+
+        flexbox2.appendChild(cancelBtn);
+        flexbox2.appendChild(submitBtn);
+
+        flexbox3.appendChild(leftPaddingCheckbox);
+        flexbox3.appendChild(rightPaddingCheckbox);
+        flexbox3.appendChild(topPaddingCheckbox);
+        flexbox3.appendChild(bottomPaddingCheckbox);
+
+        flexbox4.appendChild(leftPaddingLabel);
+        flexbox4.appendChild(rightPaddingLabel);
+        flexbox4.appendChild(topPaddingLabel);
+        flexbox4.appendChild(bottomPaddingLabel);
+
+
+        div.appendChild(title);
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox); // input box
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox4); //labels
+        div.appendChild(flexbox3); // checkboxes
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox2); // buttons
+
+        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
-    /**
-     * @function topPaddingBtn 'click' event handler
+    /**TODO:
+     * @function resizeFigureBtn 'click' event handler
      * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
+     * @description 
     */
-    $("#topPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !topBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'top');
-            padTop = true;
-            
-            topBtn.className = 'btn btn-danger button btn-sm paddingBtn';
-        }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"top"); 
-            topBtn.className = 'btn button btn-sm paddingBtn';
-            
-            padTop = false;
-        }
-    });
-
-
-    /**
-     * @function rightPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#rightPaddingBtn").on('click',function(event){
+    $("#resizeFigureBtn").on('click',function(event){
         
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !rightBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'right');
-            padRight = true;
+        // create the input box for the padding
+        console.log("DRAW THE RESIZE INPUT BOX");
 
-            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn';
-        }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"right"); 
-            rightBtn.className = 'btn button btn-sm paddingBtn'; 
-            
-            padRight = false; 
-        } 
-    });
+        // how many pixels as text input for width and height
 
-
-    /**
-     * @function leftPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */  
-    $("#leftPaddingBtn").on('click',function(event){
-        
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !leftBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'left');
-            padLeft = true;
-            
-            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn';   
-        }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"left"); 
-            leftBtn.className = 'btn button btn-sm paddingBtn'; 
-
-            padLeft = false; 
-        } 
-    });
-
-
-    /**
-     * @function resetPaddingBtn 'click' event handler
-     * 
-     * @description on click resets UI and padding to 0
-    */
-    $("#resetPaddingBtn").on('click',function(event){
-        setImagePadding(parseInt(0),"none"); 
-        paddingBoxInput.value = "";  
-        
-        padBottom = false, padLeft = false, padRight = false, padTop = false;
-        
-        bottomBtn.className = 'btn button btn-sm paddingBtn';
-        leftBtn.className = 'btn button btn-sm paddingBtn';
-        rightBtn.className = 'btn button btn-sm paddingBtn';
-        topBtn.className = 'btn button btn-sm paddingBtn'; 
+        // cancel btn and submit button
     });
 
 
@@ -5543,29 +5399,15 @@ $(document).ready(function(){
         else if(((keys[0] === 16 && keys[1] === 18) 
                 || (keys[1] === 16 && keys[0] === 18)) && keys.length === 3){
             event.preventDefault();
-            if(keys[2] === 76){
-                if(lineArr.length > 0){
-                    $("#undoLine").mousedown(); 
-                }
-            }
-            else if(keys[2] === 79){
+            
+            if(keys[2] === 79){
                 $("#eyeCheckbox").click();
-            }
-            else if(keys[2] === 66){
-                if(highlightBoxArray.length !== 0){
-                    $("#undoBox").mousedown(); 
-                }
             }
             else if(keys[2] === 78){
                 $("#northCheckbox").click();
             }
             else if(keys[2] === 83){
                 $("#sunCheckbox").click();
-            }
-            else if(keys[2] === 84){
-                if(textBoxArray.length > 0){
-                    $("#undoText").mousedown();
-                }
             }
             else if(keys[2] === 82){
                 $("#scaleCheckbox").click();   
@@ -5816,38 +5658,6 @@ $(document).ready(function(){
         }
     });
 
-    let warned = false;
-
-    /**
-     * @function paddingInput 'keyup' event handler
-     * 
-     * @description when user clicks a key in the box check if the value in the box can be used an an int
-     *      set the padding depending on the current flag otherwise reset the value
-    */
-    $("#paddingInput").keyup(function(){
-        if(!isNaN(parseInt(this.value))){
-            if(padBottom){
-                setImagePadding(parseInt(this.value),'bottom');
-            }
-            if(padRight){
-                setImagePadding(parseInt(this.value),'right');
-            }
-            if(padLeft){
-                setImagePadding(parseInt(this.value),'left');
-            }
-            if(padTop){
-                setImagePadding(parseInt(this.value),'top');
-            }
-        }
-        else{
-            // if the value is not a number, warn the user that only numbers can render
-            //  warned flag is to onl warn each user 1 time
-            if(this.value !== "" && !warned){
-                alert("Only Accepts Positive Whole Numbers");
-                warned = true;
-            }
-        }
-    });
 });
 
 

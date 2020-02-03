@@ -19,286 +19,30 @@
         <script src="js/imageEditor.js"></script>
     </head>
     <body class="unfocus" style="overflow-x: hidden;">
-        <!-- Left Bar-->
-        <div class="mainbox-left unfocus" style="width: 18%;">
-            <!-- Page Header Block-->
-            <img src="../images/usgsLogo.png" class="float-md-left" width="85%" height="auto"
-                style="margin: 0%; padding: 0%; pointer-events:none;">
-            <!-- New UI with a tabular menu -->
-            <div class="tabs">
-                <button class="tablinks active" onclick="openToolBox(event, 'Icons')">
-                    <p style="color: white; width: auto; position: absolute; left: 10px; top:auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">Icons</p>
-                </button>
-                <button class="tablinks" onclick="openToolBox(event, 'Annotate')">
-                    <p style="color: black; width: auto; padding:0; left: 10px; top: auto; padding-right: 25px; margin: 0; font-size: xx-small; position:absolute">Annotate</p>
-                </button>
-                <button class="tablinks" onclick="openToolBox(event, 'File')">
-                    <p style="color: black;  position: absolute; left: 10px; top: auto; width: auto; padding:0; padding-right: 5px; margin: 0; font-size: x-small;">File</p>
-                </button>
-            </div>
-            <!-- Tabular Menu System -->
-            <div class="menu unfocus">
-                <!-- Icon UI Tab-->
-                <div id="Icons" class="tabcontent unfocus">
-                    <h4 style=" color:white; pointer-events: none;font-size: large;">Icon Tools</h4>
-                    <!-- North Button -->
-                    <div class="row" role="table" style="margin-top:0rem; border-top: 2px solid black" 
-                            title="Alt + N">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="padding-left: 2% ;margin-right:.5rem; height: 100%; font-size: 70%;">
-                                North Direction
-                            </p>
-                        </div>
-                        <div class="col-4" style="text-align:center; margin: auto auto; padding: 2%;">
-                            
-                        </div>
-                        <div class="col-4" style="padding-right: 20%;">
-                            <p id="northCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
-                            <label class="switch" id="northCheckbox" style="visibility: hidden;" title="Shift + Alt + N">
-                                <input type="checkbox" id="northCheckboxSlider"
-                                style="margin: auto auto; margin-bottom: 0;">
-                                <span class="slider round" id="northAnimation"></span>
-                            </label> 
-                        </div>
-                    </div>
-                    <!-- Sun Direction Button -->
-                    <div class="row" role="table"title="Alt + S" style="padding-bottom: 1%;">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="padding-left: 3%;margin-right: .5rem; height: 80%; font-size: 70%;">
-                                Sun<br/>Direction
-                            </p>
-                        </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
-                            
-                        </div>
-                        <div class="col-4" style="padding-right: 20%;">
-                            <p id="sunCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
-                            <label class="switch" id="sunCheckbox" style="visibility: hidden;" title="Shift + Alt + S">
-                                <input type="checkbox" id="sunCheckboxSlider" 
-                                style="margin: auto auto; margin-bottom: 0;">
-                                <span class="slider round" id="sunAnimation"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <!-- Observer Direction Button -->
-                    <div class="row" role="table" title="Alt + O">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="margin-right: .5rem; height: 100%; font-size: 70%; padding-left: 3%;">
-                                Observer<br/>Direction
-                            </p>
-                        </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding: 2%;">
-                            
-                        </div>
-                        <div class="col-4" style="padding-right: 20%;">
-                            <p id="eyeCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
-                            <label class="switch" id="eyeCheckbox" style="visibility: hidden;" title="Shift + Alt + O">
-                                <input type="checkbox" id="eyeCheckboxSlider" 
-                                style="margin: auto auto; margin-bottom: 0;">
-                                <span class="slider round" id="eyeAnimation" ></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row" role="table" title="Alt + R">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="font-size: 80%;">Scalebar</p>
-                        </div>
-                        <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 2%;">
-                            <button class="btn btn-lg button" id="scaleBarButton1"
-                            style="width:100%; padding:1%; color: black; min-width: 4rem; padding-top: 0;">
-                                
-                            </button>
-                        </div>
-                        <div class="col-4">
-                            <p id="scaleCheckboxLabel" style="visibility: hidden; font-size: small;">Toggle Color</p>
-                            <label class="switch" id="scaleCheckbox" style="visibility: hidden;" title="Shift + Alt + R">
-                                <input type="checkbox" id="scaleCheckboxSlider"
-                                style="margin: auto auto; margin-bottom: 0;">
-                                <span class="slider round" id="scaleAnimation"></span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <!-- Annotation UI Tab -->
-                <div id="Annotate" class="tabcontent unfocus" style="display: none; margin: auto auto;">
-                    <h4 style="color:white; pointer-events:none; font-size: large;">Annotation Tools</h4>
-                    <!-- Draw Tool Button -->
-                    <div class="row" role="table" title="Alt + L" style="margin-top: auto; margin-bottom:auto;">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="padding-top: .5rem; height: 100%; font-size: 80%;">
-                                Drawing Tool
-                            </p>
-                        </div>
-                        <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button id="pencilIconFlag1" class="btn btn-lg button" style="padding: 3px; width:100%;">
-                                <svg viewBox="10 8 100 100" width="100%" height="100%" style="padding:0;">
-                                    <rect x="75" y="-25" width="9%" height="75%" fill="black"
-                                    stroke="black" transform="rotate(35)"></rect>
-                                    <rect x="86" y="-25" width="3%" height="75%" fill="black"
-                                    stroke="black" transform="rotate(35)"></rect>
-                                    
-                                    <rect x="74" y="-32" width="15.5" height="5" fill="black" transform="rotate(35)"></rect>
-                                    <path d="M31 86.5 L31.5,98 L43,94.5" stroke="black" fill="black"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="col-4" style="padding-top:2%;">
-                            <div class="row" style="margin: 0; margin-bottom: 10%;">
-                                
-                            </div>
-                            <br>
-                            <div class="row" style="padding-left: 20%;">
-                                <label class="switch" id="arrowCheckbox" title="Add an Arrowhead">
-                                    <input type="checkbox" id="arrowCheckboxSlider2"
-                                    style="margin: auto auto; margin-bottom: 0;">
-                                    <span class="slider round" id="arrowAnimation"></span>
-                                </label>
-                                <br>
-                                <p id="arrowCheckboxLabel" style="margin: auto 0; font-size: 75%; width: 100%;">Add Arrow Head</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Outline Box Button -->
-                    <div class="row" role="table" title="Alt + B">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="width: 100%; font-size: 80%;">
-                                Outline Box
-                            </p>
-                        </div>
-                        <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button class="btn btn-lg button" id="outlineBtn1" 
-                            style="width:100%; color:black; padding:2%;">
-                                <svg viewBox="-3 -10 80 60" width="100%" height="100%" style="padding: 5px;">
-                                    <rect x="0" y="0" width="73" height="50" 
-                                    stroke="white" stroke-width="5" fill="transparent"></rect>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%;">
-                            
-                        </div>
-                    </div>
-                    <!-- Text Tool Button -->
-                    <div class="row" role="table" title="Alt + T">
-                        <div class="col-4" style="margin: auto auto;">
-                            <p class="float-left" style="font-size: 80%;">Text Tool</p>
-                        </div>
-                        <div class="col-4" style="padding-left:0%; margin-top: auto; margin-bottom:auto; padding: 1%;">
-                            <button class="btn btn-lg button" id="textBtn1" 
-                            style="width:100%; color: black; padding: 10%;">
-                                <svg viewBox="-2 -4 23 15" width="100%">
-                                    <rect x="0" y="0" width="20" height="10" stroke="white" stroke-width="2"
-                                    fill="transparent"></rect>
-                                    <text x="3" y="8" font-size="9">Aa</text>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="col-4" style="margin-top: auto; margin-bottom:auto; padding-top:2%;">
-                            
-                        </div>
-                    </div>
-                </div>
-                <!-- File UI Tab -->
-                <div id="File" class="tabcontent unfocus" style="display: none;">
-                    <h4 style="color:white; pointer-events: none; font-size: large;">File Manipulations</h4>
-                    <!-- Pad Image Interface -->
-                    <div class="row" role="table" title="Pad Image Border">
-                        <div class="row text-center">
-                            <h2 class="text-center" style="padding-left: 2rem; font-size: 100%; color: white;">
-                                Pad Image
-                            </h2>
-                        </div>
-                        <br/>
-                        <div class="row" style="width:100%;">
-                            <div class="col-8" style="padding-left:2rem; margin-bottom: 2%;">
-                                <input class="form-control form-control-lg"
-                                style="width: 100%; border: 1px solid lightgrey; font-size: 65%;"
-                                id="paddingInput" type="text" placeholder="Pad Pixels"/>
-                            </div>
-                            <div class="col-4" style="padding:0;">
-                                <button  style=" width: 100%; font-size: small;" class="btn btn-danger btn-md button paddingBtn"
-                                id="resetPaddingBtn" title="Reset Padding">
-                                    Reset
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row" style="width: 100%; padding: .5%; margin: 1px;">
-                            <div class="col-3" style="padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="topPaddingBtn"
-                                    title="Top of Image">
-                                    Top 
-                                </button>
-                            </div>
-                            <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="bottomPaddingBtn"
-                                    title="Bottom of Image">
-                                    Bottom 
-                                </button>
-                            </div>
-                            <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="leftPaddingBtn"
-                                    title="Left Side of Image">
-                                    Left 
-                                </button>
-                            </div>
-                            <div class="col-3" style="width: 25%; padding: 0;">
-                                <button class="btn button btn-sm paddingBtn" style="width:100%; font-size: xx-small;" id="rightPaddingBtn"
-                                    title="Right Side of Image">
-                                    Right 
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Resizing Button Interface -->
-                    <div class="row" role="table">
-                        <div class="col-4" style="padding: 0; padding-left:5%; margin: auto auto;">
-                            <p class="float-center" style="padding-left:5%;">
-                                Resize<br/>Figure
-                            </p>
-                        </div>
-                        <div class="col-4" style="padding: 0; margin: auto auto;">
-                            <p class="float-center" style="margin-bottom: 0; margin-top: auto;">
-                                Width
-                            </p>
-                            <input id="changeDimWidth" type="text" style="width: 100%;">
-                            <br/>
-                            <br/>
-                            <input id="changeDimHeight" type="text" style="width: 100%;">
-                            <p class="float-center" style="padding:0%;">
-                                Height
-                            </p>
-                        </div>
-                        <div class="col-4" style="padding: 1%; padding-top: 0; margin: auto auto;">
-                            <button id="resizeUpdateBtn" class="btn btn-lg button"
-                            style="width: 100%; padding: 1%; font-size: small;">
-                                Update
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Export Button Interface -->
-                    <div class="row" role="table" style="border-bottom: 2px solid black; margin-top: auto;
-                    margin-bottom: auto;" title="Download Figure">
-                        <div class="row" style="padding:2%; padding-left: 2rem; width: 20rem;">
-                            <div class="col-4" style="padding: 0; margin: auto auto;">
-                                <p class="float-left" style="margin-right: 2rem;">
-                                Save<br/>Figure
-                                </p>
-                            </div>
-                            <div class="col-8" style="margin: auto auto;">
-                                <button class="btn btn-primary btn-lg button"
-                                style="height: 50%; margin: auto auto;" id="exportBtn2">
-                                    <svg viewBox="0 0 100 100" stroke-width="10">
-                                        <path d="M 5 40 L 5 95 L 95 95 L 95 40" stroke="black" fill="transparent"/>
-                                        <path d="M 50 20 L 50 90 L 70 60 L 50 90 L 30 60 L 50 91" stroke-width="8"
-                                         stroke="black" fill="transparent"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+       
+        <!-- Right Bar-->
+        <div id="rightbox" class="container mainbox-right unfocus" style="width: 7%; height:100%; padding: 5px;">
+            <!-- Loading GIF-->
+            <div id="loading" class="text-center lead loading-small" style="top: 0;">
+                <img src="../images/loading.gif" class='float-center' height="50%" weight="auto"/>
+                <br>
+                <h3 id="loadingText" style="text-align: center; margin-left: 1rem; color: cornsilk;">Loading</h3>
             </div>
 
+            <br>
+            <!--------------------------- Layer Browser ------------------------->
+            <div id="layerLabel" class="container lightshadowbox" style="margin: 0; color: black; pointer-events: none;">Layers</div>
+            <div id="layerBrowser" class="container shadowbox unfocus" 
+                style="max-width: none; margin: auto auto; width: 100%; height: 75%; min-height: 75px; padding: 0;
+                 top: 150px; border: 2px solid blue; overflow: auto;"></div>
+            
+        </div>
+        
+        <!-- Center Box-->
+        <div class="mainbox-center unfocus" style="width: 92%; height:100%; background-color: rgba(99,88,94,0.65);
+        border: 2px double rgba(255, 255,255, .65); padding: 5px;">
+        
+            <!-- Center Title Box -->
             <div class="help-box" id="help-box" style="visibility: hidden; margin-right: 0;
             height: 75%; display: inline-block;">
                 <button class="float-right button" id="hideBtn" 
@@ -376,42 +120,22 @@
                      on by clicking and dragging layer objects up and down. <cite>Delete</cite> the active layer by hitting the Delete key 
                 </div>
             </div>
-
-
-        </div>
-
-        <!-- Right Bar-->
-        <div id="rightbox" class="container mainbox-right unfocus" style="width: 7%; height:100%; padding: 5px;">
-            <!-- Loading GIF-->
-            <div id="loading" class="text-center lead loading-small" style="top: 0;">
-                <img src="../images/loading.gif" class='float-center' height="50%" weight="auto"/>
-                <br>
-                <h3 id="loadingText" style="text-align: center; margin-left: 1rem; color: cornsilk;">Loading</h3>
-            </div>
-
-            <br>
-            <!--------------------------- Layer Browser ------------------------->
-            <div id="layerLabel" class="container lightshadowbox" style="margin: 0; color: black; pointer-events: none;">Layers</div>
-            <div id="layerBrowser" class="container shadowbox unfocus" 
-                style="max-width: none; margin: auto auto; width: 100%; height: 75%; min-height: 75px; padding: 0;
-                 top: 150px; border: 2px solid blue; overflow: auto;"></div>
             
-        </div>
-        
-        <!-- Center Box-->
-        <div class="mainbox-center unfocus" style="width: 75%; height:100%; background-color: rgba(99,88,94,0.65);
-        border: 2px double rgba(255, 255,255, .65); padding: 5px;">
-            <!-- Center Title Box -->
             <div class="container text-center unfocus " style="background: rgba(99, 88, 94, 0.692);
             height: 13rem; padding: 2rem; max-width: none; width:100%; border: 1px solid black; margin:0;">
+                
                 <div class="jumbotron text-center" 
                 style="border: 2px solid black; margin:auto auto;margin-left: auto; margin-right: auto; 
                 background: rgba(243, 214, 176, 0.698); height:75%; padding: 0;">
-                    <div class="row">
-                        <div class="col-4 unfocus" style="width: 15%;"></div>
+                    <div class="row" style="max-height: 200px;">
+                        <div class="col-4 unfocus" style="width: 15%; pointer-events: none;">
+                        <!-- Page Header Block-->
+                            <img src="../images/usgsLogo.png" class="float-left" width="auto" height="20%"
+                            style="margin: 0%; padding: 0%; pointer-events:none; position: relative;">
+                        </div>
                         <div class="col-4 unfocus" style="text-align: center; width: 70%;">
                             <h2 style="font-size:medium;pointer-events: none;">Edit Cube Image</h2>
-                            <h4 id="imageName"style="font-size:small;pointer-events: none;"></h4>
+                            <h4 id="imageName"style="font-size:medium;pointer-events: none;"></h4>
                             <h5 id="displayCube" style="font-size:medium;pointer-events: none;"><%=w%> &times; <%=h%> px</h5>
                         </div>
                         <div class="col-4 unfocus" style="width: 15%;">
@@ -609,11 +333,42 @@
                     </div>
                     
                     <!-- Hidden fields -->
+
+                    <!-- observer slider -->
+                    <label class="switch" id="eyeCheckbox" style="visibility: hidden;" title="Shift + Alt + O">
+                        <input type="checkbox" id="eyeCheckboxSlider" 
+                        style="margin: auto auto; margin-bottom: 0;">
+                        <span class="slider round" id="eyeAnimation" ></span>
+                    </label>
+
+                    <!-- view slider -->
                     <label class="switch" style="scale: 1.15; left: 0; visibility: hidden;">
                         <input id="viewOption" type="checkbox">
                         <span class="slider round"></span>
                     </label>
 
+                    <!-- scalebar slider -->
+                    <label class="switch" id="scaleCheckbox" style="visibility: hidden;" title="Shift + Alt + R">
+                        <input type="checkbox" id="scaleCheckboxSlider"
+                        style="margin: auto auto; margin-bottom: 0;">
+                        <span class="slider round" id="scaleAnimation"></span>
+                    </label>
+
+                    <!-- North slider object hidden -->
+                    <label class="switch" id="northCheckbox" style="visibility: hidden;" title="Shift + Alt + N">
+                        <input type="checkbox" id="northCheckboxSlider"
+                        style="margin: auto auto; margin-bottom: 0;">
+                        <span class="slider round" id="northAnimation"></span>
+                    </label> 
+
+                    <!-- sun switch-->
+                    <label class="switch" id="sunCheckbox" style="visibility: hidden;" title="Shift + Alt + S">
+                        <input type="checkbox" id="sunCheckboxSlider" 
+                        style="margin: auto auto; margin-bottom: 0;">
+                        <span class="slider round" id="sunAnimation"></span>
+                    </label>
+
+                    <!-- predrawn layer svg elements-->
                     <svg id="northIconFlagSvg" role="button" class="btn btn-lg button" viewBox="0 0 100 100"
                         stroke-width="3" style=" margin:auto auto; width: 100%; padding: 5%; visibility: hidden;">
                         <path d="M 50 0 L 85 65 L 50 50 L 50 0" stroke="black" fill="black"/>

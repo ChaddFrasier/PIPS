@@ -10,12 +10,55 @@ body,html {
     overflow-x: hidden;
 }
 
-.mainbox-left {
-    float: left;
-    width: 15%;
+.padding-input-box {
+    padding: 5px;
+    position: absolute;
+    display: block;
+    top: 300px;
+    left: 35%;
+    width: 25%;
     height: auto;
-    margin: 0 auto;
+    min-height: 250px;
+    border-radius: 5px;
+    z-index: 10;
+    border: 2px solid black;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+        #bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    -moz-box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
+	-webkit-box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
+	box-shadow:
+		0px 1px 1px rgba(000,000,000,0.5),
+		inset 1px 2px 0px rgba(255,255,255,0.4);
 }
+
+.flex-box {
+    display: flex;
+    width: 100%;
+    height: auto;
+}
+.padding-input {
+    width: 50%;
+    position: relative;
+    height: 10%;
+    margin: auto auto;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
 
 .mainbox-right {
     float: right;
@@ -279,8 +322,8 @@ button.paddingBtn {
     width: auto;
     margin: 0 0;
     padding: 0;
-    max-width: 400px;
-    min-width: 100px;
+    max-height: 75px;
+    min-height: 25px;
 }
 
 .sidebar {
