@@ -108,25 +108,13 @@
                         </a>
                     </div>
                     <div class="col menubar">
-                        <div id="fileMenuBtn" class="dropdown btn" 
-                        style="background: -moz-linear-gradient(
-                            top,
-                            #f0efef 0%,
-                            #e0dfdf 50%,
-                            #c5c5c5 92%,
-                            #bebebe);
-                        background: -webkit-gradient(
-                            linear, left top, left bottom,
-                            from(#f0efef),
-                            color-stop(0.50, #e0dfdf),
-                            color-stop(0.92, #c5c5c5),
-                            to(#bebebe));">
+                        <div id="fileMenuBtn" class="dropdown btn">
                             File Options&#x25BA;
                         </div>
                         <br>
                         <div class="dropdownMenu" style="margin: auto;">
                             <form action="/csv" method='POST' class="lg-form text-left" 
-                            style="margin: 0; border: 1.5px solid black;">
+                            style="margin: 0; ">
                                 <div class="lg-form" style="margin: 0;">
                                     <input type="hidden" value="<%= wholeData %>" id="passedTXT">
                                     <input type="hidden" value="<%= csvString %>" id= "csvStringPassed">
@@ -137,24 +125,24 @@
                             </form>
                     
                             <button class="dropdownItem btn" role="button" id="templateDownloadBtn"
-                            style="padding:5; border: 1.5px solid black; margin:0;" title="Save Template File">
+                            style="padding:5; margin:0;" title="Save Template File">
                                 Save Template File (.tpl)
                             </button>
                             <br>
                             <button id="copyBtn" class="dropdownItem btn" role="button"
-                            style="padding:5; border: 1.5px solid black; margin:0;"
+                            style="padding:5; margin:0;"
                             title="Save to Clipboard">
                                 Copy Output to Clipboard
                             </button>
                             <br>
                             <a class="dropdownItem btn" title="Download Figure Caption"
-                            style="padding:5; border: 1.5px solid black; margin:0;"
+                            style="padding:5;margin:0;"
                                 role="button" id="link" download="<%=outputName%>">
                                    Download Output (.txt)
                             </a>
                             <br>
                             <button id="logDownloadBtn" class="btn dropdownItem" role="button" title="ISIS Log File"
-                            style="padding:5; border: 1.5px solid black; margin:0;">Save ISIS Output Log
+                            style="padding:5; margin:0;">Save ISIS Output Log
                             </button>
                             <br>
                         </div>
@@ -165,7 +153,7 @@
                             background: transparent;">            
                                 <input type="hidden" value= '<%= dictionaryString %>' name="image_string">
                                 <input type="button" id="imagePageBtn" value="View Image" class="btn dropdownItem"
-                                title="Image Editor" style="width:auto; height:auto; padding:4; border: 1.5px solid black;
+                                title="Image Editor" style="width:auto; height:auto; padding:4;
                                 margin:0;" onclick="loaderActivate()"/>
                             </form>
                     </div>

@@ -21,6 +21,8 @@ body,html {
     height: auto;
     min-height: 250px;
     border-radius: 5px;
+    -moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
     z-index: 10;
     border: 2px solid black;
     background: -moz-linear-gradient(
@@ -59,6 +61,8 @@ body,html {
     margin: auto auto;
     border: 2px solid black;
     border-radius: 5px;
+    -moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 }
 
 input.dimInput {
@@ -69,6 +73,8 @@ input.dimInput {
     min-width: 100px;
     margin: auto auto;
     border-radius: 4px;
+    -moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
 }
 
 .mainbox-right {
@@ -118,6 +124,8 @@ pre {
     margin:inherit;
     margin-bottom: 5px;
     border-radius: 5px;
+    -moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
     background: -moz-linear-gradient(
 		top,
 		#a0a0a0 0%,
@@ -252,6 +260,18 @@ button.paddingBtn {
     max-width: 200px;
     margin: 0;
     z-index: 15;
+    background: -moz-linear-gradient(
+            top,
+            #f0efef 0%,
+            #e0dfdf 50%,
+            #c5c5c5 92%,
+            #bebebe);
+    background: -webkit-gradient(
+        linear, left top, left bottom,
+        from(#f0efef),
+        color-stop(0.50, #e0dfdf),
+        color-stop(0.92, #c5c5c5),
+        to(#bebebe));
 }
 
 .menubar {
@@ -278,27 +298,25 @@ button.paddingBtn {
     min-width: 200px;
     max-width: 400px;
     margin: 0 0;
-    border-bottom: 3px solid black;
-    border-top: 0px solid black;
-    border-left: 0px solid black;
-    border-right: 0px solid black;
     border-radius: 5%;
+    -moz-border-radius: 5%;
+	-webkit-border-radius: 5%;
     z-index: 15;
 }
 
 .dropdownItem:hover{
     background: -moz-linear-gradient(
 		top,
-		#fafafa 0%,
-		#ebe9e9 50%,
-		#e0dddd 92%,
-		#d6d6d6) !important;
+		#97d489 0%,
+		#8cc77f 50%,
+		#77a76c 92%,
+		#6c9762) !important;
 	background: -webkit-gradient(
 		linear, left top, left bottom,
-		from(#fafafa),
-		color-stop(0.50, #ebe9e9),
-		color-stop(0.92, #e0dddd),
-        to(#d6d6d6)) !important;
+		from(#97d489),
+		color-stop(0.50, #8cc77f),
+		color-stop(0.92, #77a76c),
+        to(#6c9762)) !important;
     color: black;
 }
 
@@ -321,7 +339,6 @@ button.paddingBtn {
     max-width: 400px;
     z-index: 15;
     padding:5; 
-    border: 1.5px solid black !important; 
     margin:0;
 }
 
@@ -353,7 +370,7 @@ button.paddingBtn {
         to(#bebebe));
     border: 1.5px solid grey !important; 
     text-align: center;
-    border-radius: 5px;
+    border-radius: 3px;
     min-height: 30px;
     height: 100%;
 }
@@ -361,16 +378,16 @@ button.paddingBtn {
 .sidebar:hover{
     background: -moz-linear-gradient(
 		top,
-		#fafafa 0%,
-		#ebe9e9 50%,
-		#e0dddd 92%,
-		#d6d6d6) ;
+		#97d489 0%,
+		#8cc77f 50%,
+		#77a76c 92%,
+		#6c9762) !important;
 	background: -webkit-gradient(
 		linear, left top, left bottom,
-		from(#fafafa),
-		color-stop(0.50, #ebe9e9),
-		color-stop(0.92, #e0dddd),
-        to(#d6d6d6)) ;
+		from(#97d489),
+		color-stop(0.50, #8cc77f),
+		color-stop(0.92, #77a76c),
+        to(#6c9762)) !important;
     color: black;
 }
 .sidebar.active {
@@ -394,6 +411,9 @@ button.paddingBtn {
 }
 
 .disabled {
+    background: grey !important;
+}
+.disabled:hover {
     background: grey !important;
 }
 
@@ -696,7 +716,7 @@ label {
     max-width: 5rem;
     min-height: 10px;
     max-height: 5rem;
-    
+    padding: 5px;
 }
 
 .buttonSm {
@@ -707,9 +727,9 @@ label {
     border: 2px solid black !important;
     overflow: hidden;
     margin: auto auto;
-    min-width: 2.5rem;
-    min-height: 1.5rem;
-    max-height: 3rem;
+    min-width: 50px;
+    min-height: 2rem;
+    max-height: 2rem;
 }
 .button:hover {
     background: rgba(0, 113, 79, 0.705);
@@ -723,8 +743,6 @@ input:focus {
 
 input[type=color] {
     margin: auto auto;
-    margin-top: 0;
-    margin-bottom: auto;
     padding: 1px;
     border: 2px double rgba(0, 0, 0, 0.452);
     min-height: 80%;
@@ -739,6 +757,8 @@ input[type=checkbox]:hover {
 .templateBtn {
     background-color: #007150;
     border-radius: 10px;
+    -moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
     border: 1px solid black;
     color: white;
     padding: 4%;

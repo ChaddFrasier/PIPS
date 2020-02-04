@@ -164,11 +164,11 @@ Keys      | Command
 Keys              | Command
 ------------------|----------------------------------------  
 `Shift + Alt + N` | `Toggle Color of North Azimuthal Indicator`
-`Shift + Alt + L` | `Undo Last Drawn Line`
+~`Shift + Alt + L`~ | ~`Undo Last Drawn Line`~
 `Shift + Alt + O` | `Toggle Color of Observer Azimuthal Indicator`
-`Shift + Alt + T` | `Undo Last Added Text`
+~`Shift + Alt + T`~ | ~`Undo Last Added Text`~
 `Shift + Alt + S` | `Toggle Color of Sun Azimuthal Indicator`
-`Shift + Alt + B` | `Undo Last Outline Box`
+~`Shift + Alt + B`~ | ~`Undo Last Outline Box`~
 `Shift + Alt + R` | `Toggle Color of Scalebar`
 
 ## Licensing
