@@ -4350,6 +4350,16 @@ $(document).ready(function(){
 
     // ------------------------------- Button Handlers ------------------------------------------------------
       
+    function previousPopup(){
+        var popupArr = document.getElementsByClassName("input-box");
+
+        if(popupArr.length === 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     /**
      * @function resizeUpdateBtn 'mousedown' event handler
@@ -4386,7 +4396,7 @@ $(document).ready(function(){
         }
 
         // reset the padding to 0
-        $("#resetPaddingBtn").click();
+        setImagePadding(0, "all");
 
         // get new image dimensions
         dim.w = parseInt(displayString.split("×")[0]);
@@ -5233,6 +5243,12 @@ $(document).ready(function(){
             topPaddingLabel,
             bottomPaddingLabel;
   
+        // if a popup is already on screen then short circut
+        if(previousPopup()){
+            return;
+        }
+        
+        // TODO: get the padding amount and display properly in the div
         // reset padding
         setImagePadding(0,"all");
 
@@ -5339,8 +5355,11 @@ $(document).ready(function(){
             cancelBtn = document.createElement("button"),
             submitBtn = document.createElement("button");
 
-        // create the input box for the padding
-        console.log("DRAW THE RESIZE INPUT BOX");
+        
+        // if a popup is already on screen then short circut
+        if(previousPopup()){
+            return;
+        }
 
         flexbox.className = "flex-box";
 
@@ -5470,16 +5489,42 @@ $(document).ready(function(){
             event.preventDefault();
             
             if(keys[2] === 79){
-                $("#eyeCheckbox").click();
+                $("#eyeCheckboxSlider").click();
+                
+                if( !$("#eyeFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#eyeFlagSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#eyeFlagSidebar")[0].firstElementChild.classList.remove("active");
+                }
             }
             else if(keys[2] === 78){
-                $("#northCheckbox").click();
+                $("#northCheckboxSlider").click();
+                
+                if( !$("#northIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#northIconFlagSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#northIconFlagSidebar")[0].firstElementChild.classList.remove("active");
+                }
             }
             else if(keys[2] === 83){
-                $("#sunCheckbox").click();
+                $("#sunCheckboxSlider").click();
+                if( !$("#sunIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.remove("active");
+                }
             }
             else if(keys[2] === 82){
-                $("#scaleCheckbox").click();   
+                $("#scaleCheckboxSlider").click(); 
+                if( !$("#scaleBarButtonSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.remove("active");
+                }  
             }
         }
     });
