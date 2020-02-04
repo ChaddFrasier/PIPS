@@ -4092,7 +4092,7 @@ $(document).ready(function(){
     $("#viewOption").on("change", function(){
         if($(this).is(":checked")){
             if(w >= h){
-                $("#imageViewContainer").css({"width":"55%"});
+                $("#imageViewContainer").css({"width":"60%"});
                 $("#imageViewContainer").css({"height":"auto"});
             }
             else{
@@ -4356,7 +4356,7 @@ $(document).ready(function(){
      * 
      * @description fetches the new sized image and scalebar dimensions
      */
-    $("#resizeUpdateBtn").on("mousedown", function(){
+    function resizeUpdateBtnHandler ( event){
         // required elemnts
         var displayCube = document.getElementById("displayCube"),
             scalebarHalf = document.getElementById("scalebarHalf"),
@@ -4427,6 +4427,8 @@ $(document).ready(function(){
             // calculate difference
             var heightDifference = dim.h - heightInput,
                 widthDifference = dim.w - widthInput;
+
+            this.offsetParent.remove();
 
             fetch('/resizeFigure',
                 {
@@ -4568,7 +4570,6 @@ $(document).ready(function(){
                                             }   
                                         }
                                     } 
-                                        
                                 });
                             })
                             .catch(err => {
@@ -4766,7 +4767,7 @@ $(document).ready(function(){
             // if dimensions are not accepted
             alert("At least 1 Dimensions need to be 1000 or more");
         }
-    });
+    }
 
     /**
      * @function changeDimHeight on 'keyup' handler
@@ -5261,7 +5262,7 @@ $(document).ready(function(){
         topPaddingLabel.innerHTML = "Top";
         bottomPaddingLabel.innerHTML = "Bottom";
 
-        div.setAttribute("class","padding-input-box");
+        div.setAttribute("class","input-box");
 
         flexbox.className = "flex-box";
 
@@ -5329,12 +5330,79 @@ $(document).ready(function(){
     */
     $("#resizeFigureBtn").on('click',function(event){
         
+        // create the input box for the resize
+        var div = document.createElement("div"),
+            flexbox = document.createElement("div"),
+            widthInput = document.createElement("input"),
+            heightInput = document.createElement("input"),
+            title = document.createElement("h2"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button");
+
         // create the input box for the padding
         console.log("DRAW THE RESIZE INPUT BOX");
 
+        flexbox.className = "flex-box";
+
+        var flexbox2 = flexbox.cloneNode(true),
+            flexbox3 = flexbox.cloneNode(true);
+
+        // set the box class to set css
+        div.setAttribute("class","input-box");
+
+        title.innerText = "Resize Figure";
+        title.style.margin = "auto auto";
+        
         // how many pixels as text input for width and height
 
+        widthInput.placeholder = w + " (pixels)";
+        heightInput.placeholder = h + " (pixels)";
+        widthInput.className = "dimInput";
+        heightInput.className = "dimInput";
+
+        widthInput.setAttribute("id","changeDimWidth");
+        heightInput.setAttribute("id","changeDimHeight");
+
+        flexbox.appendChild(widthInput);
+        flexbox.appendChild(heightInput);
+
         // cancel btn and submit button
+        cancelBtn.className = "btn btn-secondary btn-md";
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.style.margin = "auto auto";
+
+        cancelBtn.addEventListener("click",cancelBtnFunction);
+        submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
+
+        submitBtn.className = "btn btn-success btn-md";
+        submitBtn.innerText = "Submit";
+        submitBtn.style.margin = "auto auto";
+
+        flexbox2.appendChild(cancelBtn);
+        flexbox2.appendChild(submitBtn);
+
+
+        var widthLabel = document.createElement("h4"),
+            heightLabel = document.createElement("h4");
+
+        widthLabel.style.margin = "auto auto auto auto";
+        heightLabel.style.margin = "auto auto";
+
+        widthLabel.innerText = "New Width";
+        heightLabel.innerText = "New Height";
+
+        flexbox3.appendChild(widthLabel);
+        flexbox3.appendChild(heightLabel);
+
+        // append all big boxes to the div
+        div.appendChild(title);
+        div.appendChild(flexbox3);        
+        div.appendChild(flexbox);
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox2);
+
+        // add box to DOM
+        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
