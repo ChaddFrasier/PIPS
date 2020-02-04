@@ -5351,6 +5351,7 @@ $(document).ready(function(){
         div.setAttribute("class","input-box");
 
         title.innerText = "Resize Figure";
+        title.style.borderBottom = "2px solid black"
         title.style.margin = "auto auto";
         
         // how many pixels as text input for width and height
@@ -5385,7 +5386,7 @@ $(document).ready(function(){
         var widthLabel = document.createElement("h4"),
             heightLabel = document.createElement("h4");
 
-        widthLabel.style.margin = "auto auto auto auto";
+        widthLabel.style.margin = "auto auto";
         heightLabel.style.margin = "auto auto";
 
         widthLabel.innerText = "New Width";

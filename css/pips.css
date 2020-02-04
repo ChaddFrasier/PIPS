@@ -258,6 +258,7 @@ button.paddingBtn {
     width: 100%;
     min-width: 50px;
     max-width: 200px;
+    text-align: center;
     margin: 0;
     z-index: 15;
     background: -moz-linear-gradient(
@@ -295,9 +296,10 @@ button.paddingBtn {
         to(#d6d6d6));
     width: 29%;
     height: auto;
+    text-align: center;
     min-width: 200px;
     max-width: 400px;
-    margin: 0 0;
+    margin: auto auto;
     border-radius: 5%;
     -moz-border-radius: 5%;
 	-webkit-border-radius: 5%;
@@ -335,6 +337,8 @@ button.paddingBtn {
 		color-stop(0.92, #c5c5c5),
         to(#bebebe)) !important;
     width: 100%;
+    text-align: inherit;
+    vertical-align: middle;
     min-width: 150px;
     max-width: 400px;
     z-index: 15;
@@ -343,13 +347,13 @@ button.paddingBtn {
 }
 
 .menuBtnBox {
-    vertical-align: bottom;
-    text-align: left;
+    vertical-align: middle !important;
+    text-align: center;
     min-width: 100px;
     max-width: 400px;
     width: auto;
     margin: 0 0;
-    padding: 0;
+    padding: 10px;
     max-height: 75px;
     min-height: 25px;
 }
@@ -369,7 +373,7 @@ button.paddingBtn {
 		color-stop(0.92, #c5c5c5),
         to(#bebebe));
     border: 1.5px solid grey !important; 
-    text-align: center;
+    text-align: inherit;
     border-radius: 3px;
     min-height: 30px;
     height: 100%;
@@ -403,7 +407,7 @@ button.paddingBtn {
     position: absolute;
     height: auto;
     display: block;
-    text-align: left;
+    text-align: inherit;
     width: 90%;
     height: auto;
     min-height: 50px;

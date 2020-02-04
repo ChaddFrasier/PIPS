@@ -145,34 +145,21 @@
                     </div>
                 </div>
                 <div class="row unfocus" style="width: 100%">
-                    <div class="col-2 unfocus menuBtnBox">
-                        <a class="btn dropdownItem btn-lg float-left" 
-                        style="border: 2px solid black; width: auto; height: 3rem; margin-top: .75%; margin-left: 0;
-                            margin-bottom:auto; "
+                    <div class="col-2 unfocus menuBtnBox" style="margin: 10px auto;">
+                        <a class="btn dropdownItem btn-md float-left" 
+                        style="border: 2px solid black; width: auto; height: auto;"
                         href="/" role="button" title="Start Over">
                             Upload New File
                         </a>
                     </div>
 
-                    <div class="col-8 menubar" style="display: flex; margin: 10px auto;">
+                    <div class="col-8 menubar" style="display: flex; margin: 10px auto; text-align: center;">
                         <div class="col menuBtnBox" style="vertical-align: middle;">
-                            <div id="iconMenuBtn" class="dropdown btn" 
-                            style="background: -moz-linear-gradient(
-                                top,
-                                #f0efef 0%,
-                                #e0dfdf 50%,
-                                #c5c5c5 92%,
-                                #bebebe);
-                            background: -webkit-gradient(
-                                linear, left top, left bottom,
-                                from(#f0efef),
-                                color-stop(0.50, #e0dfdf),
-                                color-stop(0.92, #c5c5c5),
-                                to(#bebebe));">
+                            <div id="iconMenuBtn" class="dropdown btn">
                                 Icons&#x25BA;
                             </div>
                                 <br>
-                            <div class="dropdownMenu text-left">
+                            <div class="dropdownMenu">
                                 <div id="northIconFlagSidebar" class="sidebarParent">
                                     <div class="sidebar" onclick="document.getElementById('northCheckboxSlider').click();">
                                         Toggle Color
@@ -211,27 +198,15 @@
                             </div>
                         </div>
                         <div class="col menuBtnBox" style="vertical-align: middle;">
-                            <div id="annotateMenuBtn" class="dropdown btn" 
-                                style="background: -moz-linear-gradient(
-                                    top,
-                                    #f0efef 0%,
-                                    #e0dfdf 50%,
-                                    #c5c5c5 92%,
-                                    #bebebe);
-                                background: -webkit-gradient(
-                                    linear, left top, left bottom,
-                                    from(#f0efef),
-                                    color-stop(0.50, #e0dfdf),
-                                    color-stop(0.92, #c5c5c5),
-                                    to(#bebebe));">
+                            <div id="annotateMenuBtn" class="dropdown btn">
                                     Annotate&#x25BA;
                                 </div>
                                 <br>
-                                <div class="dropdownMenu text-left">
+                                <div class="dropdownMenu">
                                     <div id="outlineBtnSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('colorPickerBox').click();"
                                         style="display: flex;">
-                                            Change Color <input id="colorPickerBox" type="color" title="Change Color" name="boxColor"  
+                                            Color <input id="colorPickerBox" type="color" title="Change Color" name="boxColor"  
                                             value="#ffffff"/>
                                         </div>
                                     </div>
@@ -241,7 +216,7 @@
                                     <div id="textBtnSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('textColorPicker').click();"
                                         style="display: flex;">
-                                            Change Color <input type="color" id="textColorPicker"
+                                            Color <input type="color" id="textColorPicker"
                                             value="#FFFFFF" title="Change Color">
                                         </div>
                                     </div>
@@ -251,13 +226,13 @@
                                     <div id="pencilIconFlagSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('colorPickerLine').click();"
                                         style="display: flex;">
-                                            Change Color <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
+                                            Color <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
                                             value="#ffffff"/>
                                         </div>
                                         <div class="sidebar" onclick="document.getElementById('arrowCheckboxSlider').toggleAttribute('checked')"
                                         style="display: flex;">
                                             Add Arrowhead? <input type="checkbox" id="arrowCheckboxSlider"
-                                                    style="margin: auto auto; pointer-events: none; scale: 1.2;">
+                                                    style="margin: auto auto; pointer-events: none; scale: 1.4;">
                                                     
                                         </div>
                                     </div>
@@ -267,23 +242,11 @@
                                 </div>
                         </div>
                         <div class="col menuBtnBox" style="vertical-align: middle;">
-                            <div id="viewMenuBtn" class="dropdown btn" 
-                                style="background: -moz-linear-gradient(
-                                    top,
-                                    #f0efef 0%,
-                                    #e0dfdf 50%,
-                                    #c5c5c5 92%,
-                                    #bebebe);
-                                background: -webkit-gradient(
-                                    linear, left top, left bottom,
-                                    from(#f0efef),
-                                    color-stop(0.50, #e0dfdf),
-                                    color-stop(0.92, #c5c5c5),
-                                    to(#bebebe));">
+                            <div id="viewMenuBtn" class="dropdown btn">
                                     View&#x25BA;
                                 </div>
                                 <br>
-                                <div class="dropdownMenu text-left">
+                                <div class="dropdownMenu">
                                     <button class="dropdownItem btn" role="button" id="fullscreenBtn" title="Change Image View" 
                                     onclick="viewButtonHandler(this);">
                                         Fullscreen
@@ -292,19 +255,7 @@
                         </div>
 
                         <div class="col menuBtnBox" style="vertical-align: middle;">
-                            <div id="fileMenuBtn" class="dropdown btn" 
-                                style="background: -moz-linear-gradient(
-                                    top,
-                                    #f0efef 0%,
-                                    #e0dfdf 50%,
-                                    #c5c5c5 92%,
-                                    #bebebe);
-                                background: -webkit-gradient(
-                                    linear, left top, left bottom,
-                                    from(#f0efef),
-                                    color-stop(0.50, #e0dfdf),
-                                    color-stop(0.92, #c5c5c5),
-                                    to(#bebebe));">
+                            <div id="fileMenuBtn" class="dropdown btn">
                                     File&#x25BA;
                             </div>
                             <br>
@@ -324,8 +275,8 @@
                         </div>
                     </div>
                     
-                    <div class="col-2 unfocus">
-                        <button class="btn dropdownItem btn-lg float-right" onclick="captionHandler()"
+                    <div class="col-2 unfocus menuBtnBox" style="margin: 10px auto;">
+                        <button class="btn dropdownItem btn-md float-right" onclick="captionHandler()"
                         style="border: 2px solid black; width: auto; height: auto;"
                         title="Go Back">
                             View Caption
