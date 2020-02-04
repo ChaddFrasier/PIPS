@@ -393,6 +393,7 @@ button.paddingBtn {
 		color-stop(0.92, #77a76c),
         to(#6c9762)) !important;
     color: black;
+    cursor: pointer;
 }
 .sidebar.active {
     background: grey;
