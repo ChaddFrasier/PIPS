@@ -726,7 +726,6 @@ $(document).ready(function(){
                     - no: use the default 
         */
        if(getCookie("uscap") && getCookie("uscap") !== ""){
-        console.log(decodeURIComponent(getCookie("uscap")));
         document.getElementById("template-text").innerHTML = decodeURIComponent(getCookie("uscap"));
     }
     //init history

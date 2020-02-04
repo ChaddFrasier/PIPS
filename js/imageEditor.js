@@ -5,7 +5,7 @@
  * @version 2.3
  * 
  * @since 09/20/2019
- * @updated 01/16/2020
+ * @updated 02/03/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -80,7 +80,7 @@ var placeEnum = new Object({
  * will not register the bpoundry of the svg sapce.
  * 
 */
-function makeDraggable(event){
+function makeDraggable( event ) {
         
     // get svg element
     var svg = event;
@@ -698,12 +698,13 @@ function makeDraggable(event){
         }
     }        
 }
+
 // make div draggable
-function dragElement(elmnt) {
+function dragElement( el ) {
     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (elmnt) {
+    if (el) {
       /* if present, the header is where you move the DIV from:*/
-      elmnt.onmousedown = dragMouseDown;
+      el.onmousedown = dragMouseDown;
     }
   
     function dragMouseDown(e) {
@@ -730,16 +731,16 @@ function dragElement(elmnt) {
             pos4 = e.clientY;
             pos3 = e.clientX;
           // mouse is moving downward
-            moveChoiceTo(elmnt,-1);
-            return dragElement(elmnt);
+            moveChoiceTo(el,-1);
+            return dragElement(el);
         }
         // set the element's new position:
         else if(pos2 > 63 || pos1 > 100){
             pos4 = e.clientY;
             pos3 = e.clientX;
             // mouse is moving downward
-            moveChoiceTo(elmnt,1);
-            return dragElement(elmnt);
+            moveChoiceTo(el,1);
+            return dragElement(el);
         }
     }
   
@@ -787,7 +788,6 @@ function dragElement(elmnt) {
         }
     }
 
-
     /**
      * @function moveChoiceTo
      * 
@@ -814,7 +814,7 @@ function dragElement(elmnt) {
             }
         }
     }
-  }
+}
 
 /** ------------------------------------- End Draggable Function ----------------------------------------- */
 
@@ -1183,63 +1183,63 @@ function createNewElement(elementType, argv){
                 NS = "http://www.w3.org/2000/svg";
 
             
-            let tmpArray = argv[2];
+                let tmpArray = argv[2];
 
-            // create the new  line dynamically and add it to the array so we can remove it later if needed
-            line = document.createElementNS(NS,"line");
-            line.setAttribute("id","line" + lineArr.length);
-            line.setAttribute("class","draggable confine");
-            line.setAttribute("transform",  argv[1] );
-            line.setAttribute("x1", tmpArray[0]);
-            line.setAttribute("y1", tmpArray[1]);
-            line.setAttribute("x2", tmpArray[2]);
-            line.setAttribute("y2", tmpArray[3]);
-            line.style.visibility = "visible";
+                // create the new  line dynamically and add it to the array so we can remove it later if needed
+                line = document.createElementNS(NS,"line");
+                line.setAttribute("id","line" + lineArr.length);
+                line.setAttribute("class","draggable confine");
+                line.setAttribute("transform",  argv[1] );
+                line.setAttribute("x1", tmpArray[0]);
+                line.setAttribute("y1", tmpArray[1]);
+                line.setAttribute("x2", tmpArray[2]);
+                line.setAttribute("y2", tmpArray[3]);
+                line.style.visibility = "visible";
 
-            if(markerStart !== null){
-                // if arrow with default color 
-                if(!argv[1] || argv[1] === "#ffffff"){
-                     line.setAttribute("marker-start","url(#arrow)");
+                if(markerStart !== null){
+                    // if arrow with default color 
+                    if(!argv[1] || argv[1] === "#ffffff"){
+                        line.setAttribute("marker-start","url(#arrow)");
+                    }
+                    // if the array is linger than 1 and the color is not default
+                    else if(lineArr.length > 0 || argv[1] !== "#ffffff"){
+                        var markerId = "arrow" + lineArr.length,
+                            pathId = "arrowPath" + lineArr.length,
+                            newDef = document.getElementById("arrowDef").cloneNode();
+
+                        newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                        newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                        line.setAttribute("marker-start", String("url(#" + markerId + ")"));
+                        (newDef.childNodes).forEach(childElem => {
+                            // if the childElement has a child
+                            if(childElem.childElementCount > 0){
+                                childElem.setAttribute("id", markerId);
+                                childElem.childNodes[1].setAttribute("fill", argv[0]);
+                                childElem.childNodes[1].setAttribute("id", pathId);
+                            }
+                        });
+                        svg.prepend(newDef);
+                    }
                 }
-                // if the array is linger than 1 and the color is not default
-                else if(lineArr.length > 0 || argv[1] !== "#ffffff"){
-                    var markerId = "arrow" + lineArr.length,
-                        pathId = "arrowPath" + lineArr.length,
-                        newDef = document.getElementById("arrowDef").cloneNode();
 
-                    newDef.setAttribute("id", "arrowDef" + lineArr.length);
-                    newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
-                    line.setAttribute("marker-start", String("url(#" + markerId + ")"));
-                    (newDef.childNodes).forEach(childElem => {
-                        // if the childElement has a child
-                        if(childElem.childElementCount > 0){
-                            childElem.setAttribute("id", markerId);
-                            childElem.childNodes[1].setAttribute("fill", argv[0]);
-                            childElem.childNodes[1].setAttribute("id", pathId);
-                        }
-                    });
-                    svg.prepend(newDef);
+                // check to see if it is a custom color
+                if(argv[1]){
+                    line.style.stroke = argv[0];
+                    if(pathId){
+                        document.getElementById(pathId).style.fill = argv[0];
+                        document.getElementById(pathId).style.stroke = argv[0];
+                    }
                 }
-            }
-
-            // check to see if it is a custom color
-            if(argv[1]){
-                line.style.stroke = argv[0];
-                if(pathId){
-                    document.getElementById(pathId).style.fill = argv[0];
-                    document.getElementById(pathId).style.stroke = argv[0];
+                else{
+                    line.style.stroke = "white";
                 }
-            }
-            else{
-                line.style.stroke = "white";
-            }
-            
-            line.style.strokeWidth = 10;
-     
-            svg.appendChild(line);
+                
+                line.style.strokeWidth = 10;
+        
+                svg.appendChild(line);
 
-            lineArr.push(line);
-            updateLayers(line.cloneNode());
+                lineArr.push(line);
+                updateLayers(line.cloneNode());
             }
             break;
     }
@@ -1401,33 +1401,33 @@ function getMetadata(){
         else{
             // disable the button if the degree was not found
             document.getElementById('northIconFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
         }
     }
     else{
         // disable the button if the degree was not found
         document.getElementById('northIconFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     if(isNaN(sunDegree)){
         // disable the button if the degree was not found
         document.getElementById('sunIconFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
     }
     else{
         document.getElementById('sunIconFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     if(isNaN(observerDegree)){
         // disable the button if the degree was not found
         document.getElementById('eyeFlag').setAttribute('class',
-                                                            "btn btn-secondary btn-lg button disabled");
+                                                            "dropdownItem btn disabled");
     }
     else{
         document.getElementById('eyeFlag').setAttribute('class',
-                                                            "btn btn-lg button");
+                                                            "dropdownItem btn");
     }
 
     // if the degree value is over 360 just subtract 360 because the math is easier
@@ -2129,21 +2129,6 @@ function captureClick(x,y){
     clickArray.push(x);
     clickArray.push(y);
 }       
- 
-
-/**
- * @function createTimer
- * 
- * @description captures and returns the current time values 
- * 
- * @returns {array} [hrs,mins,secs]
- * 
-*/
-function createTimer(){
-    let startTime = new Date();
-    return [ startTime.getHours(), startTime.getMinutes(), startTime.getSeconds() ];
-}
-
 
 /**
  * @function getCookie
@@ -2228,7 +2213,7 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
-    var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1]);
+    var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1].replace("Svg",""));
         
     if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
         let id = el.getAttribute("id");
@@ -2321,7 +2306,7 @@ function setDetectionForLayer( el, detection ){
 
                     userTextColor = "#ffffff";
                     userBoxColor = "#ffffff";
-                    userLineColor = "#ffffff";                
+                    userLineColor = "#ffffff";
                 }
             }
             // otherwise set the background as transparent
@@ -2407,15 +2392,24 @@ var activeLayer;
  */
 function updateLayers(el){
 
+    var tmpEl;
     // if button was clicked
     if(el.nodeName === "BUTTON"){
-        // loop till svg is found
-        while(el.nodeName !== "svg"){
-            // set the element as the first child
-            el = el.firstElementChild;
-        }
-        // RESULTS: 
-        //      This loop will find the svg element that is inside the button element
+        
+        let id = el.getAttribute("id") + "Svg";
+        // get the svg element that is hidden in the html using the id of the button and layer tacked on
+        tmpEl = document.getElementById(id).cloneNode(document.getElementById(id));
+        // RESULTS:
+        //      This loop will find the svg element that is created from the button
+        tmpEl.setAttribute("class", "layer");
+        tmpEl.style.visibility = "visible";
+        // get the type of layer
+        tmpEl.style.pointerEvents = "none";
+    }
+    else{
+        el.setAttribute("class", "layer");
+        // get the type of layer
+        el.style.pointerEvents = "none";
     }
     // get layer object and new div to go inside
     var layerBrowser = document.getElementById("layerBrowser");
@@ -2424,10 +2418,6 @@ function updateLayers(el){
     // set the needed classes for mouse events
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
-    el.setAttribute("class", "layer");
-
-    // get the type of layer
-    el.style.pointerEvents = "none";
 
     // create listener for when the div is clicked on
     div.addEventListener("mousedown", (event) => {
@@ -2464,10 +2454,10 @@ function updateLayers(el){
     //      UI layer div for whatever element id being added to the figure
     switch( getElementType( el ) ){
         // if type of element is svg
-        case "svg":
+        case "BUTTON":
             // set the div info and append the svg element inside the UI div
-            div.setAttribute("id", "layer" + el.getAttribute("id") );
-            div.appendChild(el);
+            div.setAttribute("id", "layer" + tmpEl.getAttribute("id") );
+            div.appendChild(tmpEl);
             div.style.padding = "2px 4px";
             layerBrowser.prepend(div);
             dragElement(div);
@@ -2610,10 +2600,12 @@ function getElementType( el ){
  * @description searches the svg and pulls out all changable icons
  */
 function removeLayers(el){
-    var layerBrowser = document.getElementById("layerBrowser");
+    let layerBrowser = document.getElementById("layerBrowser");
 
-    if( document.getElementById("layer" + el.getAttribute("id")) ){
-        layerBrowser.removeChild(document.getElementById("layer" + el.getAttribute("id")));
+    let layerId = "layer" + el.getAttribute("id") + "Svg";
+
+    if( document.getElementById(layerId) ){
+        layerBrowser.removeChild(document.getElementById(layerId));
     }
 }
 
@@ -2758,35 +2750,6 @@ function openToolBox(event, id){
 
 
 /**
- * @function peekTimer
- * 
- * @param {array} startTime the array of time values to calculate the difference [hrs,mins,secs]
- * 
- * @description captures he current time and figures out how long it has been since the passed startTime
-*/
-function peekTimer(startTime){
-    // get the end data values and calculate the difference in the startTime
-    let endTime = new Date(),
-        hrs = parseFloat(endTime.getHours()) - parseFloat(startTime[0]),
-        mins = parseFloat(endTime.getMinutes()) - parseFloat(startTime[1]),
-        secs = parseFloat(endTime.getSeconds()) - parseFloat(startTime[2]);
-
-    // if the difference is negative decriment the next highest value
-    // and add 60 to the negative
-    if(secs < 0){
-        secs = 60 + secs;
-        mins -= 1;
-    }
-    else if(mins < 0){
-        mins = 60 + mins;
-        hrs -= 1;
-    }
-    // return the fixed times 
-    return String(hrs) + ":" + String(mins) + ":" + String(secs);
-}
-
-
-/**
  * @function triggerDownload
  * 
  * @param {string} imgURI the download URL for the image data
@@ -2848,7 +2811,8 @@ function resetDrawTool(){
     // reset draw flag
     drawFlag = false;
     // reset the UI 
-    document.getElementById("pencilIconFlag").className = "btn btn-lg button";
+    document.getElementById("pencilIconFlag").className = "dropdownItem btn";
+    bg.className.baseVal = "unfocus";
 
     // remove half drawn lines if any
     if( lineArr.length > 0 && clickArray.length > 1 ) {
@@ -3116,10 +3080,8 @@ function setScreen( type ){
                 document.getElementsByClassName("mainbox-right")[0].style.display = "none";
 
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "0";
-                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "100%";
 
-                // set the width of the left box to 18% + 7%
-                document.getElementsByClassName("mainbox-left")[0].style.width = "25%";
                 halfScreen = !halfScreen;
             }
             break;
@@ -3138,10 +3100,8 @@ function setScreen( type ){
                 document.getElementsByClassName("mainbox-right")[0].style.display = "block";
     
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
-                document.getElementsByClassName("mainbox-center")[0].style.width = "75%";
+                document.getElementsByClassName("mainbox-center")[0].style.width = "92%";
     
-                // set the width of the left box back to 18%
-                document.getElementsByClassName("mainbox-left")[0].style.width = "18%";
                 halfScreen = !halfScreen;
             }
             break;
@@ -3175,6 +3135,14 @@ function createCookie(cookieName,cookieValue,daysToExpire){
     document.cookie = cookieName + "=" + cookieValue + "; expires=" + date.toGMTString();
 }
 
+function viewButtonHandler(el){
+    document.getElementById('viewOption').click();
+    if(el.classList.contains("active")){
+        el.classList.remove("active");
+    }else{
+        el.classList.add("active");
+    }
+}
 
 /**
  * @function replaceAll
@@ -3197,9 +3165,9 @@ String.prototype.replaceAll = function(find, replace){
 $(document).ready(function(){
 
     // set the timmer for the UI orientation detection
-    setInterval(checkScreen, 1000);
+    setInterval(checkScreen, 800);
 
-    // get image dimensions form the hidden div
+    // get image dimensions form the hidden divs
     var dimDiv = document.getElementById("imageDimensions"),
         origH,
         origW,
@@ -3208,28 +3176,14 @@ $(document).ready(function(){
         imageSrc,
         displayCube;
         
-    let padBottom = false,
-        padTop = false,
-        padLeft = false,
-        padRight = false;
 
     // variables for keeping track of the outline boxes
     var highlightBoxArray = [],
         userBoxColor;
 
-    let bottomBtn = document.getElementById("bottomPaddingBtn"),
-        topBtn = document.getElementById("topPaddingBtn"),
-        rightBtn = document.getElementById("rightPaddingBtn"),
-        leftBtn = document.getElementById("leftPaddingBtn");
-
-    // get padding input box and other important DOM elements for export
-    var paddingBoxInput = document.getElementById("paddingInput");
-
+    // get important DOM elements for export
     bg = document.getElementById("svgBackground");
     
-    // init the padding value
-    paddingBoxInput.value = '';
-        
     // set all flags to false to start
     var sunIconPlaced = false,
         northIconPlaced = false,
@@ -3431,6 +3385,16 @@ $(document).ready(function(){
     // get half the scalebar length for drawing
     let half = parseFloat(scalebarLength)/2;
 
+    let menuArr = document.getElementsByClassName("dropdownMenu");
+    let sidebarArr = document.getElementsByClassName("sidebarParent");
+
+    for( var i=0; i<menuArr.length; i++ ){
+        menuArr[i].style.visibility="hidden";
+    }
+    for( var i=0; i<sidebarArr.length; i++ ){
+        sidebarArr[i].style.visibility="hidden";
+    }
+
     // start the draggable svg element
     makeDraggable(svg);
 
@@ -3485,7 +3449,7 @@ $(document).ready(function(){
     else{
         // if the scalebarPx is none disable the button
         document.getElementById("scaleBarButton").setAttribute("class",
-                                                                "btn btn-secondary btn-lg button disabled");
+                                                                "dropdownItem btn disabled");
         // set deafult font size for text boxes note that this is a scale value not px size 
         // (px = font size * textSize)
         textSize = 2;
@@ -3528,8 +3492,7 @@ $(document).ready(function(){
     // set defaults
     outlineBox.style.visibility = 'hidden';
 
-    document.getElementById("changeDimWidth").placeholder = w + " px";
-    document.getElementById("changeDimHeight").placeholder = h + " px";
+    
     // set loader to invisible
     loadInvisible();
 
@@ -3842,7 +3805,109 @@ $(document).ready(function(){
 
     /** ---------------------------------- Cache Function ----------------------------------------------- */
   
+    /**
+     * @function .dropdown mouseover listener
+     * 
+     * @description set the UI details for the dropdown menu
+     */
+    $(".dropdown").on("mouseover", function(event){
+        let menuArr = document.getElementsByClassName("dropdownMenu");
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+        var menu = event.target.nextElementSibling.nextElementSibling;
 
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility = "hidden";
+            if(menuArr[i] != menu){
+                menuArr[i].parentElement.firstElementChild.innerHTML = 
+                menuArr[i].parentElement.firstElementChild.innerHTML.replace("▿", "&#9658;");
+            }
+        }
+
+
+        this.innerHTML = this.innerHTML.replace("►","&#9663;");
+
+        menu.style.visibility = "visible";
+    });
+
+
+    /**
+     * @function .menubar mouseleave listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
+    $(".menubar").on("mouseleave", function(event){
+        var menuArr = document.getElementsByClassName("dropdownMenu");
+        var buttonArr = document.getElementsByClassName("dropdown");
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
+
+        for( var i=0; i<buttonArr.length; i++ ){
+            buttonArr[i].innerHTML = buttonArr[i].innerHTML.replace("▿", "&#9658;");
+        }
+
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility="hidden";
+        }
+
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+    });
+
+    $(".dropdownItem").on("mouseover", (event)=>{
+        var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
+
+        if(sidebar){
+            sidebar.style.visibility = "visible";
+        }
+    });
+
+
+    $(".dropdownItem").on("mouseleave", (event)=>{
+        var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
+        var sidebarArr = document.getElementsByClassName("sidebarParent");
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+        if(sidebar){
+            sidebar.style.visibility = "hidden";
+        }
+    });
+
+    $(".sidebar").on( "click", ( event )=>{
+        let target = event.target;
+        if(target.parentElement.parentElement.parentElement.firstElementChild
+            .getAttribute("id").indexOf("annotate") <= -1){
+            if( !target.classList.contains("active") ){
+                target.classList.add("active");
+            }
+            else{
+                target.classList.remove("active");
+            }
+        }
+    });
+
+
+    /**
+     * @function .dropdownMenu mouseover listener
+     * 
+     * @description set the UI details to use the dropdown menu
+     */
+    $(".dropdownMenu").on("mouseover", function(event){
+
+        var menu = event.target;
+
+    
+        if(menu.offsetParent.className !== "col menubar"){
+            menu.offsetParent.style.visibility = "visible";
+        }
+        else
+        {
+            menu.visibility = "visible";
+        }
+    });
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
      * @function hideBtn 'mousedown' event handler
@@ -3905,10 +3970,12 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layernorthIconFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layernorthIconFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");    
+        }
     });
 
 
@@ -3940,10 +4007,13 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layersunIconFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layersunIconFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
+        }
+        
     });
 
 
@@ -4003,10 +4073,13 @@ $(document).ready(function(){
             activeLayer.style.border = "none";
         }
         // set the selected element
-        activeLayer = document.getElementById("layereyeFlag");
-        activeLayer.style.border = "5px solid red";
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        setDetectionForLayer(activeLayer, "all");
+        activeLayer = document.getElementById("layereyeFlagSvg");
+        if(activeLayer){
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
+        }
+        
     });
 
 
@@ -4019,7 +4092,7 @@ $(document).ready(function(){
     $("#viewOption").on("change", function(){
         if($(this).is(":checked")){
             if(w >= h){
-                $("#imageViewContainer").css({"width":"55%"});
+                $("#imageViewContainer").css({"width":"60%"});
                 $("#imageViewContainer").css({"height":"auto"});
             }
             else{
@@ -4099,6 +4172,9 @@ $(document).ready(function(){
                             childElem.childNodes[1].setAttribute("id", pathId);
                         }
                     });
+                    if(markerId !== "arrow"){
+                        document.getElementById(markerId).parentElement.remove();
+                    }
                     svg.prepend(newDef);
 
 
@@ -4113,7 +4189,7 @@ $(document).ready(function(){
                     marker.children[0].setAttribute("fill", userLineColor);
                     
                     // set the stroke color if the line
-                    setElementColor(activeLayer, userLineColor, activeLine );
+                    setElementColor( activeLayer, userLineColor, activeLine );
                     return;
                 }
             }
@@ -4166,50 +4242,7 @@ $(document).ready(function(){
     // ------------------------------ End Color Pickers -----------------------------------------------------
         
     // -------------------------------- Undo Button UI ------------------------------------------------------
-    /**
-     * @function undoLine 'mousedown' event handler
-     * 
-     * @description remove the last added instance of the lines
-    */
-    $("#undoLine").on("mousedown",function(){
-        if(lineArr.length > 0 && clickArray.length > 1){
-            let elem = lineArr.pop();
-            if(elem.getAttribute("marker-start")){
-                // remove the arrow def based on marker-start value
-                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
-
-                if(id !== "#arrow"){
-                    $(id).parent().remove();
-                }
-            }
-            elem.remove();
-            svg.className.baseVal = "image-image float-center";
-            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
-            drawFlag = false;
-            clickArray = [];
-        }
-        else if(lineArr.length > 0){
-            var elem = lineArr.pop();
-
-            if(elem.getAttribute("marker-start")){
-                // remove the arrow def based on marker-start value
-                let id = elem.getAttribute("marker-start").replace("url(","").replace(")","");
-
-                if(id !== "#arrow"){
-                    $(id).parent().remove();
-                }
-            }
-            elem.remove();
-        }
-        else{
-            alert("No lines drawn");
-        }
-
-        if(lineArr.length === 0){
-            document.getElementById("undoLine").style.visibility = "hidden";
-        }
-    });
-
+    
     /**
      * @function moveChoiceTo
      * 
@@ -4317,13 +4350,23 @@ $(document).ready(function(){
 
     // ------------------------------- Button Handlers ------------------------------------------------------
       
+    function previousPopup(){
+        var popupArr = document.getElementsByClassName("input-box");
+
+        if(popupArr.length === 0){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 
     /**
      * @function resizeUpdateBtn 'mousedown' event handler
      * 
      * @description fetches the new sized image and scalebar dimensions
      */
-    $("#resizeUpdateBtn").on("mousedown", function(){
+    function resizeUpdateBtnHandler ( event){
         // required elemnts
         var displayCube = document.getElementById("displayCube"),
             scalebarHalf = document.getElementById("scalebarHalf"),
@@ -4353,7 +4396,7 @@ $(document).ready(function(){
         }
 
         // reset the padding to 0
-        $("#resetPaddingBtn").click();
+        setImagePadding(0, "all");
 
         // get new image dimensions
         dim.w = parseInt(displayString.split("×")[0]);
@@ -4394,6 +4437,8 @@ $(document).ready(function(){
             // calculate difference
             var heightDifference = dim.h - heightInput,
                 widthDifference = dim.w - widthInput;
+
+            this.offsetParent.remove();
 
             fetch('/resizeFigure',
                 {
@@ -4498,7 +4543,7 @@ $(document).ready(function(){
                                         else{
                                             // if the scalebarPx is none disable the button
                                             document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "btn btn-secondary btn-lg button disabled");
+                                                                        "dropdownItem btn disabled");
                                             // set deafult font size for text boxes note that
                                             // this is a scale value not px size 
                                             // (px = font size * textSize)
@@ -4535,7 +4580,6 @@ $(document).ready(function(){
                                             }   
                                         }
                                     } 
-                                        
                                 });
                             })
                             .catch(err => {
@@ -4674,7 +4718,7 @@ $(document).ready(function(){
                                             else{
                                                 // if the scalebarPx is none disable the button
                                                 document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "btn btn-secondary btn-lg button disabled");
+                                                                        "dropdownItem btn disabled");
                                                 // set deafult font size for text boxes note that this 
                                                 // is a scale value not px size (px = font size * textSize)
                                                 textSize = 2;
@@ -4733,7 +4777,7 @@ $(document).ready(function(){
             // if dimensions are not accepted
             alert("At least 1 Dimensions need to be 1000 or more");
         }
-    });
+    }
 
     /**
      * @function changeDimHeight on 'keyup' handler
@@ -4782,11 +4826,7 @@ $(document).ready(function(){
      * 
     */
     $("#scaleBarButton").on("mousedown", function(){
-        var scaleCheckbox = document.getElementById("scaleCheckbox"),
-            scaleCheckboxLabel = document.getElementById("scaleCheckboxLabel"),
-            scaleCheckboxSlider = document.getElementById("scaleCheckboxSlider"),
-            scaleAnimation = document.getElementById("scaleAnimation");
-
+        
         // if the scalebar btn is not disabled
         if(!this.classList.contains("disabled")){
             // clear all draw instance data if the flag is true
@@ -4798,20 +4838,9 @@ $(document).ready(function(){
             if(toggleScalebar){
                 // add bar and toggle the boolean
                 svg.appendChild(scaleBarIcon);
-                this.className = "btn btn-danger btn-lg button";
-
-                scaleCheckbox.style.visibility = "visible";
-                scaleCheckboxLabel.style.visibility = "visible";
-
-                scaleCheckbox.style.transition = ".4s";
-                scaleCheckbox.style.webkitTransition = ".4s";
-                scaleCheckboxLabel.style.transition = ".4s";
-                scaleCheckboxLabel.style.webkitTransition = ".4s";
-                scaleCheckboxSlider.style.transition = ".4s";
-                scaleCheckboxSlider.style.webkitTransition = ".4s";
-                scaleAnimation.style.transition = ".4s";
-                scaleAnimation.style.webkitTransition = ".4s";
+                
                 updateLayers(this.cloneNode(true));
+                this.classList.add("active");
 
                 toggleScalebar = false;
             }
@@ -4819,19 +4848,9 @@ $(document).ready(function(){
                 // remove the bar and reset toggleValue
                 scaleBarIcon.remove();
                 toggleScalebar = true;
-                this.className = "btn btn-lg button";
-
-                scaleCheckbox.style.transition = "0s";
-                scaleCheckbox.style.webkitTransition = "0s";
-                scaleCheckboxLabel.style.transition = "0s";
-                scaleCheckboxLabel.style.webkitTransition = "0s";
-                scaleCheckboxSlider.style.transition = "0s";
-                scaleCheckboxSlider.style.webkitTransition = "0s";
-                scaleAnimation.style.transition = "0s";
-                scaleAnimation.style.webkitTransition = "0s";
-                removeLayers(this.cloneNode(true).firstElementChild);
-                scaleCheckbox.style.visibility = "hidden";
-                scaleCheckboxLabel.style.visibility = "hidden";
+                
+                removeLayers(this.cloneNode(true));
+                this.classList.remove("active");
             }
         }
     });
@@ -4969,11 +4988,6 @@ $(document).ready(function(){
      * 
     */
     $('#eyeFlag').click(function(){
-        var eyeCheckbox = document.getElementById("eyeCheckbox"),
-            eyeCheckboxLabel = document.getElementById("eyeCheckboxLabel"),
-            eyeCheckboxSlider = document.getElementById("eyeCheckboxSlider"),
-            eyeAnimation = document.getElementById("eyeAnimation");
-
         if(!document.getElementById("eyeFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -4988,19 +5002,8 @@ $(document).ready(function(){
                 eyeImage.remove();
                 eyeImage.style.visibility = 'hidden';
                 eyeFlag = !eyeFlag;
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
 
-                eyeCheckbox.style.transition = "0s";
-                eyeCheckbox.style.webkitTransition = "0s";
-                eyeCheckboxLabel.style.transition = "0s";
-                eyeCheckboxLabel.style.webkitTransition = "0s";
-                eyeCheckboxSlider.style.transition = "0s";
-                eyeCheckboxSlider.style.webkitTransition = "0s";
-                eyeAnimation.style.transition = "0s";
-                eyeAnimation.style.webkitTransition = "0s";
-
-                eyeCheckbox.style.visibility = "hidden";
-                eyeCheckboxLabel.style.visibility = "hidden";
                 removeLayers(this.cloneNode(true));
             }
 
@@ -5012,19 +5015,7 @@ $(document).ready(function(){
                 svg.appendChild(eyeImage);
                 setIconAngle(eyeImage, observerDegree);
                 eyeImage.style.visibility = 'visible'
-                document.getElementById('eyeFlag').setAttribute('class',"btn btn-danger btn-lg button");
-
-                document.getElementById("eyeCheckbox").style.visibility = "visible";
-                document.getElementById("eyeCheckboxLabel").style.visibility = "visible";
-
-                eyeCheckbox.style.transition = ".4s";
-                eyeCheckbox.style.webkitTransition = ".4s";
-                eyeCheckboxLabel.style.transition = ".4s";
-                eyeCheckboxLabel.style.webkitTransition = ".4s";
-                eyeCheckboxSlider.style.transition = ".4s";
-                eyeCheckboxSlider.style.webkitTransition = ".4s";
-                eyeAnimation.style.transition = ".4s";
-                eyeAnimation.style.webkitTransition = ".4s";
+                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn active");
                 updateLayers(this.cloneNode(true));
                 eyeFlag = false;
                 eyeIconPlaced = true;
@@ -5040,10 +5031,6 @@ $(document).ready(function(){
      * 
     */
     $('#sunIconFlag').click(function(){
-        var sunCheckbox = document.getElementById("sunCheckbox"),
-            sunCheckboxLabel = document.getElementById("sunCheckboxLabel"),
-            sunCheckboxSlider = document.getElementById("sunCheckboxSlider"),
-            sunAnimation = document.getElementById("sunAnimation");
 
         if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
             
@@ -5058,20 +5045,8 @@ $(document).ready(function(){
                 sunIconPlaced = !sunIconPlaced;
                 sunImage.style.visibility = 'hidden';
                 sunImage.remove();
-                document.getElementById('sunIconFlag').setAttribute('class',"btn btn-lg button");
+                document.getElementById('sunIconFlag').setAttribute('class',"dropdownItem btn");
                 sunFlag = false;
-
-                sunCheckbox.style.transition = "0s";
-                sunCheckbox.style.webkitTransition = "0s";
-                sunCheckboxLabel.style.transition = "0s";
-                sunCheckboxLabel.style.webkitTransition = "0s";
-                sunCheckboxSlider.style.transition = "0s";
-                sunCheckboxSlider.style.webkitTransition = "0s";
-                sunAnimation.style.transition = "0s";
-                sunAnimation.style.webkitTransition = "0s";
-
-                sunCheckbox.style.visibility = "hidden";
-                sunCheckboxLabel.style.visibility = "hidden";
                 removeLayers(this.cloneNode(true));
             }
             
@@ -5083,19 +5058,8 @@ $(document).ready(function(){
                 sunFlag = false;
                 sunIconPlaced = true;
                 document.getElementById('sunIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");
-                sunCheckbox.style.visibility = "visible";
-                sunCheckboxLabel.style.visibility = "visible";
+                                                                        "dropdownItem btn active");
 
-                sunCheckbox.style.transition = ".4s";
-                sunCheckbox.style.webkitTransition = ".4s";
-                sunCheckboxLabel.style.transition = ".4s";
-                sunCheckboxLabel.style.webkitTransition = ".4s";
-                sunCheckboxSlider.style.transition = ".4s";
-                sunCheckboxSlider.style.webkitTransition = ".4s";
-                sunAnimation.style.transition = ".4s";
-                sunAnimation.style.webkitTransition = ".4s";
-                
                 setIconAngle(sunImage, sunDegree);
                 makeDraggable(svg); 
                 updateLayers(this.cloneNode(true));
@@ -5113,11 +5077,7 @@ $(document).ready(function(){
      * 
     */
     $('#northIconFlag').on('mousedown',function(){
-        var northLabel = document.getElementById("northCheckboxLabel"),
-            northAnimation = document.getElementById("northAnimation"),
-            northCheckboxSlider = document.getElementById("northCheckboxSlider"),
-            northCheckbox = document.getElementById("northCheckbox");
-
+    
         if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
             // clear all draw instance data if the flag is true
@@ -5133,17 +5093,8 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northImage.remove();
                 northImage.style.visibility = 'hidden';
-                document.getElementById('northIconFlag').setAttribute('class',"btn btn-lg button");
-                northLabel.style.transition = "0s";
-                northCheckbox.style.transition = "0s";
-                northLabel.style.webkitTransition = "0s";
-                northCheckbox.style.webkitTransition = "0s";
-                northAnimation.style.webkitTransition = "0s";
-                northAnimation.style.transition = "0s";
-                northCheckboxSlider.style.webkitTransition = "0s";
-                northCheckboxSlider.style.transition = "0s";
-                northCheckbox.style.visibility = "hidden";
-                northLabel.style.visibility = "hidden";
+                document.getElementById('northIconFlag').setAttribute('class',"dropdownItem btn");
+                
                 removeLayers(this.cloneNode(true));
                 northFlag = !northFlag;
             }
@@ -5160,18 +5111,8 @@ $(document).ready(function(){
                 northIconPlaced = !northIconPlaced;
                 northFlag = false;
                 document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "btn btn-danger btn-lg button");                                 
-                northLabel.style.transition = ".4s";
-                northCheckbox.style.transition = ".4s";
-                northLabel.style.webkitTransition = ".4s";
-                northCheckbox.style.webkitTransition = ".4s";
-                northAnimation.style.webkitTransition = ".4s";
-                northAnimation.style.transition = ".4s";
-                northCheckboxSlider.style.webkitTransition = ".4s";
-                northCheckboxSlider.style.transition = ".4s";
-                northCheckbox.style.visibility = "visible";
-                northLabel.style.visibility = "visible";
-
+                                                                        "dropdownItem btn active");                                 
+                
                 updateLayers(this.cloneNode(true));
             }
             clickArray = [];
@@ -5188,13 +5129,14 @@ $(document).ready(function(){
    $("#pencilIconFlag").on('mousedown',function(){
         // clear all draw instance data if the flag is true
         if(drawFlag){
+            this.classList.remove("active")
             resetDrawTool();
         }
         else{
             // start drawing
             bg.className.baseVal = "draw";
             drawFlag = true;
-            document.getElementById("pencilIconFlag").className = "btn btn-light btn-lg button";
+            this.classList.add("active")
 
             // loop through all children and children of the children and set the pointer 
             // events to none so the draw function does not get interfiered with
@@ -5239,7 +5181,7 @@ $(document).ready(function(){
         // append the group and reset the draggable functions
         svg.appendChild(g);
         // push the object into the array for undoing
-        g.setAttribute("id", "outline"+objectIds++);   
+        g.setAttribute("id", "outline" + objectIds++);   
         highlightBoxArray.push(g);
         makeDraggable(svg);
 
@@ -5248,107 +5190,239 @@ $(document).ready(function(){
     });
 
 
-    /**
-     * @function bottomPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#bottomPaddingBtn").on('click',function( event ){
-        if( !isNaN(parseInt(paddingBoxInput.value)) && !bottomBtn.classList.contains("btn-danger") ){
-            setImagePadding(parseInt(paddingBoxInput.value),'bottom');
-            padBottom = true;
+    //TODO:
+    function addPadding(){
+        var leftPad =  document.getElementById("leftPaddingCheckbox").checked,
+            rightPad = document.getElementById("rightPaddingCheckbox").checked,
+            topPad = document.getElementById("topPaddingCheckbox").checked,
+            bottomPad = document.getElementById("bottomPaddingCheckbox").checked,
+            input = parseInt(document.getElementById("paddingInput").value);
 
-            bottomBtn.className = 'btn btn-danger button btn-sm paddingBtn';
+        if(input){
+
+            if(leftPad){
+                setImagePadding(input,"left");
+            }
+
+            if(rightPad){
+                setImagePadding(input,"right");
+            }
+
+            if(topPad){
+                setImagePadding(input,"top");
+            }
+
+            if(bottomPad){
+                setImagePadding(input,"bottom");
+            }
         }
-        else if(paddingBoxInput.value!== "" && bottomBtn.classList.contains("btn-danger")){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"bottom");
-            bottomBtn.className = 'btn button btn-sm paddingBtn';
+
+        // close tab
+        this.offsetParent.remove()
+    }
+
+    /**TODO:
+     * @function padImageBtn 'click' event handler
+     * 
+     * @description 
+    */
+    $("#padImageBtn").on('click',function(event){
+        // create the input box for the padding
+        var div = document.createElement("div"),
+            flexbox = document.createElement("div"),
+            pxInput = document.createElement("input"),
+            title = document.createElement("h2"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button"),
+            leftPaddingCheckbox = document.createElement("input"),
+            rightPaddingCheckbox,
+            topPaddingCheckbox,
+            bottomPaddingCheckbox,
+            leftPaddingLabel = document.createElement("h4"),
+            rightPaddingLabel,
+            topPaddingLabel,
+            bottomPaddingLabel;
+  
+        // if a popup is already on screen then short circut
+        if(previousPopup()){
+            return;
+        }
         
-            padBottom = false;  
-        }
+        // TODO: get the padding amount and display properly in the div
+        // reset padding
+        setImagePadding(0,"all");
+
+        leftPaddingCheckbox.setAttribute("type","checkbox");
+        leftPaddingCheckbox.style.margin = "auto auto";
+        leftPaddingCheckbox.style.textAlign = "center";
+        leftPaddingCheckbox.style.transform = "scale(1.5)";
+
+        rightPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+        topPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+        bottomPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+
+        leftPaddingCheckbox.setAttribute("id", "leftPaddingCheckbox");
+        rightPaddingCheckbox.setAttribute("id", "rightPaddingCheckbox");
+        bottomPaddingCheckbox.setAttribute("id", "bottomPaddingCheckbox");
+        topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
+
+        /* Labels */
+        leftPaddingLabel.style.margin = "auto auto";
+        leftPaddingLabel.style.textAlign = "center";
+        rightPaddingLabel = leftPaddingLabel.cloneNode(true);
+        topPaddingLabel = leftPaddingLabel.cloneNode(true);
+        bottomPaddingLabel = leftPaddingLabel.cloneNode(true);
+
+        leftPaddingLabel.innerHTML = "Left";
+        rightPaddingLabel.innerHTML = "Right";
+        topPaddingLabel.innerHTML = "Top";
+        bottomPaddingLabel.innerHTML = "Bottom";
+
+        div.setAttribute("class","input-box");
+
+        flexbox.className = "flex-box";
+
+        var flexbox2 = flexbox.cloneNode(true),
+            flexbox3 = flexbox.cloneNode(true),
+            flexbox4 = flexbox.cloneNode(true);
+
+        pxInput.className = "padding-input";
+        pxInput.placeholder = "How many pixels?";
+        pxInput.setAttribute("id","paddingInput");
+        
+        pxInput.setAttribute("type", "text");
+
+        flexbox.appendChild(pxInput);
+        
+        title.innerHTML = "Add Padding to Image";
+        title.style.width = "100%";
+        title.style.height = "auto";
+        title.style.textAlign = "center";
+
+
+        cancelBtn.className = "btn btn-secondary btn-md";
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.style.margin = "auto auto";
+
+        cancelBtn.addEventListener("click",cancelBtnFunction);
+        submitBtn.addEventListener("click", addPadding);
+
+        submitBtn.className = "btn btn-success btn-md";
+        submitBtn.innerText = "Submit";
+        submitBtn.style.margin = "auto auto";
+
+
+        flexbox2.appendChild(cancelBtn);
+        flexbox2.appendChild(submitBtn);
+
+        flexbox3.appendChild(leftPaddingCheckbox);
+        flexbox3.appendChild(rightPaddingCheckbox);
+        flexbox3.appendChild(topPaddingCheckbox);
+        flexbox3.appendChild(bottomPaddingCheckbox);
+
+        flexbox4.appendChild(leftPaddingLabel);
+        flexbox4.appendChild(rightPaddingLabel);
+        flexbox4.appendChild(topPaddingLabel);
+        flexbox4.appendChild(bottomPaddingLabel);
+
+
+        div.appendChild(title);
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox); // input box
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox4); //labels
+        div.appendChild(flexbox3); // checkboxes
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox2); // buttons
+
+        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
-    /**
-     * @function topPaddingBtn 'click' event handler
+    /**TODO:
+     * @function resizeFigureBtn 'click' event handler
      * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
+     * @description 
     */
-    $("#topPaddingBtn").on('click',function(event){
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !topBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'top');
-            padTop = true;
-            
-            topBtn.className = 'btn btn-danger button btn-sm paddingBtn';
-        }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"top"); 
-            topBtn.className = 'btn button btn-sm paddingBtn';
-            
-            padTop = false;
-        }
-    });
-
-
-    /**
-     * @function rightPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */
-    $("#rightPaddingBtn").on('click',function(event){
+    $("#resizeFigureBtn").on('click',function(event){
         
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !rightBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'right');
-            padRight = true;
+        // create the input box for the resize
+        var div = document.createElement("div"),
+            flexbox = document.createElement("div"),
+            widthInput = document.createElement("input"),
+            heightInput = document.createElement("input"),
+            title = document.createElement("h2"),
+            cancelBtn = document.createElement("button"),
+            submitBtn = document.createElement("button");
 
-            rightBtn.className = 'btn btn-danger button btn-sm paddingBtn';
+        
+        // if a popup is already on screen then short circut
+        if(previousPopup()){
+            return;
         }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"right"); 
-            rightBtn.className = 'btn button btn-sm paddingBtn'; 
-            
-            padRight = false; 
-        } 
-    });
 
+        flexbox.className = "flex-box";
 
-    /**
-     * @function leftPaddingBtn 'click' event handler
-     * 
-     * @description on click, checks for valid input and then calls the padding functions and changes UI
-    */  
-    $("#leftPaddingBtn").on('click',function(event){
+        var flexbox2 = flexbox.cloneNode(true),
+            flexbox3 = flexbox.cloneNode(true);
+
+        // set the box class to set css
+        div.setAttribute("class","input-box");
+
+        title.innerText = "Resize Figure";
+        title.style.borderBottom = "2px solid black"
+        title.style.margin = "auto auto";
         
-        if(!isNaN(parseInt(paddingBoxInput.value)) && !leftBtn.classList.contains("btn-danger")){
-            setImagePadding(parseInt(paddingBoxInput.value),'left');
-            padLeft = true;
-            
-            leftBtn.className = 'btn btn-danger button btn-sm paddingBtn';   
-        }
-        else if(paddingBoxInput.value && !isNaN(parseInt(paddingBoxInput.value))){
-            setImagePadding(-1 * parseInt(paddingBoxInput.value),"left"); 
-            leftBtn.className = 'btn button btn-sm paddingBtn'; 
+        // how many pixels as text input for width and height
 
-            padLeft = false; 
-        } 
-    });
+        widthInput.placeholder = w + " (pixels)";
+        heightInput.placeholder = h + " (pixels)";
+        widthInput.className = "dimInput";
+        heightInput.className = "dimInput";
+
+        widthInput.setAttribute("id","changeDimWidth");
+        heightInput.setAttribute("id","changeDimHeight");
+
+        flexbox.appendChild(widthInput);
+        flexbox.appendChild(heightInput);
+
+        // cancel btn and submit button
+        cancelBtn.className = "btn btn-secondary btn-md";
+        cancelBtn.innerText = "Cancel";
+        cancelBtn.style.margin = "auto auto";
+
+        cancelBtn.addEventListener("click",cancelBtnFunction);
+        submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
+
+        submitBtn.className = "btn btn-success btn-md";
+        submitBtn.innerText = "Submit";
+        submitBtn.style.margin = "auto auto";
+
+        flexbox2.appendChild(cancelBtn);
+        flexbox2.appendChild(submitBtn);
 
 
-    /**
-     * @function resetPaddingBtn 'click' event handler
-     * 
-     * @description on click resets UI and padding to 0
-    */
-    $("#resetPaddingBtn").on('click',function(event){
-        setImagePadding(parseInt(0),"none"); 
-        paddingBoxInput.value = "";  
-        
-        padBottom = false, padLeft = false, padRight = false, padTop = false;
-        
-        bottomBtn.className = 'btn button btn-sm paddingBtn';
-        leftBtn.className = 'btn button btn-sm paddingBtn';
-        rightBtn.className = 'btn button btn-sm paddingBtn';
-        topBtn.className = 'btn button btn-sm paddingBtn'; 
+        var widthLabel = document.createElement("h4"),
+            heightLabel = document.createElement("h4");
+
+        widthLabel.style.margin = "auto auto";
+        heightLabel.style.margin = "auto auto";
+
+        widthLabel.innerText = "New Width";
+        heightLabel.innerText = "New Height";
+
+        flexbox3.appendChild(widthLabel);
+        flexbox3.appendChild(heightLabel);
+
+        // append all big boxes to the div
+        div.appendChild(title);
+        div.appendChild(flexbox3);        
+        div.appendChild(flexbox);
+        div.appendChild(document.createElement("br"));
+        div.appendChild(flexbox2);
+
+        // add box to DOM
+        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
@@ -5358,8 +5432,7 @@ $(document).ready(function(){
         //console.log(event.target);
         // TODO: this is where to put the check for cropFlag
         if(event.target.classList 
-            && ( event.target.classList.contains("unfocus") && !drawFlag )
-            ){
+            && ( event.target.classList.contains("unfocus") && !drawFlag)){
                 if(activeLayer) {
                     setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                     activeLayer.style.border = "none";
@@ -5414,32 +5487,44 @@ $(document).ready(function(){
         else if(((keys[0] === 16 && keys[1] === 18) 
                 || (keys[1] === 16 && keys[0] === 18)) && keys.length === 3){
             event.preventDefault();
-            if(keys[2] === 76){
-                if(lineArr.length > 0){
-                    $("#undoLine").mousedown(); 
+            
+            if(keys[2] === 79){
+                $("#eyeCheckboxSlider").click();
+                
+                if( !$("#eyeFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#eyeFlagSidebar")[0].firstElementChild.classList.add("active");
                 }
-            }
-            else if(keys[2] === 79){
-                $("#eyeCheckbox").click();
-            }
-            else if(keys[2] === 66){
-                if(highlightBoxArray.length !== 0){
-                    $("#undoBox").mousedown(); 
+                else {
+                    $("#eyeFlagSidebar")[0].firstElementChild.classList.remove("active");
                 }
             }
             else if(keys[2] === 78){
-                $("#northCheckbox").click();
+                $("#northCheckboxSlider").click();
+                
+                if( !$("#northIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#northIconFlagSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#northIconFlagSidebar")[0].firstElementChild.classList.remove("active");
+                }
             }
             else if(keys[2] === 83){
-                $("#sunCheckbox").click();
-            }
-            else if(keys[2] === 84){
-                if(textBoxArray.length > 0){
-                    $("#undoText").mousedown();
+                $("#sunCheckboxSlider").click();
+                if( !$("#sunIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.remove("active");
                 }
             }
             else if(keys[2] === 82){
-                $("#scaleCheckbox").click();   
+                $("#scaleCheckboxSlider").click(); 
+                if( !$("#scaleBarButtonSidebar")[0].firstElementChild.classList.contains("active") ){
+                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.add("active");
+                }
+                else {
+                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.remove("active");
+                }  
             }
         }
     });
@@ -5466,6 +5551,13 @@ $(document).ready(function(){
                 var icon = document.getElementById(svgID);
 
                 if(icon.nodeName === "g" || icon.nodeName === "line"){
+                    if(icon.nodeName === "line"){
+                        if(icon.getAttribute("marker-start") && icon.getAttribute("marker-start") !== "url(#arrow)")
+                        {
+                            let def = document.getElementById(icon.getAttribute("marker-start").replace("url(#","").replace(")",""));
+                            def.parentElement.remove();  
+                        }
+                    }
                     icon.remove();
                 }
                 else if(icon.nodeName === "svg"){
@@ -5505,6 +5597,19 @@ $(document).ready(function(){
     */
     $('#svgWrapper').mousemove(function(event){
                 
+
+        // hide the menu buttons
+        let menuArr = document.getElementsByClassName("dropdownMenu");
+        let sidebarArr = document.getElementsByClassName("sidebarParent");
+
+        for( var i=0; i<menuArr.length; i++ ){
+            menuArr[i].style.visibility="hidden";
+        }
+        for( var i=0; i<sidebarArr.length; i++ ){
+            sidebarArr[i].style.visibility="hidden";
+        }
+
+
         // set event variables
         var t = event.target;
         var x = event.clientX;
@@ -5530,7 +5635,9 @@ $(document).ready(function(){
         let markers = document.querySelectorAll("marker");
 
         markers.forEach((el) => {
+            
             if(color === el.firstElementChild.getAttribute("fill")){
+                console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
                 return true;
             };
         });
@@ -5654,50 +5761,17 @@ $(document).ready(function(){
             line.setAttribute("y2", mouseY - transY);
             clickArray = [];
             drawFlag = false;
-            // reset the button color and allow for click detection again
-            document.getElementById("pencilIconFlag").className = "btn btn-lg button";
 
             bg.className.baseVal = "unfocus";
+            document.getElementById("pencilIconFlag").classList.remove("active");
 
             updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
             
-            setDetectionForLayer(activeLayer,"all");
+            setDetectionForLayer(activeLayer, "all");
         }
     });
 
-    let warned = false;
-
-    /**
-     * @function paddingInput 'keyup' event handler
-     * 
-     * @description when user clicks a key in the box check if the value in the box can be used an an int
-     *      set the padding depending on the current flag otherwise reset the value
-    */
-    $("#paddingInput").keyup(function(){
-        if(!isNaN(parseInt(this.value))){
-            if(padBottom){
-                setImagePadding(parseInt(this.value),'bottom');
-            }
-            if(padRight){
-                setImagePadding(parseInt(this.value),'right');
-            }
-            if(padLeft){
-                setImagePadding(parseInt(this.value),'left');
-            }
-            if(padTop){
-                setImagePadding(parseInt(this.value),'top');
-            }
-        }
-        else{
-            // if the value is not a number, warn the user that only numbers can render
-            //  warned flag is to onl warn each user 1 time
-            if(this.value !== "" && !warned){
-                alert("Only Accepts Positive Whole Numbers");
-                warned = true;
-            }
-        }
-    });
 });
 
 
