@@ -166,6 +166,18 @@ function showHelp(btn){
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
 
+// TODO:
+function detectLeftButton(evt) {
+    evt = evt || window.event;
+
+    if ("which" in evt) {
+        return evt.which == 1;
+    }
+    
+    var button = evt.buttons || evt.button;   
+    return button == 1;
+}
+
 /**
  * @function createCookie
  * 
@@ -248,10 +260,12 @@ $(document).ready(function(){
      * 
      * @description hide the help box div
     */
-    $("#hideBtn").mousedown(function(){
+    $("#hideBtn").mousedown(function( event ){
         // hide the help box
-        document.getElementById("help-box").style.visibility = "hidden";
-        document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
+        if(detectLeftButton(event)){
+            document.getElementById("help-box").style.visibility = "hidden";
+            document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
+        }
     });
 
     /**
@@ -330,26 +344,28 @@ $(document).ready(function(){
      * @description show and hide the button options base on which button is currently clicked
     */
     $("#journalOption1").mousedown(function(event){
-        if(document.getElementById("j1Option1").style.visibility === "hidden"){
-            document.getElementById("journalOption1").className = "btn btn-lg button btn-secondary";
-            document.getElementById("j1Option1").style.visibility = "visible";
-            document.getElementById("j1Option2").style.visibility = "visible";
-            document.getElementById("j1Option3").style.visibility = "visible";
-            if(document.getElementById("j2Option1").style.visibility === "visible"){
-                document.getElementById("j2Option1").style.visibility = "hidden";
-                document.getElementById("j2Option2").style.visibility = "hidden";
-                document.getElementById("j2Option3").style.visibility = "hidden";
-                document.getElementById("journalOption2").className = "btn btn-lg button";
+        if(detectLeftButton(event)){
+            if(document.getElementById("j1Option1").style.visibility === "hidden"){
+                document.getElementById("journalOption1").className = "btn btn-lg button btn-secondary";
+                document.getElementById("j1Option1").style.visibility = "visible";
+                document.getElementById("j1Option2").style.visibility = "visible";
+                document.getElementById("j1Option3").style.visibility = "visible";
+                if(document.getElementById("j2Option1").style.visibility === "visible"){
+                    document.getElementById("j2Option1").style.visibility = "hidden";
+                    document.getElementById("j2Option2").style.visibility = "hidden";
+                    document.getElementById("j2Option3").style.visibility = "hidden";
+                    document.getElementById("journalOption2").className = "btn btn-lg button";
+                }
             }
+            else{
+                document.getElementById("j1Option1").style.visibility = "hidden";
+                document.getElementById("j1Option2").style.visibility = "hidden";
+                document.getElementById("j1Option3").style.visibility = "hidden";
+                document.getElementById("journalOption1").className = "btn btn-lg button";
+            }
+            widthInputBox.value = "";
+            heightInputBox.value = "";
         }
-        else{
-            document.getElementById("j1Option1").style.visibility = "hidden";
-            document.getElementById("j1Option2").style.visibility = "hidden";
-            document.getElementById("j1Option3").style.visibility = "hidden";
-            document.getElementById("journalOption1").className = "btn btn-lg button";
-        }
-        widthInputBox.value = "";
-        heightInputBox.value = "";
     });
 
 
@@ -359,26 +375,28 @@ $(document).ready(function(){
      * @description show and hide the button options base on which button is currently clicked
     */
     $("#journalOption2").mousedown(function(event){
-        if(document.getElementById("j2Option1").style.visibility === "hidden"){
-            document.getElementById("journalOption2").className = "btn btn-lg button btn-secondary";
-            document.getElementById("j2Option1").style.visibility = "visible";
-            document.getElementById("j2Option2").style.visibility = "visible";
-            document.getElementById("j2Option3").style.visibility = "visible";
-            if(document.getElementById("j1Option1").style.visibility === "visible"){
-                document.getElementById("j1Option1").style.visibility = "hidden";
-                document.getElementById("j1Option2").style.visibility = "hidden";
-                document.getElementById("j1Option3").style.visibility = "hidden";
-                document.getElementById("journalOption1").className = "btn btn-lg button";
+        if(detectLeftButton(event)){
+            if(document.getElementById("j2Option1").style.visibility === "hidden"){
+                document.getElementById("journalOption2").className = "btn btn-lg button btn-secondary";
+                document.getElementById("j2Option1").style.visibility = "visible";
+                document.getElementById("j2Option2").style.visibility = "visible";
+                document.getElementById("j2Option3").style.visibility = "visible";
+                if(document.getElementById("j1Option1").style.visibility === "visible"){
+                    document.getElementById("j1Option1").style.visibility = "hidden";
+                    document.getElementById("j1Option2").style.visibility = "hidden";
+                    document.getElementById("j1Option3").style.visibility = "hidden";
+                    document.getElementById("journalOption1").className = "btn btn-lg button";
+                }
             }
+            else{
+                document.getElementById("j2Option1").style.visibility = "hidden";
+                document.getElementById("j2Option2").style.visibility = "hidden";
+                document.getElementById("j2Option3").style.visibility = "hidden";
+                document.getElementById("journalOption2").className = "btn btn-lg button";
+            }
+            widthInputBox.value = "";
+            heightInputBox.value = "";
         }
-        else{
-            document.getElementById("j2Option1").style.visibility = "hidden";
-            document.getElementById("j2Option2").style.visibility = "hidden";
-            document.getElementById("j2Option3").style.visibility = "hidden";
-            document.getElementById("journalOption2").className = "btn btn-lg button";
-        }
-        widthInputBox.value = "";
-        heightInputBox.value = "";
     });
 
 
@@ -388,40 +406,42 @@ $(document).ready(function(){
      * @description change the default image output dimensions
     */
     $("button.journal").mousedown(function(event){
-        switch($(this).html()){
-            case "Single Column":
-                widthInputBox.value = 1772;
-                heightInputBox.value = 1772;
-                break;
-
-            case "1.5 Column":
-                widthInputBox.value = 2756;
-                heightInputBox.value = 2756;
-                break;
-
-            case "Double Column":
-                widthInputBox.value = 3740;
-                heightInputBox.value = 3740;
-                break;
-
-            case "1/4 Page":
-                widthInputBox.value = 1870;
-                heightInputBox.value = 2264;
-                break;
-
-            case "1/2 Page":
-                widthInputBox.value = 1870;
-                heightInputBox.value = 4528;
-                break;
-
-            case "Full Page":
-                widthInputBox.value = 3740;
-                heightInputBox.value = 4528;
-                break;
+        if(detectLeftButton(event)){
+            switch($(this).html()){
+                case "Single Column":
+                    widthInputBox.value = 1772;
+                    heightInputBox.value = 1772;
+                    break;
+    
+                case "1.5 Column":
+                    widthInputBox.value = 2756;
+                    heightInputBox.value = 2756;
+                    break;
+    
+                case "Double Column":
+                    widthInputBox.value = 3740;
+                    heightInputBox.value = 3740;
+                    break;
+    
+                case "1/4 Page":
+                    widthInputBox.value = 1870;
+                    heightInputBox.value = 2264;
+                    break;
+    
+                case "1/2 Page":
+                    widthInputBox.value = 1870;
+                    heightInputBox.value = 4528;
+                    break;
+    
+                case "Full Page":
+                    widthInputBox.value = 3740;
+                    heightInputBox.value = 4528;
+                    break;
+            }
+            
+            $(this).addClass("btn-secondary");
+            resetOtherButtons(this, "journal");
         }
-        
-        $(this).addClass("btn-secondary");
-        resetOtherButtons(this, "journal");
     });
 
 
@@ -431,23 +451,25 @@ $(document).ready(function(){
      * @description change the default image output dimensions
     */
    $("button.template").mousedown(function(event){
-        switch($(this).html()){
-            case "Mosaic":
-                document.getElementById("tplCode").value = 1;
-                break;
-            case "Map Projected":
-                document.getElementById("tplCode").value = 2;
-                break;
-            case "Composite":
-                document.getElementById("tplCode").value = 3;
-                break;
-            default:
-                document.getElementById("tplCode").value = 0;
+        if(detectLeftButton(event)){
+            switch($(this).html()){
+                case "Mosaic":
+                    document.getElementById("tplCode").value = 1;
+                    break;
+                case "Map Projected":
+                    document.getElementById("tplCode").value = 2;
+                    break;
+                case "Composite":
+                    document.getElementById("tplCode").value = 3;
+                    break;
+                default:
+                    document.getElementById("tplCode").value = 0;
+            }
+            
+            $("#tplUpload").val("");
+            $(this).addClass("btn-secondary");
+            resetOtherButtons(this, "template");
         }
-        
-        $("#tplUpload").val("");
-        $(this).addClass("btn-secondary");
-        resetOtherButtons(this, "template");
     });
 });
 /**
