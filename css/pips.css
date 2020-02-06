@@ -65,6 +65,70 @@ body,html {
 	-webkit-border-radius: 5px;
 }
 
+.optionsPopup {
+    position: absolute;
+    display: block;
+    background: -moz-linear-gradient(
+		top,
+		#bebebe 0%,
+		#c5c5c5 50%,
+        #e0dfdf 92%,
+        #f0efef);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#bebebe),
+		color-stop(0.50, #c5c5c5),
+		color-stop(0.92, #e0dfdf),
+        to(#f0efef));
+    min-width: 50px;
+    max-width: 100px;
+    height: auto;
+    min-height: none;
+    max-height: none;
+}
+
+.optionsBtn {
+    position: relative;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+        #bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    min-width: 50px;
+    max-width: 100px;
+    width: 100%;
+    height: 100%;
+    min-height: 15px;
+    max-height: none;
+    font-size: x-small;
+    border-bottom: 1px solid rgba(0, 0, 0, .5);
+}
+
+.optionsBtn:hover {
+    position: relative;
+    background: -moz-linear-gradient(
+		top,
+		#bebebe 0%,
+		#c5c5c5 50%,
+        #e0dfdf 92%,
+        #f0efef);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#bebebe),
+		color-stop(0.50, #c5c5c5),
+		color-stop(0.92, #e0dfdf),
+        to(#f0efef));
+    border: 1px solid rgba(0, 0, 0, .5);
+}
+
+
 input.dimInput {
     text-align: center;
     color: black;

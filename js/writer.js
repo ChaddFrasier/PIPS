@@ -15,7 +15,7 @@
  * @see {Rangy:Save-Restore-Module}
  *      @link https://github.com/timdown/rangy/wiki/Selection-Save-Restore-Module
  */
-
+ // TODO: major code clean
 /** Variables */
 var outputName,
     loader,

@@ -14,7 +14,7 @@
  * 
  * @see {server.js} Read the header before editing
  */
-
+ // TODO: major code clean
 /** Variables  */
 // get needed DOM element
 var loader,

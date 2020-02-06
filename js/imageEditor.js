@@ -15,6 +15,7 @@
  * @see {server.js} Read the header before editing
  */
 
+ // TODO: major code clean
 /** ---------------------------------------- DOM Variables ----------------------------------------------- */
 var loader,
     svg,
@@ -62,6 +63,13 @@ var placeEnum = new Object({
         "bottom-right": 3,
         "bottom-left": 4
         });
+
+/** Custome Event For Calling functions from code */
+const MousedownEvent = new MouseEvent("mousedown", { which: 1 }),
+    ClickEvent = new MouseEvent("click", { which: 1 }),
+    MouseupEvent = new MouseEvent("mouseup", { which: 1 })
+    DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
+
 
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
@@ -893,6 +901,37 @@ function detectRightButton(evt) {
 }
 
 
+function toggleMenuUI(str){
+    var id;
+    switch(str){
+        case "eye":
+            id = "#eyeFlagSidebar";
+            break;
+        
+        case "sun":
+            id = "#sunIconFlagSidebar";
+            break;
+
+        case "scale":
+                id = "#scaleBarButtonSidebar";
+                break;
+
+        case "north":
+            id = "#northIconFlagSidebar";
+            break;
+    }
+
+    console.log("ID IS = " + id)
+    if(id){
+        if( !$(id)[0].firstElementChild.classList.contains("active") ){
+            $(id)[0].firstElementChild.classList.add("active");
+        }
+        else {
+            $(id)[0].firstElementChild.classList.remove("active");
+        }
+    }
+}
+
 function fixImage( cookieVal ){
     if(cookieVal && cookieVal != "{}"){
         // when this data structure comes back parse over the keys
@@ -909,42 +948,42 @@ function fixImage( cookieVal ){
 
             switch(key){
                 case "northPosition":
-                    $("#northIconFlag").mousedown();
+                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("northCheckboxSlider").click();
+                        document.getElementById("northCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
                 
                 case "sunPosition":
-                    $("#sunIconFlag").click();
+                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it 
                     if( val["checked"] ){
-                        document.getElementById("sunCheckboxSlider").click();
+                        document.getElementById("sunCheckboxSlider").dispatchEvent(ClickEvent);
                     }      
                     break;
                 
                 case "eyePosition":
-                    $("#eyeFlag").click();
+                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("eyeCheckboxSlider").click();
+                        document.getElementById("eyeCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
 
                 case "scalebarPosition":
-                    $("#scaleBarButton").mousedown();
+                    $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform", val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("scaleCheckboxSlider").click();
+                        document.getElementById("scaleCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
 
@@ -961,7 +1000,7 @@ function fixImage( cookieVal ){
                         colorB = parseInt(colorB);
                         
                         $("#colorPickerBox").val(rgbToHex(colorR, colorG, colorB));
-                        $("#outlineBtn").mousedown();
+                        $("#outlineBtn")[0].dispatchEvent(MousedownEvent);
 
                         document.getElementById(activeLayer.id.replace("layer",""))
                                                     .setAttribute("transform", val['transform']);
@@ -2240,6 +2279,10 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
+    console.log(el)
+    while( !el.getAttribute("id") ){
+        el = el.offsetParent;
+    }
     var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1].replace("Svg",""));
         
     if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
@@ -2408,6 +2451,43 @@ function setDetectionForLayer( el, detection ){
     }
 }
 
+//  TODO:
+function deleteHandler( event ){
+
+    $(document)[0].dispatchEvent(DeleteEvent);
+}
+
+
+// TODO:
+function toggleColorBtnHandler ( event ){
+
+    var target = event.target.parentElement.parentElement;
+
+    switch(target.getAttribute("id")){
+        case "layerscaleBarButtonSvg":
+            $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+            toggleMenuUI('scale');  
+            break;
+        
+        case "layereyeFlagSvg":
+            $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('eye');
+            break;
+        
+        case "layersunIconFlagSvg":
+            $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('sun');
+            break;
+
+        case "layernorthIconFlagSvg":
+            $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('north');
+            break;
+    }
+
+}
+
 var activeLayer;
 
 /**
@@ -2446,6 +2526,16 @@ function updateLayers(el){
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
 
+
+    div.addEventListener("mouseleave",function( event ) {
+        let options = document.getElementsByClassName("optionsPopup");
+
+        Array.from(options).forEach( el => {
+            el.remove();
+        });
+    });
+
+
     // create listener for when the div is clicked on
     div.addEventListener("mousedown", (event) => {
         if(detectLeftButton(event)){
@@ -2453,6 +2543,10 @@ function updateLayers(el){
             if(event.target.nodeName === "svg") {
                 // get the parent
                 var tar = event.target.parentElement;
+            }
+            else if(event.target.nodeName === "BUTTON") {
+                // get the parent
+                var tar = event.target.parentElement.parentElement;
             }
             else{
                 // otherwise keep the tar as the target element
@@ -2477,15 +2571,107 @@ function updateLayers(el){
                 setDetectionForLayer(activeLayer, "all");
             }       
         }
-        else{
+        else if(detectRightButton( event )){
             // not left mouse click open options
             // TODO: right click occured on a layer object
-            if(detectRightButton( event )){
-                event.preventDefault();
-                return false;
+            // TODO: comment
+            
+            event.preventDefault();
+
+            var target = (event.target.nodeName === "svg") ? event.target.parentElement : event.target;
+            target = (target.nodeName === "BUTTON") ? target.parentElement.parentElement : target;
+            
+            // change the active layer
+            if(activeLayer) { 
+                setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+                activeLayer.style.border = "none";
             }
+
+            // set the selected element
+            activeLayer = target;
+            activeLayer.style.border = "5px solid red";
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            setDetectionForLayer(activeLayer, "all");
+
+            var optionsBox = document.createElement("div");
+            
+            if(target.getAttribute("id").indexOf("outline") > -1
+                || target.getAttribute("id").indexOf("text") > -1){
+                // check outline first because it contains 'line'
+                // for any other object
+                // create the popup based on the mouse location
+                
+                var changeColorBtn = document.createElement("button"),
+                    deleteBtn;
+
+                changeColorBtn.className = "optionsBtn";
+                deleteBtn = changeColorBtn.cloneNode(true);
+
+                changeColorBtn.innerText = "Edit Color";
+                deleteBtn.innerText = "Delete (Del)";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+
+                optionsBox.appendChild(changeColorBtn);
+            }
+            else if(target.getAttribute("id").indexOf("line") > -1){
+                // then check line
+                var changeColorBtn = document.createElement("button"),
+                    arrowBtn,
+                    deleteBtn;
+
+                changeColorBtn.className = "optionsBtn";
+                deleteBtn = changeColorBtn.cloneNode(true);
+                arrowBtn = changeColorBtn.cloneNode(true);
+
+                changeColorBtn.innerText = "Edit Color";
+                deleteBtn.innerText = "Delete (Del)";
+                arrowBtn.innerText = "Add Arrowhead";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+
+                optionsBox.appendChild(changeColorBtn);
+                optionsBox.appendChild(arrowBtn);
+            }
+            else{
+                // for any other object
+                // create the popup based on the mouse location
+                var optionsBox = document.createElement("div"),
+                    toggleColorBtn = document.createElement("button"),
+                    deleteBtn;
+
+                toggleColorBtn.className = "optionsBtn";
+                deleteBtn = toggleColorBtn.cloneNode(true);
+
+                toggleColorBtn.innerText = "Toggle Color";
+                deleteBtn.innerText = "Delete (Del)";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+
+               toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
+
+                optionsBox.appendChild(toggleColorBtn);
+            }
+            
+            // add universial buttons
+            optionsBox.appendChild(deleteBtn);
+
+            // add element to target
+            target.appendChild(optionsBox);
+
+            // prevent defaults downstream
+            return false;
+            
         }
-        
     });
 
     // switch on the type of element and do everything needed to create the 
@@ -2533,6 +2719,7 @@ function updateLayers(el){
         case "line":
             var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+            svg.setAttribute("height","85");
             svg.pointerEvents = "none";
             el.style.strokeWidth = "50px";
             svg.style.padding = "0%";
@@ -2640,7 +2827,7 @@ function getElementType( el ){
 /**
  * @function removeLayer
  * 
- * @description searches the svg and pulls out all changable icons
+ * @description searches the svg and pulls the one icon
  */
 function removeLayers(el){
     let layerBrowser = document.getElementById("layerBrowser");
@@ -3087,13 +3274,13 @@ function iconPlaced( icon ){
                 // check which icon it is and remove it
                 switch(child){
                     case northImage:
-                        $("#northIconFlag").mousedown();
+                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                         break;
                     case sunImage:
-                        $("#sunIconFlag").click();
+                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                         break;
                     case eyeImage:
-                        $("#eyeFlag").click();
+                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                         break;
                 }
             }
@@ -3179,7 +3366,7 @@ function createCookie(cookieName,cookieValue,daysToExpire){
 }
 
 function viewButtonHandler(el){
-    document.getElementById('viewOption').click();
+    document.getElementById('viewOption').dispatchEvent(ClickEvent);
     if(el.classList.contains("active")){
         el.classList.remove("active");
     }else{
@@ -3554,7 +3741,7 @@ $(document).ready(function(){
      * @description shows the loading and progress bar
      * 
     */
-    $('#exportBtn').on("mousedown",function( event ){
+    $('#exportBtn').on("mousedown", function( event ){
         if(detectLeftButton(event)){
             loader.style.visibility = "visible";
             document.getElementById("loadingText").innerHTML = "Save Image As ...";
@@ -4437,7 +4624,7 @@ $(document).ready(function(){
             // if the scalebar is not on the image
             if(scalebarHalf === null){
                 // place the icon
-                $("#scaleBarButton").mousedown();
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
 
                 // grab the elements
                 scalebarHalf = document.getElementById("scalebarHalf");
@@ -4445,7 +4632,7 @@ $(document).ready(function(){
                 scalebar1 = document.getElementById("scalebar1");
 
                 // remove it again
-                $("#scaleBarButton").mousedown();
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
             }
 
             // reset the padding to 0
@@ -5524,34 +5711,38 @@ $(document).ready(function(){
      * 
      * @description  Hotkey Handler
     */
-    $(document).keydown(function(event){
+    $(window).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
+        }
+
+        if(event.ctrlKey && keys[1] === 82){
+            return true;
         }
 
         if(keys[0] === 18 && keys.length === 2){
             event.preventDefault();
             if(keys[1] === 76){
-                $("#pencilIconFlag").mousedown(); 
+                $("#pencilIconFlag")[0].dispatchEvent(MousedownEvent); 
             }
             else if(keys[1] === 79){
-                $("#eyeFlag").click(); 
+                $("#eyeFlag")[0].dispatchEvent(ClickEvent);
             }
             else if(keys[1] === 66){
-                $("#outlineBtn").mousedown(); 
+                $("#outlineBtn")[0].dispatchEvent(MousedownEvent); 
             }
             else if(keys[1] === 78){
-                $("#northIconFlag").mousedown(); 
+                $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
             }
             else if(keys[1] === 83){
-                $("#sunIconFlag").click(); 
+                $("#sunIconFlag")[0].dispatchEvent(ClickEvent); 
             }
             else if(keys[1] === 84){
-                $("#textBtn").mousedown();
+                $("#textBtn")[0].dispatchEvent(MousedownEvent);
                 keys = [];
             }
             else if(keys[1] === 82){
-                $("#scaleBarButton").mousedown();
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
             }
         }
         else if(((keys[0] === 16 && keys[1] === 18) 
@@ -5559,44 +5750,27 @@ $(document).ready(function(){
             event.preventDefault();
             
             if(keys[2] === 79){
-                $("#eyeCheckboxSlider").click();
+                $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
                 
-                if( !$("#eyeFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#eyeFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#eyeFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                toggleMenuUI('eye');   
             }
             else if(keys[2] === 78){
-                $("#northCheckboxSlider").click();
+                $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
                 
-                if( !$("#northIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#northIconFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#northIconFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                toggleMenuUI('north');
             }
             else if(keys[2] === 83){
-                $("#sunCheckboxSlider").click();
-                if( !$("#sunIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+                toggleMenuUI('sun');
             }
             else if(keys[2] === 82){
-                $("#scaleCheckboxSlider").click(); 
-                if( !$("#scaleBarButtonSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.remove("active");
-                }  
+                $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+                toggleMenuUI('scale');  
             }
         }
+        return false;
     });
 
 
@@ -5613,6 +5787,8 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
+        console.log(event);
+        // Deleteing
         if(event.keyCode === 46){
             if(activeLayer){
                 event.preventDefault();
@@ -5632,16 +5808,16 @@ $(document).ready(function(){
                 }
                 else if(icon.nodeName === "svg"){
                     if(svgID.indexOf("north") > -1){
-                        $("#northIconFlag").mousedown();
+                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                     }
                     else if(svgID.indexOf("sun") > -1){
-                        $("#sunIconFlag").click();
+                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                     }
                     else if(svgID.indexOf("eye") > -1){
-                        $("#eyeFlag").click();
+                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                     }
                     else if(svgID.indexOf("scale") > -1){
-                        $("#scaleBarButton").mousedown();
+                        $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
                     }
                 }
                 activeLayer.remove();
@@ -5923,8 +6099,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle(northImage ,northDegree);
                                     adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#northIconFlag").mousedown();
-                                    $("#northIconFlag").mousedown();
+                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                                 }
                                 break;
 
@@ -5947,8 +6123,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( sunImage, sunDegree );
                                     adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
 
-                                    $("#sunIconFlag").click();
-                                    $("#sunIconFlag").click();
+                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                                 }
                                 
                                 break;
@@ -5971,8 +6147,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( eyeImage, observerDegree );
                                     adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#eyeFlag").click();
-                                    $("#eyeFlag").click();
+                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                                 }
                                 break;
                         }
