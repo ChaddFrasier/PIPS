@@ -876,6 +876,19 @@ function setSvgClickDetection(svg, mouseDetect){
     }
 }
 
+function markerExists( color ){
+    let markers = document.querySelectorAll("marker");
+
+    markers.forEach((el) => {
+        
+        if(color === el.firstElementChild.getAttribute("fill")){
+            console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
+            return true;
+        };
+    });
+    return false;
+}
+
 // TODO:
 function detectLeftButton(evt) {
     evt = evt || window.event;
@@ -921,7 +934,7 @@ function toggleMenuUI(str){
             break;
     }
 
-    console.log("ID IS = " + id)
+    
     if(id){
         if( !$(id)[0].firstElementChild.classList.contains("active") ){
             $(id)[0].firstElementChild.classList.add("active");
@@ -2488,6 +2501,83 @@ function toggleColorBtnHandler ( event ){
 
 }
 
+// TODO:
+function changeColorHandler( event ) {
+    var target = event.target.parentElement.parentElement;
+
+    if(target.getAttribute("id").split("layer")[1].indexOf("outline") > -1){
+        document.getElementById("colorPickerBox").click();
+    }
+    else if(target.getAttribute("id").split("layer")[1].indexOf("text") > -1){
+        document.getElementById("textColorPicker").click();
+    }
+    else {
+        // line object
+        document.getElementById("colorPickerLine").click();
+    }
+}
+
+function arrowBtnHandler( event ){
+    var target = event.target.parentElement.parentElement;
+
+    if(target.getAttribute("id").split("layer")[1].indexOf("line") > -1
+        && activeLayer === target){
+        console.log("runs")
+        var line = document.getElementById("line"+target.firstElementChild.firstElementChild.getAttribute("id"));
+        // check to see if the element is already using an arrow head
+        if(line.getAttribute("marker-start")){
+            // if true: set the removeAttribute(marker-start) and delete the marker obj
+            let id = line.getAttribute("marker-start").replace("url(","").replace(")","");
+            console.log(line)
+            if(id !== "#arrow"){
+                $(id).parent().remove();
+            }
+
+            line.removeAttribute("marker-start");
+            let tmp = line.cloneNode(true);
+            tmp.style.strokeWidth = "50px";
+            tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
+            target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
+        }
+        else{
+            // else false: create a new marker element using the color of the line currently
+            // if arrow with default color 
+            if(userLineColor === "#ffffff" || !userLineColor ){
+                line.setAttribute("marker-start","url(#arrow)");
+            }
+            else if( markerExists(userLineColor) ){
+                line.setAttribute("marker-start", getMarkerStartFor(userLineColor));
+            }
+            // if the array is linger than 1 and the color is not default
+            else if(lineArr.length > 0 || userLineColor){
+
+                var markerId = "arrow" + lineArr.length,
+                    pathId = "arrowPath" + lineArr.length,
+                    newDef = document.getElementById("arrowDef").cloneNode();
+
+                newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                line.setAttribute("marker-start", String("url(#" + markerId + ")"));
+                (newDef.childNodes).forEach(childElem => {
+                    // if the childElement has a child
+                    if(childElem.childElementCount > 0){
+                        childElem.setAttribute("id", markerId);
+                        childElem.childNodes[1].setAttribute("fill", userLineColor);
+                        childElem.childNodes[1].setAttribute("id", pathId);
+                    }
+                });
+                svg.prepend(newDef);
+            }
+
+            let tmp = line.cloneNode(true);
+            tmp.style.strokeWidth = "50px";
+            tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
+            target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
+        }
+    }
+}
+
+
 var activeLayer;
 
 /**
@@ -2525,7 +2615,6 @@ function updateLayers(el){
     // set the needed classes for mouse events
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
-
 
     div.addEventListener("mouseleave",function( event ) {
         let options = document.getElementsByClassName("optionsPopup");
@@ -2614,6 +2703,7 @@ function updateLayers(el){
                 optionsBox.offsetTop = event.offsetY - event.clientHeight;
 
                 deleteBtn.addEventListener("click", deleteHandler);
+                changeColorBtn.addEventListener ("click", changeColorHandler);
 
                 optionsBox.appendChild(changeColorBtn);
             }
@@ -2629,12 +2719,16 @@ function updateLayers(el){
 
                 changeColorBtn.innerText = "Edit Color";
                 deleteBtn.innerText = "Delete (Del)";
-                arrowBtn.innerText = "Add Arrowhead";
+                arrowBtn.innerText = "Toggle Arrow";
 
                 optionsBox.className = "optionsPopup";
                 optionsBox.offsetTop = event.offsetY - event.clientHeight;
 
                 deleteBtn.addEventListener("click", deleteHandler);
+                changeColorBtn.addEventListener ("click", changeColorHandler);
+
+                // TODO: add arrowhead listerner
+                arrowBtn.addEventListener("click", arrowBtnHandler)
 
                 optionsBox.appendChild(changeColorBtn);
                 optionsBox.appendChild(arrowBtn);
@@ -5875,20 +5969,6 @@ $(document).ready(function(){
             drawLine(line, mouseX, mouseY);
         }
     });
-
-
-    function markerExists( color ){
-        let markers = document.querySelectorAll("marker");
-
-        markers.forEach((el) => {
-            
-            if(color === el.firstElementChild.getAttribute("fill")){
-                console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
-                return true;
-            };
-        });
-        return false;
-    }
 
     function getMarkerStartFor( color ){
         let markers = document.querySelectorAll("marker");
