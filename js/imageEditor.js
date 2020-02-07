@@ -2522,13 +2522,13 @@ function arrowBtnHandler( event ){
 
     if(target.getAttribute("id").split("layer")[1].indexOf("line") > -1
         && activeLayer === target){
-        console.log("runs")
+    
         var line = document.getElementById("line"+target.firstElementChild.firstElementChild.getAttribute("id"));
         // check to see if the element is already using an arrow head
-        if(line.getAttribute("marker-start")){
+        if(line && line.getAttribute("marker-start")){
             // if true: set the removeAttribute(marker-start) and delete the marker obj
             let id = line.getAttribute("marker-start").replace("url(","").replace(")","");
-            console.log(line)
+            
             if(id !== "#arrow"){
                 $(id).parent().remove();
             }
@@ -2539,7 +2539,7 @@ function arrowBtnHandler( event ){
             tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
             target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
         }
-        else{
+        else if (line){
             // else false: create a new marker element using the color of the line currently
             // if arrow with default color 
             if(userLineColor === "#ffffff" || !userLineColor ){
