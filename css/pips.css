@@ -65,6 +65,70 @@ body,html {
 	-webkit-border-radius: 5px;
 }
 
+.optionsPopup {
+    position: absolute;
+    display: block;
+    background: -moz-linear-gradient(
+		top,
+		#bebebe 0%,
+		#c5c5c5 50%,
+        #e0dfdf 92%,
+        #f0efef);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#bebebe),
+		color-stop(0.50, #c5c5c5),
+		color-stop(0.92, #e0dfdf),
+        to(#f0efef));
+    min-width: 50px;
+    max-width: 100px;
+    height: auto;
+    min-height: none;
+    max-height: none;
+}
+
+.optionsBtn {
+    position: relative;
+    background: -moz-linear-gradient(
+		top,
+		#f0efef 0%,
+		#e0dfdf 50%,
+		#c5c5c5 92%,
+        #bebebe);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f0efef),
+		color-stop(0.50, #e0dfdf),
+		color-stop(0.92, #c5c5c5),
+        to(#bebebe));
+    min-width: 50px;
+    max-width: 100px;
+    width: 100%;
+    height: 100%;
+    min-height: 15px;
+    max-height: none;
+    font-size: x-small;
+    border-bottom: 1px solid rgba(0, 0, 0, .5);
+}
+
+.optionsBtn:hover {
+    position: relative;
+    background: -moz-linear-gradient(
+		top,
+		#bebebe 0%,
+		#c5c5c5 50%,
+        #e0dfdf 92%,
+        #f0efef);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#bebebe),
+		color-stop(0.50, #c5c5c5),
+		color-stop(0.92, #e0dfdf),
+        to(#f0efef));
+    border: 1px solid rgba(0, 0, 0, .5);
+}
+
+
 input.dimInput {
     text-align: center;
     color: black;
@@ -236,22 +300,6 @@ text.user {
     padding-bottom: 2%;
 }
 
-button.paddingBtn {
-    min-width: 25px;
-    max-width: 5rem;
-    min-height: 2rem;
-    max-width: 5rem;
-}
-.menu {
-    display: inline-flex;
-    width: 78%;
-    min-width: 78%;
-    max-width: 800px;
-    height: 85%;
-    background: rgb(161, 161, 161);
-    border: #000;
-    margin-top: 25%;
-}
 
 .dropdown {
     background: transparent;
@@ -424,18 +472,6 @@ button.paddingBtn {
 
 * { box-sizing: border-box }
 
-/* Style the tab */
-.tabs {
-    float: left;
-    text-align: left;
-    border: 1px solid #000;
-    background-color: #f1f1f1;
-    width: 20%;
-    height: auto;
-    margin-left: 3px;
-    margin-top: 25%;
-}
-
 /* The switch - the box around the slider */
 .switch {
     position: relative;
@@ -498,48 +534,6 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 } 
-/* Style the tab content */
-.tabcontent {
-    float: left;
-    padding: 0px 0px;
-    border: 1px solid rgb(0, 0, 0);
-    width: 100%;
-    border-left: none;
-    border-bottom:none;
-    padding-bottom: 2%;
-    height: auto;
-    text-align: center;
-}
-
-/* Style the buttons that are used to open the tab content */
-.tabs button {
-    display: block;
-    background-color: inherit;
-    color: black;
-    padding: 22px 20px;
-    width: 100%;
-    border: none;
-    outline: none;
-    text-align: left;
-    font-size: 55%;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.tablinks {
-    padding: 0;
-    text-align: left;
-    vertical-align: middle;
-}
-/* Change background color of buttons on hover */
-.tabs button:hover {
-    background-color: #ddd;
-}
-
-/* Create an active/current "tab button" class */
-.tabs button.active {
-    background-color: rgb(161, 161, 161);
-}
 
 .text-stroke {
     -webkit-text-stroke: 1px black;
@@ -607,16 +601,6 @@ p {
     font-size: 16px;
     color: white;
 }
-   
-.body-background-area {
-    background: #d6a874;
-    background-size:cover;
-    width: 100%;
-    height: 85%;
-    margin-left:auto;
-    margin-right:auto;
-    padding-top:1rem;
-}
 
 .loading {
     visibility:hidden; 
@@ -652,20 +636,6 @@ p {
     cursor:copy;
 }
 
-input.largeBox {
-    transform: scale(2);
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-}
-
-input.giantBox {
-    transform: scale(3);
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-}
-
 .draw:hover {
     cursor: url("../images/pencilcursor.png"),auto;
 }
@@ -693,18 +663,6 @@ input.giantBox {
     margin-bottom: auto;
 }
 
-.image-controls {
-    position: relative;
-    float: center;
-    width: 75%;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    padding-right:auto;
-    padding: 0; 
-    min-width: 20rem;         
-}
-
 label {
     color: white;
 }
@@ -724,18 +682,6 @@ label {
     padding: 5px;
 }
 
-.buttonSm {
-    width:2.5rem;
-    height: auto;
-    background: #007150;
-    color: white;
-    border: 2px solid black !important;
-    overflow: hidden;
-    margin: auto auto;
-    min-width: 50px;
-    min-height: 2rem;
-    max-height: 2rem;
-}
 .button:hover {
     background: rgba(0, 113, 79, 0.705);
     border: 2px solid rgba(0, 0, 0, 0.534) !important;
@@ -757,16 +703,6 @@ input[type=color] {
 
 input[type=checkbox]:hover {
     cursor: pointer;
-}
-
-.templateBtn {
-    background-color: #007150;
-    border-radius: 10px;
-    -moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-    border: 1px solid black;
-    color: white;
-    padding: 4%;
 }
 
 svg.image-image {
@@ -806,31 +742,6 @@ cite {
     margin: 0;
     margin-left: 2%;
     margin-right: 1%;
-}
-
-.help-box-right {
-    z-index: 40;
-    float: right;
-    color: black;
-    position: relative;
-    right: 5%;
-    top: 10%;
-    margin: 0;
-    margin-left: auto;
-    margin-right: 1%;
-    border-left: 0;
-    border: 5px solid black;
-    background: whitesmoke;
-    padding: 2rem;
-    padding-top: 1rem;
-    padding-bottom: 0;
-    text-align: left;
-    box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 12px;
-    width: 100%;
-    height: 75%;
-    overflow-y: auto;
 }
 
 .small-text {
@@ -875,30 +786,6 @@ cite {
 
 line {
     pointer-events: none;
-}
-
-div.row[role=table] {  
-    width: 100%;
-    height: auto;
-    padding-left: 0%;
-    list-style-type: none;
-    margin-left: auto;
-    margin-right: auto;
-    border: 2px solid black;
-    border-bottom: 1px solid black;
-    border-top: 1px solid black;
-    background: rgba(117, 117, 117, 0.692);
-    text-align: left;
-    overflow: hidden;
-    min-height: 7rem;
-}
-
-.btnList {
-    padding-top: 0rem;
-    padding-left: 0rem;
-    padding-right: 1rem;
-    border: 1rem;
-    display: inline;
 }
 
 #progressBar {

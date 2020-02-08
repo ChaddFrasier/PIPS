@@ -15,7 +15,7 @@
  * @see {Rangy:Save-Restore-Module}
  *      @link https://github.com/timdown/rangy/wiki/Selection-Save-Restore-Module
  */
-
+ // TODO: major code clean
 /** Variables */
 var outputName,
     loader,
@@ -56,6 +56,19 @@ function filterTags(){
         document.getElementById("test").value = dataTagField;
     }
 }
+
+// TODO:
+function detectLeftButton(evt) {
+    evt = evt || window.event;
+
+    if ("which" in evt) {
+        return evt.which == 1;
+    }
+    
+    var button = evt.buttons || evt.button;   
+    return button == 1;
+}
+
 
 /**
  * @function setOutput
@@ -840,9 +853,11 @@ $(document).ready(function(){
      * 
      * @description show the help box div
     */
-    $("#helpBtn").on("mousedown",function(){
+    $("#helpBtn").on("mousedown",function(event){
         // show the help box
-        document.getElementById("help-box").style.visibility = "visible";
+        if(detectLeftButton(event)){
+            document.getElementById("help-box").style.visibility = "visible";
+        }
     });
 
     /**
@@ -851,24 +866,31 @@ $(document).ready(function(){
      * @description this is to handle the switch back and forth from 
      *              the image page when the user was there last
     */
-    $("#imagePageBtn").mousedown(function(){
-        let text = document.getElementById("template-text").innerText.replaceAll("&gt;",">").replaceAll("&lt;","<")
-        // update the cookie to the new template text
-        createCookie("uscap",encodeURIComponent(text),.25);
-
-        // if the image page is the last page
-        if(document.referrer.indexOf("/imageEditor") > -1){
-            window.history.back();
-        }
-        else if(goForward){
-            // preserve chnages to image page when firefox is the browser
-            window.history.forward();
-        }
-        else{
-            // this line of code only works assuming the image button is the first form on the page
-            let imageForm = document.getElementsByTagName("form")[1];
-            goForward = true;
-            imageForm.submit();
+    $("#imagePageBtn").mousedown(function(event){
+        if(detectLeftButton(event)){
+            let text = document.getElementById("template-text").innerText.replaceAll("&gt;",">").replaceAll("&lt;","<")
+            // update the cookie to the new template text
+            // Chrome 1 - 79
+            var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+            
+            if(isChrome){
+                createCookie("uscap",encodeURIComponent(text),.25);
+            }
+            // if the image page is the last page
+            if(document.referrer.indexOf("/imageEditor") > -1){
+                window.history.back();
+            }
+            else if(goForward){
+                // preserve chnages to image page when firefox is the browser
+                window.history.forward();
+                
+            }
+            else{
+                // this line of code only works assuming the image button is the first form on the page
+                let imageForm = document.getElementsByTagName("form")[1];
+                goForward = true;
+                imageForm.submit();
+            }
         }
     });
 
@@ -877,38 +899,40 @@ $(document).ready(function(){
      * 
      * @description copy the output box text to the clipboard
     */
-    $("#copyBtn").on("mousedown",function(){
-        // get the output field
-        var output = document.getElementById("copyBtnText");
+    $("#copyBtn").on("mousedown",function(event){
+        if(detectLeftButton(event)){
+            // get the output field
+            var output = document.getElementById("copyBtnText");
 
-        // replace all html codes
-        output.value = output.innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
-        output.style.visibility = "visible";
-        // call the select function
-        output.select();
+            // replace all html codes
+            output.value = output.innerHTML.replaceAll("&lt;","<").replaceAll("&gt;",">");
+            output.style.visibility = "visible";
+            // call the select function
+            output.select();
+            
+            // select for touch screens
+            output.setSelectionRange(0,99999);
+
+            var code = document.execCommand("copy");
+
         
-        // select for touch screens
-        output.setSelectionRange(0,99999);
+            output.style.visibility = "hidden";
+            // set up the alert to inform the user
+            var alert = document.createElement("div");
+            alert.className = "alert alert-success";
+            alert.style.position = "absolute";
+            alert.style.top = "25%";
+            alert.style.width = "17%";
+            alert.style.fontSize = "1.5rem";
+            alert.style.left = "1%";
+            alert.innerHTML = "Output has been copied to clipboard";
+            alert.style.opacity = 1;
 
-        var code = document.execCommand("copy");
-
-    
-        output.style.visibility = "hidden";
-        // set up the alert to inform the user
-        var alert = document.createElement("div");
-        alert.className = "alert alert-success";
-        alert.style.position = "absolute";
-        alert.style.top = "25%";
-        alert.style.width = "17%";
-        alert.style.fontSize = "1.5rem";
-        alert.style.left = "1%";
-        alert.innerHTML = "Output has been copied to clipboard";
-        alert.style.opacity = 1;
-
-        // add the alert
-        document.body.appendChild(alert);
-        // set the fade timeout
-        setTimeout(hideAnimaton, 2000, alert);
+            // add the alert
+            document.body.appendChild(alert);
+            // set the fade timeout
+            setTimeout(hideAnimaton, 2000, alert);
+        }
     });
 
     
@@ -917,38 +941,40 @@ $(document).ready(function(){
      * 
      * @description shows and removes the special characters buttons under the output box
      */
-    $("#specialCharactersBtn").mousedown(function(){
-        var textbox = document.getElementById("template-text");
+    $("#specialCharactersBtn").mousedown(function(event){
+        if(detectLeftButton(event)){
+            var textbox = document.getElementById("template-text");
         
-        // focus on the box
-        textbox.focus();
-
-        if($(this).hasClass("btn-secondary")){
-            $(this).removeClass("btn-secondary");
-            // save new cursor location
-            if(cursorLocation){
-                rangy.removeMarkers(cursorLocation);
-                cursorLocation = rangy.saveSelection(this);
+            // focus on the box
+            textbox.focus();
+    
+            if($(this).hasClass("btn-secondary")){
+                $(this).removeClass("btn-secondary");
+                // save new cursor location
+                if(cursorLocation){
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                document.getElementById("specialCharBox").style.display = "none";
             }
             else{
-                cursorLocation = rangy.saveSelection(this);
+                $(this).addClass("btn-secondary");
+                document.getElementById("specialCharBox").style.display = "block";
+                // save new cursor location
+                if(cursorLocation){
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
             }
-            document.getElementById("specialCharBox").style.display = "none";
+    
+            return false;
         }
-        else{
-            $(this).addClass("btn-secondary");
-            document.getElementById("specialCharBox").style.display = "block";
-            // save new cursor location
-            if(cursorLocation){
-                rangy.removeMarkers(cursorLocation);
-                cursorLocation = rangy.saveSelection(this);
-            }
-            else{
-                cursorLocation = rangy.saveSelection(this);
-            }
-        }
-
-        return false;
     });
 
 
@@ -957,23 +983,25 @@ $(document).ready(function(){
      * 
      * @description template download functionality with naming convention
      */
-    $("#templateDownloadBtn").mousedown( function(){
-        var templateText = document.getElementById("template-text").innerText;
-        var data = encodeURIComponent(templateText);
-        
-        var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
-
-        if(filename !== null && /^.*\.(tpl)$/gm.test(filename)){
-            var a = document.createElement("a");
-            a.href = "data:attachment/text," + data;
-            a.target = "__blank";
-            a.download = filename;
+    $("#templateDownloadBtn").mousedown( function(event){
+        if(detectLeftButton(event)){
+            var templateText = document.getElementById("template-text").innerText;
+            var data = encodeURIComponent(templateText);
+            
+            var filename = prompt("Enter Template Name",outputName.replace("_PIPS_Caption.txt", ".tpl"));
     
-            a.click();
+            if(filename !== null && /^.*\.(tpl)$/gm.test(filename)){
+                var a = document.createElement("a");
+                a.href = "data:attachment/text," + data;
+                a.target = "__blank";
+                a.download = filename;
+        
+                a.click();
+            }
+            else if(filename !== null){
+                $("#templateDownloadBtn").mousedown();
+            }
         }
-        else if(filename !== null){
-            $("#templateDownloadBtn").mousedown();
-        } 
     });
 
 
@@ -1050,7 +1078,9 @@ $(document).ready(function(){
 
         // cancel listener
         cancelBtn.addEventListener("mousedown", (event) => {
-            div.remove();
+            if( detectLeftButton(event) ){
+                div.remove();
+            }
         });
 
         submitBtn.className = "btn btn-sm button";
@@ -1061,85 +1091,87 @@ $(document).ready(function(){
 
         // submit listener
         submitBtn.addEventListener("mousedown", (event) => {
-            // if both values are not empty
-            if(tagInput.value !== "" && valInput.value !== ""){
-                // trim extra spaces
-                tagInput.value = tagInput.value.trim();
-                valInput.value = valInput.value.trim();
+            if(detectLeftButton(event)){
+                // if both values are not empty
+                if(tagInput.value !== "" && valInput.value !== ""){
+                    // trim extra spaces
+                    tagInput.value = tagInput.value.trim();
+                    valInput.value = valInput.value.trim();
 
-                // add these values into the common tag section
-                var metadata = document.getElementById("allTagArea").value,
-                    metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
-                    tags = document.getElementById("metadataTagArea"),
-                    impData = JSON.parse(document.getElementById("metadata-text").value),
-                    newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
-                
-                // temp array
-                let tmpArr = metadata.split("\n");
-                let impArr = tags.value.split("\n");
+                    // add these values into the common tag section
+                    var metadata = document.getElementById("allTagArea").value,
+                        metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
+                        tags = document.getElementById("metadataTagArea"),
+                        impData = JSON.parse(document.getElementById("metadata-text").value),
+                        newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
+                    
+                    // temp array
+                    let tmpArr = metadata.split("\n");
+                    let impArr = tags.value.split("\n");
 
-                // loop through the important data
-                for( var i=0; i<impArr.length; i++ ) {
-                    // if the tag value is the same as the input
-                    if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
+                    // loop through the important data
+                    for( var i=0; i<impArr.length; i++ ) {
+                        // if the tag value is the same as the input
+                        if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
 
-                        // confirm that the user wants to change this value
-                        var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
+                            // confirm that the user wants to change this value
+                            var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
 
-                        // if confirmed
-                        if( userChoice ) {
-                            // add the value to the array of tags
-                            impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
-                            impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
-                                                                    ? parseFloat(valInput.value)
-                                                                    : valInput.value;
-                            // form data
-                            var fd = new FormData();
-                                headers = new Headers();
-                            
-                            // append data as a string to the form
-                            fd.append("data", JSON.stringify(impData));
+                            // if confirmed
+                            if( userChoice ) {
+                                // add the value to the array of tags
+                                impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
+                                impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
+                                                                        ? parseFloat(valInput.value)
+                                                                        : valInput.value;
+                                // form data
+                                var fd = new FormData();
+                                    headers = new Headers();
+                                
+                                // append data as a string to the form
+                                fd.append("data", JSON.stringify(impData));
 
-                            // update the common data
-                            fetch("/impDataUpdate", 
-                            {
-                                method: 'POST',
-                                body: fd,
-                                headers: headers
-                            }).then(response => {
-                                response.blob().then( blob => {
-                                    // read result
-                                    var reader = new FileReader();
-                                    reader.readAsText(blob);
-    
-                                    reader.onloadend = () => {
-                                        console.log(reader.result);
-                                    };
+                                // update the common data
+                                fetch("/impDataUpdate", 
+                                {
+                                    method: 'POST',
+                                    body: fd,
+                                    headers: headers
+                                }).then(response => {
+                                    response.blob().then( blob => {
+                                        // read result
+                                        var reader = new FileReader();
+                                        reader.readAsText(blob);
+        
+                                        reader.onloadend = () => {
+                                            console.log(reader.result);
+                                        };
+                                    });
                                 });
-                            });
+                            }
                         }
                     }
+
+                    // join the array and save it to the element
+                    tags.value = impArr.join("\n");
+
+                    // add the tag to the data
+                    metaDataText[tagInput.value] = valInput.value;
+
+                    // push the new stirng
+                    tmpArr.push(newString);
+
+                    // update the data on the page
+                    document.getElementById("metadata-text").value = JSON.stringify(impData);
+                    document.getElementById("allTagArea").value = tmpArr.join("\n");
+                    document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
+                    // remove the tab we created
+                    div.remove();
+
+                    // update the tag section
+                    showMoreTags();
+                    showMoreTags();
                 }
-
-                // join the array and save it to the element
-                tags.value = impArr.join("\n");
-
-                // add the tag to the data
-                metaDataText[tagInput.value] = valInput.value;
-
-                // push the new stirng
-                tmpArr.push(newString);
-
-                // update the data on the page
-                document.getElementById("metadata-text").value = JSON.stringify(impData);
-                document.getElementById("allTagArea").value = tmpArr.join("\n");
-                document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
-                // remove the tab we created
-                div.remove();
-
-                // update the tag section
-                showMoreTags();
-                showMoreTags();
             }
         });
 
@@ -1176,49 +1208,51 @@ $(document).ready(function(){
      * 
      * @description take the value in the button and add it to the textbox at the location of the cursor
      */
-    $("button.specChar").mousedown(function(){
-        // get needed data
-        var symbol = String($(this).html()).trim();
-        var templateField = document.getElementById("template-text");
+    $("button.specChar").mousedown(function(event){
+        if(detectLeftButton(event)){
+            // get needed data
+            var symbol = String($(this).html()).trim();
+            var templateField = document.getElementById("template-text");
 
-        if(cursorLocation){
-            // append the symbol to the start string
-            rangy.restoreSelection(cursorLocation, true);
-            var res = document.execCommand("insertText", false, symbol);
-            rangy.removeMarkers(cursorLocation);
-        }
-        else {
-            // select the last part of the text
-            cursorLocation = rangy.getSelection( templateField );
-            cursorLocation.selectAllChildren(templateField)
-            cursorLocation.collapseToEnd();
-            var res = document.execCommand( "insertText", false, symbol );
-            rangy.removeMarkers(cursorLocation);
-        }
-        
-        if(res){
-            setOutput();
+            if(cursorLocation){
+                // append the symbol to the start string
+                rangy.restoreSelection(cursorLocation, true);
+                var res = document.execCommand("insertText", false, symbol);
+                rangy.removeMarkers(cursorLocation);
+            }
+            else {
+                // select the last part of the text
+                cursorLocation = rangy.getSelection( templateField );
+                cursorLocation.selectAllChildren(templateField)
+                cursorLocation.collapseToEnd();
+                var res = document.execCommand( "insertText", false, symbol );
+                rangy.removeMarkers(cursorLocation);
+            }
             
-            // save new cursor location
-            if(cursorLocation){
-                rangy.removeMarkers(cursorLocation);
-                cursorLocation = rangy.saveSelection(this);
-            }
-            else{
-                cursorLocation = rangy.saveSelection(this);
-            }
+            if(res){
+                setOutput();
+                
+                // save new cursor location
+                if(cursorLocation){
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
 
-            return false;
-        }
-        else{
-            // character addition failed
-            // save new cursor location
-            if(cursorLocation){
-                rangy.removeMarkers(cursorLocation);
-                cursorLocation = rangy.saveSelection(this);
+                return false;
             }
             else{
-                cursorLocation = rangy.saveSelection(this);
+                // character addition failed
+                // save new cursor location
+                if(cursorLocation){
+                    rangy.removeMarkers(cursorLocation);
+                    cursorLocation = rangy.saveSelection(this);
+                }
+                else{
+                    cursorLocation = rangy.saveSelection(this);
+                }
             }
         }
     });
@@ -1229,9 +1263,11 @@ $(document).ready(function(){
      * 
      * @description hide the help box div
     */
-    $("#hideBtn").on("mousedown",function(){
-        // hide the help box
-        document.getElementById("help-box").style.visibility = "hidden";
+    $("#hideBtn").on("mousedown", function( event ){
+        if(detectLeftButton(event)){
+            // hide the help box
+            document.getElementById("help-box").style.visibility = "hidden";    
+        }
     });
 
     /**
@@ -1387,13 +1423,15 @@ $(document).ready(function(){
      * @description update the cursorLocation
      */
     $("#template-text").mouseup( function(e){
-        if(cursorLocation){
-            rangy.removeMarkers(cursorLocation);
-            cursorLocation = rangy.saveSelection(this);
-            cursorLocation.deleteContents();
-        }
-        else if(!cursorLocation){
-            cursorLocation = rangy.saveSelection(this);
+        if(detectLeftButton(e)){
+            if(cursorLocation){
+                rangy.removeMarkers(cursorLocation);
+                cursorLocation = rangy.saveSelection(this);
+                cursorLocation.deleteContents();
+            }
+            else if(!cursorLocation){
+                cursorLocation = rangy.saveSelection(this);
+            }
         }
     });
 
@@ -1429,8 +1467,8 @@ $(document).ready(function(){
      * @description fetch and download a file by passing the file back as a download 
      *          and then converting the file into to a blob
     */
-    $("#logDownloadBtn").mousedown(function(event){
-        if(event.which === 1){
+    $("#logDownloadBtn").mousedown( function(event){
+        if(detectLeftButton(event)){
             if(this.className.indexOf("disabled") <= -1){
                 fetch("log/" + getCookie("puiv"), {method:"GET"})
                     .then(function(response){

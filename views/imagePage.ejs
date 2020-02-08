@@ -46,7 +46,7 @@
             <div class="help-box" id="help-box" style="visibility: hidden; margin-right: 0;
             height: 75%; display: inline-block;">
                 <button class="float-right button" id="hideBtn" 
-                style="width:auto; height:auto; border-radius: 5px; min-width: 1.75rem; min-height: 1.75rem;
+                style="width:auto; height:auto; border-radius: 5px; min-width: 1.75rem; min-height: 1.75rem; max-width: 2rem; max-height: 2rem;
                 border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
                 background-color: rgba(39, 109, 200); color: darkred;">
                     &times;
@@ -161,38 +161,42 @@
                                 <br>
                             <div class="dropdownMenu">
                                 <div id="northIconFlagSidebar" class="sidebarParent">
-                                    <div class="sidebar" onclick="document.getElementById('northCheckboxSlider').click();">
+                                    <div class="sidebar" onclick="document.getElementById('northCheckboxSlider').click();" 
+                                    title="Shift Colors (Shift + Alt + N)">
                                         Toggle Color
                                     </div>
                                 </div>
-                                <button class="dropdownItem btn" role="button" id="northIconFlag" title="North Arrow">
+                                <button class="dropdownItem btn" role="button" id="northIconFlag" title="North Arrow (Alt + N)">
                                     North Arrow
                                 </button>
                                 <br>
                                 <div id="sunIconFlagSidebar" class="sidebarParent">
-                                    <div class="sidebar" onclick="document.getElementById('sunCheckboxSlider').click();">
+                                    <div class="sidebar" onclick="document.getElementById('sunCheckboxSlider').click();"
+                                    title="Shift Colors (Shift + Alt + S)">
                                         Toggle Color
                                     </div>
                                 </div>
-                                <button class="dropdownItem btn" role="button" id="sunIconFlag" title="Sun Arrow">
+                                <button class="dropdownItem btn" role="button" id="sunIconFlag" title="Sun Arrow (Alt + S)">
                                     Sun Arrow
                                 </button>
                                 <br>
                                 <div id="eyeFlagSidebar" class="sidebarParent">
-                                    <div class="sidebar" onclick="document.getElementById('eyeCheckboxSlider').click();">
+                                    <div class="sidebar" onclick="document.getElementById('eyeCheckboxSlider').click();"
+                                    title="Shift Colors (Shift + Alt + O)">
                                         Toggle Color
                                     </div>
                                 </div>
-                                <button class="dropdownItem btn" role="button" id="eyeFlag" title="Observer Direction">
+                                <button class="dropdownItem btn" role="button" id="eyeFlag" title="Observer Direction (Alt + O)">
                                     Observer Direction
                                 </button>
                                 <br>
                                 <div id="scaleBarButtonSidebar" class="sidebarParent">
-                                    <div class="sidebar" onclick="document.getElementById('scaleCheckboxSlider').click();">
+                                    <div class="sidebar" onclick="document.getElementById('scaleCheckboxSlider').click();"
+                                    title="Shift Colors (Shift + Alt + R)">
                                         Toggle Color
                                     </div>
                                 </div>
-                                <button class="dropdownItem btn" role="button" id="scaleBarButton" title="Scalebar">
+                                <button class="dropdownItem btn" role="button" id="scaleBarButton" title="Scalebar (Alt + R)">
                                     Scalebar
                                 </button>
                             </div>
@@ -205,38 +209,38 @@
                                 <div class="dropdownMenu">
                                     <div id="outlineBtnSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('colorPickerBox').click();"
-                                        style="display: flex;">
+                                        style="display: flex;" title="Outline Color">
                                             Color <input id="colorPickerBox" type="color" title="Change Color" name="boxColor"  
                                             value="#ffffff"/>
                                         </div>
                                     </div>
-                                    <button class="dropdownItem btn" role="button" id="outlineBtn" title="Save Template File">
+                                    <button class="dropdownItem btn" role="button" id="outlineBtn" title="Add Outliine Box (Alt + B)">
                                         Outline Box
                                     </button>
                                     <div id="textBtnSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('textColorPicker').click();"
-                                        style="display: flex;">
+                                        style="display: flex;" title="Text Color">
                                             Color <input type="color" id="textColorPicker"
                                             value="#FFFFFF" title="Change Color">
                                         </div>
                                     </div>
-                                    <button class="dropdownItem btn" role="button" id="textBtn" title="Save Template File">
+                                    <button class="dropdownItem btn" role="button" id="textBtn" title="Add Text Box (Alt + T)">
                                         Text Box
                                     </button>
                                     <div id="pencilIconFlagSidebar" class="sidebarParent">
                                         <div class="sidebar" onclick="document.getElementById('colorPickerLine').click();"
-                                        style="display: flex;">
+                                        style="display: flex;" title="Line Color">
                                             Color <input id="colorPickerLine" type="color" title="Change Color" name="lineColor"  
                                             value="#ffffff"/>
                                         </div>
                                         <div class="sidebar" onclick="document.getElementById('arrowCheckboxSlider').toggleAttribute('checked')"
-                                        style="display: flex;">
-                                            Add Arrowhead? <input type="checkbox" id="arrowCheckboxSlider"
+                                        style="display: flex;" title="Arrowhead Line">
+                                            Toggle Arrow? <input type="checkbox" id="arrowCheckboxSlider"
                                                     style="margin: auto auto; pointer-events: none; scale: 1.4;">
                                                     
                                         </div>
                                     </div>
-                                    <button class="dropdownItem btn" role="button" id="pencilIconFlag" title="Save Template File">
+                                    <button class="dropdownItem btn" role="button" id="pencilIconFlag" title="Draw Lines (Alt + L)">
                                         Draw Tool
                                     </button>
                                 </div>
@@ -249,7 +253,7 @@
                                 <div class="dropdownMenu">
                                     <button class="dropdownItem btn" role="button" id="fullscreenBtn" title="Change Image View" 
                                     onclick="viewButtonHandler(this);">
-                                        Fullscreen
+                                        Toggle View
                                     </button>
                                 </div>
                         </div>
@@ -260,16 +264,16 @@
                             </div>
                             <br>
                             <div class="dropdownMenu text-left">
-                                <button class="dropdownItem btn" role="button" id="padImageBtn" title="Export Figure">
+                                <button class="dropdownItem btn" role="button" id="padImageBtn" title="Add Padding Around Image">
                                     Pad Image
                                 </button>
                                 <br>
-                                <button class="dropdownItem btn" role="button" id="resizeFigureBtn" title="Export Figure">
+                                <button class="dropdownItem btn" role="button" id="resizeFigureBtn" title="Resize Whole Figure">
                                     Resize Figure
                                 </button>
                                 <br>
-                                <button class="dropdownItem btn" role="button" id="exportBtn" title="Export Figure">
-                                    Export Figure
+                                <button class="dropdownItem btn" role="button" id="exportBtn" title="Save Figure As...">
+                                    Export As...
                                 </button>
                             </div>
                         </div>
@@ -278,7 +282,7 @@
                     <div class="col-2 unfocus menuBtnBox" style="margin: 10px auto;">
                         <button class="btn dropdownItem btn-md float-right" onclick="captionHandler()"
                         style="border: 2px solid black; width: auto; height: auto;"
-                        title="Go Back">
+                        title="Go Back to Caption">
                             View Caption
                         </button>
                     </div>
@@ -372,7 +376,7 @@
             <div class="row" id="progressBarBox" style="margin: auto auto; margin-top: 10px;">
                 <!-- add progress bar here using js-->
             </div>
-            <div class="row" style="margin-top:10px; margin-bottom:0; padding:0;">
+            <div class="row" style="margin-top:10px; margin-bottom:0; padding:0; ">
                 <div class="col unfocus">
                     <!-----------------------Editor Box----------------------------------------------->
                     <div id="imageViewContainer" style="height: fit-content; width: auto; margin-left:auto;

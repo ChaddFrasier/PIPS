@@ -15,6 +15,7 @@
  * @see {server.js} Read the header before editing
  */
 
+ // TODO: major code clean
 /** ---------------------------------------- DOM Variables ----------------------------------------------- */
 var loader,
     svg,
@@ -62,6 +63,13 @@ var placeEnum = new Object({
         "bottom-right": 3,
         "bottom-left": 4
         });
+
+/** Custome Event For Calling functions from code */
+const MousedownEvent = new MouseEvent("mousedown", { which: 1 }),
+    ClickEvent = new MouseEvent("click", { which: 1 }),
+    MouseupEvent = new MouseEvent("mouseup", { which: 1 })
+    DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
+
 
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
 
@@ -868,6 +876,74 @@ function setSvgClickDetection(svg, mouseDetect){
     }
 }
 
+function markerExists( color ){
+    let markers = document.querySelectorAll("marker");
+
+    markers.forEach((el) => {
+        
+        if(color === el.firstElementChild.getAttribute("fill")){
+            console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
+            return true;
+        };
+    });
+    return false;
+}
+
+// TODO:
+function detectLeftButton(evt) {
+    evt = evt || window.event;
+
+    if ("which" in evt) {
+        return evt.which == 1;
+    }
+    
+    var button = evt.buttons || evt.button;   
+    return button == 1;
+}
+
+// TODO:
+function detectRightButton(evt) {
+    evt = evt || window.event;
+
+    if ("which" in evt) {
+        return evt.which == 3;
+    }
+    
+    var button = evt.buttons || evt.button;   
+    return button == 2;
+}
+
+
+function toggleMenuUI(str){
+    var id;
+    switch(str){
+        case "eye":
+            id = "#eyeFlagSidebar";
+            break;
+        
+        case "sun":
+            id = "#sunIconFlagSidebar";
+            break;
+
+        case "scale":
+                id = "#scaleBarButtonSidebar";
+                break;
+
+        case "north":
+            id = "#northIconFlagSidebar";
+            break;
+    }
+
+    
+    if(id){
+        if( !$(id)[0].firstElementChild.classList.contains("active") ){
+            $(id)[0].firstElementChild.classList.add("active");
+        }
+        else {
+            $(id)[0].firstElementChild.classList.remove("active");
+        }
+    }
+}
 
 function fixImage( cookieVal ){
     if(cookieVal && cookieVal != "{}"){
@@ -880,44 +956,47 @@ function fixImage( cookieVal ){
         for( let i=0; i < keys.length; i++ ){
             let key = keys[i],
                 val = data[key];
+                console.log(key)
+
+
             switch(key){
                 case "northPosition":
-                    $("#northIconFlag").mousedown();
+                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("northCheckboxSlider").click();
+                        document.getElementById("northCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
                 
                 case "sunPosition":
-                    $("#sunIconFlag").click();
+                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it 
                     if( val["checked"] ){
-                        document.getElementById("sunCheckboxSlider").click();
+                        document.getElementById("sunCheckboxSlider").dispatchEvent(ClickEvent);
                     }      
                     break;
                 
                 case "eyePosition":
-                    $("#eyeFlag").click();
+                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("eyeCheckboxSlider").click();
+                        document.getElementById("eyeCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
 
                 case "scalebarPosition":
-                    $("#scaleBarButton").mousedown();
+                    $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
                     // check to see if the color needs to be changed
-                    document.getElementById(key).setAttribute("transform",val['transform']);
+                    document.getElementById(key).setAttribute("transform", val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("scaleCheckboxSlider").click();
+                        document.getElementById("scaleCheckboxSlider").dispatchEvent(ClickEvent);
                     }
                     break;
 
@@ -934,7 +1013,7 @@ function fixImage( cookieVal ){
                         colorB = parseInt(colorB);
                         
                         $("#colorPickerBox").val(rgbToHex(colorR, colorG, colorB));
-                        $("#outlineBtn").mousedown();
+                        $("#outlineBtn")[0].dispatchEvent(MousedownEvent);
 
                         document.getElementById(activeLayer.id.replace("layer",""))
                                                     .setAttribute("transform", val['transform']);
@@ -2213,6 +2292,10 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
+    console.log(el)
+    while( !el.getAttribute("id") ){
+        el = el.offsetParent;
+    }
     var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1].replace("Svg",""));
         
     if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
@@ -2381,6 +2464,120 @@ function setDetectionForLayer( el, detection ){
     }
 }
 
+//  TODO:
+function deleteHandler( event ){
+
+    $(document)[0].dispatchEvent(DeleteEvent);
+}
+
+
+// TODO:
+function toggleColorBtnHandler ( event ){
+
+    var target = event.target.parentElement.parentElement;
+
+    switch(target.getAttribute("id")){
+        case "layerscaleBarButtonSvg":
+            $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+            toggleMenuUI('scale');  
+            break;
+        
+        case "layereyeFlagSvg":
+            $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('eye');
+            break;
+        
+        case "layersunIconFlagSvg":
+            $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('sun');
+            break;
+
+        case "layernorthIconFlagSvg":
+            $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            toggleMenuUI('north');
+            break;
+    }
+
+}
+
+// TODO:
+function changeColorHandler( event ) {
+    var target = event.target.parentElement.parentElement;
+
+    if(target.getAttribute("id").split("layer")[1].indexOf("outline") > -1){
+        document.getElementById("colorPickerBox").click();
+    }
+    else if(target.getAttribute("id").split("layer")[1].indexOf("text") > -1){
+        document.getElementById("textColorPicker").click();
+    }
+    else {
+        // line object
+        document.getElementById("colorPickerLine").click();
+    }
+}
+
+function arrowBtnHandler( event ){
+    var target = event.target.parentElement.parentElement;
+
+    if(target.getAttribute("id").split("layer")[1].indexOf("line") > -1
+        && activeLayer === target){
+    
+        var line = document.getElementById("line"+target.firstElementChild.firstElementChild.getAttribute("id"));
+        // check to see if the element is already using an arrow head
+        if(line && line.getAttribute("marker-start")){
+            // if true: set the removeAttribute(marker-start) and delete the marker obj
+            let id = line.getAttribute("marker-start").replace("url(","").replace(")","");
+            
+            if(id !== "#arrow"){
+                $(id).parent().remove();
+            }
+
+            line.removeAttribute("marker-start");
+            let tmp = line.cloneNode(true);
+            tmp.style.strokeWidth = "50px";
+            tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
+            target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
+        }
+        else if (line){
+            // else false: create a new marker element using the color of the line currently
+            // if arrow with default color 
+            if(userLineColor === "#ffffff" || !userLineColor ){
+                line.setAttribute("marker-start","url(#arrow)");
+            }
+            else if( markerExists(userLineColor) ){
+                line.setAttribute("marker-start", getMarkerStartFor(userLineColor));
+            }
+            // if the array is linger than 1 and the color is not default
+            else if(lineArr.length > 0 || userLineColor){
+
+                var markerId = "arrow" + lineArr.length,
+                    pathId = "arrowPath" + lineArr.length,
+                    newDef = document.getElementById("arrowDef").cloneNode();
+
+                newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
+                line.setAttribute("marker-start", String("url(#" + markerId + ")"));
+                (newDef.childNodes).forEach(childElem => {
+                    // if the childElement has a child
+                    if(childElem.childElementCount > 0){
+                        childElem.setAttribute("id", markerId);
+                        childElem.childNodes[1].setAttribute("fill", userLineColor);
+                        childElem.childNodes[1].setAttribute("id", pathId);
+                    }
+                });
+                svg.prepend(newDef);
+            }
+
+            let tmp = line.cloneNode(true);
+            tmp.style.strokeWidth = "50px";
+            tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
+            target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
+        }
+    }
+}
+
+
 var activeLayer;
 
 /**
@@ -2419,34 +2616,155 @@ function updateLayers(el){
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
 
+    div.addEventListener("mouseleave",function( event ) {
+        let options = document.getElementsByClassName("optionsPopup");
+
+        Array.from(options).forEach( el => {
+            el.remove();
+        });
+    });
+
+
     // create listener for when the div is clicked on
     div.addEventListener("mousedown", (event) => {
-        // if the target node is an svg
-        if(event.target.nodeName === "svg") {
-            // get the parent
-            var tar = event.target.parentElement;
-        }
-        else{
-            // otherwise keep the tar as the target element
-            var tar = event.target;
-        }
+        if(detectLeftButton(event)){
+            // if the target node is an svg
+            if(event.target.nodeName === "svg") {
+                // get the parent
+                var tar = event.target.parentElement;
+            }
+            else if(event.target.nodeName === "BUTTON") {
+                // get the parent
+                var tar = event.target.parentElement.parentElement;
+            }
+            else{
+                // otherwise keep the tar as the target element
+                var tar = event.target;
+            }
 
-        // if tar is valid
-        if(tar){
-            // if activeLayer exists
+            // if tar is valid
+            if(tar){
+                // if activeLayer exists
+                if(activeLayer) { 
+                    // set all detection for every symbol
+                    setSvgClickDetection(document.getElementById("svgWrapper"),"all");
+                    activeLayer.style.border = "none";
+                }
+
+                // set the selected element to the target
+                activeLayer = tar;
+                activeLayer.style.border = "5px solid red";
+
+                // set click detection for elements
+                setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+                setDetectionForLayer(activeLayer, "all");
+            }       
+        }
+        else if(detectRightButton( event )){
+            // not left mouse click open options
+            // TODO: right click occured on a layer object
+            // TODO: comment
+            
+            event.preventDefault();
+
+            var target = (event.target.nodeName === "svg") ? event.target.parentElement : event.target;
+            target = (target.nodeName === "BUTTON") ? target.parentElement.parentElement : target;
+            
+            // change the active layer
             if(activeLayer) { 
-                // set all detection for every symbol
                 setSvgClickDetection(document.getElementById("svgWrapper"),"all");
                 activeLayer.style.border = "none";
             }
 
-            // set the selected element to the target
-            activeLayer = tar;
+            // set the selected element
+            activeLayer = target;
             activeLayer.style.border = "5px solid red";
-
-            // set click detection for elements
             setSvgClickDetection(document.getElementById("svgWrapper"),"none");
             setDetectionForLayer(activeLayer, "all");
+
+            var optionsBox = document.createElement("div");
+            
+            if(target.getAttribute("id").indexOf("outline") > -1
+                || target.getAttribute("id").indexOf("text") > -1){
+                // check outline first because it contains 'line'
+                // for any other object
+                // create the popup based on the mouse location
+                
+                var changeColorBtn = document.createElement("button"),
+                    deleteBtn;
+
+                changeColorBtn.className = "optionsBtn";
+                deleteBtn = changeColorBtn.cloneNode(true);
+
+                changeColorBtn.innerText = "Edit Color";
+                deleteBtn.innerText = "Delete (Del)";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+                changeColorBtn.addEventListener ("click", changeColorHandler);
+
+                optionsBox.appendChild(changeColorBtn);
+            }
+            else if(target.getAttribute("id").indexOf("line") > -1){
+                // then check line
+                var changeColorBtn = document.createElement("button"),
+                    arrowBtn,
+                    deleteBtn;
+
+                changeColorBtn.className = "optionsBtn";
+                deleteBtn = changeColorBtn.cloneNode(true);
+                arrowBtn = changeColorBtn.cloneNode(true);
+
+                changeColorBtn.innerText = "Edit Color";
+                deleteBtn.innerText = "Delete (Del)";
+                arrowBtn.innerText = "Toggle Arrow";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+                changeColorBtn.addEventListener ("click", changeColorHandler);
+
+                // TODO: add arrowhead listerner
+                arrowBtn.addEventListener("click", arrowBtnHandler)
+
+                optionsBox.appendChild(changeColorBtn);
+                optionsBox.appendChild(arrowBtn);
+            }
+            else{
+                // for any other object
+                // create the popup based on the mouse location
+                var optionsBox = document.createElement("div"),
+                    toggleColorBtn = document.createElement("button"),
+                    deleteBtn;
+
+                toggleColorBtn.className = "optionsBtn";
+                deleteBtn = toggleColorBtn.cloneNode(true);
+
+                toggleColorBtn.innerText = "Toggle Color";
+                deleteBtn.innerText = "Delete (Del)";
+
+                optionsBox.className = "optionsPopup";
+                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                deleteBtn.addEventListener("click", deleteHandler);
+
+               toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
+
+                optionsBox.appendChild(toggleColorBtn);
+            }
+            
+            // add universial buttons
+            optionsBox.appendChild(deleteBtn);
+
+            // add element to target
+            target.appendChild(optionsBox);
+
+            // prevent defaults downstream
+            return false;
+            
         }
     });
 
@@ -2495,6 +2813,7 @@ function updateLayers(el){
         case "line":
             var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
+            svg.setAttribute("height","85");
             svg.pointerEvents = "none";
             el.style.strokeWidth = "50px";
             svg.style.padding = "0%";
@@ -2515,6 +2834,11 @@ function updateLayers(el){
     }
     // set the selected element
     activeLayer = div;
+    // disable the contextmenu for Layer objects
+    div.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        return false;
+    });
     activeLayer.style.border = "5px solid red";
     setSvgClickDetection(document.getElementById("svgWrapper"),"none");
     setDetectionForLayer(activeLayer, "all");
@@ -2597,7 +2921,7 @@ function getElementType( el ){
 /**
  * @function removeLayer
  * 
- * @description searches the svg and pulls out all changable icons
+ * @description searches the svg and pulls the one icon
  */
 function removeLayers(el){
     let layerBrowser = document.getElementById("layerBrowser");
@@ -3044,13 +3368,13 @@ function iconPlaced( icon ){
                 // check which icon it is and remove it
                 switch(child){
                     case northImage:
-                        $("#northIconFlag").mousedown();
+                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                         break;
                     case sunImage:
-                        $("#sunIconFlag").click();
+                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                         break;
                     case eyeImage:
-                        $("#eyeFlag").click();
+                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                         break;
                 }
             }
@@ -3136,7 +3460,7 @@ function createCookie(cookieName,cookieValue,daysToExpire){
 }
 
 function viewButtonHandler(el){
-    document.getElementById('viewOption').click();
+    document.getElementById('viewOption').dispatchEvent(ClickEvent);
     if(el.classList.contains("active")){
         el.classList.remove("active");
     }else{
@@ -3511,103 +3835,105 @@ $(document).ready(function(){
      * @description shows the loading and progress bar
      * 
     */
-    $('#exportBtn').on("mousedown",function(){
-        loader.style.visibility = "visible";
-        document.getElementById("loadingText").innerHTML = "Save Image As ...";
+    $('#exportBtn').on("mousedown", function( event ){
+        if(detectLeftButton(event)){
+            loader.style.visibility = "visible";
+            document.getElementById("loadingText").innerHTML = "Save Image As ...";
 
-        var window = document.createElement("div"),
-            box = document.createElement("div"),
-            inputtext = document.createElement("input"),
-            select = document.createElement("select"),
-            optiontif = document.createElement("option"),
-            optionpng = document.createElement("option"),
-            optionjpg = document.createElement("option"),
-            optionsvg = document.createElement("option"),
-            cancelBtn = document.createElement("button"),
-            saveBtn = document.createElement("button");
+            var window = document.createElement("div"),
+                box = document.createElement("div"),
+                inputtext = document.createElement("input"),
+                select = document.createElement("select"),
+                optiontif = document.createElement("option"),
+                optionpng = document.createElement("option"),
+                optionjpg = document.createElement("option"),
+                optionsvg = document.createElement("option"),
+                cancelBtn = document.createElement("button"),
+                saveBtn = document.createElement("button");
 
-        window.className = "shadowbox";
-        window.style.width = "400px";
-        window.style.color = "black";
-        window.style.height = "125px";
-        window.style.border = "2px solid black";
-        window.style.position = "absolute";
-        window.style.left = "40%";
-        window.style.top = "50%";
-        window.style.borderRadius = "10px";
-        window.innerHTML = "Save File";
-        
-        box.style.padding = "0%";
-        box.style.display = "flex";
-        box.style.background = "transparent";
-        box.style.width = "100%";
-        box.style.height = "20%";
-        box.style.borderTop = "1px solid black";
-        box.style.left = "0%";
-        box.style.top = "25%";
-        box.innerHTML = "Filename: ";
-        box.style.textAlign = "left";
+            window.className = "shadowbox";
+            window.style.width = "400px";
+            window.style.color = "black";
+            window.style.height = "125px";
+            window.style.border = "2px solid black";
+            window.style.position = "absolute";
+            window.style.left = "40%";
+            window.style.top = "50%";
+            window.style.borderRadius = "10px";
+            window.innerHTML = "Save File";
+            
+            box.style.padding = "0%";
+            box.style.display = "flex";
+            box.style.background = "transparent";
+            box.style.width = "100%";
+            box.style.height = "20%";
+            box.style.borderTop = "1px solid black";
+            box.style.left = "0%";
+            box.style.top = "25%";
+            box.innerHTML = "Filename: ";
+            box.style.textAlign = "left";
 
-        inputtext.type = "text";
-        inputtext.style.margin = "auto auto";
-        inputtext.style.marginLeft = "5%";
-        inputtext.style.width = "85%";
-        inputtext.style.marginTop = "1%";
-        inputtext.style.fontSize = "12px";
-        inputtext.id = "filenameInput";
-        inputtext.value = displayCube.replace(".cub", "_fig");
-        inputtext.addEventListener("keyup", textParser);
+            inputtext.type = "text";
+            inputtext.style.margin = "auto auto";
+            inputtext.style.marginLeft = "5%";
+            inputtext.style.width = "85%";
+            inputtext.style.marginTop = "1%";
+            inputtext.style.fontSize = "12px";
+            inputtext.id = "filenameInput";
+            inputtext.value = displayCube.replace(".cub", "_fig");
+            inputtext.addEventListener("keyup", textParser);
 
-        optiontif.value = ".tif";
-        optiontif.innerHTML = ".tif";
-        optionpng.value = ".png";
-        optionpng.innerHTML = ".png";
-        optionjpg.value = ".jpg";
-        optionjpg.innerHTML = ".jpg";
-        optionsvg.value = ".svg";
-        optionsvg.innerHTML = ".svg";
+            optiontif.value = ".tif";
+            optiontif.innerHTML = ".tif";
+            optionpng.value = ".png";
+            optionpng.innerHTML = ".png";
+            optionjpg.value = ".jpg";
+            optionjpg.innerHTML = ".jpg";
+            optionsvg.value = ".svg";
+            optionsvg.innerHTML = ".svg";
 
-        select.style.right = "10px";
-        select.style.margin = "0";
-        select.style.marginTop = "1%";
-        select.style.height = "25px";
-        select.id = "fileExtSelect";
+            select.style.right = "10px";
+            select.style.margin = "0";
+            select.style.marginTop = "1%";
+            select.style.height = "25px";
+            select.id = "fileExtSelect";
 
-        cancelBtn.style.position = "absolute";
-        cancelBtn.style.bottom = "5px";
-        cancelBtn.innerHTML = "Cancel";
-        cancelBtn.className = "btn btn-md button";
-        cancelBtn.style.left = "25%";
-        cancelBtn.style.background = "red";
-        cancelBtn.id = "cancelBtn";
-        cancelBtn.addEventListener("click", cancelBtnFunction);
+            cancelBtn.style.position = "absolute";
+            cancelBtn.style.bottom = "5px";
+            cancelBtn.innerHTML = "Cancel";
+            cancelBtn.className = "btn btn-md button";
+            cancelBtn.style.left = "25%";
+            cancelBtn.style.background = "red";
+            cancelBtn.id = "cancelBtn";
+            cancelBtn.addEventListener("click", cancelBtnFunction);
 
-        saveBtn.style.position = "absolute";
-        saveBtn.style.bottom = "5px";
-        saveBtn.style.right = "25%";
-        saveBtn.innerHTML = "Save";
-        saveBtn.className = "btn btn-md button";
-        saveBtn.addEventListener("click", saveBtnFunction);
+            saveBtn.style.position = "absolute";
+            saveBtn.style.bottom = "5px";
+            saveBtn.style.right = "25%";
+            saveBtn.innerHTML = "Save";
+            saveBtn.className = "btn btn-md button";
+            saveBtn.addEventListener("click", saveBtnFunction);
 
-        select.appendChild(optiontif);
-        select.appendChild(optionsvg);
-        select.appendChild(optionpng);
-        select.appendChild(optionjpg);
+            select.appendChild(optiontif);
+            select.appendChild(optionsvg);
+            select.appendChild(optionpng);
+            select.appendChild(optionjpg);
 
-        box.appendChild(cancelBtn);
-        box.appendChild(saveBtn);
-        box.appendChild(inputtext);
-        box.appendChild(select);
-        window.appendChild(box);
-        
-        var mainbox = document.getElementsByClassName("mainbox-center");
+            box.appendChild(cancelBtn);
+            box.appendChild(saveBtn);
+            box.appendChild(inputtext);
+            box.appendChild(select);
+            window.appendChild(box);
+            
+            var mainbox = document.getElementsByClassName("mainbox-center");
 
-        mainbox[0].appendChild(window);
+            mainbox[0].appendChild(window);
 
-        // set all detection for every symbol
-        setSvgClickDetection(document.getElementById("svgWrapper"),"none");
-        if(activeLayer){
-            activeLayer.style.border = "none";
+            // set all detection for every symbol
+            setSvgClickDetection(document.getElementById("svgWrapper"),"none");
+            if(activeLayer){
+                activeLayer.style.border = "none";
+            }
         }
     });
 
@@ -3618,122 +3944,138 @@ $(document).ready(function(){
      * @description Checks to see if the filename if a properfilename and then saves the file using the server 
      *              like it did before in the old export function
      */
-    function saveBtnFunction(){
-        var filename = document.getElementById("filenameInput").value + document.getElementById("fileExtSelect").value;
+    function saveBtnFunction( event ){
+        if(detectLeftButton(event)){
+            var filename = document.getElementById("filenameInput").value + document.getElementById("fileExtSelect").value;
 
-        if(/^.*\.(jpg|jpeg|png|tif|svg)$/gm.test(filename)){
-            // hide the save ui div
-            this.offsetParent.remove();
+            if(/^.*\.(jpg|jpeg|png|tif|svg)$/gm.test(filename)){
+                // hide the save ui div
+                this.offsetParent.remove();
 
-            // if the file is not null
-            if(filename !== null){
-                // read the file extenson
-                var fileExt = filename.split(".")[filename.split(".").length - 1];
-                // get lowercase file extension
-                filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
+                // if the file is not null
+                if(filename !== null){
+                    // read the file extenson
+                    var fileExt = filename.split(".")[filename.split(".").length - 1];
+                    // get lowercase file extension
+                    filename = filename.replace("." + fileExt, "." + fileExt.toLowerCase());
 
-                // encode the svg to a string
-                var data = 
-                    '<?xml version="1.1" encoding="UTF-8"?>\n'
-                    + (new XMLSerializer()).serializeToString(svg);
-            
-                // creates a blob from the encoded svg and sets the type of the blob to and image svg
-                var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+                    // encode the svg to a string
+                    var data = 
+                        '<?xml version="1.1" encoding="UTF-8"?>\n'
+                        + (new XMLSerializer()).serializeToString(svg);
                 
-                // create the progress bar
-                var progressBar = showProgress();
+                    // creates a blob from the encoded svg and sets the type of the blob to and image svg
+                    var svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+                    
+                    // create the progress bar
+                    var progressBar = showProgress();
 
-                
-                // create a new Form data object
-                let fd = new FormData();
-                // append a new file to the form. 
-                // upl = name of the file upload
-                // svgBlob is the raw blob image
-                // and the name of the svg file will be the user's unique id
-                fd.append("upl", svgBlob, getCookie("puiv") + ".svg");
-                // append download and canvas data to the form
-                fd.append("w",w);
-                fd.append("h",h);
-                fd.append("downloadName", filename);
-                var headers = new Headers();
-                headers.append("pragma","no-cache");
-                headers.append("cache-control", "no-cache");
+                    
+                    // create a new Form data object
+                    let fd = new FormData();
+                    // append a new file to the form. 
+                    // upl = name of the file upload
+                    // svgBlob is the raw blob image
+                    // and the name of the svg file will be the user's unique id
+                    fd.append("upl", svgBlob, getCookie("puiv") + ".svg");
+                    // append download and canvas data to the form
+                    fd.append("w",w);
+                    fd.append("h",h);
+                    fd.append("downloadName", filename);
+                    var headers = new Headers();
+                    headers.append("pragma","no-cache");
+                    headers.append("cache-control", "no-cache");
 
-                // send a post request to the server attaching the formData as the body of the request
-                fetch('/figureDownload',
-                    {
-                        method:'POST',
-                        body: fd,
-                        headers: headers,
-                        referrerPolicy: "no-referrer"
-                    })
-                .then((response) =>{
-                    growProgress(progressBar);
-                    // if the response is an error code
-                    if(response.status !== 200){
-                        // read the response as text
-                        response.text().then((responseText) =>{
-                            // create a small div box to notify the error
-                            let div = document.createElement("div");
-                            div.className = "jumbotron text-center float-center";
-                            div.style.width = "25rem";
-                            div.style.height= "auto";
-                            div.style.position = "absolute";
-                            div.style.left = "45%";
-                            div.style.top = "45%";
-                            div.innerHTML = responseText;
-                            // attach a button to the div so the user can remove the div if they want
-                            var btn = document.createElement("button");
-                            btn.className = "btn btn-danger";
-                            btn.style.position = "relative";
-                            btn.innerHTML = "&times;";
-                            btn.style.width = "5rem";
-                            // append the button to the div
-                            div.appendChild(btn);
-                            // then after it has been added,
-                            // make an eventLister to remove the whole div box when the button is clicked
-                            btn.addEventListener("click",function(event){
-                                this.parentElement.remove();
+                    // send a post request to the server attaching the formData as the body of the request
+                    fetch('/figureDownload',
+                        {
+                            method:'POST',
+                            body: fd,
+                            headers: headers,
+                            referrerPolicy: "no-referrer"
+                        })
+                    .then((response) =>{
+                        growProgress(progressBar);
+                        // if the response is an error code
+                        if(response.status !== 200){
+                            // read the response as text
+                            response.text().then((responseText) =>{
+                                // create a small div box to notify the error
+                                let div = document.createElement("div");
+                                div.className = "jumbotron text-center float-center";
+                                div.style.width = "25rem";
+                                div.style.height= "auto";
+                                div.style.position = "absolute";
+                                div.style.left = "45%";
+                                div.style.top = "45%";
+                                div.innerHTML = responseText;
+                                // attach a button to the div so the user can remove the div if they want
+                                var btn = document.createElement("button");
+                                btn.className = "btn btn-danger";
+                                btn.style.position = "relative";
+                                btn.innerHTML = "&times;";
+                                btn.style.width = "5rem";
+                                // append the button to the div
+                                div.appendChild(btn);
+                                // then after it has been added,
+                                // make an eventLister to remove the whole div box when the button is clicked
+                                btn.addEventListener("click",function(event){
+                                    if(detectLeftButton(event)){
+                                        this.parentElement.remove();
+                                    }
+                                });
+                                // append the whole div to the document
+                                document.body.appendChild(div);
+                                loader.style.visibility = "hidden";
+                                document.getElementById("loadingText").innerHTML = "Loading";
+                                hideProgress(progressBar);
+                                if(activeLayer){
+                                    setDetectionForLayer(activeLayer, "all");
+                                    activeLayer.style.border = "5px solid red";
+                                }
+                                else{
+                                    setDetectionForLayer(null, "all");
+                                }
                             });
-                            // append the whole div to the document
-                            document.body.appendChild(div);
-                            loader.style.visibility = "hidden";
-                            document.getElementById("loadingText").innerHTML = "Loading";
-                            hideProgress(progressBar);
-                            if(activeLayer){
-                                setDetectionForLayer(activeLayer, "all");
-                                activeLayer.style.border = "5px solid red";
-                            }
-                            else{
-                                setDetectionForLayer(null, "all");
-                            }
-                        });
-                    }
-                    else{
-                        // server sent back a 200
-                        response.blob().then((blob)=>{
-                            var url = DOMURL.createObjectURL(blob);
+                        }
+                        else{
+                            // server sent back a 200
+                            response.blob().then((blob)=>{
+                                var url = DOMURL.createObjectURL(blob);
 
-                            triggerDownload(url, filename);
-                            setInterval(hideProgress, 1000, progressBar);
-                            loader.style.visibility = "hidden";
-                            document.getElementById("loadingText").innerHTML = "Loading";
-                            DOMURL.revokeObjectURL(url);
-                            if(activeLayer){
-                                setDetectionForLayer(activeLayer, "all");
-                                activeLayer.style.border = "5px solid red";
-                            }
-                            else{
-                                setDetectionForLayer(null, "all");
-                            }
-                        });
-                    }
-                }).catch((err) =>{
-                    // catch any fetch errors
-                    if(err){
-                        console.log(err);
-                    }
+                                triggerDownload(url, filename);
+                                setInterval(hideProgress, 1000, progressBar);
+                                loader.style.visibility = "hidden";
+                                document.getElementById("loadingText").innerHTML = "Loading";
+                                DOMURL.revokeObjectURL(url);
+                                if(activeLayer){
+                                    setDetectionForLayer(activeLayer, "all");
+                                    activeLayer.style.border = "5px solid red";
+                                }
+                                else{
+                                    setDetectionForLayer(null, "all");
+                                }
+                            });
+                        }
+                    }).catch((err) =>{
+                        // catch any fetch errors
+                        if(err){
+                            console.log(err);
+                        }
 
+                        if(activeLayer){
+                            setDetectionForLayer(activeLayer, "all");
+                            activeLayer.style.border = "5px solid red";
+                        }
+                        else{
+                            setDetectionForLayer(null, "all");
+                        }
+                    });
+                }
+                else{
+                    //remove the loading gif
+                    loader.style.visibility = "hidden";
+                    document.getElementById("loadingText").innerHTML = "Loading";
                     if(activeLayer){
                         setDetectionForLayer(activeLayer, "all");
                         activeLayer.style.border = "5px solid red";
@@ -3741,24 +4083,12 @@ $(document).ready(function(){
                     else{
                         setDetectionForLayer(null, "all");
                     }
-                });
+                }
             }
             else{
-                //remove the loading gif
-                loader.style.visibility = "hidden";
-                document.getElementById("loadingText").innerHTML = "Loading";
-                if(activeLayer){
-                    setDetectionForLayer(activeLayer, "all");
-                    activeLayer.style.border = "5px solid red";
-                }
-                else{
-                    setDetectionForLayer(null, "all");
-                }
+                // filename does not fit the reg exp
+                console.log("REGEXP evaluated to false");
             }
-        }
-        else{
-            // filename does not fit the reg exp
-            console.log("REGEXP evaluated to false");
         }   
     }
 
@@ -3767,17 +4097,19 @@ $(document).ready(function(){
      * 
      * @description cancel button that removes the save div and hides the loading gif
      */
-    function cancelBtnFunction(){
-        // cancel the saving process
-        this.offsetParent.remove();
-        document.getElementById("loading").style.visibility = "hidden";
+    function cancelBtnFunction( event ){
+        if(detectLeftButton(event)){
+            // cancel the saving process
+            this.offsetParent.remove();
+            document.getElementById("loading").style.visibility = "hidden";
 
-        if(activeLayer){
-            setDetectionForLayer(activeLayer, "all");
-            activeLayer.style.border = "5px solid red";
-        }
-        else{
-            setDetectionForLayer(null, "all");
+            if(activeLayer){
+                setDetectionForLayer(activeLayer, "all");
+                activeLayer.style.border = "5px solid red";
+            }
+            else{
+                setDetectionForLayer(null, "all");
+            }
         }
     }
 
@@ -3877,14 +4209,16 @@ $(document).ready(function(){
     });
 
     $(".sidebar").on( "click", ( event )=>{
-        let target = event.target;
-        if(target.parentElement.parentElement.parentElement.firstElementChild
-            .getAttribute("id").indexOf("annotate") <= -1){
-            if( !target.classList.contains("active") ){
-                target.classList.add("active");
-            }
-            else{
-                target.classList.remove("active");
+        if(detectLeftButton(event)){
+            let target = event.target;
+            if(target.parentElement.parentElement.parentElement.firstElementChild
+                .getAttribute("id").indexOf("annotate") <= -1){
+                if( !target.classList.contains("active") ){
+                    target.classList.add("active");
+                }
+                else{
+                    target.classList.remove("active");
+                }
             }
         }
     });
@@ -3915,13 +4249,10 @@ $(document).ready(function(){
      * @description hide the help box element
      * 
     */
-    $("#hideBtn").on("mousedown", function(){
-        document.getElementById("help-box").style.visibility = "hidden";
-    });
-
-
-    $(window).on("reload", function(event){
-        event.preventDefault();
+    $("#hideBtn").on("mousedown", function( event ){
+        if(detectLeftButton(event)){
+            document.getElementById("help-box").style.visibility = "hidden";
+        }
     });
 
     /**
@@ -3930,8 +4261,10 @@ $(document).ready(function(){
      * @description shows the help box element
      * 
     */
-    $("#helpBtn").on("mousedown", function(){
-        document.getElementById("help-box").style.visibility = "visible";
+    $("#helpBtn").on("mousedown", function( event ){
+        if(detectLeftButton( event )){
+            document.getElementById("help-box").style.visibility = "visible";
+        }
     });
     // --------------------------------- End Help Button ----------------------------------------------------
             
@@ -4366,262 +4699,80 @@ $(document).ready(function(){
      * 
      * @description fetches the new sized image and scalebar dimensions
      */
-    function resizeUpdateBtnHandler ( event){
-        // required elemnts
-        var displayCube = document.getElementById("displayCube"),
-            scalebarHalf = document.getElementById("scalebarHalf"),
-            scalebarText = document.getElementById("scalebarText"),
-            scalebar1 = document.getElementById("scalebar1"),
-            displayString = displayCube.innerHTML,
-            widthInput = document.getElementById("changeDimWidth").value,
-            heightInput = document.getElementById("changeDimHeight").value;
-            
-        var dim = {
-            w:"0",
-            h:"0"
-        };
+    function resizeUpdateBtnHandler ( event ){
+        if(detectLeftButton(event)){
+            // required elemnts
+            var displayCube = document.getElementById("displayCube"),
+                scalebarHalf = document.getElementById("scalebarHalf"),
+                scalebarText = document.getElementById("scalebarText"),
+                scalebar1 = document.getElementById("scalebar1"),
+                displayString = displayCube.innerHTML,
+                widthInput = document.getElementById("changeDimWidth").value,
+                heightInput = document.getElementById("changeDimHeight").value;
 
-        // if the scalebar is not on the image
-        if(scalebarHalf === null){
-            // place the icon
-            $("#scaleBarButton").mousedown();
-            
-            // grab the elements
-            scalebarHalf = document.getElementById("scalebarHalf");
-            scalebarText = document.getElementById("scalebarText");
-            scalebar1 = document.getElementById("scalebar1");
-            
-            // remove it again
-            $("#scaleBarButton").mousedown();
-        }
-
-        // reset the padding to 0
-        setImagePadding(0, "all");
-
-        // get new image dimensions
-        dim.w = parseInt(displayString.split("×")[0]);
-        dim.h = parseInt(displayString.split("×")[1]);
-
-        // if either of the inputs is not empty and more than 1000 and new dimensions are not the same as before
-        if((widthInput !== "" || heightInput !== "")
-            && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
-            && (dim.w !== widthInput || dim.h !== heightInput)) {
-            
-            // get user id from browser cookie
-            let id = getCookie("puiv");
-            var fd = new FormData(),
-                headers = new Headers();
-            
-            if(widthInput === ""){
-                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
-                fd.append("h",heightInput);
-                // -1 to denote auto generation
-                fd.append("w", widthInput);
-            }
-            else if(heightInput === ""){
-                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
-                fd.append("w", widthInput);
-                fd.append("h", heightInput);
-            }
-            else{
-                // both are not empty
-                fd.append("w", widthInput);
-                fd.append("h", heightInput);
-            }
-
-            // make sure the id is not undefined on server
-            fd.append("id", id);
-            headers.append("pragma","no-cache");
-            headers.append("cache-control", "no-cache");
-
-            // calculate difference
-            var heightDifference = dim.h - heightInput,
-                widthDifference = dim.w - widthInput;
-
-            this.offsetParent.remove();
-
-            fetch('/resizeFigure',
-                {
-                    method:'POST',
-                    body: fd,
-                    headers: headers,
-                    referrerPolicy: "no-referrer"
-                })
-            .then((response) =>{
-                if(response.status === 200){
-                    // read the new file and convert to data url
-                    response.blob().then((data, err)=>{
-                        var reader = new FileReader();
-                        
-                        // read image as data url
-                        reader.readAsDataURL(data);
-
-                        // when reader is done loading
-                        reader.onloadend = function(){
-
-                            // set new interface
-                            myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
-                            myImage.setAttribute("width", widthInput);
-                            myImage.setAttribute("height", heightInput);
-                            bg.setAttribute("width", widthInput);
-                            bg.setAttribute("height", heightInput);
-                            svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
-
-                            w = Number(widthInput);
-                            h = Number(heightInput);
-                            displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
-
-                            // shift icons
-                            resetIcons(svg, heightDifference, widthDifference);
-                            fd = new FormData();
-
-                            fd.append("id", id);
-                            fetch("/evalScalebar", 
-                                {
-                                    method: 'POST',
-                                    body: fd,
-                                    headers: headers,
-                                    referrerPolicy: "no-referrer"
-                                })
-                            .then(response => {
-                                response.blob().then((data, err)=> {
-                                    var reader = new FileReader();
-                                    
-                                    //read json data as string
-                                    reader.readAsText(data);
-
-                                    // when the read is finished
-                                    reader.onloadend = function(){
-                                        // load the json structure out of the text string
-                                        var body = JSON.parse(reader.result);
-
-                                        scalePX = parseFloat(body["scalebarPX"]);
-                                        scalebarLength = parseFloat(body["scalebarLength"]);
-
-                                        scalebarUnits = body["scalebarUnits"];
-                                        var half = parseFloat(scalebarLength)/2;
-                                        origW = parseInt(body["origW"]);
-                                        origH = parseInt(body["origH"]);
-
-                                        
-                                        // if the scale bar is not none
-                                        if(scalePX !== 'none' && !isNaN(scalePX) && half !== null){
-                                            // set the size based on how the image is drawn
-                                            if((widthInput/origW) < (heightInput/origH)){
-                                                scaleBarIcon.setAttribute("transform",
-                                                    "translate(0, 175) scale(" 
-                                                    + (scalePX/4000)* 2 * (widthInput/origW) + ')');
-                                                // set text box font to 11X the scale of the scale bar
-                                                // to account for the change in pixel sizes 
-                                                textSize = (scalePX/4000)* 21 * (widthInput/origW);
-                                            }
-                                            else{
-                                                scaleBarIcon.setAttribute("transform",
-                                                                    "translate(0, 175) scale(" 
-                                                                    + (scalePX/4000)* 2 * (heightInput/origH) + ')');
-                                                // set text box font to 11X the scale of the scale bar to 
-                                                // account for the change in pixel sizes
-                                                textSize = (scalePX/4000)* 21 * (heightInput/origH);
-                                            }
-                                            // if half the bar is less than 1 km then give it the decimal
-                                            if(half < 1){
-                                                // set the half text and ajust based on character count
-                                                scalebarHalf.innerHTML = half;
-                                            }
-                                            // otherwise parse it to the closest int
-                                            else{
-                                                if(parseInt(half) === half){
-                                                    scalebarHalf.innerHTML = parseInt(half);
-                                                }
-                                                else{
-                                                    scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
-                                                }
-                                            }
-                                            scalebarText.innerHTML = scalebarLength + " " + scalebarUnits;
-                                            scalebar1.innerHTML = scalebarLength;
-                                        }
-                                        else{
-                                            // if the scalebarPx is none disable the button
-                                            document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "dropdownItem btn disabled");
-                                            // set deafult font size for text boxes note that
-                                            // this is a scale value not px size 
-                                            // (px = font size * textSize)
-                                            textSize = 2;
-                                        }
-                                
-                                        // Reset the font
-                                        if(half !== null && scalebarHalf !== null){
-                                            if(String(parseInt(half)).length === 1 && half >= 1 
-                                                && parseInt(half) === half){
-                                                scalebarHalf.setAttribute("x","1100");
-                                            }
-                                            else if(String(parseInt(half)).length === 3 || half < 1 
-                                                || parseInt(half) !== half){
-                                                
-                                                if( half < 1 ){
-                                                    scalebarHalf.setAttribute("x","1050");
-                                                }
-                                                else{
-                                                    scalebarHalf.setAttribute("x","1030");
-                                                }
-                                            }
-                                            else{
-                                                console.log("scalebarHalf: " + String(parseInt(half)).length);
-                                            }
-    
-                                            if(String(parseInt(scalebarLength)).length === 2){
-                                                scalebar1.setAttribute("x","75");
-                                                scalebarText.setAttribute("x","3985");
-                                            }
-                                            else if(String(parseInt(scalebarLength)).length === 3){
-                                                scalebar1.setAttribute("x","45");
-                                                scalebarText.setAttribute("x","4000");
-                                            }   
-                                        }
-                                    } 
-                                });
-                            })
-                            .catch(err => {
-                                console.log(err);
-                            });
-                        }
-                    });
-                } 
-            }).catch((err) =>{
-                // catch any fetch errors
-                if(err){
-                    console.log(err);
-                }
-            });
-        }
-        else if(widthInput === "" && heightInput === ""){
-            // both inputs empty
             var dim = {
                 w:"0",
                 h:"0"
             };
-    
+
+            // if the scalebar is not on the image
+            if(scalebarHalf === null){
+                // place the icon
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+
+                // grab the elements
+                scalebarHalf = document.getElementById("scalebarHalf");
+                scalebarText = document.getElementById("scalebarText");
+                scalebar1 = document.getElementById("scalebar1");
+
+                // remove it again
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+            }
+
+            // reset the padding to 0
+            setImagePadding(0, "all");
+
+            // get new image dimensions
             dim.w = parseInt(displayString.split("×")[0]);
             dim.h = parseInt(displayString.split("×")[1]);
 
-            widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
-            heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
-
-            var heightDifference = (heightInput !== "") ? dim.h - heightInput : dim.h - h ,
-                widthDifference = (widthInput !== "") ? dim.w - widthInput : dim.w - w ;
-
-            if(heightDifference || widthDifference){
+            // if either of the inputs is not empty and more than 1000 and new dimensions are not the same as before
+            if((widthInput !== "" || heightInput !== "")
+            && (parseInt(widthInput) >= 1000 || parseInt(heightInput) >= 1000)
+            && (dim.w !== widthInput || dim.h !== heightInput))
+            {
+                // get user id from browser cookie
+                let id = getCookie("puiv");
                 var fd = new FormData(),
                     headers = new Headers();
 
-                fd.append("w", widthInput);
-                fd.append("h", heightInput);
+                if(widthInput === ""){
+                    widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+                    fd.append("h",heightInput);
+                    // -1 to denote auto generation
+                    fd.append("w", widthInput);
+                }
+                else if(heightInput === ""){
+                    heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
+                    fd.append("w", widthInput);
+                    fd.append("h", heightInput);
+                }
+                else{
+                    // both are not empty
+                    fd.append("w", widthInput);
+                    fd.append("h", heightInput);
+                }
 
                 // make sure the id is not undefined on server
-                fd.append("id", getCookie("puiv"));
+                fd.append("id", id);
                 headers.append("pragma","no-cache");
                 headers.append("cache-control", "no-cache");
+
+                // calculate difference
+                var heightDifference = dim.h - heightInput,
+                    widthDifference = dim.w - widthInput;
+
+                this.offsetParent.remove();
 
                 fetch('/resizeFigure',
                     {
@@ -4634,11 +4785,15 @@ $(document).ready(function(){
                     if(response.status === 200){
                         // read the new file and convert to data url
                         response.blob().then((data, err)=>{
-                            // read the blob as a data URL
                             var reader = new FileReader();
+                            
+                            // read image as data url
                             reader.readAsDataURL(data);
+
+                            // when reader is done loading
                             reader.onloadend = function(){
-                                // set the new image dimensions in the client
+
+                                // set new interface
                                 myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
                                 myImage.setAttribute("width", widthInput);
                                 myImage.setAttribute("height", heightInput);
@@ -4646,56 +4801,60 @@ $(document).ready(function(){
                                 bg.setAttribute("height", heightInput);
                                 svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
 
+                                w = Number(widthInput);
+                                h = Number(heightInput);
                                 displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
 
-                                w = widthInput;
-                                h = heightInput;
-                                
-                                // shift the icons
+                                // shift icons
                                 resetIcons(svg, heightDifference, widthDifference);
                                 fd = new FormData();
 
-                                fd.append("id", getCookie("puiv"));
-                                fetch("/evalScalebar",
-                                {
-                                    method: 'POST',
-                                    body: fd,
-                                    headers: headers,
-                                    referrerPolicy: "no-referrer"
-                                })
+                                fd.append("id", id);
+                                fetch("/evalScalebar", 
+                                    {
+                                        method: 'POST',
+                                        body: fd,
+                                        headers: headers,
+                                        referrerPolicy: "no-referrer"
+                                    })
                                 .then(response => {
                                     response.blob().then((data, err)=> {
                                         var reader = new FileReader();
+                                        
+                                        //read json data as string
                                         reader.readAsText(data);
-    
+
+                                        // when the read is finished
                                         reader.onloadend = function(){
+                                            // load the json structure out of the text string
                                             var body = JSON.parse(reader.result);
 
                                             scalePX = parseFloat(body["scalebarPX"]);
                                             scalebarLength = parseFloat(body["scalebarLength"]);
-    
-                                            var half = parseFloat(scalebarLength)/2;
+
                                             scalebarUnits = body["scalebarUnits"];
+                                            var half = parseFloat(scalebarLength)/2;
                                             origW = parseInt(body["origW"]);
                                             origH = parseInt(body["origH"]);
-    
+
+                                            
                                             // if the scale bar is not none
                                             if(scalePX !== 'none' && !isNaN(scalePX) && half !== null){
                                                 // set the size based on how the image is drawn
                                                 if((widthInput/origW) < (heightInput/origH)){
                                                     scaleBarIcon.setAttribute("transform",
-                                                                        "translate(0, 175) scale(" 
-                                                                        + (scalePX/4000)* 2 * (widthInput/origW) +')');
+                                                        "translate(0, 175) scale(" 
+                                                        + (scalePX/4000)* 2 * (widthInput/origW) + ')');
                                                     // set text box font to 11X the scale of the scale bar
                                                     // to account for the change in pixel sizes 
                                                     textSize = (scalePX/4000)* 21 * (widthInput/origW);
                                                 }
                                                 else{
                                                     scaleBarIcon.setAttribute("transform",
-                                                                    "translate(0, 175) scale(" 
-                                                                    + (scalePX/4000)* 2 * (heightInput/origH) + ')');
-                                                    // set text box font to 11X the scale of the scale bar
-                                                    // to account for the change in pixel sizes
+                                                                        "translate(0, 175) scale(" 
+                                                                        + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                    // set text box font to 11X the scale of the scale bar to 
+                                                    // account for the change in pixel sizes
                                                     textSize = (scalePX/4000)* 21 * (heightInput/origH);
                                                 }
                                                 // if half the bar is less than 1 km then give it the decimal
@@ -4710,7 +4869,7 @@ $(document).ready(function(){
                                                     }
                                                     else{
                                                         scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
-                                                    };
+                                                    }
                                                 }
                                                 scalebarText.innerHTML = scalebarLength + " " + scalebarUnits;
                                                 scalebar1.innerHTML = scalebarLength;
@@ -4718,20 +4877,21 @@ $(document).ready(function(){
                                             else{
                                                 // if the scalebarPx is none disable the button
                                                 document.getElementById("scaleBarButton").setAttribute("class",
-                                                                        "dropdownItem btn disabled");
-                                                // set deafult font size for text boxes note that this 
-                                                // is a scale value not px size (px = font size * textSize)
+                                                                            "dropdownItem btn disabled");
+                                                // set deafult font size for text boxes note that
+                                                // this is a scale value not px size 
+                                                // (px = font size * textSize)
                                                 textSize = 2;
                                             }
-
-                                            // Reset the font 
+                                    
+                                            // Reset the font
                                             if(half !== null && scalebarHalf !== null){
-                                                if(String(parseInt(half)).length === 1 
-                                                    && half >= 1 && parseInt(half) === half){
+                                                if(String(parseInt(half)).length === 1 && half >= 1 
+                                                    && parseInt(half) === half){
                                                     scalebarHalf.setAttribute("x","1100");
                                                 }
-                                                else if(String(parseInt(half)).length === 3 
-                                                    || half < 1 || parseInt(half) !== half){
+                                                else if(String(parseInt(half)).length === 3 || half < 1 
+                                                    || parseInt(half) !== half){
                                                     
                                                     if( half < 1 ){
                                                         scalebarHalf.setAttribute("x","1050");
@@ -4743,7 +4903,7 @@ $(document).ready(function(){
                                                 else{
                                                     console.log("scalebarHalf: " + String(parseInt(half)).length);
                                                 }
-        
+
                                                 if(String(parseInt(scalebarLength)).length === 2){
                                                     scalebar1.setAttribute("x","75");
                                                     scalebarText.setAttribute("x","3985");
@@ -4751,9 +4911,9 @@ $(document).ready(function(){
                                                 else if(String(parseInt(scalebarLength)).length === 3){
                                                     scalebar1.setAttribute("x","45");
                                                     scalebarText.setAttribute("x","4000");
-                                                }
-                                            }   
-                                        }
+                                                }   
+                                            }
+                                        } 
                                     });
                                 })
                                 .catch(err => {
@@ -4761,10 +4921,7 @@ $(document).ready(function(){
                                 });
                             }
                         });
-                    }
-                    else{
-                        console.log(response.status + " is the returned status");
-                    }
+                    } 
                 }).catch((err) =>{
                     // catch any fetch errors
                     if(err){
@@ -4772,10 +4929,188 @@ $(document).ready(function(){
                     }
                 });
             }
-        }
-        else if(widthInput < 1000 || heightInput < 1000){
-            // if dimensions are not accepted
-            alert("At least 1 Dimensions need to be 1000 or more");
+            else if(widthInput === "" && heightInput === ""){
+                // both inputs empty
+                var dim = {
+                    w:"0",
+                    h:"0"
+                };
+
+                dim.w = parseInt(displayString.split("×")[0]);
+                dim.h = parseInt(displayString.split("×")[1]);
+
+                widthInput = parseInt(document.getElementById("changeDimWidth").getAttribute("placeholder"));
+                heightInput = parseInt(document.getElementById("changeDimHeight").getAttribute("placeholder"));
+
+                var heightDifference = (heightInput !== "") ? dim.h - heightInput : dim.h - h ,
+                    widthDifference = (widthInput !== "") ? dim.w - widthInput : dim.w - w ;
+
+                if(heightDifference || widthDifference){
+                    var fd = new FormData(),
+                        headers = new Headers();
+
+                    fd.append("w", widthInput);
+                    fd.append("h", heightInput);
+
+                    // make sure the id is not undefined on server
+                    fd.append("id", getCookie("puiv"));
+                    headers.append("pragma","no-cache");
+                    headers.append("cache-control", "no-cache");
+
+                    fetch('/resizeFigure',
+                        {
+                            method:'POST',
+                            body: fd,
+                            headers: headers,
+                            referrerPolicy: "no-referrer"
+                        })
+                    .then((response) =>{
+                        if(response.status === 200){
+                            // read the new file and convert to data url
+                            response.blob().then((data, err)=>{
+                                // read the blob as a data URL
+                                var reader = new FileReader();
+                                reader.readAsDataURL(data);
+                                reader.onloadend = function(){
+                                    // set the new image dimensions in the client
+                                    myImage.setAttributeNS("http://www.w3.org/1999/xlink", 'xlink:href', reader.result);
+                                    myImage.setAttribute("width", widthInput);
+                                    myImage.setAttribute("height", heightInput);
+                                    bg.setAttribute("width", widthInput);
+                                    bg.setAttribute("height", heightInput);
+                                    svg.setAttribute("viewBox", "0 0 " + widthInput + " " + heightInput);
+
+                                    displayCube.innerHTML = widthInput + " &times; " + heightInput + " px";
+
+                                    w = widthInput;
+                                    h = heightInput;
+                                    
+                                    // shift the icons
+                                    resetIcons(svg, heightDifference, widthDifference);
+                                    fd = new FormData();
+
+                                    fd.append("id", getCookie("puiv"));
+                                    fetch("/evalScalebar",
+                                    {
+                                        method: 'POST',
+                                        body: fd,
+                                        headers: headers,
+                                        referrerPolicy: "no-referrer"
+                                    })
+                                    .then(response => {
+                                        response.blob().then((data, err)=> {
+                                            var reader = new FileReader();
+                                            reader.readAsText(data);
+
+                                            reader.onloadend = function(){
+                                                var body = JSON.parse(reader.result);
+
+                                                scalePX = parseFloat(body["scalebarPX"]);
+                                                scalebarLength = parseFloat(body["scalebarLength"]);
+
+                                                var half = parseFloat(scalebarLength)/2;
+                                                scalebarUnits = body["scalebarUnits"];
+                                                origW = parseInt(body["origW"]);
+                                                origH = parseInt(body["origH"]);
+
+                                                // if the scale bar is not none
+                                                if(scalePX !== 'none' && !isNaN(scalePX) && half !== null){
+                                                    // set the size based on how the image is drawn
+                                                    if((widthInput/origW) < (heightInput/origH)){
+                                                        scaleBarIcon.setAttribute("transform",
+                                                                            "translate(0, 175) scale(" 
+                                                                            + (scalePX/4000)* 2 * (widthInput/origW) +')');
+                                                        // set text box font to 11X the scale of the scale bar
+                                                        // to account for the change in pixel sizes 
+                                                        textSize = (scalePX/4000)* 21 * (widthInput/origW);
+                                                    }
+                                                    else{
+                                                        scaleBarIcon.setAttribute("transform",
+                                                                        "translate(0, 175) scale(" 
+                                                                        + (scalePX/4000)* 2 * (heightInput/origH) + ')');
+                                                        // set text box font to 11X the scale of the scale bar
+                                                        // to account for the change in pixel sizes
+                                                        textSize = (scalePX/4000)* 21 * (heightInput/origH);
+                                                    }
+                                                    // if half the bar is less than 1 km then give it the decimal
+                                                    if(half < 1){
+                                                        // set the half text and ajust based on character count
+                                                        scalebarHalf.innerHTML = half;
+                                                    }
+                                                    // otherwise parse it to the closest int
+                                                    else{
+                                                        if(parseInt(half) === half){
+                                                            scalebarHalf.innerHTML = parseInt(half);
+                                                        }
+                                                        else{
+                                                            scalebarHalf.innerHTML = parseFloat(half).toFixed(1);
+                                                        };
+                                                    }
+                                                    scalebarText.innerHTML = scalebarLength + " " + scalebarUnits;
+                                                    scalebar1.innerHTML = scalebarLength;
+                                                }
+                                                else{
+                                                    // if the scalebarPx is none disable the button
+                                                    document.getElementById("scaleBarButton").setAttribute("class",
+                                                                            "dropdownItem btn disabled");
+                                                    // set deafult font size for text boxes note that this 
+                                                    // is a scale value not px size (px = font size * textSize)
+                                                    textSize = 2;
+                                                }
+
+                                                // Reset the font 
+                                                if(half !== null && scalebarHalf !== null){
+                                                    if(String(parseInt(half)).length === 1 
+                                                        && half >= 1 && parseInt(half) === half){
+                                                        scalebarHalf.setAttribute("x","1100");
+                                                    }
+                                                    else if(String(parseInt(half)).length === 3 
+                                                        || half < 1 || parseInt(half) !== half){
+                                                        
+                                                        if( half < 1 ){
+                                                            scalebarHalf.setAttribute("x","1050");
+                                                        }
+                                                        else{
+                                                            scalebarHalf.setAttribute("x","1030");
+                                                        }
+                                                    }
+                                                    else{
+                                                        console.log("scalebarHalf: " + String(parseInt(half)).length);
+                                                    }
+
+                                                    if(String(parseInt(scalebarLength)).length === 2){
+                                                        scalebar1.setAttribute("x","75");
+                                                        scalebarText.setAttribute("x","3985");
+                                                    }
+                                                    else if(String(parseInt(scalebarLength)).length === 3){
+                                                        scalebar1.setAttribute("x","45");
+                                                        scalebarText.setAttribute("x","4000");
+                                                    }
+                                                }   
+                                            }
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    });
+                                }
+                            });
+                        }
+                        else{
+                            console.log(response.status + " is the returned status");
+                        }
+                    }).catch((err) =>{
+                        // catch any fetch errors
+                        if(err){
+                            console.log(err);
+                        }
+                    });
+                }
+            }
+            else if(widthInput < 1000 || heightInput < 1000){
+                // if dimensions are not accepted
+                alert("At least 1 Dimensions need to be 1000 or more");
+            }
         }
     }
 
@@ -4825,32 +5160,33 @@ $(document).ready(function(){
      * @description When clicked toggle the scalebar on and off by appending and removing it as needed
      * 
     */
-    $("#scaleBarButton").on("mousedown", function(){
-        
-        // if the scalebar btn is not disabled
-        if(!this.classList.contains("disabled")){
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
+    $("#scaleBarButton").on("mousedown", function( event ){
+        if(detectLeftButton( event )){
+            // if the scalebar btn is not disabled
+            if(!this.classList.contains("disabled")){
+                // clear all draw instance data if the flag is true
+                if(drawFlag){
+                    resetDrawTool();
+                }
 
-            // if scalebar true then toggle the bar on
-            if(toggleScalebar){
-                // add bar and toggle the boolean
-                svg.appendChild(scaleBarIcon);
-                
-                updateLayers(this.cloneNode(true));
-                this.classList.add("active");
+                // if scalebar true then toggle the bar on
+                if(toggleScalebar){
+                    // add bar and toggle the boolean
+                    svg.appendChild(scaleBarIcon);
+                    
+                    updateLayers(this.cloneNode(true));
+                    this.classList.add("active");
 
-                toggleScalebar = false;
-            }
-            else{
-                // remove the bar and reset toggleValue
-                scaleBarIcon.remove();
-                toggleScalebar = true;
-                
-                removeLayers(this.cloneNode(true));
-                this.classList.remove("active");
+                    toggleScalebar = false;
+                }
+                else{
+                    // remove the bar and reset toggleValue
+                    scaleBarIcon.remove();
+                    toggleScalebar = true;
+                    
+                    removeLayers(this.cloneNode(true));
+                    this.classList.remove("active");
+                }
             }
         }
     });
@@ -4862,121 +5198,123 @@ $(document).ready(function(){
      * @description draw the text on screen with the rectangles to help resizing occur
      * 
     */
-    $("#textBtn").on("mousedown", function(){
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            resetDrawTool();
-        }
-
-        // prompt for text box contents
-        var textboxVal = prompt("What Should It Say?","");
-        
-        userTextColor = $("#textColorPicker").val();
-        if(textboxVal !== "" && textboxVal){
-            
-            let strlength = textboxVal.length; 
-            
-            // Draw the scaleable and draggable group with the new text element dynamically
-            var text = document.createElementNS("http://www.w3.org/2000/svg","text");
-            
-            var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-
-            // draggable group 
-            g.setAttribute("class","draggable confine scaleable textbox");
-            g.setAttribute("x",0);
-            g.setAttribute("y",0);
-            // text attributes start location
-            text.setAttribute("x",0);
-            text.setAttribute("y",15);
-            // text offset location
-            text.setAttribute("dx",0);
-            text.setAttribute("dy",0);
-            
-            // default the letter spacing for all browsers
-            text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
-            // font size
-            text.setAttribute("class","user");
-            // set draggable group defaults
-            g.setAttribute("height", 0);
-            g.setAttribute("width", 0);
-            g.setAttribute("transform","translate(50, 50) rotate(0) scale("+ textSize + ")");
-
-            // create rectangles on all corners for scaling the text
-            var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect.setAttribute("x",0);
-            rect.setAttribute("y",13);
-            rect.setAttribute("width", 5);
-            rect.setAttribute("height", 5);
-            rect.style.visibility = "hidden";
-            rect.setAttribute("class","resize bottom-left");
-            rect.setAttribute("fill","transparent");
-
-            var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect2.setAttribute("x",0);
-            rect2.setAttribute("y",1);
-            rect2.setAttribute("width", 5);
-            rect2.setAttribute("height", 5);
-            rect2.style.visibility = "hidden";
-            rect2.setAttribute("class","resize top-left");
-            rect2.setAttribute("fill","transparent");
-
-            var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect3.setAttribute("x",10);
-            rect3.setAttribute("y",1);
-            rect3.setAttribute("width", 5);
-            rect3.setAttribute("height", 5);
-            rect3.style.visibility = "hidden";
-            rect3.setAttribute("class","resize top-right");
-            rect3.setAttribute("fill","transparent");
-
-            var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
-            rect4.setAttribute("x",10);
-            rect4.setAttribute("y",13);
-            rect4.setAttribute("width", 5);
-            rect4.setAttribute("height", 5);
-            rect4.setAttribute("fill","transparent");
-            rect4.style.visibility = "hidden";
-            rect4.setAttribute("class","resize bottom-right");
-            // default pointer events
-            g.style.pointerEvents = "all"
-            // set the innerHTML of the text element to user input
-            text.innerHTML = textboxVal;
-
-            // append the scaleing corners and text to the group in sopecific order
-            g.appendChild(text);
-            g.appendChild(rect);
-            g.appendChild(rect2);
-            g.appendChild(rect3);
-            g.appendChild(rect4);
-
-            // set the user text color
-            if(userTextColor)
-            {
-                text.setAttribute("stroke",userTextColor);
-                text.setAttribute("fill",userTextColor);
-            }
-            else{
-                text.setAttribute("stroke","#ffffff");
-                text.setAttribute("fill","#ffffff");
+    $("#textBtn").on("mousedown", function( event ){
+        if(detectLeftButton(event )){
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
             }
 
-            // set the stroke of the text and append the elements
-            text.setAttribute("stroke-width","1");
-            
-            // append the finished group graphic to the svg
-            svg.appendChild(g);
-            g.setAttribute("id", "text" + objectIds++);
-            updateLayers(g.cloneNode(true));
-            $("#colorPickerBox").val("#ffffff");
-            // set the scaling boxes x value to the end of the bbox
-            // this auto finds the relative length of the text element
-            let bbox = g.getBBox();
-            if(strlength > 1) {
-                rect3.setAttribute("x",bbox.width - 2);
-                rect4.setAttribute("x",bbox.width - 2);
+            // prompt for text box contents
+            var textboxVal = prompt("What Should It Say?","");
+
+            userTextColor = $("#textColorPicker").val();
+            if(textboxVal !== "" && textboxVal){
+                
+                let strlength = textboxVal.length; 
+                
+                // Draw the scaleable and draggable group with the new text element dynamically
+                var text = document.createElementNS("http://www.w3.org/2000/svg","text");
+                
+                var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+                // draggable group 
+                g.setAttribute("class","draggable confine scaleable textbox");
+                g.setAttribute("x",0);
+                g.setAttribute("y",0);
+                // text attributes start location
+                text.setAttribute("x",0);
+                text.setAttribute("y",15);
+                // text offset location
+                text.setAttribute("dx",0);
+                text.setAttribute("dy",0);
+                
+                // default the letter spacing for all browsers
+                text.setAttributeNS("http://www.w3.org/2000/svg","letter-spacing","0px");
+                // font size
+                text.setAttribute("class","user");
+                // set draggable group defaults
+                g.setAttribute("height", 0);
+                g.setAttribute("width", 0);
+                g.setAttribute("transform","translate(50, 50) rotate(0) scale("+ textSize + ")");
+
+                // create rectangles on all corners for scaling the text
+                var rect = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect.setAttribute("x",0);
+                rect.setAttribute("y",13);
+                rect.setAttribute("width", 5);
+                rect.setAttribute("height", 5);
+                rect.style.visibility = "hidden";
+                rect.setAttribute("class","resize bottom-left");
+                rect.setAttribute("fill","transparent");
+
+                var rect2 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect2.setAttribute("x",0);
+                rect2.setAttribute("y",1);
+                rect2.setAttribute("width", 5);
+                rect2.setAttribute("height", 5);
+                rect2.style.visibility = "hidden";
+                rect2.setAttribute("class","resize top-left");
+                rect2.setAttribute("fill","transparent");
+
+                var rect3 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect3.setAttribute("x",10);
+                rect3.setAttribute("y",1);
+                rect3.setAttribute("width", 5);
+                rect3.setAttribute("height", 5);
+                rect3.style.visibility = "hidden";
+                rect3.setAttribute("class","resize top-right");
+                rect3.setAttribute("fill","transparent");
+
+                var rect4 = document.createElementNS("http://www.w3.org/2000/svg","rect");
+                rect4.setAttribute("x",10);
+                rect4.setAttribute("y",13);
+                rect4.setAttribute("width", 5);
+                rect4.setAttribute("height", 5);
+                rect4.setAttribute("fill","transparent");
+                rect4.style.visibility = "hidden";
+                rect4.setAttribute("class","resize bottom-right");
+                // default pointer events
+                g.style.pointerEvents = "all"
+                // set the innerHTML of the text element to user input
+                text.innerHTML = textboxVal;
+
+                // append the scaleing corners and text to the group in sopecific order
+                g.appendChild(text);
+                g.appendChild(rect);
+                g.appendChild(rect2);
+                g.appendChild(rect3);
+                g.appendChild(rect4);
+
+                // set the user text color
+                if(userTextColor)
+                {
+                    text.setAttribute("stroke",userTextColor);
+                    text.setAttribute("fill",userTextColor);
+                }
+                else{
+                    text.setAttribute("stroke","#ffffff");
+                    text.setAttribute("fill","#ffffff");
+                }
+
+                // set the stroke of the text and append the elements
+                text.setAttribute("stroke-width","1");
+                
+                // append the finished group graphic to the svg
+                svg.appendChild(g);
+                g.setAttribute("id", "text" + objectIds++);
+                updateLayers(g.cloneNode(true));
+                $("#colorPickerBox").val("#ffffff");
+                // set the scaling boxes x value to the end of the bbox
+                // this auto finds the relative length of the text element
+                let bbox = g.getBBox();
+                if(strlength > 1) {
+                    rect3.setAttribute("x",bbox.width - 2);
+                    rect4.setAttribute("x",bbox.width - 2);
+                }
+                // track the new text element
+                textBoxArray.push(g);
             }
-            // track the new text element
-            textBoxArray.push(g);
         }
     });
       
@@ -4987,38 +5325,40 @@ $(document).ready(function(){
      * @description add or remove the eye icon from the svg element
      * 
     */
-    $('#eyeFlag').click(function(){
-        if(!document.getElementById("eyeFlag").classList.contains("disabled")){
+    $('#eyeFlag').click(function( event ){
+        if(detectLeftButton(event)){
+            if(!document.getElementById("eyeFlag").classList.contains("disabled")){
             
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-            
-            eyeFlag = !eyeFlag;
-
-            if(eyeIconPlaced){
-                eyeIconPlaced = !eyeIconPlaced;
-                eyeImage.remove();
-                eyeImage.style.visibility = 'hidden';
+                // clear all draw instance data if the flag is true
+                if(drawFlag){
+                    resetDrawTool();
+                }
+                
                 eyeFlag = !eyeFlag;
-                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
-
-                removeLayers(this.cloneNode(true));
-            }
-
-            if(eyeFlag){
-                
-                outlineBox.remove();
-                outlineBox.style.visibility = 'hidden';
-                
-                svg.appendChild(eyeImage);
-                setIconAngle(eyeImage, observerDegree);
-                eyeImage.style.visibility = 'visible'
-                document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn active");
-                updateLayers(this.cloneNode(true));
-                eyeFlag = false;
-                eyeIconPlaced = true;
+    
+                if(eyeIconPlaced){
+                    eyeIconPlaced = !eyeIconPlaced;
+                    eyeImage.remove();
+                    eyeImage.style.visibility = 'hidden';
+                    eyeFlag = !eyeFlag;
+                    document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn");
+    
+                    removeLayers(this.cloneNode(true));
+                }
+    
+                if(eyeFlag){
+                    
+                    outlineBox.remove();
+                    outlineBox.style.visibility = 'hidden';
+                    
+                    svg.appendChild(eyeImage);
+                    setIconAngle(eyeImage, observerDegree);
+                    eyeImage.style.visibility = 'visible'
+                    document.getElementById('eyeFlag').setAttribute('class',"dropdownItem btn active");
+                    updateLayers(this.cloneNode(true));
+                    eyeFlag = false;
+                    eyeIconPlaced = true;
+                }
             }
         } 
     });
@@ -5030,43 +5370,43 @@ $(document).ready(function(){
      * @description add or remove the sun icon from the svg element
      * 
     */
-    $('#sunIconFlag').click(function(){
-
-        if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
+    $('#sunIconFlag').click(function(event){
+        if(detectLeftButton(event)){
+            if(!document.getElementById("sunIconFlag").classList.contains("disabled")){
             
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
+                // clear all draw instance data if the flag is true
+                if(drawFlag){
+                    resetDrawTool();
+                }
+                    
+                sunFlag = !sunFlag;
+    
+                if(sunIconPlaced){
+                    sunIconPlaced = !sunIconPlaced;
+                    sunImage.style.visibility = 'hidden';
+                    sunImage.remove();
+                    document.getElementById('sunIconFlag').setAttribute('class',"dropdownItem btn");
+                    sunFlag = false;
+                    removeLayers(this.cloneNode(true));
+                }
                 
-            sunFlag = !sunFlag;
-
-            if(sunIconPlaced){
-                sunIconPlaced = !sunIconPlaced;
-                sunImage.style.visibility = 'hidden';
-                sunImage.remove();
-                document.getElementById('sunIconFlag').setAttribute('class',"dropdownItem btn");
-                sunFlag = false;
-                removeLayers(this.cloneNode(true));
+                if(sunFlag){
+                   
+                    outlineBox.style.visibility = 'hidden';
+                    sunImage.style.visibility = 'visible';
+                    svg.appendChild(sunImage);
+                    sunFlag = false;
+                    sunIconPlaced = true;
+                    document.getElementById('sunIconFlag').setAttribute('class',
+                                                                            "dropdownItem btn active");
+    
+                    setIconAngle(sunImage, sunDegree);
+                    makeDraggable(svg); 
+                    updateLayers(this.cloneNode(true));
+                }
+                clickArray = [];
             }
-            
-            if(sunFlag){
-               
-                outlineBox.style.visibility = 'hidden';
-                sunImage.style.visibility = 'visible';
-                svg.appendChild(sunImage);
-                sunFlag = false;
-                sunIconPlaced = true;
-                document.getElementById('sunIconFlag').setAttribute('class',
-                                                                        "dropdownItem btn active");
-
-                setIconAngle(sunImage, sunDegree);
-                makeDraggable(svg); 
-                updateLayers(this.cloneNode(true));
-            }
-            clickArray = [];
         }
-        
     });
 
 
@@ -5076,46 +5416,47 @@ $(document).ready(function(){
      * @description add or remove the north arrow from the svg element
      * 
     */
-    $('#northIconFlag').on('mousedown',function(){
-    
-        if(!document.getElementById("northIconFlag").classList.contains("disabled")){
+    $('#northIconFlag').on('mousedown',function( event ){
+        if(detectLeftButton(event)){
+            if(!document.getElementById("northIconFlag").classList.contains("disabled")){
             
-            // clear all draw instance data if the flag is true
-            if(drawFlag){
-                resetDrawTool();
-            }
-                
-            // change north flag
-            northFlag = !northFlag;
-            
-            // if north flag is placed currently remove it
-            if(northIconPlaced){
-                northIconPlaced = !northIconPlaced;
-                northImage.remove();
-                northImage.style.visibility = 'hidden';
-                document.getElementById('northIconFlag').setAttribute('class',"dropdownItem btn");
-                
-                removeLayers(this.cloneNode(true));
+                // clear all draw instance data if the flag is true
+                if(drawFlag){
+                    resetDrawTool();
+                }
+                    
+                // change north flag
                 northFlag = !northFlag;
-            }
-            
-            // otherwise set the other flags to false and adjust their html
-            if(northFlag){
-                outlineBox.remove();
-                outlineBox.style.visibility = 'hidden';
-
-                svg.appendChild(northImage);
-                northImage.style.visibility = 'visible';
-                setIconAngle(northImage, northDegree);
-                makeDraggable(svg);
-                northIconPlaced = !northIconPlaced;
-                northFlag = false;
-                document.getElementById('northIconFlag').setAttribute('class',
-                                                                        "dropdownItem btn active");                                 
                 
-                updateLayers(this.cloneNode(true));
+                // if north flag is placed currently remove it
+                if(northIconPlaced){
+                    northIconPlaced = !northIconPlaced;
+                    northImage.remove();
+                    northImage.style.visibility = 'hidden';
+                    document.getElementById('northIconFlag').setAttribute('class',"dropdownItem btn");
+                    
+                    removeLayers(this.cloneNode(true));
+                    northFlag = !northFlag;
+                }
+                
+                // otherwise set the other flags to false and adjust their html
+                if(northFlag){
+                    outlineBox.remove();
+                    outlineBox.style.visibility = 'hidden';
+    
+                    svg.appendChild(northImage);
+                    northImage.style.visibility = 'visible';
+                    setIconAngle(northImage, northDegree);
+                    makeDraggable(svg);
+                    northIconPlaced = !northIconPlaced;
+                    northFlag = false;
+                    document.getElementById('northIconFlag').setAttribute('class',
+                                                                            "dropdownItem btn active");                                 
+                    
+                    updateLayers(this.cloneNode(true));
+                }
+                clickArray = [];
             }
-            clickArray = [];
         }   
     }); 
 
@@ -5126,21 +5467,23 @@ $(document).ready(function(){
      * @description start or stop the drawing event on the webpage
      * 
     */
-   $("#pencilIconFlag").on('mousedown',function(){
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            this.classList.remove("active")
-            resetDrawTool();
-        }
-        else{
-            // start drawing
-            bg.className.baseVal = "draw";
-            drawFlag = true;
-            this.classList.add("active")
+   $("#pencilIconFlag").on('mousedown',function(event){
+        if(detectLeftButton(event)){
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                this.classList.remove("active")
+                resetDrawTool();
+            }
+            else{
+                // start drawing
+                bg.className.baseVal = "draw";
+                drawFlag = true;
+                this.classList.add("active")
 
-            // loop through all children and children of the children and set the pointer 
-            // events to none so the draw function does not get interfiered with
-            setSvgClickDetection(svg, "none");
+                // loop through all children and children of the children and set the pointer 
+                // events to none so the draw function does not get interfiered with
+                setSvgClickDetection(svg, "none");
+            }
         }
     });
 
@@ -5150,75 +5493,78 @@ $(document).ready(function(){
      * 
      * @description when the outline box btn is clicked draws a box on the svg 
     */
-    $("#outlineBtn").on("mousedown",function(){                    
+    $("#outlineBtn").on("mousedown",function( event ){                    
+        if(detectLeftButton( event )){
+            // clear all draw instance data if the flag is true
+            if(drawFlag){
+                resetDrawTool();
+            }
+
+            // generate the new scalable draggables group dynamically 
+            var g = document.createElementNS("http://www.w3.org/2000/svg","g");
+            g.innerHTML = attensionBoxObjectString;
+
+            g.setAttribute("class","draggable confine scaleable outline");
+            g.setAttribute("transform-origin","50%; 50%;");
+            g.setAttribute("transform","translate(0, 0) rotate(0) scale(.5)");
+            g.setAttribute("stroke-width","20");
+            g.style.border = 0;
+            g.style.padding = 0;
+            g.style.pointerEvents = "visible";
+            g.style.fill = "none";
             
-        // clear all draw instance data if the flag is true
-        if(drawFlag){
-            resetDrawTool();
-        }
+            userBoxColor = $("#colorPickerBox").val();
+            // set the color if needed
+            if(userBoxColor){
+                g.style.stroke = userBoxColor;
+            }
+            else{
+                g.style.stroke = "white";
+            }
+            // append the group and reset the draggable functions
+            svg.appendChild(g);
+            // push the object into the array for undoing
+            g.setAttribute("id", "outline" + objectIds++);   
+            highlightBoxArray.push(g);
+            makeDraggable(svg);
 
-        // generate the new scalable draggables group dynamically 
-        var g = document.createElementNS("http://www.w3.org/2000/svg","g");
-        g.innerHTML = attensionBoxObjectString;
-
-        g.setAttribute("class","draggable confine scaleable outline");
-        g.setAttribute("transform-origin","50%; 50%;");
-        g.setAttribute("transform","translate(0, 0) rotate(0) scale(.5)");
-        g.setAttribute("stroke-width","20");
-        g.style.border = 0;
-        g.style.padding = 0;
-        g.style.pointerEvents = "visible";
-        g.style.fill = "none";
-        
-        userBoxColor = $("#colorPickerBox").val();
-        // set the color if needed
-        if(userBoxColor){
-            g.style.stroke = userBoxColor;
+            // update the layer browser
+            updateLayers(g.cloneNode(true));
         }
-        else{
-            g.style.stroke = "white";
-        }
-        // append the group and reset the draggable functions
-        svg.appendChild(g);
-        // push the object into the array for undoing
-        g.setAttribute("id", "outline" + objectIds++);   
-        highlightBoxArray.push(g);
-        makeDraggable(svg);
-
-        // update the layer browser
-        updateLayers(g.cloneNode(true));
     });
 
 
     //TODO:
-    function addPadding(){
-        var leftPad =  document.getElementById("leftPaddingCheckbox").checked,
+    function addPadding( event ){
+        if(detectLeftButton(event)){
+            var leftPad =  document.getElementById("leftPaddingCheckbox").checked,
             rightPad = document.getElementById("rightPaddingCheckbox").checked,
             topPad = document.getElementById("topPaddingCheckbox").checked,
             bottomPad = document.getElementById("bottomPaddingCheckbox").checked,
             input = parseInt(document.getElementById("paddingInput").value);
 
-        if(input){
+            if(input){
 
-            if(leftPad){
-                setImagePadding(input,"left");
+                if(leftPad){
+                    setImagePadding(input,"left");
+                }
+
+                if(rightPad){
+                    setImagePadding(input,"right");
+                }
+
+                if(topPad){
+                    setImagePadding(input,"top");
+                }
+
+                if(bottomPad){
+                    setImagePadding(input,"bottom");
+                }
             }
 
-            if(rightPad){
-                setImagePadding(input,"right");
-            }
-
-            if(topPad){
-                setImagePadding(input,"top");
-            }
-
-            if(bottomPad){
-                setImagePadding(input,"bottom");
-            }
+            // close tab
+            this.offsetParent.remove()
         }
-
-        // close tab
-        this.offsetParent.remove()
     }
 
     /**TODO:
@@ -5227,115 +5573,118 @@ $(document).ready(function(){
      * @description 
     */
     $("#padImageBtn").on('click',function(event){
-        // create the input box for the padding
-        var div = document.createElement("div"),
-            flexbox = document.createElement("div"),
-            pxInput = document.createElement("input"),
-            title = document.createElement("h2"),
-            cancelBtn = document.createElement("button"),
-            submitBtn = document.createElement("button"),
-            leftPaddingCheckbox = document.createElement("input"),
-            rightPaddingCheckbox,
-            topPaddingCheckbox,
-            bottomPaddingCheckbox,
-            leftPaddingLabel = document.createElement("h4"),
-            rightPaddingLabel,
-            topPaddingLabel,
-            bottomPaddingLabel;
-  
-        // if a popup is already on screen then short circut
-        if(previousPopup()){
-            return;
+        console.log(event)
+        if(detectLeftButton(event)){
+            // create the input box for the padding
+            var div = document.createElement("div"),
+                flexbox = document.createElement("div"),
+                pxInput = document.createElement("input"),
+                title = document.createElement("h2"),
+                cancelBtn = document.createElement("button"),
+                submitBtn = document.createElement("button"),
+                leftPaddingCheckbox = document.createElement("input"),
+                rightPaddingCheckbox,
+                topPaddingCheckbox,
+                bottomPaddingCheckbox,
+                leftPaddingLabel = document.createElement("h4"),
+                rightPaddingLabel,
+                topPaddingLabel,
+                bottomPaddingLabel;
+    
+            // if a popup is already on screen then short circut
+            if(previousPopup()){
+                return;
+            }
+            
+            // TODO: get the padding amount and display properly in the div
+            // reset padding
+            setImagePadding(0,"all");
+
+            leftPaddingCheckbox.setAttribute("type","checkbox");
+            leftPaddingCheckbox.style.margin = "auto auto";
+            leftPaddingCheckbox.style.textAlign = "center";
+            leftPaddingCheckbox.style.transform = "scale(1.5)";
+
+            rightPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+            topPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+            bottomPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
+
+            leftPaddingCheckbox.setAttribute("id", "leftPaddingCheckbox");
+            rightPaddingCheckbox.setAttribute("id", "rightPaddingCheckbox");
+            bottomPaddingCheckbox.setAttribute("id", "bottomPaddingCheckbox");
+            topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
+
+            /* Labels */
+            leftPaddingLabel.style.margin = "auto auto";
+            leftPaddingLabel.style.textAlign = "center";
+            rightPaddingLabel = leftPaddingLabel.cloneNode(true);
+            topPaddingLabel = leftPaddingLabel.cloneNode(true);
+            bottomPaddingLabel = leftPaddingLabel.cloneNode(true);
+
+            leftPaddingLabel.innerHTML = "Left";
+            rightPaddingLabel.innerHTML = "Right";
+            topPaddingLabel.innerHTML = "Top";
+            bottomPaddingLabel.innerHTML = "Bottom";
+
+            div.setAttribute("class","input-box");
+
+            flexbox.className = "flex-box";
+
+            var flexbox2 = flexbox.cloneNode(true),
+                flexbox3 = flexbox.cloneNode(true),
+                flexbox4 = flexbox.cloneNode(true);
+
+            pxInput.className = "padding-input";
+            pxInput.placeholder = "How many pixels?";
+            pxInput.setAttribute("id","paddingInput");
+            
+            pxInput.setAttribute("type", "text");
+
+            flexbox.appendChild(pxInput);
+            
+            title.innerHTML = "Add Padding to Image";
+            title.style.width = "100%";
+            title.style.height = "auto";
+            title.style.textAlign = "center";
+
+
+            cancelBtn.className = "btn btn-secondary btn-md";
+            cancelBtn.innerText = "Cancel";
+            cancelBtn.style.margin = "auto auto";
+
+            cancelBtn.addEventListener("click",cancelBtnFunction);
+            submitBtn.addEventListener("click", addPadding);
+
+            submitBtn.className = "btn btn-success btn-md";
+            submitBtn.innerText = "Submit";
+            submitBtn.style.margin = "auto auto";
+
+
+            flexbox2.appendChild(cancelBtn);
+            flexbox2.appendChild(submitBtn);
+
+            flexbox3.appendChild(leftPaddingCheckbox);
+            flexbox3.appendChild(rightPaddingCheckbox);
+            flexbox3.appendChild(topPaddingCheckbox);
+            flexbox3.appendChild(bottomPaddingCheckbox);
+
+            flexbox4.appendChild(leftPaddingLabel);
+            flexbox4.appendChild(rightPaddingLabel);
+            flexbox4.appendChild(topPaddingLabel);
+            flexbox4.appendChild(bottomPaddingLabel);
+
+
+            div.appendChild(title);
+            div.appendChild(document.createElement("br"));
+            div.appendChild(flexbox); // input box
+            div.appendChild(document.createElement("br"));
+            div.appendChild(flexbox4); //labels
+            div.appendChild(flexbox3); // checkboxes
+            div.appendChild(document.createElement("br"));
+            div.appendChild(flexbox2); // buttons
+
+            document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
         }
-        
-        // TODO: get the padding amount and display properly in the div
-        // reset padding
-        setImagePadding(0,"all");
-
-        leftPaddingCheckbox.setAttribute("type","checkbox");
-        leftPaddingCheckbox.style.margin = "auto auto";
-        leftPaddingCheckbox.style.textAlign = "center";
-        leftPaddingCheckbox.style.transform = "scale(1.5)";
-
-        rightPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
-        topPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
-        bottomPaddingCheckbox = leftPaddingCheckbox.cloneNode(true);
-
-        leftPaddingCheckbox.setAttribute("id", "leftPaddingCheckbox");
-        rightPaddingCheckbox.setAttribute("id", "rightPaddingCheckbox");
-        bottomPaddingCheckbox.setAttribute("id", "bottomPaddingCheckbox");
-        topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
-
-        /* Labels */
-        leftPaddingLabel.style.margin = "auto auto";
-        leftPaddingLabel.style.textAlign = "center";
-        rightPaddingLabel = leftPaddingLabel.cloneNode(true);
-        topPaddingLabel = leftPaddingLabel.cloneNode(true);
-        bottomPaddingLabel = leftPaddingLabel.cloneNode(true);
-
-        leftPaddingLabel.innerHTML = "Left";
-        rightPaddingLabel.innerHTML = "Right";
-        topPaddingLabel.innerHTML = "Top";
-        bottomPaddingLabel.innerHTML = "Bottom";
-
-        div.setAttribute("class","input-box");
-
-        flexbox.className = "flex-box";
-
-        var flexbox2 = flexbox.cloneNode(true),
-            flexbox3 = flexbox.cloneNode(true),
-            flexbox4 = flexbox.cloneNode(true);
-
-        pxInput.className = "padding-input";
-        pxInput.placeholder = "How many pixels?";
-        pxInput.setAttribute("id","paddingInput");
-        
-        pxInput.setAttribute("type", "text");
-
-        flexbox.appendChild(pxInput);
-        
-        title.innerHTML = "Add Padding to Image";
-        title.style.width = "100%";
-        title.style.height = "auto";
-        title.style.textAlign = "center";
-
-
-        cancelBtn.className = "btn btn-secondary btn-md";
-        cancelBtn.innerText = "Cancel";
-        cancelBtn.style.margin = "auto auto";
-
-        cancelBtn.addEventListener("click",cancelBtnFunction);
-        submitBtn.addEventListener("click", addPadding);
-
-        submitBtn.className = "btn btn-success btn-md";
-        submitBtn.innerText = "Submit";
-        submitBtn.style.margin = "auto auto";
-
-
-        flexbox2.appendChild(cancelBtn);
-        flexbox2.appendChild(submitBtn);
-
-        flexbox3.appendChild(leftPaddingCheckbox);
-        flexbox3.appendChild(rightPaddingCheckbox);
-        flexbox3.appendChild(topPaddingCheckbox);
-        flexbox3.appendChild(bottomPaddingCheckbox);
-
-        flexbox4.appendChild(leftPaddingLabel);
-        flexbox4.appendChild(rightPaddingLabel);
-        flexbox4.appendChild(topPaddingLabel);
-        flexbox4.appendChild(bottomPaddingLabel);
-
-
-        div.appendChild(title);
-        div.appendChild(document.createElement("br"));
-        div.appendChild(flexbox); // input box
-        div.appendChild(document.createElement("br"));
-        div.appendChild(flexbox4); //labels
-        div.appendChild(flexbox3); // checkboxes
-        div.appendChild(document.createElement("br"));
-        div.appendChild(flexbox2); // buttons
-
-        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
@@ -5346,83 +5695,85 @@ $(document).ready(function(){
     */
     $("#resizeFigureBtn").on('click',function(event){
         
-        // create the input box for the resize
-        var div = document.createElement("div"),
-            flexbox = document.createElement("div"),
-            widthInput = document.createElement("input"),
-            heightInput = document.createElement("input"),
-            title = document.createElement("h2"),
-            cancelBtn = document.createElement("button"),
-            submitBtn = document.createElement("button");
+        if(detectLeftButton(event)){
+            // create the input box for the resize
+            var div = document.createElement("div"),
+                flexbox = document.createElement("div"),
+                widthInput = document.createElement("input"),
+                heightInput = document.createElement("input"),
+                title = document.createElement("h2"),
+                cancelBtn = document.createElement("button"),
+                submitBtn = document.createElement("button");
 
-        
-        // if a popup is already on screen then short circut
-        if(previousPopup()){
-            return;
+            
+            // if a popup is already on screen then short circut
+            if(previousPopup()){
+                return;
+            }
+
+            flexbox.className = "flex-box";
+
+            var flexbox2 = flexbox.cloneNode(true),
+                flexbox3 = flexbox.cloneNode(true);
+
+            // set the box class to set css
+            div.setAttribute("class","input-box");
+
+            title.innerText = "Resize Figure";
+            title.style.borderBottom = "2px solid black"
+            title.style.margin = "auto auto";
+            
+            // how many pixels as text input for width and height
+
+            widthInput.placeholder = w + " (pixels)";
+            heightInput.placeholder = h + " (pixels)";
+            widthInput.className = "dimInput";
+            heightInput.className = "dimInput";
+
+            widthInput.setAttribute("id","changeDimWidth");
+            heightInput.setAttribute("id","changeDimHeight");
+
+            flexbox.appendChild(widthInput);
+            flexbox.appendChild(heightInput);
+
+            // cancel btn and submit button
+            cancelBtn.className = "btn btn-secondary btn-md";
+            cancelBtn.innerText = "Cancel";
+            cancelBtn.style.margin = "auto auto";
+
+            cancelBtn.addEventListener("click",cancelBtnFunction);
+            submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
+
+            submitBtn.className = "btn btn-success btn-md";
+            submitBtn.innerText = "Submit";
+            submitBtn.style.margin = "auto auto";
+
+            flexbox2.appendChild(cancelBtn);
+            flexbox2.appendChild(submitBtn);
+
+
+            var widthLabel = document.createElement("h4"),
+                heightLabel = document.createElement("h4");
+
+            widthLabel.style.margin = "auto auto";
+            heightLabel.style.margin = "auto auto";
+
+            widthLabel.innerText = "New Width";
+            heightLabel.innerText = "New Height";
+
+            flexbox3.appendChild(widthLabel);
+            flexbox3.appendChild(heightLabel);
+
+            // append all big boxes to the div
+            div.appendChild(title);
+            div.appendChild(flexbox3);        
+            div.appendChild(flexbox);
+            div.appendChild(document.createElement("br"));
+            div.appendChild(flexbox2);
+
+            // add box to DOM
+            document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
         }
-
-        flexbox.className = "flex-box";
-
-        var flexbox2 = flexbox.cloneNode(true),
-            flexbox3 = flexbox.cloneNode(true);
-
-        // set the box class to set css
-        div.setAttribute("class","input-box");
-
-        title.innerText = "Resize Figure";
-        title.style.borderBottom = "2px solid black"
-        title.style.margin = "auto auto";
-        
-        // how many pixels as text input for width and height
-
-        widthInput.placeholder = w + " (pixels)";
-        heightInput.placeholder = h + " (pixels)";
-        widthInput.className = "dimInput";
-        heightInput.className = "dimInput";
-
-        widthInput.setAttribute("id","changeDimWidth");
-        heightInput.setAttribute("id","changeDimHeight");
-
-        flexbox.appendChild(widthInput);
-        flexbox.appendChild(heightInput);
-
-        // cancel btn and submit button
-        cancelBtn.className = "btn btn-secondary btn-md";
-        cancelBtn.innerText = "Cancel";
-        cancelBtn.style.margin = "auto auto";
-
-        cancelBtn.addEventListener("click",cancelBtnFunction);
-        submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
-
-        submitBtn.className = "btn btn-success btn-md";
-        submitBtn.innerText = "Submit";
-        submitBtn.style.margin = "auto auto";
-
-        flexbox2.appendChild(cancelBtn);
-        flexbox2.appendChild(submitBtn);
-
-
-        var widthLabel = document.createElement("h4"),
-            heightLabel = document.createElement("h4");
-
-        widthLabel.style.margin = "auto auto";
-        heightLabel.style.margin = "auto auto";
-
-        widthLabel.innerText = "New Width";
-        heightLabel.innerText = "New Height";
-
-        flexbox3.appendChild(widthLabel);
-        flexbox3.appendChild(heightLabel);
-
-        // append all big boxes to the div
-        div.appendChild(title);
-        div.appendChild(flexbox3);        
-        div.appendChild(flexbox);
-        div.appendChild(document.createElement("br"));
-        div.appendChild(flexbox2);
-
-        // add box to DOM
-        document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
     });
 
 
@@ -5454,34 +5805,38 @@ $(document).ready(function(){
      * 
      * @description  Hotkey Handler
     */
-    $(document).keydown(function(event){
+    $(window).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
+        }
+
+        if(event.ctrlKey && keys[1] === 82){
+            return true;
         }
 
         if(keys[0] === 18 && keys.length === 2){
             event.preventDefault();
             if(keys[1] === 76){
-                $("#pencilIconFlag").mousedown(); 
+                $("#pencilIconFlag")[0].dispatchEvent(MousedownEvent); 
             }
             else if(keys[1] === 79){
-                $("#eyeFlag").click(); 
+                $("#eyeFlag")[0].dispatchEvent(ClickEvent);
             }
             else if(keys[1] === 66){
-                $("#outlineBtn").mousedown(); 
+                $("#outlineBtn")[0].dispatchEvent(MousedownEvent); 
             }
             else if(keys[1] === 78){
-                $("#northIconFlag").mousedown(); 
+                $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
             }
             else if(keys[1] === 83){
-                $("#sunIconFlag").click(); 
+                $("#sunIconFlag")[0].dispatchEvent(ClickEvent); 
             }
             else if(keys[1] === 84){
-                $("#textBtn").mousedown();
+                $("#textBtn")[0].dispatchEvent(MousedownEvent);
                 keys = [];
             }
             else if(keys[1] === 82){
-                $("#scaleBarButton").mousedown();
+                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
             }
         }
         else if(((keys[0] === 16 && keys[1] === 18) 
@@ -5489,44 +5844,27 @@ $(document).ready(function(){
             event.preventDefault();
             
             if(keys[2] === 79){
-                $("#eyeCheckboxSlider").click();
+                $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
                 
-                if( !$("#eyeFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#eyeFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#eyeFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                toggleMenuUI('eye');   
             }
             else if(keys[2] === 78){
-                $("#northCheckboxSlider").click();
+                $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
                 
-                if( !$("#northIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#northIconFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#northIconFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                toggleMenuUI('north');
             }
             else if(keys[2] === 83){
-                $("#sunCheckboxSlider").click();
-                if( !$("#sunIconFlagSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#sunIconFlagSidebar")[0].firstElementChild.classList.remove("active");
-                }
+                $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+                toggleMenuUI('sun');
             }
             else if(keys[2] === 82){
-                $("#scaleCheckboxSlider").click(); 
-                if( !$("#scaleBarButtonSidebar")[0].firstElementChild.classList.contains("active") ){
-                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.add("active");
-                }
-                else {
-                    $("#scaleBarButtonSidebar")[0].firstElementChild.classList.remove("active");
-                }  
+                $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+
+                toggleMenuUI('scale');  
             }
         }
+        return false;
     });
 
 
@@ -5543,6 +5881,8 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
+        console.log(event);
+        // Deleteing
         if(event.keyCode === 46){
             if(activeLayer){
                 event.preventDefault();
@@ -5562,16 +5902,16 @@ $(document).ready(function(){
                 }
                 else if(icon.nodeName === "svg"){
                     if(svgID.indexOf("north") > -1){
-                        $("#northIconFlag").mousedown();
+                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                     }
                     else if(svgID.indexOf("sun") > -1){
-                        $("#sunIconFlag").click();
+                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                     }
                     else if(svgID.indexOf("eye") > -1){
-                        $("#eyeFlag").click();
+                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                     }
                     else if(svgID.indexOf("scale") > -1){
-                        $("#scaleBarButton").mousedown();
+                        $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
                     }
                 }
                 activeLayer.remove();
@@ -5630,20 +5970,6 @@ $(document).ready(function(){
         }
     });
 
-
-    function markerExists( color ){
-        let markers = document.querySelectorAll("marker");
-
-        markers.forEach((el) => {
-            
-            if(color === el.firstElementChild.getAttribute("fill")){
-                console.log(color + " == " + el.firstElementChild.getAttribute("fill"))
-                return true;
-            };
-        });
-        return false;
-    }
-
     function getMarkerStartFor( color ){
         let markers = document.querySelectorAll("marker");
 
@@ -5663,32 +5989,32 @@ $(document).ready(function(){
      *      Checks for active flags and then performs actions to help edit image
     */
     $('#svgWrapper').on("click", function(event){
-        
-        // set event variables
-        var t = event.target,
+        if(detectLeftButton(event)){
+            // set event variables
+            var t = event.target,
             x = event.clientX,
             y = event.clientY,
             markerId;
-        
-        // get proper svg as target
-        var target = (t == svg ? svg : t.parentNode);
-        
-        // get new svg relative point
-        var svgP = svgPoint(target, x, y);
-        // convert to int
-        mouseX = parseInt(svgP.x),
-        mouseY = parseInt(svgP.y);
-        
-        userLineColor = document.getElementById("colorPickerLine").value;
 
-        // if the draw flag is true and length of clicks is 0
-        if(drawFlag && clickArray.length === 0 
+            // get proper svg as target
+            var target = (t == svg ? svg : t.parentNode);
+
+            // get new svg relative point
+            var svgP = svgPoint(target, x, y);
+            // convert to int
+            mouseX = parseInt(svgP.x),
+            mouseY = parseInt(svgP.y);
+
+            userLineColor = document.getElementById("colorPickerLine").value;
+
+            // if the draw flag is true and length of clicks is 0
+            if(drawFlag && clickArray.length === 0 
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
-            
+
             let isArrowHead = document.getElementById("arrowCheckboxSlider").checked,
                 NS = "http://www.w3.org/2000/svg";
 
-            
+
             // create the new  line dynamically and add it to the array so we can remove it later if needed
             line = document.createElementNS(NS,"line");
             line.setAttribute("id","line" + lineArr.length);
@@ -5703,7 +6029,7 @@ $(document).ready(function(){
             if(isArrowHead){
                 // if arrow with default color 
                 if(userLineColor === "#ffffff" || !userLineColor ){
-                     line.setAttribute("marker-start","url(#arrow)");
+                    line.setAttribute("marker-start","url(#arrow)");
                 }
                 else if( markerExists(userLineColor) ){
                     line.setAttribute("marker-start", getMarkerStartFor(userLineColor));
@@ -5741,15 +6067,15 @@ $(document).ready(function(){
             else{
                 line.style.stroke = "white";
             }
-            
+
             line.style.strokeWidth = 10;
-     
+
             svg.appendChild(line);
 
             lineArr.push(line);
             captureClick(mouseX, mouseY);
-        }
-        else if(drawFlag && clickArray.length > 1  
+            }
+            else if(drawFlag && clickArray.length > 1  
             && document.elementFromPoint(event.clientX, event.clientY) !== svg){
 
             var transform = line.getAttribute("transform");
@@ -5767,13 +6093,13 @@ $(document).ready(function(){
 
             updateLayers(line.cloneNode(true));
             // parse the whole svg and set the pointerevents to accept clicks again
-            
+
             setDetectionForLayer(activeLayer, "all");
+            }   
         }
     });
 
 });
-
 
 /**
  * @function window 'pageshow' event handler
@@ -5781,10 +6107,16 @@ $(document).ready(function(){
  * @description run the logic to start the page
 */
 $(window).bind('pageshow', function(event){
+    
+    // Chrome 1 - 79
+    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+
 
     // update the image based on the cookie
-    fixImage(getCookie("usimg"));
-
+    if(isChrome){
+        fixImage(getCookie("usimg"));
+    }
+    
     // call to fetch the data from the server
     fetch("/getData",
     {
@@ -5847,8 +6179,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle(northImage ,northDegree);
                                     adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#northIconFlag").mousedown();
-                                    $("#northIconFlag").mousedown();
+                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
                                 }
                                 break;
 
@@ -5871,8 +6203,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( sunImage, sunDegree );
                                     adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
 
-                                    $("#sunIconFlag").click();
-                                    $("#sunIconFlag").click();
+                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
                                 }
                                 
                                 break;
@@ -5895,8 +6227,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( eyeImage, observerDegree );
                                     adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#eyeFlag").click();
-                                    $("#eyeFlag").click();
+                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
                                 }
                                 break;
                         }
