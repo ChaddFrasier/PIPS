@@ -37,6 +37,7 @@ body,html {
 		color-stop(0.50, #e0dfdf),
 		color-stop(0.92, #c5c5c5),
         to(#bebebe));
+    
     -moz-box-shadow:
 		0px 1px 1px rgba(000,000,000,0.5),
 		inset 1px 2px 0px rgba(255,255,255,0.4);
@@ -46,6 +47,9 @@ body,html {
 	box-shadow:
 		0px 1px 1px rgba(000,000,000,0.5),
 		inset 1px 2px 0px rgba(255,255,255,0.4);
+	text-shadow:
+		1px 1px 2px rgba(000,000,000,0.7),
+		0px 1px 0px rgba(255,255,255,0.4);
 }
 
 .flex-box {
@@ -65,6 +69,13 @@ body,html {
 	-webkit-border-radius: 5px;
 }
 
+/** Rules for well known screen sizes */
+
+/* Most phone sizes w/ touchscreen */
+@media only screen and (max-width:500px){
+
+}
+
 .optionsPopup {
     position: absolute;
     display: block;
@@ -81,8 +92,11 @@ body,html {
 		color-stop(0.92, #e0dfdf),
         to(#f0efef));
     min-width: 50px;
-    max-width: 100px;
+    max-width: 200px;
     height: auto;
+    left:auto;
+    top: auto;
+    z-index: 20;
     min-height: none;
     max-height: none;
 }
@@ -101,13 +115,11 @@ body,html {
 		color-stop(0.50, #e0dfdf),
 		color-stop(0.92, #c5c5c5),
         to(#bebebe));
-    min-width: 50px;
-    max-width: 100px;
     width: 100%;
-    height: 100%;
-    min-height: 15px;
+    height: auto;
     max-height: none;
-    font-size: x-small;
+    font-size: medium;
+    z-index: 20;
     border-bottom: 1px solid rgba(0, 0, 0, .5);
 }
 
@@ -128,6 +140,140 @@ body,html {
     border: 1px solid rgba(0, 0, 0, .5);
 }
 
+.iconBox {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 1%; 
+    height: auto;
+}
+
+.logo {
+    position: absolute;
+    max-width: 200px;
+    min-height: none;
+}
+
+/* Most Laptop styles w/o touchscreen */
+@media only screen and (max-width:1440px){
+    .optionsPopup {
+        min-height: 20px !important;
+        right: 5px;
+        font-size: 12px !important;
+    }
+    .optionsBtn {
+        font-size: inherit !important;
+        min-height: 20px !important;
+        min-width: 10px !important;
+    }
+
+    .layerBox{
+        width: 85%; 
+        max-height: 25px;
+        min-height: 25px;
+
+        max-width: none;
+        min-width: 50px;
+        overflow: hidden;
+    }
+
+    .box-text {
+        font-size: medium !important;
+        padding: 0;
+    }
+
+    .title-text {
+        font-size: 30px !important;
+    }
+
+    .title-text-small {
+        font-size: 20px !important;
+    }
+
+    .display-4 {
+        font-size: 40px !important;
+    }
+
+    .display-5 {
+        font-size: 20px !important;
+    }
+
+    .stroke-wide {
+        -webkit-text-stroke: .5px black;
+        color: white;
+        
+    }
+} /** End of laptop interface */
+
+
+#specialCharBox.row, #specialCharBox.row.col {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.add-tag-input {
+    width: 100%;
+    position:absolute;
+    left: 40%;
+    max-width: 500px;
+    max-height: 250px;
+    min-height: 250px;
+    top: 45%;
+    z-index: 20;
+    width: 25%;
+    height: auto;
+}
+
+.box-text {
+    margin: auto auto;
+    color: black;
+    font-size: 22px;
+}
+
+.title-text {
+    margin: auto auto;
+    color: black;
+    font-size: xx-large;
+}
+
+.title-text-small {
+    margin: auto auto;
+    color: black;
+    font-size: large;
+}
+
+.themeBox {
+    background: -moz-linear-gradient(
+		top,
+		#f8d29c 0%,
+		#e7c492 50%,
+		#c9aa7f 92%,
+		#ac916cde) !important; /* important to ignore any button :active or :focus backgrounds*/
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f8d29c),
+		color-stop(0.50, #e7c492),
+		color-stop(0.92, #c9aa7f),
+		to(#ac916cde)) !important;
+}
+
+#hideBtn {
+    width: 10%;
+    padding: 0;
+    padding-bottom: 10px;
+    margin: 0;
+    vertical-align: top;
+    text-align: center;
+    height: auto;
+    min-width: 25px;
+    min-height: 25px;
+    max-width: 25px;
+    max-height: 25px;
+    border-radius: 5px; 
+    border: 1px solid red;
+    background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+    background-color: rgba(39, 109, 200); color: red;
+}
 
 input.dimInput {
     text-align: center;
@@ -139,6 +285,25 @@ input.dimInput {
     border-radius: 4px;
     -moz-border-radius: 4px;
 	-webkit-border-radius: 4px;
+}
+
+.errorDivBox {
+    background: black;
+    color: white;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+}
+
+.errorTitle {
+    position: relative;
+    font-size: 50px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    width: 100%;
+    height: auto;
 }
 
 .mainbox-right {
@@ -179,10 +344,10 @@ pre {
 .layerBox {
     width: 75%;
     height: auto;
-    max-height: 100px;
-    max-width: 100px;
-    min-height: 50px;
-    min-width: 50px;
+    max-height: 150px;
+    max-width: 150px;
+    min-height: 65px;
+    min-width: 65px;
     padding: 0;
     overflow-y: hidden;
     margin:inherit;
@@ -204,8 +369,14 @@ pre {
 		to(#696565));
  }
 
+ div.layerBox svg {
+    min-width: 100%;
+    max-width: 100px;
+    min-height: 100%;
+    max-height: 100px;
+ }
+
 .shadowbox {
-    width:100px;
     text-align:center;    
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
@@ -304,8 +475,8 @@ text.user {
 .dropdown {
     background: transparent;
     width: 100%;
-    min-width: 50px;
-    max-width: 200px;
+    min-width: 100px;
+    max-width: 250px;
     text-align: center;
     margin: 0;
     z-index: 15;
@@ -342,11 +513,11 @@ text.user {
 		color-stop(0.50, #ebe9e9),
 		color-stop(0.92, #e0dddd),
         to(#d6d6d6));
-    width: 29%;
+    width: 100%;
     height: auto;
     text-align: center;
-    min-width: 200px;
-    max-width: 400px;
+    min-width: 100px;
+    max-width: 250px;
     margin: auto auto;
     border-radius: 5%;
     -moz-border-radius: 5%;
@@ -387,8 +558,8 @@ text.user {
     width: 100%;
     text-align: inherit;
     vertical-align: middle;
-    min-width: 150px;
-    max-width: 400px;
+    min-width: 100px;
+    max-width: 250px;
     z-index: 15;
     padding:5; 
     margin:0;
@@ -400,7 +571,7 @@ text.user {
     min-width: 100px;
     max-width: 400px;
     width: auto;
-    margin: 0 0;
+    margin: auto;
     padding: 10px;
     max-height: 75px;
     min-height: 25px;
@@ -716,22 +887,21 @@ svg.image-image {
 }
 
 .help-box {
-    z-index: 40;
+    z-index: 20;
     position: absolute;
     float: left;
-    margin: 0;
-    margin-left: 3%;
-    margin-right: 2%;
     border: 5px solid black;
     background: whitesmoke;
     padding: 2rem;
     padding-top: 1rem;
     padding-bottom: 0;
+    left: 10%;
+    top: 10%;
     text-align: left;
     box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
-    width: 25%;
+    width: 40%;
     height: 50%;
     overflow-y: auto;
 }
@@ -739,6 +909,7 @@ svg.image-image {
 cite {
     text-decoration: underline;
     font-style: inherit;
+    font-size: 26px;
     margin: 0;
     margin-left: 2%;
     margin-right: 1%;

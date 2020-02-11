@@ -79,6 +79,26 @@ function setOutput(){
     let getTemplate = document.getElementById("template-text").innerText;
     output(getTemplate);
 }
+
+
+// TODO: comment this
+function checkForPhone() {
+    if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
+        console.log("STOP THAT")
+        var mainContainer = document.createElement("div"),
+            titleText = document.createElement("h3");
+
+        mainContainer.className = "errorDivBox";
+        titleText.style.margin = "auto auto";
+        titleText.innerHTML = "<p class='errorTitle'>User Error: Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
+
+        mainContainer.appendChild(titleText);
+        document.body.insertAdjacentElement("afterbegin", mainContainer);
+    }
+    else if(window.innerWidth >= 1100 && document.getElementsByClassName("errorDivBox").length > 0){
+        document.getElementsByClassName("errorDivBox")[0].remove();
+    }
+}
             
 /**
  * @function getMetadata
@@ -747,6 +767,10 @@ $(document).ready(function(){
 
     loader = document.getElementById('loading');
 
+
+    setInterval(checkForPhone, 1000);
+
+
     // grab the variables from the server
     for(let i=0; i<varDiv.childElementCount;i++){
         if(varDiv.children[i].id === 'outputName'){
@@ -1011,196 +1035,184 @@ $(document).ready(function(){
      * @description create a box to handle the input of a new tag
      */
     $("#addTagBtn").click( function() {
-        // create the elements
-        var div = document.createElement("div"),
-            inputBox1 = document.createElement("div")
-            inputBox2 = document.createElement("div"),
-            title = document.createElement("h3"),
-            tagInput = document.createElement("input"),
-            tagLabel = document.createElement("label"),
-            valInput = document.createElement("input"),
-            valLabel = document.createElement("label"),
-            cancelBtn = document.createElement("button"),
-            submitBtn = document.createElement("button");
+        if(document.getElementsByClassName("add-tag-input").length === 0){
+            // create the elements
+            var div = document.createElement("div"),
+                inputBox1 = document.createElement("div"),
+                inputBox2 = document.createElement("div"),
+                inputBox3 = document.createElement("div"),
+                title = document.createElement("h3"),
+                tagInput = document.createElement("input"),
+                tagLabel = document.createElement("label"),
+                valInput = document.createElement("input"),
+                valLabel = document.createElement("label"),
+                cancelBtn = document.createElement("button"),
+                submitBtn = document.createElement("button");
 
-        // design the box for adding tags
-        div.className = "shadowbox";
-        div.style.position = "absolute";
-        div.style.left = "40%";
-        div.style.maxWidth = "25%";
-        div.style.maxHeight = "20%";
-        div.style.top = "50%";
-        div.style.zIndex = "40";
-        div.style.width = "25%";
-        div.style.height = "20%";
-        div.style.border = "2px solid black";
+            // design the box for adding tags
+            div.className = "shadowbox add-tag-input";
+            
+            div.style.border = "2px solid black";
 
-        inputBox1.className = "row";
-        inputBox2.className = "row";
+            inputBox1.className = "flex-box";
+            inputBox2.className = "flex-box";
+            inputBox3.className = "flex-box";
 
-        tagLabel.style.position = "absolute";
-        tagLabel.style.left = "10%";
-        tagLabel.style.top = "36%";
-        tagLabel.style.fontSize = "150%";
-        tagLabel.innerHTML = "New Tag: ";
-        tagLabel.style.color = "black";
+            tagLabel.innerHTML = "New Tag: ";
+            tagLabel.className = "box-text";
 
-        tagInput.style.position = "absolute";
-        tagInput.style.left = "45%";
-        tagInput.style.top = "35%";
-        tagInput.style.transform = "scale(1.1)";
-        tagInput.placeholder = "New Tag";
+            tagInput.placeholder = "New Tag";
+            tagInput.style.margin = "auto auto";
 
-        valLabel.style.position = "absolute";
-        valLabel.style.left = "10%";
-        valLabel.style.top = "54%";
-        valLabel.style.fontSize = "150%";
-        valLabel.innerHTML = "New Value: ";
-        valLabel.style.color = "black";
 
-        valInput.style.position = "absolute";
-        valInput.style.left = "45%";
-        valInput.style.transform = "scale(1.1)";
-        valInput.style.top = "55%";
-        valInput.placeholder = "New Value";
+            valLabel.innerHTML = "New Value: ";
+            valLabel.className = "box-text";
 
-        title.innerHTML = "Create a New Tag";
-        title.style.position = "relative";
-        title.style.color = "black";
-        title.style.margin = "auto";
-        title.style.marginTop = "0";
+            valInput.style.margin = "auto auto";
+            valInput.placeholder = "New Value";
 
-        cancelBtn.className = "btn btn-sm btn-danger button";
-        cancelBtn.innerHTML = "Cancel";
-        cancelBtn.style.position = "absolute";
-        cancelBtn.style.left = "10%";
-        cancelBtn.style.top = "75%";
+            title.innerHTML = "Create a New Tag";
+            title.style.position = "relative";
+            title.style.color = "black";
+            title.style.margin = "0 auto 10px auto";
 
-        // cancel listener
-        cancelBtn.addEventListener("mousedown", (event) => {
-            if( detectLeftButton(event) ){
-                div.remove();
-            }
-        });
+            cancelBtn.className = "btn btn-sm btn-danger button";
+            cancelBtn.innerHTML = "Cancel";
+            cancelBtn.style.margin = "auto auto";
 
-        submitBtn.className = "btn btn-sm button";
-        submitBtn.innerHTML = "Submit";
-        submitBtn.style.position = "absolute";
-        submitBtn.style.left = "70%";
-        submitBtn.style.top = "75%";
 
-        // submit listener
-        submitBtn.addEventListener("mousedown", (event) => {
-            if(detectLeftButton(event)){
-                // if both values are not empty
-                if(tagInput.value !== "" && valInput.value !== ""){
-                    // trim extra spaces
-                    tagInput.value = tagInput.value.trim();
-                    valInput.value = valInput.value.trim();
+            // cancel listener
+            cancelBtn.addEventListener("mousedown", (event) => {
+                if( detectLeftButton(event) ){
+                    div.remove();
+                }
+            });
 
-                    // add these values into the common tag section
-                    var metadata = document.getElementById("allTagArea").value,
-                        metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
-                        tags = document.getElementById("metadataTagArea"),
-                        impData = JSON.parse(document.getElementById("metadata-text").value),
-                        newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
-                    
-                    // temp array
-                    let tmpArr = metadata.split("\n");
-                    let impArr = tags.value.split("\n");
+            submitBtn.className = "btn btn-sm button";
+            submitBtn.innerHTML = "Submit";
+            submitBtn.style.margin = "auto auto";
 
-                    // loop through the important data
-                    for( var i=0; i<impArr.length; i++ ) {
-                        // if the tag value is the same as the input
-                        if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
-
-                            // confirm that the user wants to change this value
-                            var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
-
-                            // if confirmed
-                            if( userChoice ) {
-                                // add the value to the array of tags
-                                impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
-                                impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
-                                                                        ? parseFloat(valInput.value)
-                                                                        : valInput.value;
-                                // form data
-                                var fd = new FormData();
-                                    headers = new Headers();
-                                
-                                // append data as a string to the form
-                                fd.append("data", JSON.stringify(impData));
-
-                                // update the common data
-                                fetch("/impDataUpdate", 
-                                {
-                                    method: 'POST',
-                                    body: fd,
-                                    headers: headers
-                                }).then(response => {
-                                    response.blob().then( blob => {
-                                        // read result
-                                        var reader = new FileReader();
-                                        reader.readAsText(blob);
         
-                                        reader.onloadend = () => {
-                                            console.log(reader.result);
-                                        };
+
+            // submit listener
+            submitBtn.addEventListener("mousedown", (event) => {
+                if(detectLeftButton(event)){
+                    // if both values are not empty
+                    if(tagInput.value !== "" && valInput.value !== ""){
+                        // trim extra spaces
+                        tagInput.value = tagInput.value.trim();
+                        valInput.value = valInput.value.trim();
+
+                        // add these values into the common tag section
+                        var metadata = document.getElementById("allTagArea").value,
+                            metaDataText = JSON.parse(document.getElementById("all-tag-text").value),
+                            tags = document.getElementById("metadataTagArea"),
+                            impData = JSON.parse(document.getElementById("metadata-text").value),
+                            newString = "[[ " + tagInput.value + " ]]: " + valInput.value;
+                        
+                        // temp array
+                        let tmpArr = metadata.split("\n");
+                        let impArr = tags.value.split("\n");
+
+                        // loop through the important data
+                        for( var i=0; i<impArr.length; i++ ) {
+                            // if the tag value is the same as the input
+                            if(impArr[i] && impArr[i].split(": ")[0].split(" ")[1].trim() === tagInput.value) {
+
+                                // confirm that the user wants to change this value
+                                var userChoice = confirm("Are you sure you would like to change the " + tagInput.value + " value?");
+
+                                // if confirmed
+                                if( userChoice ) {
+                                    // add the value to the array of tags
+                                    impArr[i] = impArr[i].split(": ")[0] + ": " + valInput.value;
+                                    impData[tagInput.value] = (!isNaN(parseFloat(valInput.value))) 
+                                                                            ? parseFloat(valInput.value)
+                                                                            : valInput.value;
+                                    // form data
+                                    var fd = new FormData();
+                                        headers = new Headers();
+                                    
+                                    // append data as a string to the form
+                                    fd.append("data", JSON.stringify(impData));
+
+                                    // update the common data
+                                    fetch("/impDataUpdate", 
+                                    {
+                                        method: 'POST',
+                                        body: fd,
+                                        headers: headers
+                                    }).then(response => {
+                                        response.blob().then( blob => {
+                                            // read result
+                                            var reader = new FileReader();
+                                            reader.readAsText(blob);
+            
+                                            reader.onloadend = () => {
+                                                console.log(reader.result);
+                                            };
+                                        });
                                     });
-                                });
+                                }
                             }
                         }
+
+                        // join the array and save it to the element
+                        tags.value = impArr.join("\n");
+
+                        // add the tag to the data
+                        metaDataText[tagInput.value] = valInput.value;
+
+                        // push the new stirng
+                        tmpArr.push(newString);
+
+                        // update the data on the page
+                        document.getElementById("metadata-text").value = JSON.stringify(impData);
+                        document.getElementById("allTagArea").value = tmpArr.join("\n");
+                        document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
+                        // remove the tab we created
+                        div.remove();
+
+                        // update the tag section
+                        showMoreTags();
+                        showMoreTags();
                     }
-
-                    // join the array and save it to the element
-                    tags.value = impArr.join("\n");
-
-                    // add the tag to the data
-                    metaDataText[tagInput.value] = valInput.value;
-
-                    // push the new stirng
-                    tmpArr.push(newString);
-
-                    // update the data on the page
-                    document.getElementById("metadata-text").value = JSON.stringify(impData);
-                    document.getElementById("allTagArea").value = tmpArr.join("\n");
-                    document.getElementById("all-tag-text").value = JSON.stringify(metaDataText);
-                    // remove the tab we created
-                    div.remove();
-
-                    // update the tag section
-                    showMoreTags();
-                    showMoreTags();
                 }
-            }
-        });
+            });
 
-        // add elements in order
-        div.appendChild(title);
+            // add elements in order
+            div.appendChild(title);
 
-        // set dimensions for col box 
-        col = document.createElement("div");
-        col.style.width = "100%";
-        col.style.height = "15%";
-        col.style.className = "col";
 
-        // set the margin for the input Boxes
-        inputBox1.style.marginTop = "2px";
-        inputBox2.style.marginTop = "2px";
+            // set the margin for the input Boxes
+            inputBox1.style.marginTop = "2px";
+            inputBox2.style.marginTop = "2px";
 
-        // append the new cols with the inner elements
-        inputBox1.appendChild(col.cloneNode().appendChild(tagLabel));
-        inputBox1.appendChild(col.cloneNode().appendChild(tagInput));
+            // append the new cols with the inner elements
+            inputBox1.appendChild(tagLabel);
+            inputBox1.appendChild(tagInput);
 
-        inputBox2.appendChild(col.cloneNode().appendChild(valLabel));
-        inputBox2.appendChild(col.cloneNode().appendChild(valInput));
-    
-        // append all needed elements in order
-        div.append(inputBox1, inputBox2, submitBtn, cancelBtn);
-   
-        // insert the new div box above the body's first child and focus on the first input field
-        document.body.insertBefore(div,document.body.firstChild);
-        tagInput.focus();
+            inputBox2.appendChild(valLabel);
+            inputBox2.appendChild(valInput);
+
+            inputBox3.appendChild(cancelBtn);    
+            inputBox3.appendChild(submitBtn);
+
+
+            div.addEventListener("keydown", e => {
+                if(e.keyCode === 13){
+                    console.log("GO")
+                    submitBtn.dispatchEvent(new MouseEvent("mousedown"));
+                }
+            });
+
+            // append all needed elements in order
+            div.append(inputBox1, document.createElement("br") , inputBox2, document.createElement("br"),inputBox3);
+
+            // insert the new div box above the body's first child and focus on the first input field
+            document.body.insertBefore(div,document.body.firstChild);
+            tagInput.focus();
+        }
     });
 
     /**
@@ -1445,7 +1457,7 @@ $(document).ready(function(){
         if( cursorLocation && cursorLocation.restored ){
             // remove markers get new location
             rangy.removeMarkers(cursorLocation);
-            cursorLocation = frangy.saveSelection(this);
+            cursorLocation = rangy.saveSelection(this);
             rangy.restoreSelection(cursorLocation, true);
             rangy.removeMarkers(cursorLocation);
 

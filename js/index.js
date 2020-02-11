@@ -123,6 +123,25 @@ function resetOtherButtons(currentBtn, classofButton){
     });
 }
 
+// TODO: commment
+function checkForPhone() {
+    if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
+        console.log("STOP THAT")
+        var mainContainer = document.createElement("div"),
+            titleText = document.createElement("h3");
+
+        mainContainer.className = "errorDivBox";
+        titleText.style.margin = "auto auto";
+        titleText.innerHTML = "<p class='errorTitle'>User Error: Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
+
+        mainContainer.appendChild(titleText);
+        document.body.insertAdjacentElement("afterbegin", mainContainer);
+    }
+    else if(window.innerWidth >= 1100 && document.getElementsByClassName("errorDivBox").length > 0){
+        document.getElementsByClassName("errorDivBox")[0].remove();
+    }
+}
+
 /**
  * @function loaderActivate
  * 
@@ -240,6 +259,8 @@ $(document).ready(function(){
     widthInputBox = document.getElementById("widthInput");
     heightInputBox = document.getElementById("heightInput");
 
+    setInterval(checkForPhone, 1000);
+
     var pageVariable = document.getElementById("pageVariable");
 
     for(let i=0;i<pageVariable.childElementCount;i++){
@@ -264,7 +285,7 @@ $(document).ready(function(){
         // hide the help box
         if(detectLeftButton(event)){
             document.getElementById("help-box").style.visibility = "hidden";
-            document.getElementById("helpBtn").className = "btn btn-primary btn-lg";
+            document.getElementById("helpBtn").className = "btn btn-primary btn-md";
         }
     });
 

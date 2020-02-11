@@ -956,7 +956,6 @@ function fixImage( cookieVal ){
         for( let i=0; i < keys.length; i++ ){
             let key = keys[i],
                 val = data[key];
-                console.log(key)
 
 
             switch(key){
@@ -2292,7 +2291,6 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
-    console.log(el)
     while( !el.getAttribute("id") ){
         el = el.offsetParent;
     }
@@ -2522,10 +2520,11 @@ function arrowBtnHandler( event ){
 
     if(target.getAttribute("id").split("layer")[1].indexOf("line") > -1
         && activeLayer === target){
-    
-        var line = document.getElementById("line"+target.firstElementChild.firstElementChild.getAttribute("id"));
+
+        var line = document.getElementById(target.getAttribute("id").split("layer")[1]);
         // check to see if the element is already using an arrow head
         if(line && line.getAttribute("marker-start")){
+
             // if true: set the removeAttribute(marker-start) and delete the marker obj
             let id = line.getAttribute("marker-start").replace("url(","").replace(")","");
             
@@ -2540,6 +2539,7 @@ function arrowBtnHandler( event ){
             target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
         }
         else if (line){
+
             // else false: create a new marker element using the color of the line currently
             // if arrow with default color 
             if(userLineColor === "#ffffff" || !userLineColor ){
@@ -2550,12 +2550,13 @@ function arrowBtnHandler( event ){
             }
             // if the array is linger than 1 and the color is not default
             else if(lineArr.length > 0 || userLineColor){
+                let id = line.getAttribute("id").replace("line","");
 
-                var markerId = "arrow" + lineArr.length,
-                    pathId = "arrowPath" + lineArr.length,
-                    newDef = document.getElementById("arrowDef").cloneNode();
+                var markerId = "arrow" + id,
+                    pathId = "arrowPath" + id,
+                    newDef = document.getElementById("arrowDef").cloneNode(true);
 
-                newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                newDef.setAttribute("id", "arrowDef" + id);
                 newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
                 line.setAttribute("marker-start", String("url(#" + markerId + ")"));
                 (newDef.childNodes).forEach(childElem => {
@@ -2573,6 +2574,9 @@ function arrowBtnHandler( event ){
             tmp.style.strokeWidth = "50px";
             tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
             target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
+        }
+        else{
+            console.log(target.getAttribute("id").split("layer")[1])
         }
     }
 }
@@ -2697,10 +2701,16 @@ function updateLayers(el){
                 deleteBtn = changeColorBtn.cloneNode(true);
 
                 changeColorBtn.innerText = "Edit Color";
-                deleteBtn.innerText = "Delete (Del)";
+                deleteBtn.innerText = "Delete(Del)";
 
                 optionsBox.className = "optionsPopup";
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+
+                console.log(event)
+                console.log(parseInt(event.clientX) - parseInt(event.offsetX));
+                console.log(parseInt(event.clientY) - parseInt(event.offsetY));
+
+                optionsBox.style.top = event.y;
+                optionsBox.style.left = event.x;
 
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
@@ -2722,7 +2732,11 @@ function updateLayers(el){
                 arrowBtn.innerText = "Toggle Arrow";
 
                 optionsBox.className = "optionsPopup";
+                
+                
                 optionsBox.offsetTop = event.offsetY - event.clientHeight;
+                optionsBox.offsetLeft = event.offsetX - event.clientWidth;
+
 
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
@@ -2747,7 +2761,11 @@ function updateLayers(el){
                 deleteBtn.innerText = "Delete (Del)";
 
                 optionsBox.className = "optionsPopup";
+                
+                
                 optionsBox.offsetTop = event.offsetY - event.clientHeight;
+                optionsBox.offsetLeft = event.offsetX - event.clientWidth;
+
 
                 deleteBtn.addEventListener("click", deleteHandler);
 
@@ -2813,7 +2831,7 @@ function updateLayers(el){
         case "line":
             var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-            svg.setAttribute("height","85");
+            svg.setAttribute("height","50%");
             svg.pointerEvents = "none";
             el.style.strokeWidth = "50px";
             svg.style.padding = "0%";
@@ -3382,6 +3400,10 @@ function iconPlaced( icon ){
 }
 
 
+// TODO: detect when the screen has less than 1100px in width
+// and if so, create a div box to tell them that they should not be using this product on the current device
+
+
 
 // TODO:
 var halfScreen = false;
@@ -3396,6 +3418,7 @@ function setScreen( type ){
                 layerUI.style.height = "auto";
                 layerUI.style.margin = "2px";
                 layerUI.style.display = "flex";
+                layerUI.style.maxWidth = "none";
 
                 // move the Layer Tab above the svg image
                 document.getElementsByClassName("mainbox-center")[0].insertBefore(layerUI, progressBar);
@@ -3416,6 +3439,7 @@ function setScreen( type ){
                 layerUI.style.height = "75%";
                 layerUI.style.display = "block";
                 layerUI.style.margin = "auto auto";
+                layerUI.style.maxWidth = "200px";
     
                 // move the Layer Tab to the right if svg image
                 layerLabel.insertAdjacentElement("afterend",layerUI);
@@ -3425,6 +3449,7 @@ function setScreen( type ){
     
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
                 document.getElementsByClassName("mainbox-center")[0].style.width = "92%";
+
     
                 halfScreen = !halfScreen;
             }
@@ -3435,6 +3460,22 @@ function setScreen( type ){
 
 
 function checkScreen(){
+    if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
+        var mainContainer = document.createElement("div"),
+            titleText = document.createElement("h3");
+
+        mainContainer.className = "errorDivBox";
+        titleText.style.margin = "auto auto";
+        titleText.innerHTML = "<p class='errorTitle'>User Error: Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
+
+        mainContainer.appendChild(titleText);
+        document.body.insertAdjacentElement("afterbegin", mainContainer);
+        
+    }
+    else if(window.innerWidth >= 1100 && document.getElementsByClassName("errorDivBox").length > 0 ){
+        document.getElementsByClassName("errorDivBox")[0].remove();
+    }
+
     if(parseInt(screen.width/2) <= window.innerWidth){
         // run the function to change the ui to full page mode
         setScreen("full");
@@ -3489,7 +3530,7 @@ String.prototype.replaceAll = function(find, replace){
 $(document).ready(function(){
 
     // set the timmer for the UI orientation detection
-    setInterval(checkScreen, 800);
+    setInterval(checkScreen, 1000);
 
     // get image dimensions form the hidden divs
     var dimDiv = document.getElementById("imageDimensions"),
@@ -5573,7 +5614,7 @@ $(document).ready(function(){
      * @description 
     */
     $("#padImageBtn").on('click',function(event){
-        console.log(event)
+        
         if(detectLeftButton(event)){
             // create the input box for the padding
             var div = document.createElement("div"),
@@ -5591,6 +5632,8 @@ $(document).ready(function(){
                 topPaddingLabel,
                 bottomPaddingLabel;
     
+            // TODO: live padding interpritation
+
             // if a popup is already on screen then short circut
             if(previousPopup()){
                 return;
@@ -5615,7 +5658,7 @@ $(document).ready(function(){
             topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
 
             /* Labels */
-            leftPaddingLabel.style.margin = "auto auto";
+            leftPaddingLabel.className = "box-text";
             leftPaddingLabel.style.textAlign = "center";
             rightPaddingLabel = leftPaddingLabel.cloneNode(true);
             topPaddingLabel = leftPaddingLabel.cloneNode(true);
@@ -5626,7 +5669,7 @@ $(document).ready(function(){
             topPaddingLabel.innerHTML = "Top";
             bottomPaddingLabel.innerHTML = "Bottom";
 
-            div.setAttribute("class","input-box");
+            div.setAttribute("class","shadowbox input-box");
 
             flexbox.className = "flex-box";
 
@@ -5643,9 +5686,7 @@ $(document).ready(function(){
             flexbox.appendChild(pxInput);
             
             title.innerHTML = "Add Padding to Image";
-            title.style.width = "100%";
-            title.style.height = "auto";
-            title.style.textAlign = "center";
+            title.className = "title-text";
 
 
             cancelBtn.className = "btn btn-secondary btn-md";
@@ -5683,6 +5724,14 @@ $(document).ready(function(){
             div.appendChild(document.createElement("br"));
             div.appendChild(flexbox2); // buttons
 
+
+            div.addEventListener("keydown", e => {
+                if(e.keyCode === 13){
+                    console.log("GO")
+                    submitBtn.dispatchEvent(new MouseEvent("click"));
+                }
+            });
+
             document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
         }
     });
@@ -5717,11 +5766,11 @@ $(document).ready(function(){
                 flexbox3 = flexbox.cloneNode(true);
 
             // set the box class to set css
-            div.setAttribute("class","input-box");
+            div.setAttribute("class","shadowbox input-box");
 
             title.innerText = "Resize Figure";
             title.style.borderBottom = "2px solid black"
-            title.style.margin = "auto auto";
+            title.className = "title-text";
             
             // how many pixels as text input for width and height
 
@@ -5755,8 +5804,8 @@ $(document).ready(function(){
             var widthLabel = document.createElement("h4"),
                 heightLabel = document.createElement("h4");
 
-            widthLabel.style.margin = "auto auto";
-            heightLabel.style.margin = "auto auto";
+            widthLabel.className = "box-text";
+            heightLabel.className = "box-text";
 
             widthLabel.innerText = "New Width";
             heightLabel.innerText = "New Height";
@@ -5766,10 +5815,18 @@ $(document).ready(function(){
 
             // append all big boxes to the div
             div.appendChild(title);
+            div.appendChild(document.createElement("br"));
             div.appendChild(flexbox3);        
             div.appendChild(flexbox);
             div.appendChild(document.createElement("br"));
             div.appendChild(flexbox2);
+
+            div.addEventListener("keydown", e => {
+                if(e.keyCode === 13){
+                    console.log("GO")
+                    submitBtn.dispatchEvent(new MouseEvent("mousedown"));
+                }
+            });
 
             // add box to DOM
             document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
@@ -5805,7 +5862,7 @@ $(document).ready(function(){
      * 
      * @description  Hotkey Handler
     */
-    $(window).keydown(function(event){
+    $(document).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
         }
@@ -5881,7 +5938,7 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
-        console.log(event);
+        
         // Deleteing
         if(event.keyCode === 46){
             if(activeLayer){
