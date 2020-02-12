@@ -77,30 +77,28 @@
                     </h4>
                 </div>
             </div>
+            <br>
             <div class="row" style="margin-bottom: .5%;">
-                <br/>
-                <div class="title text-center themeBox" style="width: 55%; border: 5px solid black;
-                padding-left: 0; padding-right:0; margin:auto auto;">
-                    <p class="lead title-text-small" >
+                <div class="index-box-1  text-center title themeBox">
+                    <p class="index-box-1-text lead title-text-small">
                         Upload a .cub or .tif file to begin.
                     </p>
-                    <a id="helpBtn" class="btn btn-primary btn-md" title="Get Started" 
-                    style="border: 2px solid black; color: white;" role="button" onclick="showHelp(this)">Get Started</a>
-                    <a class="btn btn-primary btn-md" style= "border: 2px solid black; color: white;" 
-                    title="Template File" href= '/tpl' role="button">
-                        What is a TPL file?
-                    </a>
+                    <div class="flex-box">
+                        <a id="helpBtn" class="btn btn-primary btn-lg index-menu-btn1" title="Get Started" role="button" onclick="showHelp(this)">Get Started</a>
+                        <a class="btn btn-primary btn-lg index-menu-btn2" title="Template File" href= '/tpl' role="button">
+                            What is a TPL file?
+                        </a>
+                    </div>
                 </div>
             </div>
             <br/>
-            <div class="row" style="height: 85%;">
+            <div class="row" style="height: 90%;">
                 <!-- Input Area -->
-                <div class="container float-center" style="margin-left:auto; margin-right: auto;">
+                <div class="container float-center mainUploadBox">
                     <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
                     enctype="multipart/form-data">
                         <div class="row" style="margin-bottom: 1%; height: 20%;">
-                            <div class="btn btn-lg form-group themeBox" 
-                            style="color:black; margin: auto auto; display:inline-block; border: 5px solid black;">
+                            <div class="btn btn-lg form-group themeBox index-file-input-1">
                                 <label for="cubUpload" class="title-text-small">
                                     <cite>Choose an ISIS Cube or TIFF File</cite>
                                 </label>
@@ -109,14 +107,13 @@
                             </div>
                         </div>
                          <!-- Options -->
-                        <div class="row themeBox" style="padding: 1%; color: black; margin: auto auto;
-                          display:none; border: 5px solid black; width: 100%;" id="optionBox">
+                        <div class="row themeBox" id="optionBox">
                           <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-2" style="width:85%;">                                        
+                                <div class="col-2 title-text-small" style="width:85%;">                                        
                                     <label id="logCheckboxLabel" for="logCheckbox" 
                                     style="color:black; margin: auto auto;">
-                                        <cite style="font-size: 95%; padding-top: 10%;">Log ISIS Output to File?</cite>
+                                        <cite>Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
                                 <div class="col-5" style="text-align: center"></div>
@@ -127,14 +124,14 @@
                             <div class="row" style="width: 100%; height: 30%;">
                                 <div class="col-2" style="padding: 1%; padding-top:5%;">
                                     <div class="row">
-                                        <div class="col-2" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
+                                        <div class="col-2 title-text-small" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
                                         <div class="col-6" style="padding: 0; padding-left: 10%;">
                                             <label class="switch index" style="right: 0;">
                                                 <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N">
                                                 <span class="slider round" id="logAnimation"></span>
                                             </label> 
                                         </div>
-                                        <div class="col-4" style="padding: 0; padding-top: 3%;">On</div>
+                                        <div class="col-4 title-text-small" style="padding: 0; padding-top: 3%;">On</div>
                                     </div>  
                                 </div>
                                 <div class="col-10">
@@ -225,7 +222,7 @@
                             </div>
                         </div>   
                    
-                        <div class="col-4" style="width: 25%; margin:0; padding: 2%;">
+                        <div class="col-4 size-input">
                             <div class="container themeBox" id="dimensionInput"
                             style="width:auto; visibility: visible; border-top:0;color: black;
                              margin: auto auto; border: 5px solid black;">
@@ -247,7 +244,6 @@
                                         type="text" id="heightInput" name="desiredHeight" 
                                         placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
-                                
                                 </div>
                             </div>
                         </div>
@@ -256,8 +252,7 @@
                         <!-- Template upload-->
                         <div class="row" style="height: 40%;">
                             <input id="tplCode" name="tplCode" type="number" style="display: none;" value="0">
-                            <div class="btn form-group themeBox" 
-                            style="color: black; margin: auto auto; border: 5px solid black;">
+                            <div class="btn form-group themeBox index-file-input-2">
                                 <label for="tplUpload" class="title-text-small" style="color:black;
                                 border-bottom: 2px solid black;">
                                     Choose a Template File
@@ -268,7 +263,7 @@
                                             Template 1
                                         </label>
                                         <br/>
-                                        <button type="button" id="mosaicBtn" class="template btn btn-md button" 
+                                        <button type="button" id="mosaicBtn" class="template btn btn-lg button" 
                                         style="width: 100%; max-width:none; font-size: small">Mosaic</button>
                                     </div>
                                     <div class="col">
@@ -276,7 +271,7 @@
                                                 Template 2
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small;"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%;  max-width:none; font-size: small;"
                                          id="mapProjectedBtn">Map Projected</button>
                                     </div>
                                     <div class="col">
@@ -284,7 +279,7 @@
                                                 Template 3
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%;  max-width:none; font-size: small"
                                         id="compositeBtn">Composite</button>
                                     </div>
                                     <!-- Placeholder buttons for more templates later -->
@@ -293,7 +288,7 @@
                                                 Template 4
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%"
                                         id="otherBtn">Choice 4</button>
                                     </div>
                                     <!-- Placeholder buttons for more templates later -->
@@ -302,7 +297,7 @@
                                                 Template 5
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button"style="width: 100%"
+                                        <button type="button" class="template btn btn-lg button"style="width: 100%"
                                          id="other2Btn">Choice 5</button>
                                     </div>
                                 </div>
@@ -320,9 +315,8 @@
                         </div>
                     
                         <!-- Submit button -->
-                        <div class="row" style="height: 20%; margin-top: 1%;">
-                            <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                                style="width: auto; max-width: none; margin:auto auto; border: 1px solid black;" 
+                        <div class="row" style="margin-top: 1%;">
+                            <input type="button" class="btn btn-lg button" name="SubmitCube" value="Upload" 
                                 title="Submit Upload" onclick="loaderActivate()" />
                         </div>
                     </form>

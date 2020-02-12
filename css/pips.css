@@ -54,8 +54,9 @@ body,html {
 
 .flex-box {
     display: flex;
-    width: 100%;
+    width: fit-content;
     height: auto;
+    margin: auto auto;
 }
 .padding-input {
     width: 50%;
@@ -69,11 +70,367 @@ body,html {
 	-webkit-border-radius: 5px;
 }
 
-/** Rules for well known screen sizes */
+.index-box-1 {
+    width: 55%;
+    border: 5px solid black;
+    padding: 10px !important;
+    margin:auto auto;
+    min-height: 100px;
+    max-height: 300px;
+}
 
-/* Most phone sizes w/ touchscreen */
-@media only screen and (max-width:500px){
+.index-box-1-text {
+    text-align: center;
+    margin:auto auto !important;
+}
 
+.index-menu-btn1 {
+    border: 2px solid black;
+    color: white !important;
+    margin: 5px;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+
+.index-menu-btn2 {
+    border: 2px solid black;
+    color: white;
+    margin: 5px;
+    margin-left: 0px;
+}
+
+.index-file-input-1 {
+    color:black;
+    margin: auto auto;
+    display:inline-block;
+    border: 5px solid black !important;
+}
+.index-file-input-2 {
+    color:black;
+    margin: auto auto;
+    display:inline-block;
+    border: 5px solid black !important;
+}
+
+#optionBox {
+    padding: 1%;
+    color: black; 
+    margin: auto auto;
+    display:none;
+    border: 5px solid black;
+    width: 100%;
+}
+
+.mainUploadBox {
+    margin-left:auto;
+    margin-right: auto;
+    max-width: none;
+    width: 100%;
+}
+
+.writer-header-box {
+    height: auto;
+    max-width: 1000px; 
+    max-height: 220px;
+    padding: 1rem;
+    padding-top: 0;
+    border-right:1px;
+    border-bottom: 2px;
+    border: solid black;
+    background: rgba(99, 88, 94, 0.746)
+}
+
+#specialCharactersBtn {
+    margin:10px 0 auto 0 !important;
+    z-index:5;
+    vertical-align: top;
+    position:sticky;
+    height: auto;
+    padding:0 !important;
+    max-width: 25px !important;
+    max-height: 25px !important;
+}
+
+#addTagBtn {
+    margin:10px 0 auto 0 !important;
+    max-width: 25px !important;
+    max-height: 25px !important;
+    height: auto;
+    widows: auto;
+    padding:0 !important;
+    position: absolute;
+    right: 5%;
+    top: 1%;
+}
+
+#filterInput {
+    background-color: rgba(255,255,255);
+    width: 100%;
+    height:auto;
+    text-align: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    color:black;
+    border: 1.5px solid black;
+}
+
+#button-more-tags {
+    max-width: none !important;
+    width: 100%;
+}
+
+label[for="filterInput"] {
+    margin:auto 0; 
+    color:black;
+    width: 100%;
+    height:auto;
+    padding:2px;
+}
+
+.specChar {
+    padding: 0px 0px !important;
+    font-size: 10px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+}
+
+/** @media Rules for well known screen sizes LARGEST MUST BE AT TOP */
+
+@media only screen and (max-width:3840px) {
+    .display-4 {
+        font-size: 80px !important;
+    }
+
+    .display-5 {
+        font-size: 38px !important;
+    }
+
+    .stroke-wide {
+        stroke: .5px black;
+        -webkit-text-stroke: .5px black;
+        color: white;  
+    }
+
+    .title-text-small {
+        font-size: xx-large !important;
+    }
+
+    .title-text-smaller {
+        font-size: large !important;
+    }
+
+    .box-text {
+        font-size: x-large !important;
+        padding: 0;
+    }
+
+    .title-text {
+        font-size: 35px !important;
+    }
+
+    .optionsPopup {
+        min-height: 40px !important;
+        right: 5px;
+        font-size: 16px !important;
+    }
+    .optionsBtn {
+        font-size: inherit !important;
+        min-height: 40px !important;
+        min-width: 10px !important;
+    }
+
+    .layerBox{
+        width: 85%; 
+        max-height: 50px;
+        min-height: 50px;
+
+        max-width: none;
+        min-width: 50px;
+        overflow: hidden;
+    }
+
+    .index-box-1 {
+        height: auto;
+        min-height: 200px !important;
+    }
+
+    .index-box-1-text {
+        font-size: 50px !important;
+    }
+
+    .btn-lg {
+        min-height: 60px !important;
+        padding: .75rem .75rem !important;
+        font-size: large !important;
+    }
+
+    .btn-md {
+        min-height: 50px !important;
+        min-width: 50px !important;
+        padding: .5rem .5rem !important;
+        font-size: medium !important;
+    }
+
+    .button {
+        min-height: 60px;
+        max-width: none;
+        padding: 1rem 1rem !important;
+        font-size: 20px !important;
+        max-width: none !important;
+    }
+
+    .index-file-input-1 {
+        font-size: xx-large !important;
+    }
+
+    .index-file-input-2 {
+        font-size: xx-large !important;
+    }
+
+    .mainUploadBox {
+        min-width: 1500px;
+    }
+    
+    .switch {
+        transform: scale(1) !important;
+        right: -10px !important;
+        top: 10px;
+    }
+
+    .writer-header-box {
+        min-height: 300px !important;
+    }
+
+    #specialCharactersBtn {
+        min-width: 50px !important;
+        min-height: 50px !important;
+    }
+
+    #addTagBtn {
+        min-width: 50px !important;
+        min-height: 50px !important;
+    }
+
+    #filterInput {
+        transform: scale(1.2);
+    }
+
+}
+
+/* Most Laptop styles w/o touchscreen */
+@media only screen and (max-width:1920px){
+    .optionsPopup {
+        min-height: 20px !important;
+        right: 5px;
+        font-size: 12px !important;
+    }
+    .optionsBtn {
+        font-size: inherit !important;
+        min-height: 20px !important;
+        min-width: 10px !important;
+    }
+
+    .layerBox{
+        width: 85%; 
+        max-height: 25px;
+        min-height: 25px;
+
+        max-width: none;
+        min-width: 50px;
+        overflow: hidden;
+    }
+
+    .box-text {
+        font-size: medium !important;
+        padding: 0;
+    }
+
+    .title-text {
+        font-size: 30px !important;
+    }
+
+    .title-text-small {
+        font-size: large !important;
+    }
+
+    .title-text-smaller {
+        font-size: medium !important;
+    }
+
+    .display-4 {
+        font-size: 40px !important;
+    }
+
+    .display-5 {
+        font-size: 20px !important;
+    }
+
+    .index-box-1 {
+        min-height: 100px !important;
+    }
+    
+    .btn-lg {
+        min-height: 25px !important;
+        max-width: none;
+        padding: .5rem 1rem !important;
+        font-size: small !important;
+    }
+
+    .btn-md {
+        min-height: 20px !important;
+        max-width: none;
+        padding: .5rem .5rem !important;
+        font-size: x-small !important;
+    }
+
+    .index-file-input-1 {
+        font-size: large !important;
+    }
+
+    .index-file-input-2 {
+        font-size: large !important;
+    }
+
+    .mainUploadBox {
+        min-width: 1100px;
+    }
+
+    .index-box-1-text {
+        font-size: 30px !important;
+    }
+
+    .switch {
+        transform: scale(.75) !important;
+        right: -3px !important;
+        top: 5px;
+    }
+
+    .writer-header-box {
+        min-height: 220px !important;
+    }
+
+    #specialCharactersBtn {
+        min-width: 30px !important;
+        min-height: 30px !important;
+    }
+
+    #addTagBtn {
+        min-width: 30px !important;
+        min-height: 30px !important;
+    }
+
+    #filterInput {
+        transform: scale(1.05);
+    }
+} /** End of laptop interface */
+
+.size-input {
+    width: auto;
+    height: 100% !important;
+    min-height: none;
+    margin:0;
+    padding: 1%;
 }
 
 .optionsPopup {
@@ -154,57 +511,6 @@ body,html {
     min-height: none;
 }
 
-/* Most Laptop styles w/o touchscreen */
-@media only screen and (max-width:1440px){
-    .optionsPopup {
-        min-height: 20px !important;
-        right: 5px;
-        font-size: 12px !important;
-    }
-    .optionsBtn {
-        font-size: inherit !important;
-        min-height: 20px !important;
-        min-width: 10px !important;
-    }
-
-    .layerBox{
-        width: 85%; 
-        max-height: 25px;
-        min-height: 25px;
-
-        max-width: none;
-        min-width: 50px;
-        overflow: hidden;
-    }
-
-    .box-text {
-        font-size: medium !important;
-        padding: 0;
-    }
-
-    .title-text {
-        font-size: 30px !important;
-    }
-
-    .title-text-small {
-        font-size: 20px !important;
-    }
-
-    .display-4 {
-        font-size: 40px !important;
-    }
-
-    .display-5 {
-        font-size: 20px !important;
-    }
-
-    .stroke-wide {
-        -webkit-text-stroke: .5px black;
-        color: white;
-        
-    }
-} /** End of laptop interface */
-
 
 #specialCharBox.row, #specialCharBox.row.col {
     margin: 0 !important;
@@ -225,9 +531,9 @@ body,html {
 }
 
 .box-text {
-    margin: auto auto;
+    margin: auto 10px;
     color: black;
-    font-size: 22px;
+    font-size: larger;
 }
 
 .title-text {
@@ -301,6 +607,7 @@ input.dimInput {
 .errorTitle {
     position: relative;
     font-size: 50px;
+    padding: 10px;
     font-family: Georgia, 'Times New Roman', Times, serif;
     width: 100%;
     height: auto;
@@ -815,6 +1122,7 @@ p {
     width: 5rem; 
     height:auto;
     margin: 0;
+    pointer-events: all;
 }
 
 .helpBtn:hover {
@@ -839,9 +1147,10 @@ label {
 }
 
 .button {
-    width:5rem;
+    width: auto;
     height: auto;
     background: #007150;
+    font-size: medium;
     color: white;
     border: 2px solid black !important;
     overflow: hidden;
@@ -909,7 +1218,7 @@ svg.image-image {
 cite {
     text-decoration: underline;
     font-style: inherit;
-    font-size: 26px;
+    font-size: inherit;
     margin: 0;
     margin-left: 2%;
     margin-right: 1%;

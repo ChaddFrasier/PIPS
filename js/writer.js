@@ -1064,7 +1064,6 @@ $(document).ready(function(){
             tagInput.placeholder = "New Tag";
             tagInput.style.margin = "auto auto";
 
-
             valLabel.innerHTML = "New Value: ";
             valLabel.className = "box-text";
 
@@ -1076,9 +1075,9 @@ $(document).ready(function(){
             title.style.color = "black";
             title.style.margin = "0 auto 10px auto";
 
-            cancelBtn.className = "btn btn-sm btn-danger button";
+            cancelBtn.className = "btn btn-md btn-danger button";
             cancelBtn.innerHTML = "Cancel";
-            cancelBtn.style.margin = "auto auto";
+            cancelBtn.style.margin = "auto 10px";
 
 
             // cancel listener
@@ -1088,11 +1087,9 @@ $(document).ready(function(){
                 }
             });
 
-            submitBtn.className = "btn btn-sm button";
+            submitBtn.className = "btn btn-md button";
             submitBtn.innerHTML = "Submit";
             submitBtn.style.margin = "auto auto";
-
-        
 
             // submit listener
             submitBtn.addEventListener("mousedown", (event) => {
@@ -1201,7 +1198,6 @@ $(document).ready(function(){
 
             div.addEventListener("keydown", e => {
                 if(e.keyCode === 13){
-                    console.log("GO")
                     submitBtn.dispatchEvent(new MouseEvent("mousedown"));
                 }
             });

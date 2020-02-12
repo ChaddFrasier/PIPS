@@ -285,7 +285,7 @@ $(document).ready(function(){
         // hide the help box
         if(detectLeftButton(event)){
             document.getElementById("help-box").style.visibility = "hidden";
-            document.getElementById("helpBtn").className = "btn btn-primary btn-md";
+            document.getElementById("helpBtn").className = "btn btn-primary btn-lg index-menu-btn1";
         }
     });
 

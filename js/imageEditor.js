@@ -65,10 +65,7 @@ var placeEnum = new Object({
         });
 
 /** Custome Event For Calling functions from code */
-const MousedownEvent = new MouseEvent("mousedown", { which: 1 }),
-    ClickEvent = new MouseEvent("click", { which: 1 }),
-    MouseupEvent = new MouseEvent("mouseup", { which: 1 })
-    DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
+const DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
 
 
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
@@ -936,6 +933,7 @@ function toggleMenuUI(str){
 
     
     if(id){
+        console.log(id)
         if( !$(id)[0].firstElementChild.classList.contains("active") ){
             $(id)[0].firstElementChild.classList.add("active");
         }
@@ -960,42 +958,42 @@ function fixImage( cookieVal ){
 
             switch(key){
                 case "northPosition":
-                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("northCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("northCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
                 
                 case "sunPosition":
-                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it 
                     if( val["checked"] ){
-                        document.getElementById("sunCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("sunCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }      
                     break;
                 
                 case "eyePosition":
-                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("eyeCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("eyeCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
 
                 case "scalebarPosition":
-                    $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                    $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform", val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("scaleCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("scaleCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
 
@@ -1012,7 +1010,7 @@ function fixImage( cookieVal ){
                         colorB = parseInt(colorB);
                         
                         $("#colorPickerBox").val(rgbToHex(colorR, colorG, colorB));
-                        $("#outlineBtn")[0].dispatchEvent(MousedownEvent);
+                        $("#outlineBtn")[0].dispatchEvent(new MouseEvent("mousedown"));
 
                         document.getElementById(activeLayer.id.replace("layer",""))
                                                     .setAttribute("transform", val['transform']);
@@ -2476,23 +2474,23 @@ function toggleColorBtnHandler ( event ){
 
     switch(target.getAttribute("id")){
         case "layerscaleBarButtonSvg":
-            $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            $("#scaleCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
 
-            toggleMenuUI('scale');  
+            toggleMenuUI('scale');
             break;
         
         case "layereyeFlagSvg":
-            $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            $("#eyeCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('eye');
             break;
         
         case "layersunIconFlagSvg":
-            $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            $("#sunCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('sun');
             break;
 
         case "layernorthIconFlagSvg":
-            $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            $("#northCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('north');
             break;
     }
@@ -2762,14 +2760,13 @@ function updateLayers(el){
 
                 optionsBox.className = "optionsPopup";
                 
-                
                 optionsBox.offsetTop = event.offsetY - event.clientHeight;
                 optionsBox.offsetLeft = event.offsetX - event.clientWidth;
 
 
                 deleteBtn.addEventListener("click", deleteHandler);
 
-               toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
+                toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
 
                 optionsBox.appendChild(toggleColorBtn);
             }
@@ -2782,7 +2779,6 @@ function updateLayers(el){
 
             // prevent defaults downstream
             return false;
-            
         }
     });
 
@@ -3386,13 +3382,13 @@ function iconPlaced( icon ){
                 // check which icon it is and remove it
                 switch(child){
                     case northImage:
-                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                        $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                         break;
                     case sunImage:
-                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                        $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                         break;
                     case eyeImage:
-                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                        $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                         break;
                 }
             }
@@ -3501,7 +3497,7 @@ function createCookie(cookieName,cookieValue,daysToExpire){
 }
 
 function viewButtonHandler(el){
-    document.getElementById('viewOption').dispatchEvent(ClickEvent);
+    document.getElementById('viewOption').dispatchEvent(new MouseEvent("click"));
     if(el.classList.contains("active")){
         el.classList.remove("active");
     }else{
@@ -4759,7 +4755,7 @@ $(document).ready(function(){
             // if the scalebar is not on the image
             if(scalebarHalf === null){
                 // place the icon
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
 
                 // grab the elements
                 scalebarHalf = document.getElementById("scalebarHalf");
@@ -4767,7 +4763,7 @@ $(document).ready(function(){
                 scalebar1 = document.getElementById("scalebar1");
 
                 // remove it again
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
 
             // reset the padding to 0
@@ -5874,26 +5870,26 @@ $(document).ready(function(){
         if(keys[0] === 18 && keys.length === 2){
             event.preventDefault();
             if(keys[1] === 76){
-                $("#pencilIconFlag")[0].dispatchEvent(MousedownEvent); 
+                $("#pencilIconFlag")[0].dispatchEvent(new MouseEvent("mousedown")); 
             }
             else if(keys[1] === 79){
-                $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
             }
             else if(keys[1] === 66){
-                $("#outlineBtn")[0].dispatchEvent(MousedownEvent); 
+                $("#outlineBtn")[0].dispatchEvent(new MouseEvent("mousedown")); 
             }
             else if(keys[1] === 78){
-                $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
             else if(keys[1] === 83){
-                $("#sunIconFlag")[0].dispatchEvent(ClickEvent); 
+                $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click")); 
             }
             else if(keys[1] === 84){
-                $("#textBtn")[0].dispatchEvent(MousedownEvent);
+                $("#textBtn")[0].dispatchEvent(new MouseEvent("mousedown"));
                 keys = [];
             }
             else if(keys[1] === 82){
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
         }
         else if(((keys[0] === 16 && keys[1] === 18) 
@@ -5901,22 +5897,22 @@ $(document).ready(function(){
             event.preventDefault();
             
             if(keys[2] === 79){
-                $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#eyeCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
                 
                 toggleMenuUI('eye');   
             }
             else if(keys[2] === 78){
-                $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#northCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
                 
                 toggleMenuUI('north');
             }
             else if(keys[2] === 83){
-                $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#sunCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
 
                 toggleMenuUI('sun');
             }
             else if(keys[2] === 82){
-                $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#scaleCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
 
                 toggleMenuUI('scale');  
             }
@@ -5959,16 +5955,16 @@ $(document).ready(function(){
                 }
                 else if(icon.nodeName === "svg"){
                     if(svgID.indexOf("north") > -1){
-                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                        $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                     }
                     else if(svgID.indexOf("sun") > -1){
-                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                        $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                     }
                     else if(svgID.indexOf("eye") > -1){
-                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                        $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                     }
                     else if(svgID.indexOf("scale") > -1){
-                        $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                        $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
                     }
                 }
                 activeLayer.remove();
@@ -6236,8 +6232,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle(northImage ,northDegree);
                                     adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
-                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
+                                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                                 }
                                 break;
 
@@ -6260,8 +6256,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( sunImage, sunDegree );
                                     adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
 
-                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
-                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
+                                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                                 }
                                 
                                 break;
@@ -6284,8 +6280,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( eyeImage, observerDegree );
                                     adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
-                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
+                                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                                 }
                                 break;
                         }
