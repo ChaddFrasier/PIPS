@@ -1075,7 +1075,7 @@ $(document).ready(function(){
             title.style.color = "black";
             title.style.margin = "auto auto";
 
-            cancelBtn.className = "btn btn-danger button btn-sm";
+            cancelBtn.className = "btn btn-danger btn-md";
             cancelBtn.innerHTML = "Cancel";
             cancelBtn.style.margin = "auto auto";
 
@@ -1087,7 +1087,7 @@ $(document).ready(function(){
                 }
             });
 
-            submitBtn.className = "btn button btn-sm";
+            submitBtn.className = "btn button btn-md";
             submitBtn.innerHTML = "Submit";
             submitBtn.style.margin = "auto auto";
 
