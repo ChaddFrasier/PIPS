@@ -2703,12 +2703,8 @@ function updateLayers(el){
 
                 optionsBox.className = "optionsPopup";
 
-                console.log(event)
-                console.log(parseInt(event.clientX) - parseInt(event.offsetX));
-                console.log(parseInt(event.clientY) - parseInt(event.offsetY));
-
-                optionsBox.style.top = event.y;
-                optionsBox.style.left = event.x;
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
 
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
@@ -2732,14 +2728,13 @@ function updateLayers(el){
                 optionsBox.className = "optionsPopup";
                 
                 
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
-                optionsBox.offsetLeft = event.offsetX - event.clientWidth;
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
 
 
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
 
-                // TODO: add arrowhead listerner
                 arrowBtn.addEventListener("click", arrowBtnHandler)
 
                 optionsBox.appendChild(changeColorBtn);
@@ -2760,8 +2755,8 @@ function updateLayers(el){
 
                 optionsBox.className = "optionsPopup";
                 
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
-                optionsBox.offsetLeft = event.offsetX - event.clientWidth;
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
 
 
                 deleteBtn.addEventListener("click", deleteHandler);
@@ -5667,7 +5662,7 @@ $(document).ready(function(){
 
             div.setAttribute("class","shadowbox input-box");
 
-            flexbox.className = "flex-box";
+            flexbox.className = "flex-container";
 
             var flexbox2 = flexbox.cloneNode(true),
                 flexbox3 = flexbox.cloneNode(true),
@@ -5683,7 +5678,6 @@ $(document).ready(function(){
             
             title.innerHTML = "Add Padding to Image";
             title.className = "title-text";
-
 
             cancelBtn.className = "btn btn-secondary btn-md";
             cancelBtn.innerText = "Cancel";
@@ -5721,7 +5715,7 @@ $(document).ready(function(){
             div.appendChild(flexbox2); // buttons
 
 
-            div.addEventListener("keydown", e => {
+            div.addEventListener("keyup", e => {
                 if(e.keyCode === 13){
                     console.log("GO")
                     submitBtn.dispatchEvent(new MouseEvent("click"));
@@ -5756,7 +5750,7 @@ $(document).ready(function(){
                 return;
             }
 
-            flexbox.className = "flex-box";
+            flexbox.className = "flex-container";
 
             var flexbox2 = flexbox.cloneNode(true),
                 flexbox3 = flexbox.cloneNode(true);
@@ -5772,8 +5766,8 @@ $(document).ready(function(){
 
             widthInput.placeholder = w + " (pixels)";
             heightInput.placeholder = h + " (pixels)";
-            widthInput.className = "dimInput";
-            heightInput.className = "dimInput";
+            widthInput.className = "padding-input";
+            heightInput.className = "padding-input";
 
             widthInput.setAttribute("id","changeDimWidth");
             heightInput.setAttribute("id","changeDimHeight");
@@ -5786,8 +5780,8 @@ $(document).ready(function(){
             cancelBtn.innerText = "Cancel";
             cancelBtn.style.margin = "auto auto";
 
-            cancelBtn.addEventListener("click",cancelBtnFunction);
-            submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
+            cancelBtn.addEventListener("click", cancelBtnFunction);
+            submitBtn.addEventListener("mousedown", resizeUpdateBtnHandler);
 
             submitBtn.className = "btn btn-success btn-md";
             submitBtn.innerText = "Submit";
@@ -5817,10 +5811,13 @@ $(document).ready(function(){
             div.appendChild(document.createElement("br"));
             div.appendChild(flexbox2);
 
-            div.addEventListener("keydown", e => {
+            div.addEventListener("keyup", e => {
                 if(e.keyCode === 13){
                     console.log("GO")
                     submitBtn.dispatchEvent(new MouseEvent("mousedown"));
+                }
+                else {
+                    return true;
                 }
             });
 
@@ -5917,7 +5914,6 @@ $(document).ready(function(){
                 toggleMenuUI('scale');  
             }
         }
-        return false;
     });
 
 

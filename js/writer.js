@@ -1054,30 +1054,30 @@ $(document).ready(function(){
             
             div.style.border = "2px solid black";
 
-            inputBox1.className = "flex-box";
-            inputBox2.className = "flex-box";
-            inputBox3.className = "flex-box";
+            inputBox1.className = "flex-container";
+            inputBox2.className = "flex-container";
+            inputBox3.className = "flex-container";
 
             tagLabel.innerHTML = "New Tag: ";
             tagLabel.className = "box-text";
 
             tagInput.placeholder = "New Tag";
-            tagInput.style.margin = "auto auto";
+            tagInput.className = "popup-text-input";
 
             valLabel.innerHTML = "New Value: ";
             valLabel.className = "box-text";
 
-            valInput.style.margin = "auto auto";
+            valInput.className = "popup-text-input";
             valInput.placeholder = "New Value";
 
             title.innerHTML = "Create a New Tag";
             title.style.position = "relative";
             title.style.color = "black";
-            title.style.margin = "0 auto 10px auto";
+            title.style.margin = "auto auto";
 
-            cancelBtn.className = "btn btn-md btn-danger button";
+            cancelBtn.className = "btn btn-danger button btn-sm";
             cancelBtn.innerHTML = "Cancel";
-            cancelBtn.style.margin = "auto 10px";
+            cancelBtn.style.margin = "auto auto";
 
 
             // cancel listener
@@ -1087,7 +1087,7 @@ $(document).ready(function(){
                 }
             });
 
-            submitBtn.className = "btn btn-md button";
+            submitBtn.className = "btn button btn-sm";
             submitBtn.innerHTML = "Submit";
             submitBtn.style.margin = "auto auto";
 

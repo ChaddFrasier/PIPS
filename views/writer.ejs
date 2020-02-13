@@ -19,8 +19,7 @@
     </head>
     <body>
         <!-- Help Box -->
-        <div class="help-box" id="help-box" style="visibility: hidden;
-            margin-right: 2%; margin-top: 10%; padding-bottom: 0;">
+        <div class="help-box" id="help-box" style="visibility: hidden;">
             <button class="float-right button" id="hideBtn">
                 &times;
             </button>
@@ -93,13 +92,13 @@
                 </div>
                 <div class="row text-center" style="padding: 10px; height: auto;">
                     <div class="col">
-                        <a class="float-left btn dropdownItem" href="/" role="button" title="Upload New File"
+                        <a class="float-left btn btn-lg dropdownItem" href="/" role="button" title="Upload New File"
                         style="width: auto; height: auto; padding:5; border: 1.5px solid black;">
                         Upload New File
                         </a>
                     </div>
                     <div class="col menubar">
-                        <div id="fileMenuBtn" class="dropdown btn">
+                        <div id="fileMenuBtn" class="dropdown btn btn-lg">
                             File Options&#x25BA;
                         </div>
                         <br>
@@ -143,7 +142,7 @@
                             style="width: auto; height: auto; padding:5; margin: 0;
                             background: transparent;">            
                                 <input type="hidden" value= '<%= dictionaryString %>' name="image_string">
-                                <input type="button" id="imagePageBtn" value="View Image" class="btn dropdownItem"
+                                <input type="button" id="imagePageBtn" value="View Image" class="btn btn-lg dropdownItem"
                                 title="Image Editor" style="width:auto; height:auto; padding:4;
                                 margin:0;" onclick="loaderActivate()"/>
                             </form>
@@ -302,7 +301,7 @@
                                 <br/>
                                 <br/>
                                 <!-- Show All Button-->
-                                <button id="button-more-tags" class="btn btn-lg button float-left"
+                                <button id="button-more-tags" class="btn btn-md button float-left"
                                 title="Change Visible Tags" onclick="showMoreTags()">Show Important Tags</button>
                                 <br/>
                         </div>
@@ -328,7 +327,6 @@
                         style="resize: vertical; font-size: 22px; border: 2px solid black; margin-left: auto;
                         margin-right:auto;" rows="7" title="ISIS Data"></textarea> 
                 </div> 
-                
                 
                 <div class="col" style="text-align: right;">
                     <div class="container" style="max-width:none;max-height:none;">

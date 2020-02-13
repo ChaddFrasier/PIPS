@@ -17,7 +17,7 @@ body,html {
     display: block;
     top: 300px;
     left: 35%;
-    width: 25%;
+    width: 45%;
     height: auto;
     min-height: 250px;
     border-radius: 5px;
@@ -25,19 +25,7 @@ body,html {
 	-webkit-border-radius: 5px;
     z-index: 10;
     border: 2px solid black;
-    background: -moz-linear-gradient(
-		top,
-		#f0efef 0%,
-		#e0dfdf 50%,
-		#c5c5c5 92%,
-        #bebebe);
-	background: -webkit-gradient(
-		linear, left top, left bottom,
-		from(#f0efef),
-		color-stop(0.50, #e0dfdf),
-		color-stop(0.92, #c5c5c5),
-        to(#bebebe));
-    
+
     -moz-box-shadow:
 		0px 1px 1px rgba(000,000,000,0.5),
 		inset 1px 2px 0px rgba(255,255,255,0.4);
@@ -52,15 +40,39 @@ body,html {
 		0px 1px 0px rgba(255,255,255,0.4);
 }
 
+.popup-text-input {
+    width: auto auto auto 0;
+    font-size: 20px;
+    width: 100%;
+    min-height: 15px !important;
+    max-height: 50px !important;
+    max-width: 400px !important;
+    min-width: none;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    text-align: center;
+}
+
 .flex-box {
-    display: flex;
-    width: fit-content;
+    display: flexbox;
+    width: 100%;
     height: auto;
     margin: auto auto;
 }
-.padding-input {
+
+.flex-container {
+    display: flex;
     width: 50%;
+    height: auto;
+    margin: auto auto;
+}
+
+.padding-input {
+    width: 100%;
     min-height: 35px;
+    max-width: 400px;
+    min-width: 100px;
     position: relative;
     height: 10%;
     margin: auto auto;
@@ -72,29 +84,39 @@ body,html {
 
 .index-box-1 {
     width: 55%;
-    border: 5px solid black;
+    border: 5px solid black !important;
     padding: 10px !important;
-    margin:auto auto;
+    margin: auto auto;
     min-height: 100px;
     max-height: 300px;
 }
 
 .index-box-1-text {
     text-align: center;
-    margin:auto auto !important;
+    margin: auto auto !important;
 }
 
 .index-menu-btn1 {
-    border: 2px solid black;
+    border: 2px solid black !important;
     color: white !important;
     margin: 5px;
     margin-left: 0;
     margin-right: 10px;
 }
 
+.widthInput {
+    width:auto;
+    visibility: visible;
+    border-top:0;
+    color: black;
+    margin: auto auto;
+    border: 5px solid black;
+    min-height: 200px;
+    font-size: medium;
+}
 
 .index-menu-btn2 {
-    border: 2px solid black;
+    border: 2px solid black !important;
     color: white;
     margin: 5px;
     margin-left: 0px;
@@ -116,7 +138,7 @@ body,html {
 #optionBox {
     padding: 1%;
     color: black; 
-    margin: auto auto;
+    margin: 0 0;
     display:none;
     border: 5px solid black;
     width: 100%;
@@ -181,11 +203,11 @@ body,html {
 }
 
 label[for="filterInput"] {
-    margin:auto 0; 
-    color:black;
+    margin: auto 0; 
+    color: black;
     width: 100%;
-    height:auto;
-    padding:2px;
+    height: auto;
+    padding: 2px;
 }
 
 .specChar {
@@ -202,6 +224,11 @@ label[for="filterInput"] {
         font-size: 80px !important;
     }
 
+    .popup-text-input {
+        font-size: 15px !important;
+        max-height: 35px !important;
+    }
+
     .display-5 {
         font-size: 38px !important;
     }
@@ -209,7 +236,7 @@ label[for="filterInput"] {
     .stroke-wide {
         stroke: .5px black;
         -webkit-text-stroke: .5px black;
-        color: white;  
+        color: white;
     }
 
     .title-text-small {
@@ -220,8 +247,14 @@ label[for="filterInput"] {
         font-size: large !important;
     }
 
-    .box-text {
+    .widthInput {
+        min-height: 250px;
+        margin-top: 20px !important;
         font-size: x-large !important;
+    }
+
+    .box-text {
+        font-size: large !important;
         padding: 0;
     }
 
@@ -231,7 +264,6 @@ label[for="filterInput"] {
 
     .optionsPopup {
         min-height: 40px !important;
-        right: 5px;
         font-size: 16px !important;
     }
     .optionsBtn {
@@ -250,6 +282,14 @@ label[for="filterInput"] {
         overflow: hidden;
     }
 
+    cite {
+        font-size: xx-large !important;
+    }
+
+    .lead {
+        font-size: xx-large !important;
+    }
+
     .index-box-1 {
         height: auto;
         min-height: 200px !important;
@@ -261,7 +301,7 @@ label[for="filterInput"] {
 
     .btn-lg {
         min-height: 60px !important;
-        padding: .75rem .75rem !important;
+        padding: 1rem 1rem !important;
         font-size: large !important;
     }
 
@@ -272,10 +312,17 @@ label[for="filterInput"] {
         font-size: medium !important;
     }
 
+    .btn-sm {
+        min-height: 25px !important;
+        max-height: 55px !important;
+        padding: .5rem .5rem !important;
+        font-size: 15px !important;
+    }
+
     .button {
         min-height: 60px;
         max-width: none;
-        padding: 1rem 1rem !important;
+        padding: 1rem 1rem;
         font-size: 20px !important;
         max-width: none !important;
     }
@@ -303,32 +350,56 @@ label[for="filterInput"] {
     }
 
     #specialCharactersBtn {
-        min-width: 50px !important;
-        min-height: 50px !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
     }
 
     #addTagBtn {
-        min-width: 50px !important;
-        min-height: 50px !important;
+        min-width: 35px !important;
+        min-height: 35px !important;
     }
 
     #filterInput {
         transform: scale(1.2);
     }
 
+    .logo {
+        max-width: 400px !important;
+    }
+
+    .input-box {
+        width: 25% !important;
+    }
 }
 
 /* Most Laptop styles w/o touchscreen */
 @media only screen and (max-width:1920px){
     .optionsPopup {
         min-height: 20px !important;
-        right: 5px;
         font-size: 12px !important;
     }
+
+    .input-box {
+        width: 35% !important;
+    }
+
     .optionsBtn {
         font-size: inherit !important;
         min-height: 20px !important;
         min-width: 10px !important;
+    }
+
+    .popup-text-input {
+        font-size: 9px !important;
+        max-height: 25px !important;
+    }
+
+    cite {
+        font-size: x-large !important;
+    }
+
+    .lead {
+        font-size: x-large !important;
     }
 
     .layerBox{
@@ -341,8 +412,12 @@ label[for="filterInput"] {
         overflow: hidden;
     }
 
+    .logo {
+        max-width: 200px !important;
+    }
+
     .box-text {
-        font-size: medium !important;
+        font-size: small !important;
         padding: 0;
     }
 
@@ -352,6 +427,12 @@ label[for="filterInput"] {
 
     .title-text-small {
         font-size: large !important;
+    }
+
+    .widthInput {
+        min-height: 200px !important;
+        margin-top: 5px !important;
+        font-size: medium !important;
     }
 
     .title-text-smaller {
@@ -411,17 +492,21 @@ label[for="filterInput"] {
     }
 
     #specialCharactersBtn {
-        min-width: 30px !important;
-        min-height: 30px !important;
+        min-width: 25px !important;
+        min-height: 25px !important;
     }
 
     #addTagBtn {
-        min-width: 30px !important;
-        min-height: 30px !important;
+        min-width: 25px !important;
+        min-height: 25px !important;
     }
 
     #filterInput {
         transform: scale(1.05);
+    }
+
+    .dropdownItem {
+        max-height: 100px !important;
     }
 } /** End of laptop interface */
 
@@ -451,8 +536,6 @@ label[for="filterInput"] {
     min-width: 50px;
     max-width: 200px;
     height: auto;
-    left:auto;
-    top: auto;
     z-index: 20;
     min-height: none;
     max-height: none;
@@ -507,8 +590,15 @@ label[for="filterInput"] {
 
 .logo {
     position: absolute;
-    max-width: 200px;
+    max-width: 300px;
     min-height: none;
+}
+
+.logoBox {
+    position: absolute;
+    width: auto;
+    height: auto;
+    top: 18px;
 }
 
 
@@ -518,12 +608,13 @@ label[for="filterInput"] {
 }
 
 .add-tag-input {
-    width: 100%;
+    width: auto;
     position:absolute;
     left: 40%;
-    max-width: 500px;
-    max-height: 250px;
-    min-height: 250px;
+    max-width: 250px;
+    max-width: 750px;
+    max-height: 500px;
+    min-height: auto;
     top: 45%;
     z-index: 20;
     width: 25%;
@@ -531,9 +622,9 @@ label[for="filterInput"] {
 }
 
 .box-text {
-    margin: auto 10px;
+    width: 80%;
     color: black;
-    font-size: larger;
+    font-size: large;
 }
 
 .title-text {
@@ -560,37 +651,26 @@ label[for="filterInput"] {
 		from(#f8d29c),
 		color-stop(0.50, #e7c492),
 		color-stop(0.92, #c9aa7f),
-		to(#ac916cde)) !important;
+        to(#ac916cde)) !important;
 }
 
 #hideBtn {
-    width: 10%;
+    width: auto;
     padding: 0;
     padding-bottom: 10px;
     margin: 0;
     vertical-align: top;
     text-align: center;
     height: auto;
-    min-width: 25px;
-    min-height: 25px;
-    max-width: 25px;
-    max-height: 25px;
-    border-radius: 5px; 
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    border-radius: 5px;
     border: 1px solid red;
     background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-    background-color: rgba(39, 109, 200); color: red;
-}
-
-input.dimInput {
-    text-align: center;
-    color: black;
-    border: 2px solid black;
-    min-height: 35px;
-    min-width: 100px;
-    margin: auto auto;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+    background-color: rgba(39, 109, 200);
+    color: red;
 }
 
 .errorDivBox {
@@ -867,9 +947,12 @@ text.user {
     vertical-align: middle;
     min-width: 100px;
     max-width: 250px;
+    min-height: 30px !important;
+    max-height: 100px !important;
     z-index: 15;
     padding:5; 
     margin:0;
+    font-size: larger;
 }
 
 .menuBtnBox {
@@ -1204,6 +1287,8 @@ svg.image-image {
     padding: 2rem;
     padding-top: 1rem;
     padding-bottom: 0;
+    min-width: 500px;
+    max-width: 1000px;
     left: 10%;
     top: 10%;
     text-align: left;

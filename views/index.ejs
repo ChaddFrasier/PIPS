@@ -78,7 +78,7 @@
                 </div>
             </div>
             <br>
-            <div class="row" style="margin-bottom: .5%;">
+            <div class="row">
                 <div class="index-box-1  text-center title themeBox">
                     <p class="index-box-1-text lead title-text-small">
                         Upload a .cub or .tif file to begin.
@@ -124,14 +124,14 @@
                             <div class="row" style="width: 100%; height: 30%;">
                                 <div class="col-2" style="padding: 1%; padding-top:5%;">
                                     <div class="row">
-                                        <div class="col-2 title-text-small" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
+                                        <div class="col-2 title-text-small" style="padding: 0; padding-left: 10%;">Off</div>
                                         <div class="col-6" style="padding: 0; padding-left: 10%;">
                                             <label class="switch index" style="right: 0;">
                                                 <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N">
                                                 <span class="slider round" id="logAnimation"></span>
                                             </label> 
                                         </div>
-                                        <div class="col-4 title-text-small" style="padding: 0; padding-top: 3%;">On</div>
+                                        <div class="col-4 title-text-small" style="padding: 0;">On</div>
                                     </div>  
                                 </div>
                                 <div class="col-10">
@@ -146,25 +146,22 @@
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption1" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;"
+                                            style="width: 100%;"
                                             title="Elsevier">
                                                 Elsevier
                                             </button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option1" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 65%;">Single Column</button>
+                                            style="visibility: hidden;">Single Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option2" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 75%;">1.5 Column</button>
+                                            style="visibility: hidden;">1.5 Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option3" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 65%;">Double Column</button>
+                                            style="visibility: hidden;">Double Column</button>
                                         </div>
                                     </div>
                                     <br/>
@@ -223,24 +220,23 @@
                         </div>   
                    
                         <div class="col-4 size-input">
-                            <div class="container themeBox" id="dimensionInput"
-                            style="width:auto; visibility: visible; border-top:0;color: black;
-                             margin: auto auto; border: 5px solid black;">
+                            <div class="container themeBox widthInput" id="dimensionInput">
                                 <div class="form-group float-center" 
-                                style="width: 100%;color: black;">
+                                style="width: 100%; color: black;">
                                     <div class="col">
-                                        <label for="widthInput" style="color: black;">
+                                        <label class="title-text-small" for="widthInput" style="color: black;">
                                             Width of output (pixels)
                                         </label>
-                                        <input class="form-control form-control-sm text-center" type="text" 
+                                        <input class="form-control form-control-md text-center" type="text" 
                                         id="widthInput" name="desiredWidth" placeholder="Output Width (px)"
                                         title="Output Width"/>
                                     </div>
+                                    <br>
                                     <div class="col">
-                                        <label for="heightInput" style="color: black;">
+                                        <label class="title-text-small" for="heightInput" style="color: black;">
                                             Height of output (pixels)
                                         </label>
-                                        <input class="form-control form-control-sm text-center"
+                                        <input class="form-control form-control-md text-center"
                                         type="text" id="heightInput" name="desiredHeight" 
                                         placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
