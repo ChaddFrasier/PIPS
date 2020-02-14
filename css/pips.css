@@ -17,7 +17,7 @@ body,html {
     display: block;
     top: 300px;
     left: 35%;
-    width: 25%;
+    width: 45%;
     height: auto;
     min-height: 250px;
     border-radius: 5px;
@@ -25,18 +25,7 @@ body,html {
 	-webkit-border-radius: 5px;
     z-index: 10;
     border: 2px solid black;
-    background: -moz-linear-gradient(
-		top,
-		#f0efef 0%,
-		#e0dfdf 50%,
-		#c5c5c5 92%,
-        #bebebe);
-	background: -webkit-gradient(
-		linear, left top, left bottom,
-		from(#f0efef),
-		color-stop(0.50, #e0dfdf),
-		color-stop(0.92, #c5c5c5),
-        to(#bebebe));
+
     -moz-box-shadow:
 		0px 1px 1px rgba(000,000,000,0.5),
 		inset 1px 2px 0px rgba(255,255,255,0.4);
@@ -46,16 +35,44 @@ body,html {
 	box-shadow:
 		0px 1px 1px rgba(000,000,000,0.5),
 		inset 1px 2px 0px rgba(255,255,255,0.4);
+	text-shadow:
+		1px 1px 2px rgba(000,000,000,0.7),
+		0px 1px 0px rgba(255,255,255,0.4);
+}
+
+.popup-text-input {
+    margin: auto auto auto auto;
+    font-size: 20px;
+    width: 100%;
+    min-height: 15px !important;
+    max-height: 50px !important;
+    max-width: 400px !important;
+    min-width: 100px !important;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    text-align: center;
 }
 
 .flex-box {
-    display: flex;
+    display: flexbox;
     width: 100%;
     height: auto;
+    margin: auto auto;
 }
+
+.flex-container {
+    display: flex;
+    width: 85%;
+    height: auto;
+    margin: auto auto;
+}
+
 .padding-input {
-    width: 50%;
+    width: 100%;
     min-height: 35px;
+    max-width: 400px;
+    min-width: 100px;
     position: relative;
     height: 10%;
     margin: auto auto;
@@ -63,6 +80,442 @@ body,html {
     border-radius: 5px;
     -moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
+}
+
+.index-box-1 {
+    width: 55%;
+    border: 5px solid black !important;
+    padding: 10px !important;
+    margin: auto auto;
+    min-height: 100px;
+    max-height: 300px;
+}
+
+.index-box-1-text {
+    text-align: center;
+    margin: auto auto !important;
+}
+
+.index-menu-btn1 {
+    border: 2px solid black !important;
+    color: white !important;
+    margin: 5px;
+    margin-left: 0;
+    margin-right: 10px;
+}
+
+.widthInput {
+    width:auto;
+    visibility: visible;
+    border-top:0;
+    color: black;
+    margin: auto auto;
+    border: 5px solid black;
+    min-height: 200px;
+    font-size: medium;
+}
+
+.index-menu-btn2 {
+    border: 2px solid black !important;
+    color: white;
+    margin: 5px;
+    margin-left: 0px;
+}
+
+.index-file-input-1 {
+    color:black;
+    margin: auto auto;
+    display:inline-block;
+    border: 5px solid black !important;
+}
+.index-file-input-2 {
+    color:black;
+    margin: auto auto;
+    display:inline-block;
+    border: 5px solid black !important;
+}
+
+#optionBox {
+    padding: 1%;
+    color: black; 
+    margin: 0 0;
+    display:none;
+    border: 5px solid black;
+    width: 100%;
+}
+
+.mainUploadBox {
+    margin-left:auto;
+    margin-right: auto;
+    max-width: none;
+    width: 100%;
+}
+
+.writer-header-box {
+    height: auto;
+    max-width: 1000px; 
+    max-height: 220px;
+    padding: 1rem;
+    padding-top: 0;
+    border-right:1px;
+    border-bottom: 2px;
+    border: solid black;
+    background: rgba(99, 88, 94, 0.746)
+}
+
+#specialCharactersBtn {
+    margin:10px 0 auto 0 !important;
+    z-index:5;
+    vertical-align: top;
+    position:sticky;
+    height: auto;
+    padding:0 !important;
+    max-width: 25px !important;
+    max-height: 25px !important;
+}
+
+#addTagBtn {
+    margin:10px 0 auto 0 !important;
+    max-width: 25px !important;
+    max-height: 25px !important;
+    height: auto;
+    widows: auto;
+    padding:0 !important;
+    position: absolute;
+    right: 5%;
+    top: 1%;
+}
+
+#filterInput {
+    background-color: rgba(255,255,255);
+    width: 100%;
+    height:auto;
+    text-align: inherit;
+    margin-left: auto;
+    margin-right: auto;
+    color:black;
+    border: 1.5px solid black;
+}
+
+#button-more-tags {
+    max-width: none !important;
+    width: 100%;
+}
+
+label[for="filterInput"] {
+    margin: auto 0; 
+    color: black;
+    width: 100%;
+    height: auto;
+    padding: 2px;
+}
+
+.specChar {
+    padding: 0px 0px !important;
+    font-size: 10px !important;
+    max-width: 40px !important;
+    max-height: 40px !important;
+}
+
+/** @media Rules for well known screen sizes LARGEST MUST BE AT TOP */
+
+@media only screen and (max-width:3840px) {
+    .display-4 {
+        font-size: 80px !important;
+    }
+
+    .popup-text-input {
+        font-size: 25px !important;
+        max-height: 35px !important;
+    }
+
+    .display-5 {
+        font-size: 38px !important;
+    }
+
+    .stroke-wide {
+        stroke: .5px black;
+        -webkit-text-stroke: .5px black;
+        color: white;
+    }
+
+    .title-text-small {
+        font-size: xx-large !important;
+    }
+
+    .title-text-smaller {
+        font-size: large !important;
+    }
+
+    .widthInput {
+        min-height: 250px;
+        margin-top: 20px !important;
+        font-size: x-large !important;
+    }
+
+    .box-text {
+        font-size: large !important;
+        padding: 0;
+    }
+
+    .title-text {
+        font-size: 35px !important;
+    }
+
+    .optionsPopup {
+        min-height: 40px !important;
+        font-size: 16px !important;
+    }
+    .optionsBtn {
+        font-size: inherit !important;
+        min-height: 40px !important;
+        min-width: 10px !important;
+    }
+
+    .layerBox{
+        width: 85%; 
+        max-height: 50px;
+        min-height: 50px;
+
+        max-width: none;
+        min-width: 50px;
+        overflow: hidden;
+    }
+
+    cite {
+        font-size: xx-large !important;
+    }
+
+    .lead {
+        font-size: xx-large !important;
+    }
+
+    .index-box-1 {
+        height: auto;
+        min-height: 200px !important;
+    }
+
+    .index-box-1-text {
+        font-size: 50px !important;
+    }
+
+    .btn-lg {
+        min-height: 60px !important;
+        padding: 1rem 1rem !important;
+        font-size: large !important;
+    }
+
+    .btn-md {
+        min-height: 50px !important;
+        min-width: 50px !important;
+        padding: .5rem .5rem !important;
+        font-size: medium !important;
+    }
+
+    .btn-sm {
+        min-height: 25px !important;
+        max-height: 55px !important;
+        padding: .5rem .5rem !important;
+        font-size: 15px !important;
+    }
+
+    .button {
+        min-height: 60px;
+        max-width: none;
+        padding: 1rem 1rem;
+        font-size: 20px !important;
+        max-width: none !important;
+    }
+
+    .index-file-input-1 {
+        font-size: xx-large !important;
+    }
+
+    .index-file-input-2 {
+        font-size: xx-large !important;
+    }
+
+    .mainUploadBox {
+        min-width: 1500px;
+    }
+    
+    .switch {
+        transform: scale(1) !important;
+        right: -10px !important;
+        top: 10px;
+    }
+
+    .writer-header-box {
+        min-height: 300px !important;
+    }
+
+    #specialCharactersBtn {
+        min-width: 35px !important;
+        min-height: 35px !important;
+    }
+
+    #addTagBtn {
+        min-width: 35px !important;
+        min-height: 35px !important;
+    }
+
+    #filterInput {
+        transform: scale(1.2);
+    }
+
+    .logo {
+        max-width: 400px !important;
+    }
+
+    .input-box {
+        width: 25% !important;
+    }
+}
+
+/* Most Laptop styles w/o touchscreen */
+@media only screen and (max-width:1920px){
+    .optionsPopup {
+        min-height: 20px !important;
+        font-size: 12px !important;
+    }
+
+    .input-box {
+        width: 35% !important;
+    }
+
+    .optionsBtn {
+        font-size: inherit !important;
+        min-height: 20px !important;
+        min-width: 10px !important;
+    }
+
+    .popup-text-input {
+        font-size: 10px !important;
+        max-height: 25px !important;
+    }
+
+    cite {
+        font-size: x-large !important;
+    }
+
+    .lead {
+        font-size: x-large !important;
+    }
+
+    .layerBox{
+        width: 85%; 
+        max-height: 25px;
+        min-height: 25px;
+
+        max-width: none;
+        min-width: 50px;
+        overflow: hidden;
+    }
+
+    .logo {
+        max-width: 200px !important;
+    }
+
+    .box-text {
+        font-size: small !important;
+        padding: 0;
+    }
+
+    .title-text {
+        font-size: 30px !important;
+    }
+
+    .title-text-small {
+        font-size: large !important;
+    }
+
+    .widthInput {
+        min-height: 200px !important;
+        margin-top: 5px !important;
+        font-size: medium !important;
+    }
+
+    .title-text-smaller {
+        font-size: medium !important;
+    }
+
+    .display-4 {
+        font-size: 40px !important;
+    }
+
+    .display-5 {
+        font-size: 20px !important;
+    }
+
+    .index-box-1 {
+        min-height: 100px !important;
+    }
+    
+    .btn-lg {
+        min-height: 25px !important;
+        max-width: none;
+        padding: .5rem 1rem !important;
+        font-size: medium !important;
+    }
+
+    .btn-md {
+        min-height: 20px !important;
+        max-width: none;
+        padding: .5rem .5rem !important;
+        font-size: x-small !important;
+    }
+
+    .index-file-input-1 {
+        font-size: large !important;
+    }
+
+    .index-file-input-2 {
+        font-size: large !important;
+    }
+
+    .mainUploadBox {
+        min-width: 1100px;
+    }
+
+    .index-box-1-text {
+        font-size: 30px !important;
+    }
+
+    .switch {
+        transform: scale(.75) !important;
+        right: -3px !important;
+        top: 5px;
+    }
+
+    .writer-header-box {
+        min-height: 220px !important;
+    }
+
+    #specialCharactersBtn {
+        min-width: 25px !important;
+        min-height: 25px !important;
+    }
+
+    #addTagBtn {
+        min-width: 25px !important;
+        min-height: 25px !important;
+    }
+
+    #filterInput {
+        transform: scale(1.05);
+    }
+
+    .dropdownItem {
+        max-height: 100px !important;
+    }
+} /** End of laptop interface */
+
+.size-input {
+    width: auto;
+    height: 100% !important;
+    min-height: none;
+    margin:0;
+    padding: 1%;
 }
 
 .optionsPopup {
@@ -81,8 +534,9 @@ body,html {
 		color-stop(0.92, #e0dfdf),
         to(#f0efef));
     min-width: 50px;
-    max-width: 100px;
+    max-width: 200px;
     height: auto;
+    z-index: 20;
     min-height: none;
     max-height: none;
 }
@@ -101,13 +555,11 @@ body,html {
 		color-stop(0.50, #e0dfdf),
 		color-stop(0.92, #c5c5c5),
         to(#bebebe));
-    min-width: 50px;
-    max-width: 100px;
     width: 100%;
-    height: 100%;
-    min-height: 15px;
+    height: auto;
     max-height: none;
-    font-size: x-small;
+    font-size: medium;
+    z-index: 20;
     border-bottom: 1px solid rgba(0, 0, 0, .5);
 }
 
@@ -128,17 +580,119 @@ body,html {
     border: 1px solid rgba(0, 0, 0, .5);
 }
 
+.iconBox {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 1%; 
+    height: auto;
+}
 
-input.dimInput {
-    text-align: center;
+.logo {
+    position: absolute;
+    max-width: 300px;
+    min-height: none;
+}
+
+.logoBox {
+    position: absolute;
+    width: auto;
+    height: auto;
+    top: 18px;
+}
+
+
+#specialCharBox.row, #specialCharBox.row.col {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.add-tag-input {
+    width: auto;
+    position:absolute;
+    left: 40%;
+    max-width: 250px;
+    max-width: 400px;
+    max-height: 500px;
+    min-height: auto;
+    top: 45%;
+    z-index: 20;
+    width: 25%;
+    height: auto;
+    padding: 10px;
+}
+
+.box-text {
+    width: 100%;
     color: black;
-    border: 2px solid black;
-    min-height: 35px;
-    min-width: 100px;
+    font-size: large;
+    margin: auto auto auto auto;
+}
+
+.title-text {
     margin: auto auto;
-    border-radius: 4px;
-    -moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+    color: black;
+    font-size: xx-large;
+}
+
+.title-text-small {
+    margin: auto auto;
+    color: black;
+    font-size: large;
+}
+
+.themeBox {
+    background: -moz-linear-gradient(
+		top,
+		#f8d29c 0%,
+		#e7c492 50%,
+		#c9aa7f 92%,
+		#ac916cde) !important; /* important to ignore any button :active or :focus backgrounds*/
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#f8d29c),
+		color-stop(0.50, #e7c492),
+		color-stop(0.92, #c9aa7f),
+        to(#ac916cde)) !important;
+}
+
+#hideBtn {
+    width: auto;
+    padding: 0;
+    padding-bottom: 10px;
+    margin: 0;
+    vertical-align: top;
+    text-align: center;
+    height: auto;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    max-width: 30px !important;
+    max-height: 30px !important;
+    border-radius: 5px;
+    border: 1px solid red;
+    background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
+    background-color: rgba(39, 109, 200);
+    color: red;
+}
+
+.errorDivBox {
+    background: black;
+    color: white;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 100;
+}
+
+.errorTitle {
+    position: relative;
+    font-size: 50px;
+    padding: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    width: 100%;
+    height: auto;
 }
 
 .mainbox-right {
@@ -179,10 +733,10 @@ pre {
 .layerBox {
     width: 75%;
     height: auto;
-    max-height: 100px;
-    max-width: 100px;
-    min-height: 50px;
-    min-width: 50px;
+    max-height: 150px;
+    max-width: 150px;
+    min-height: 65px;
+    min-width: 65px;
     padding: 0;
     overflow-y: hidden;
     margin:inherit;
@@ -204,8 +758,14 @@ pre {
 		to(#696565));
  }
 
+ div.layerBox svg {
+    min-width: 100%;
+    max-width: 100px;
+    min-height: 100%;
+    max-height: 100px;
+ }
+
 .shadowbox {
-    width:100px;
     text-align:center;    
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 14px;
@@ -304,8 +864,8 @@ text.user {
 .dropdown {
     background: transparent;
     width: 100%;
-    min-width: 50px;
-    max-width: 200px;
+    min-width: 100px;
+    max-width: 250px;
     text-align: center;
     margin: 0;
     z-index: 15;
@@ -342,11 +902,11 @@ text.user {
 		color-stop(0.50, #ebe9e9),
 		color-stop(0.92, #e0dddd),
         to(#d6d6d6));
-    width: 29%;
+    width: 100%;
     height: auto;
     text-align: center;
-    min-width: 200px;
-    max-width: 400px;
+    min-width: 100px;
+    max-width: 250px;
     margin: auto auto;
     border-radius: 5%;
     -moz-border-radius: 5%;
@@ -387,11 +947,14 @@ text.user {
     width: 100%;
     text-align: inherit;
     vertical-align: middle;
-    min-width: 150px;
-    max-width: 400px;
+    min-width: 100px;
+    max-width: 250px;
+    min-height: 30px !important;
+    max-height: 100px !important;
     z-index: 15;
     padding:5; 
     margin:0;
+    font-size: larger;
 }
 
 .menuBtnBox {
@@ -400,7 +963,7 @@ text.user {
     min-width: 100px;
     max-width: 400px;
     width: auto;
-    margin: 0 0;
+    margin: auto;
     padding: 10px;
     max-height: 75px;
     min-height: 25px;
@@ -644,6 +1207,7 @@ p {
     width: 5rem; 
     height:auto;
     margin: 0;
+    pointer-events: all;
 }
 
 .helpBtn:hover {
@@ -668,9 +1232,10 @@ label {
 }
 
 .button {
-    width:5rem;
+    width: auto;
     height: auto;
     background: #007150;
+    font-size: medium;
     color: white;
     border: 2px solid black !important;
     overflow: hidden;
@@ -716,22 +1281,23 @@ svg.image-image {
 }
 
 .help-box {
-    z-index: 40;
+    z-index: 20;
     position: absolute;
     float: left;
-    margin: 0;
-    margin-left: 3%;
-    margin-right: 2%;
     border: 5px solid black;
     background: whitesmoke;
     padding: 2rem;
     padding-top: 1rem;
     padding-bottom: 0;
+    min-width: 500px;
+    max-width: 1000px;
+    left: 10%;
+    top: 10%;
     text-align: left;
     box-shadow: 2px 2px 8px 8px rgba(39, 109, 200, 0.719);
     font-family: 'Times New Roman', Times, serif;
     font-size: 17px;
-    width: 25%;
+    width: 40%;
     height: 50%;
     overflow-y: auto;
 }
@@ -739,6 +1305,7 @@ svg.image-image {
 cite {
     text-decoration: underline;
     font-style: inherit;
+    font-size: inherit;
     margin: 0;
     margin-left: 2%;
     margin-right: 1%;

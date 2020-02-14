@@ -5,7 +5,7 @@
  * @version 2.3
  * 
  * @since 09/20/2019
- * @updated 02/03/2020
+ * @updated 02/14/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -15,7 +15,6 @@
  * @see {server.js} Read the header before editing
  */
 
- // TODO: major code clean
 /** ---------------------------------------- DOM Variables ----------------------------------------------- */
 var loader,
     svg,
@@ -65,10 +64,7 @@ var placeEnum = new Object({
         });
 
 /** Custome Event For Calling functions from code */
-const MousedownEvent = new MouseEvent("mousedown", { which: 1 }),
-    ClickEvent = new MouseEvent("click", { which: 1 }),
-    MouseupEvent = new MouseEvent("mouseup", { which: 1 })
-    DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
+const DeleteEvent = new KeyboardEvent("keyup",{keyCode: 46});
 
 
 /** ---------------------------------------- End DOM Variables ------------------------------------------- */
@@ -849,10 +845,17 @@ function setSvgClickDetection(svg, mouseDetect){
 
             if( document.getElementById("scalebarBG") && mouseDetect === "all"){
                 document.getElementById("scalebarBG").style.visibility = "visible";
+                document.getElementById("scalebarBG").style.stroke = "red";
             }
-            else if(svgElements[index].id.indexOf("scalebar") > -1){
-                // reset layers
-                document.getElementById("scalebarBG").style.visibility = "hidden";  
+            else if(svgElements[index].id.indexOf("scalebar") > -1 ){
+                console.log(mouseDetect)
+                if( mouseDetect === "all" ){
+                    document.getElementById("scalebarBG").style.visibility = "visible";
+                }
+                else{
+                    // reset layers
+                    document.getElementById("scalebarBG").style.visibility = "hidden";    
+                }
             }
             // add if that element has child nodes
             if(svgElements[index].childNodes){
@@ -888,8 +891,11 @@ function markerExists( color ){
     });
     return false;
 }
-
-// TODO:
+/**
+ * @function detectLeftButton
+ * @param { event } evt 
+ * @description this function takes in an event and checks to see if it was a left click event
+*/
 function detectLeftButton(evt) {
     evt = evt || window.event;
 
@@ -901,7 +907,11 @@ function detectLeftButton(evt) {
     return button == 1;
 }
 
-// TODO:
+/**
+ * @function detectRightButton
+ * @param { event } evt 
+ * @description this function takes in an event and checks to see if it was a right click event
+*/
 function detectRightButton(evt) {
     evt = evt || window.event;
 
@@ -913,7 +923,11 @@ function detectRightButton(evt) {
     return button == 2;
 }
 
-
+/**
+ * @function toggleMenuUI
+ * @param { string } str tells what icon is being activated
+ * @description toggle on off the sidebar options by first getting the id of the object and setting it as active
+ */
 function toggleMenuUI(str){
     var id;
     switch(str){
@@ -945,6 +959,11 @@ function toggleMenuUI(str){
     }
 }
 
+/**
+ * @function fixImage
+ * @param { string } cookieVal 
+ * @description 
+ */
 function fixImage( cookieVal ){
     if(cookieVal && cookieVal != "{}"){
         // when this data structure comes back parse over the keys
@@ -956,47 +975,46 @@ function fixImage( cookieVal ){
         for( let i=0; i < keys.length; i++ ){
             let key = keys[i],
                 val = data[key];
-                console.log(key)
 
 
             switch(key){
                 case "northPosition":
-                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("northCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("northCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
                 
                 case "sunPosition":
-                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it 
                     if( val["checked"] ){
-                        document.getElementById("sunCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("sunCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }      
                     break;
                 
                 case "eyePosition":
-                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform",val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("eyeCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("eyeCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
 
                 case "scalebarPosition":
-                    $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                    $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
                     // check to see if the color needs to be changed
                     document.getElementById(key).setAttribute("transform", val['transform']);
                     // check if the box was chekced or not and fix it
                     if( val["checked"] ){
-                        document.getElementById("scaleCheckboxSlider").dispatchEvent(ClickEvent);
+                        document.getElementById("scaleCheckboxSlider").dispatchEvent(new MouseEvent("click"));
                     }
                     break;
 
@@ -1013,7 +1031,7 @@ function fixImage( cookieVal ){
                         colorB = parseInt(colorB);
                         
                         $("#colorPickerBox").val(rgbToHex(colorR, colorG, colorB));
-                        $("#outlineBtn")[0].dispatchEvent(MousedownEvent);
+                        $("#outlineBtn")[0].dispatchEvent(new MouseEvent("mousedown"));
 
                         document.getElementById(activeLayer.id.replace("layer",""))
                                                     .setAttribute("transform", val['transform']);
@@ -1028,9 +1046,8 @@ function fixImage( cookieVal ){
                         colorR = parseInt(colorR.split("rgb(")[1]);
                         colorG = parseInt(colorG);
                         colorB = parseInt(colorB);
-                        // TODO:
-                        // 1. make a function to create a text box automatically given 
-                        //    color, text on the inside, and transform
+                        
+                        // create a text box automatically given 
                         createNewElement("text",[color, val["innerHTML"], val["transform"]]);
                     }
                     else if(key.indexOf("line") > -1){
@@ -1044,15 +1061,8 @@ function fixImage( cookieVal ){
                         colorG = parseInt(colorG);
                         colorB = parseInt(colorB);
                         color = rgbToHex(colorR, colorG, colorB);
-                        // TODO:
-                        // 1. make a function to create a line automatically given 
-                        //    color, text on the inside, and transform
-                        // OR
-                        // 2. could maybe be done using outerHTML and just appending it to the body
-                        console.log(val["transform"])
-                        console.log(val["coords"])
-                        console.log(color)
-                        console.log(val["marker-start"])
+                        
+                        // create the new element
                         createNewElement("line", [color, val["transform"], val["coords"], val["marker-start"]])
                     }
                     else{
@@ -1069,13 +1079,11 @@ function fixImage( cookieVal ){
     }
 }
 
-//TODO: this function will need to extract the data needed for each object seperatly 
-    // also include all the defs except the default one
-
-    // icons -> transform, checkboxChecked
-    // outline -> transform, stroke
-    // text -> transform, stroke
-
+/**
+ * @function createDataRepresentation
+ * @param { array } childArr 
+ * @description takes the svg element children and saves the needed attributes to recreate the exact objects after reload
+ */
 function createDataRepresentation(childArr){
     var returnObj = {};
     let tmp = "";
@@ -1142,10 +1150,17 @@ function createDataRepresentation(childArr){
                 break;
         }
     }
-
+    // return the string object to save as cookie
     return JSON.stringify(returnObj);
 }
 
+/**
+ * @function createNewElement
+ * @param { string } elementType the name of the element to create 
+ * @param {*} argv vector of arguments
+ * @description this function takes in a vector of args and a node name, it then 
+ * creates a new element of name elementType and then add the attributes from the argv
+ */
 function createNewElement(elementType, argv){
     switch(elementType){
         case "text":
@@ -1331,7 +1346,7 @@ function createNewElement(elementType, argv){
  *      goes back if true, otherwise calls an open to the server to get the page
 */
 function captionHandler(){
-    // update cookie
+    // update cookie and save it for .5 days
     createCookie("usimg", encodeURIComponent(createDataRepresentation(svg.childNodes)), .5);
 
     // if the last window seen was captionWriter then go back to preserve changes
@@ -2292,13 +2307,12 @@ function setDetectionForLayer( el, detection ){
         return;
     }
 
-    console.log(el)
     while( !el.getAttribute("id") ){
         el = el.offsetParent;
     }
     var elem_choice = document.getElementById(el.getAttribute("id").split("layer")[1].replace("Svg",""));
         
-    if(elem_choice.nodeName !== "g" || elem_choice.nodeName !== "line" ){
+    if(elem_choice.nodeName === "BUTTON"){
         let id = el.getAttribute("id");
 
         if(id.split("layer")[1].indexOf("sun")  > -1 ){
@@ -2310,10 +2324,13 @@ function setDetectionForLayer( el, detection ){
         else if(id.split("layer")[1].indexOf("north")  > -1 ){
             elem_choice = northImage;
         }
-        else if(id.split("layer")[1].indexOf("scalebar")  > -1 ){
+        else if(id.split("layer")[1].indexOf("scaleBar")  > -1 ){
             elem_choice = scaleBarIcon;
-            document.getElementById("scalebarBG").style.visibility = "visible";
-            document.getElementById("scalebarBG").style.stroke = "red";
+            if(document.getElementById("scalebarBG")){
+                document.getElementById("scalebarBG").style.visibility = "visible";
+                document.getElementById("scalebarBG").style.stroke = "red";
+        
+            }
         }
     }
 
@@ -2464,51 +2481,68 @@ function setDetectionForLayer( el, detection ){
     }
 }
 
-//  TODO:
+/**
+ * @function deleteHandler
+ * @param { event } event
+ * @description this handler simply dispatches the delete key event, thus deleting the active layer element
+ */
 function deleteHandler( event ){
-
     $(document)[0].dispatchEvent(DeleteEvent);
 }
 
 
-// TODO:
+/**
+ * @function toggleColorBtnHandler
+ * @param { event } event 
+ * @description this function check to see what is being targteed and then dispatch the needed event to toggle the colors of the icons
+ */
 function toggleColorBtnHandler ( event ){
 
     var target = event.target.parentElement.parentElement;
 
     switch(target.getAttribute("id")){
+        // switch on the id and execute the proper mouse event on the needed element
         case "layerscaleBarButtonSvg":
-            $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
-
-            toggleMenuUI('scale');  
+            // switch color of icon and UI buttons
+            $("#scaleCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
+            toggleMenuUI('scale');
             break;
         
         case "layereyeFlagSvg":
-            $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            // switch color of icon and UI buttons
+            $("#eyeCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('eye');
             break;
         
         case "layersunIconFlagSvg":
-            $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            // switch color of icon and UI buttons
+            $("#sunCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('sun');
             break;
 
         case "layernorthIconFlagSvg":
-            $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+            // switch color of icon and UI buttons
+            $("#northCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
             toggleMenuUI('north');
             break;
     }
 
 }
 
-// TODO:
+/**
+ * @function changeColorHandler
+ * @param { event } event 
+ * @description this function does the same thing as the toggleColorBtnHandler but with color pickers from the annotation elements
+ */
 function changeColorHandler( event ) {
     var target = event.target.parentElement.parentElement;
 
     if(target.getAttribute("id").split("layer")[1].indexOf("outline") > -1){
+        // change the color by clicking on the color picker of the box
         document.getElementById("colorPickerBox").click();
     }
     else if(target.getAttribute("id").split("layer")[1].indexOf("text") > -1){
+        // click the toggle color button for text
         document.getElementById("textColorPicker").click();
     }
     else {
@@ -2517,22 +2551,35 @@ function changeColorHandler( event ) {
     }
 }
 
+/**
+ * @function arrowBtnHandler
+ * @param { event } event 
+ * @description handles the ability to add and remove arrow icons that match the poper line color
+ */
 function arrowBtnHandler( event ){
+    // get the target
     var target = event.target.parentElement.parentElement;
 
+    // if the target of a layer element of a line and it is the active element
     if(target.getAttribute("id").split("layer")[1].indexOf("line") > -1
         && activeLayer === target){
-    
-        var line = document.getElementById("line"+target.firstElementChild.firstElementChild.getAttribute("id"));
+
+        // get the line element by getting the id from the layer element
+        var line = document.getElementById(target.getAttribute("id").split("layer")[1]);
+
         // check to see if the element is already using an arrow head
-        if(line && line.getAttribute("marker-start")){
+        if( line && line.getAttribute("marker-start") ){
+
             // if true: set the removeAttribute(marker-start) and delete the marker obj
             let id = line.getAttribute("marker-start").replace("url(","").replace(")","");
             
+            // if the id is not the base arrowDef
             if(id !== "#arrow"){
+                // then remove it
                 $(id).parent().remove();
             }
 
+            // remove the attribute and set the UI box to the new line element
             line.removeAttribute("marker-start");
             let tmp = line.cloneNode(true);
             tmp.style.strokeWidth = "50px";
@@ -2550,12 +2597,13 @@ function arrowBtnHandler( event ){
             }
             // if the array is linger than 1 and the color is not default
             else if(lineArr.length > 0 || userLineColor){
+                let id = line.getAttribute("id").replace("line","");
 
-                var markerId = "arrow" + lineArr.length,
-                    pathId = "arrowPath" + lineArr.length,
-                    newDef = document.getElementById("arrowDef").cloneNode();
+                var markerId = "arrow" + id,
+                    pathId = "arrowPath" + id,
+                    newDef = document.getElementById("arrowDef").cloneNode(true);
 
-                newDef.setAttribute("id", "arrowDef" + lineArr.length);
+                newDef.setAttribute("id", "arrowDef" + id);
                 newDef.innerHTML = document.getElementById("arrowDef").innerHTML;
                 line.setAttribute("marker-start", String("url(#" + markerId + ")"));
                 (newDef.childNodes).forEach(childElem => {
@@ -2569,15 +2617,20 @@ function arrowBtnHandler( event ){
                 svg.prepend(newDef);
             }
 
+            // fix the UI box element to the new arrow head line
             let tmp = line.cloneNode(true);
             tmp.style.strokeWidth = "50px";
             tmp.setAttribute("id",line.getAttribute("id").replace("line",""));
             target.firstElementChild.replaceChild(tmp, target.firstElementChild.firstElementChild);
         }
+        else{
+            // else console log this element because it should not be in here
+            console.log(target.getAttribute("id").split("layer")[1])
+        }
     }
 }
 
-
+// the active layer box element
 var activeLayer;
 
 /**
@@ -2616,9 +2669,10 @@ function updateLayers(el){
     div.setAttribute("class", "layerBox");
     div.setAttribute("role", "button");
 
+    // add the option box leave listener
     div.addEventListener("mouseleave",function( event ) {
         let options = document.getElementsByClassName("optionsPopup");
-
+        // remove the optionsBox
         Array.from(options).forEach( el => {
             el.remove();
         });
@@ -2661,12 +2715,12 @@ function updateLayers(el){
             }       
         }
         else if(detectRightButton( event )){
-            // not left mouse click open options
-            // TODO: right click occured on a layer object
-            // TODO: comment
+            // when a right click is registered
             
+            // prevent context menu
             event.preventDefault();
 
+            // get the target element that is needed
             var target = (event.target.nodeName === "svg") ? event.target.parentElement : event.target;
             target = (target.nodeName === "BUTTON") ? target.parentElement.parentElement : target;
             
@@ -2687,24 +2741,25 @@ function updateLayers(el){
             if(target.getAttribute("id").indexOf("outline") > -1
                 || target.getAttribute("id").indexOf("text") > -1){
                 // check outline first because it contains 'line'
-                // for any other object
-                // create the popup based on the mouse location
-                
                 var changeColorBtn = document.createElement("button"),
                     deleteBtn;
 
+                // set the css and text of the buttons
                 changeColorBtn.className = "optionsBtn";
                 deleteBtn = changeColorBtn.cloneNode(true);
-
                 changeColorBtn.innerText = "Edit Color";
-                deleteBtn.innerText = "Delete (Del)";
-
+                deleteBtn.innerText = "Delete(Del)";
                 optionsBox.className = "optionsPopup";
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
 
+                // set the popup location based on the mouse location
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
+
+                // set the click listeners to the buttons on the option field
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
 
+                // add the color button
                 optionsBox.appendChild(changeColorBtn);
             }
             else if(target.getAttribute("id").indexOf("line") > -1){
@@ -2713,58 +2768,61 @@ function updateLayers(el){
                     arrowBtn,
                     deleteBtn;
 
+                // css attributes
                 changeColorBtn.className = "optionsBtn";
                 deleteBtn = changeColorBtn.cloneNode(true);
                 arrowBtn = changeColorBtn.cloneNode(true);
-
                 changeColorBtn.innerText = "Edit Color";
                 deleteBtn.innerText = "Delete (Del)";
                 arrowBtn.innerText = "Toggle Arrow";
-
                 optionsBox.className = "optionsPopup";
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+                
+                // set the popup location based on the mouse location                
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
 
+                // add event listeners
                 deleteBtn.addEventListener("click", deleteHandler);
                 changeColorBtn.addEventListener ("click", changeColorHandler);
-
-                // TODO: add arrowhead listerner
                 arrowBtn.addEventListener("click", arrowBtnHandler)
 
+                // add needed buttons for a line element
                 optionsBox.appendChild(changeColorBtn);
                 optionsBox.appendChild(arrowBtn);
             }
             else{
                 // for any other object
-                // create the popup based on the mouse location
                 var optionsBox = document.createElement("div"),
                     toggleColorBtn = document.createElement("button"),
                     deleteBtn;
 
+                // set the css 
                 toggleColorBtn.className = "optionsBtn";
                 deleteBtn = toggleColorBtn.cloneNode(true);
-
                 toggleColorBtn.innerText = "Toggle Color";
                 deleteBtn.innerText = "Delete (Del)";
-
                 optionsBox.className = "optionsPopup";
-                optionsBox.offsetTop = event.offsetY - event.clientHeight;
+                
+                // set the popup location based on the mouse location
+                optionsBox.style.top = parseInt(event.clientY) - parseInt(event.offsetY);
+                optionsBox.style.left = parseInt(event.clientX) - parseInt(event.offsetX);
 
+                // add event listeners
                 deleteBtn.addEventListener("click", deleteHandler);
+                toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
 
-               toggleColorBtn.addEventListener("click", toggleColorBtnHandler);
-
+                // add the color button
                 optionsBox.appendChild(toggleColorBtn);
             }
             
-            // add universial buttons
+            // add universial button
             optionsBox.appendChild(deleteBtn);
-
+            
             // add element to target
             target.appendChild(optionsBox);
 
             // prevent defaults downstream
             return false;
-            
         }
     });
 
@@ -2813,7 +2871,7 @@ function updateLayers(el){
         case "line":
             var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg" );
             svg.setAttribute("viewBox", "0 0 " + w + " " + h);
-            svg.setAttribute("height","85");
+            svg.setAttribute("height","50%");
             svg.pointerEvents = "none";
             el.style.strokeWidth = "50px";
             svg.style.padding = "0%";
@@ -3113,12 +3171,12 @@ function getMarkerId(id, inc){
     if(document.getElementById(id) === null){
         return id;
     }
-    else if(document.getElementById(id+inc) === null){
+    else if(document.getElementById( id + inc ) === null){
         return id + inc;
     }
     else{
         // call recursion on next increment and new id
-        return getMarkerId(id,  ++inc);
+        return getMarkerId(id, ++inc);
     }
 }
 
@@ -3368,23 +3426,27 @@ function iconPlaced( icon ){
                 // check which icon it is and remove it
                 switch(child){
                     case northImage:
-                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                        $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                         break;
                     case sunImage:
-                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                        $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                         break;
                     case eyeImage:
-                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                        $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                         break;
                 }
             }
         });
 }
 
-
-
-// TODO:
+// flag for halfscreen interface
 var halfScreen = false;
+
+/**
+ * @function setScreen
+ * @param { string } type either 'half' or 'full'
+ * @description this function alternates between the usual UI and the half screen interface
+ */
 function setScreen( type ){
     var layerUI = document.getElementById("layerBrowser"),
         layerLabel = document.getElementById("layerLabel"),
@@ -3396,6 +3458,7 @@ function setScreen( type ){
                 layerUI.style.height = "auto";
                 layerUI.style.margin = "2px";
                 layerUI.style.display = "flex";
+                layerUI.style.maxWidth = "none";
 
                 // move the Layer Tab above the svg image
                 document.getElementsByClassName("mainbox-center")[0].insertBefore(layerUI, progressBar);
@@ -3416,6 +3479,7 @@ function setScreen( type ){
                 layerUI.style.height = "75%";
                 layerUI.style.display = "block";
                 layerUI.style.margin = "auto auto";
+                layerUI.style.maxWidth = "200px";
     
                 // move the Layer Tab to the right if svg image
                 layerLabel.insertAdjacentElement("afterend",layerUI);
@@ -3425,16 +3489,34 @@ function setScreen( type ){
     
                 document.getElementsByClassName("mainbox-center")[0].style.marginRight = "auto";
                 document.getElementsByClassName("mainbox-center")[0].style.width = "92%";
-    
+
                 halfScreen = !halfScreen;
             }
-            break;
-
     }
 }
 
 
+/**
+ * @function checkScreen
+ * @description this funcion is in charge of checking if the screen is in the proper orientation and the user has enough pixels or is not on a phone
+ */
 function checkScreen(){
+    if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
+        var mainContainer = document.createElement("div"),
+            titleText = document.createElement("h3");
+
+        mainContainer.className = "errorDivBox";
+        titleText.style.margin = "auto auto";
+        titleText.innerHTML = "<p class='errorTitle'>User Error:<br/> Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
+
+        mainContainer.appendChild(titleText);
+        document.body.insertAdjacentElement("afterbegin", mainContainer);
+        
+    }
+    else if(window.innerWidth >= 1100 && document.getElementsByClassName("errorDivBox").length > 0 ){
+        document.getElementsByClassName("errorDivBox")[0].remove();
+    }
+
     if(parseInt(screen.width/2) <= window.innerWidth){
         // run the function to change the ui to full page mode
         setScreen("full");
@@ -3460,7 +3542,7 @@ function createCookie(cookieName,cookieValue,daysToExpire){
 }
 
 function viewButtonHandler(el){
-    document.getElementById('viewOption').dispatchEvent(ClickEvent);
+    document.getElementById('viewOption').dispatchEvent(new MouseEvent("click"));
     if(el.classList.contains("active")){
         el.classList.remove("active");
     }else{
@@ -3489,7 +3571,7 @@ String.prototype.replaceAll = function(find, replace){
 $(document).ready(function(){
 
     // set the timmer for the UI orientation detection
-    setInterval(checkScreen, 800);
+    setInterval(checkScreen, 1000);
 
     // get image dimensions form the hidden divs
     var dimDiv = document.getElementById("imageDimensions"),
@@ -3816,7 +3898,6 @@ $(document).ready(function(){
     // set defaults
     outlineBox.style.visibility = 'hidden';
 
-    
     // set loader to invisible
     loadInvisible();
 
@@ -4110,6 +4191,8 @@ $(document).ready(function(){
             else{
                 setDetectionForLayer(null, "all");
             }
+
+            loader.style.visibility = "hidden";
         }
     }
 
@@ -4188,6 +4271,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function .dropdownItem mouseover listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
     $(".dropdownItem").on("mouseover", (event)=>{
         var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
 
@@ -4196,7 +4284,11 @@ $(document).ready(function(){
         }
     });
 
-
+    /**
+     * @function .dropdownItem mouseleave listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
     $(".dropdownItem").on("mouseleave", (event)=>{
         var sidebar = document.getElementById(event.target.getAttribute("id") + "Sidebar" );
         var sidebarArr = document.getElementsByClassName("sidebarParent");
@@ -4208,6 +4300,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function .sidebar click listener
+     * 
+     * @description set the UI details for making the dropdown menu invisible
+     */
     $(".sidebar").on( "click", ( event )=>{
         if(detectLeftButton(event)){
             let target = event.target;
@@ -4223,7 +4320,6 @@ $(document).ready(function(){
         }
     });
 
-
     /**
      * @function .dropdownMenu mouseover listener
      * 
@@ -4233,7 +4329,6 @@ $(document).ready(function(){
 
         var menu = event.target;
 
-    
         if(menu.offsetParent.className !== "col menubar"){
             menu.offsetParent.style.visibility = "visible";
         }
@@ -4242,6 +4337,7 @@ $(document).ready(function(){
             menu.visibility = "visible";
         }
     });
+
     // ----------------------------------- Help Button ------------------------------------------------------
     /**
      * @function hideBtn 'mousedown' event handler
@@ -4683,6 +4779,10 @@ $(document).ready(function(){
 
     // ------------------------------- Button Handlers ------------------------------------------------------
       
+    /**
+     * @function previousPopup
+     * @description this function checks to see if there is already a input-box on screen ( True or False )
+     */
     function previousPopup(){
         var popupArr = document.getElementsByClassName("input-box");
 
@@ -4718,7 +4818,7 @@ $(document).ready(function(){
             // if the scalebar is not on the image
             if(scalebarHalf === null){
                 // place the icon
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
 
                 // grab the elements
                 scalebarHalf = document.getElementById("scalebarHalf");
@@ -4726,7 +4826,7 @@ $(document).ready(function(){
                 scalebar1 = document.getElementById("scalebar1");
 
                 // remove it again
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
 
             // reset the padding to 0
@@ -4836,6 +4936,8 @@ $(document).ready(function(){
                                             var half = parseFloat(scalebarLength)/2;
                                             origW = parseInt(body["origW"]);
                                             origH = parseInt(body["origH"]);
+
+                                            loader.style.visibility = "hidden";
 
                                             
                                             // if the scale bar is not none
@@ -5001,6 +5103,8 @@ $(document).ready(function(){
                                         response.blob().then((data, err)=> {
                                             var reader = new FileReader();
                                             reader.readAsText(data);
+
+                                            loader.style.visibility = "hidden";
 
                                             reader.onloadend = function(){
                                                 var body = JSON.parse(reader.result);
@@ -5534,9 +5638,15 @@ $(document).ready(function(){
     });
 
 
-    //TODO:
+    /**
+     * @function addPadding
+     * @param { event } event
+     * @description this function sets the padding of the image when the padding box is submited 
+     */
     function addPadding( event ){
         if(detectLeftButton(event)){
+            loader.style.visibility = "hidden";
+            
             var leftPad =  document.getElementById("leftPaddingCheckbox").checked,
             rightPad = document.getElementById("rightPaddingCheckbox").checked,
             topPad = document.getElementById("topPaddingCheckbox").checked,
@@ -5567,14 +5677,17 @@ $(document).ready(function(){
         }
     }
 
-    /**TODO:
+    /**
      * @function padImageBtn 'click' event handler
      * 
-     * @description 
+     * @description this function create the UI box that is used to input the new padding value
     */
     $("#padImageBtn").on('click',function(event){
-        console.log(event)
-        if(detectLeftButton(event)){
+        // when left click
+        if( detectLeftButton(event) ){
+            loader.style.visibility = "visible";
+            document.getElementById("loadingText").innerHTML = "Add Padding Using Box";
+
             // create the input box for the padding
             var div = document.createElement("div"),
                 flexbox = document.createElement("div"),
@@ -5591,13 +5704,16 @@ $(document).ready(function(){
                 topPaddingLabel,
                 bottomPaddingLabel;
     
+            // TODO: live padding interpritation
+
             // if a popup is already on screen then short circut
             if(previousPopup()){
                 return;
             }
             
             // TODO: get the padding amount and display properly in the div
-            // reset padding
+            
+            // reset padding *TEMPORARY*
             setImagePadding(0,"all");
 
             leftPaddingCheckbox.setAttribute("type","checkbox");
@@ -5615,7 +5731,7 @@ $(document).ready(function(){
             topPaddingCheckbox.setAttribute("id", "topPaddingCheckbox");
 
             /* Labels */
-            leftPaddingLabel.style.margin = "auto auto";
+            leftPaddingLabel.className = "box-text";
             leftPaddingLabel.style.textAlign = "center";
             rightPaddingLabel = leftPaddingLabel.cloneNode(true);
             topPaddingLabel = leftPaddingLabel.cloneNode(true);
@@ -5626,15 +5742,15 @@ $(document).ready(function(){
             topPaddingLabel.innerHTML = "Top";
             bottomPaddingLabel.innerHTML = "Bottom";
 
-            div.setAttribute("class","input-box");
+            div.setAttribute("class","shadowbox input-box");
 
-            flexbox.className = "flex-box";
+            flexbox.className = "flex-container";
 
             var flexbox2 = flexbox.cloneNode(true),
                 flexbox3 = flexbox.cloneNode(true),
                 flexbox4 = flexbox.cloneNode(true);
 
-            pxInput.className = "padding-input";
+            pxInput.className = "popup-text-input";
             pxInput.placeholder = "How many pixels?";
             pxInput.setAttribute("id","paddingInput");
             
@@ -5643,10 +5759,8 @@ $(document).ready(function(){
             flexbox.appendChild(pxInput);
             
             title.innerHTML = "Add Padding to Image";
-            title.style.width = "100%";
-            title.style.height = "auto";
-            title.style.textAlign = "center";
-
+            title.style.borderBottom = "2px solid black";
+            title.className = "title-text";
 
             cancelBtn.className = "btn btn-secondary btn-md";
             cancelBtn.innerText = "Cancel";
@@ -5658,7 +5772,6 @@ $(document).ready(function(){
             submitBtn.className = "btn btn-success btn-md";
             submitBtn.innerText = "Submit";
             submitBtn.style.margin = "auto auto";
-
 
             flexbox2.appendChild(cancelBtn);
             flexbox2.appendChild(submitBtn);
@@ -5683,12 +5796,24 @@ $(document).ready(function(){
             div.appendChild(document.createElement("br"));
             div.appendChild(flexbox2); // buttons
 
+
+            // add event listener to submit the form with the enter key
+            div.addEventListener("keyup", e => {
+                if(e.keyCode === 13){
+                    submitBtn.dispatchEvent(new MouseEvent("click"));
+                }
+            });
+
+            // add the UI box
             document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
+
+            // focus on the first input box
+            pxInput.focus();
         }
     });
 
 
-    /**TODO:
+    /**
      * @function resizeFigureBtn 'click' event handler
      * 
      * @description 
@@ -5696,6 +5821,9 @@ $(document).ready(function(){
     $("#resizeFigureBtn").on('click',function(event){
         
         if(detectLeftButton(event)){
+            loader.style.visibility = "visible";
+            document.getElementById("loadingText").innerHTML = "Resize Output Figure";
+
             // create the input box for the resize
             var div = document.createElement("div"),
                 flexbox = document.createElement("div"),
@@ -5711,24 +5839,24 @@ $(document).ready(function(){
                 return;
             }
 
-            flexbox.className = "flex-box";
+            flexbox.className = "flex-container";
 
             var flexbox2 = flexbox.cloneNode(true),
                 flexbox3 = flexbox.cloneNode(true);
 
             // set the box class to set css
-            div.setAttribute("class","input-box");
+            div.setAttribute("class","shadowbox input-box");
 
             title.innerText = "Resize Figure";
-            title.style.borderBottom = "2px solid black"
-            title.style.margin = "auto auto";
+            title.style.borderBottom = "2px solid black";
+            title.className = "title-text";
             
             // how many pixels as text input for width and height
 
             widthInput.placeholder = w + " (pixels)";
             heightInput.placeholder = h + " (pixels)";
-            widthInput.className = "dimInput";
-            heightInput.className = "dimInput";
+            widthInput.className = "popup-text-input";
+            heightInput.className = "popup-text-input";
 
             widthInput.setAttribute("id","changeDimWidth");
             heightInput.setAttribute("id","changeDimHeight");
@@ -5741,8 +5869,8 @@ $(document).ready(function(){
             cancelBtn.innerText = "Cancel";
             cancelBtn.style.margin = "auto auto";
 
-            cancelBtn.addEventListener("click",cancelBtnFunction);
-            submitBtn.addEventListener("mousedown",resizeUpdateBtnHandler);
+            cancelBtn.addEventListener("click", cancelBtnFunction);
+            submitBtn.addEventListener("mousedown", resizeUpdateBtnHandler);
 
             submitBtn.className = "btn btn-success btn-md";
             submitBtn.innerText = "Submit";
@@ -5751,12 +5879,11 @@ $(document).ready(function(){
             flexbox2.appendChild(cancelBtn);
             flexbox2.appendChild(submitBtn);
 
-
             var widthLabel = document.createElement("h4"),
                 heightLabel = document.createElement("h4");
 
-            widthLabel.style.margin = "auto auto";
-            heightLabel.style.margin = "auto auto";
+            widthLabel.className = "box-text";
+            heightLabel.className = "box-text";
 
             widthLabel.innerText = "New Width";
             heightLabel.innerText = "New Height";
@@ -5766,13 +5893,25 @@ $(document).ready(function(){
 
             // append all big boxes to the div
             div.appendChild(title);
+            div.appendChild(document.createElement("br"));
             div.appendChild(flexbox3);        
             div.appendChild(flexbox);
             div.appendChild(document.createElement("br"));
             div.appendChild(flexbox2);
 
+            div.addEventListener("keyup", e => {
+                if(e.keyCode === 13){
+                    submitBtn.dispatchEvent(new MouseEvent("mousedown"));
+                }
+                else {
+                    return true;
+                }
+            });
+
             // add box to DOM
             document.getElementById("progressBarBox").insertAdjacentElement("afterend",div);
+
+            widthInput.focus();
         }
     });
 
@@ -5805,7 +5944,7 @@ $(document).ready(function(){
      * 
      * @description  Hotkey Handler
     */
-    $(window).keydown(function(event){
+    $(document).keydown(function(event){
         if(!keys.includes(event.keyCode)){
             keys.push(event.keyCode);
         }
@@ -5817,26 +5956,26 @@ $(document).ready(function(){
         if(keys[0] === 18 && keys.length === 2){
             event.preventDefault();
             if(keys[1] === 76){
-                $("#pencilIconFlag")[0].dispatchEvent(MousedownEvent); 
+                $("#pencilIconFlag")[0].dispatchEvent(new MouseEvent("mousedown")); 
             }
             else if(keys[1] === 79){
-                $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
             }
             else if(keys[1] === 66){
-                $("#outlineBtn")[0].dispatchEvent(MousedownEvent); 
+                $("#outlineBtn")[0].dispatchEvent(new MouseEvent("mousedown")); 
             }
             else if(keys[1] === 78){
-                $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
             else if(keys[1] === 83){
-                $("#sunIconFlag")[0].dispatchEvent(ClickEvent); 
+                $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click")); 
             }
             else if(keys[1] === 84){
-                $("#textBtn")[0].dispatchEvent(MousedownEvent);
+                $("#textBtn")[0].dispatchEvent(new MouseEvent("mousedown"));
                 keys = [];
             }
             else if(keys[1] === 82){
-                $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
             }
         }
         else if(((keys[0] === 16 && keys[1] === 18) 
@@ -5844,27 +5983,26 @@ $(document).ready(function(){
             event.preventDefault();
             
             if(keys[2] === 79){
-                $("#eyeCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#eyeCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
                 
                 toggleMenuUI('eye');   
             }
             else if(keys[2] === 78){
-                $("#northCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#northCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
                 
                 toggleMenuUI('north');
             }
             else if(keys[2] === 83){
-                $("#sunCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#sunCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
 
                 toggleMenuUI('sun');
             }
             else if(keys[2] === 82){
-                $("#scaleCheckboxSlider")[0].dispatchEvent(ClickEvent);
+                $("#scaleCheckboxSlider")[0].dispatchEvent(new MouseEvent("click"));
 
                 toggleMenuUI('scale');  
             }
         }
-        return false;
     });
 
 
@@ -5881,7 +6019,7 @@ $(document).ready(function(){
             keys = removeKey(keys, event.keyCode);
         }
 
-        console.log(event);
+        
         // Deleteing
         if(event.keyCode === 46){
             if(activeLayer){
@@ -5902,16 +6040,16 @@ $(document).ready(function(){
                 }
                 else if(icon.nodeName === "svg"){
                     if(svgID.indexOf("north") > -1){
-                        $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                        $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                     }
                     else if(svgID.indexOf("sun") > -1){
-                        $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                        $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                     }
                     else if(svgID.indexOf("eye") > -1){
-                        $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                        $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                     }
                     else if(svgID.indexOf("scale") > -1){
-                        $("#scaleBarButton")[0].dispatchEvent(MousedownEvent);
+                        $("#scaleBarButton")[0].dispatchEvent(new MouseEvent("mousedown"));
                     }
                 }
                 activeLayer.remove();
@@ -5970,6 +6108,11 @@ $(document).ready(function(){
         }
     });
 
+    /**
+     * @function getMarkerStartFor
+     * @param { string } color 
+     * @description return the ID of the marker object with the fill color that equals color
+     */
     function getMarkerStartFor( color ){
         let markers = document.querySelectorAll("marker");
 
@@ -6179,8 +6322,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle(northImage ,northDegree);
                                     adjustIconAngle(northImage, northDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
-                                    $("#northIconFlag")[0].dispatchEvent(MousedownEvent);
+                                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
+                                    $("#northIconFlag")[0].dispatchEvent(new MouseEvent("mousedown"));
                                 }
                                 break;
 
@@ -6203,8 +6346,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( sunImage, sunDegree );
                                     adjustIconAngle(sunImage, sunDegree, parseFloat(object2[key]) + 90);
 
-                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
-                                    $("#sunIconFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
+                                    $("#sunIconFlag")[0].dispatchEvent(new MouseEvent("click"));
                                 }
                                 
                                 break;
@@ -6227,8 +6370,8 @@ $(window).bind('pageshow', function(event){
                                     setIconAngle( eyeImage, observerDegree );
                                     adjustIconAngle(eyeImage, observerDegree, parseFloat(object2[key]) + 90);
                                     
-                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
-                                    $("#eyeFlag")[0].dispatchEvent(ClickEvent);
+                                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
+                                    $("#eyeFlag")[0].dispatchEvent(new MouseEvent("click"));
                                 }
                                 break;
                         }

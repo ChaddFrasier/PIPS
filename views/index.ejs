@@ -27,22 +27,18 @@
         <div class="mainbox-center" style="width: 100%; height: 100%; background-color: rgba(99,88,94,0.65); padding: 1rem;
         margin: 0 0 0 0; border: 3px solid rgba(255, 255,255, .65)">
         <!-- USGS Logo -->
-        <div style="position: relative; top: 0; left: 0; width: 300px; height: auto;">
-            <img src="../images/usgsLogo.png" class="float-md-left" width="75%" height="auto" 
-            style="margin: 0%; padding: 0%; top: 20px; position:absolute">    
+        <div class="logoBox">
+            <img class="logo" src="../images/usgsLogo.png" class="float-md-left">    
         </div>
         
         <br>
         <!-- Help Box -->
         <div id="help-box" class="help-box float-left" 
         style="visibility: hidden; width:25%; bottom: 20%; position: absolute; margin-left: 1%; margin-right:0;">
-            <button class="float-right button" id="hideBtn" 
-            style="width: 1.75rem; min-width:1.75rem; min-height:1.75rem; height:auto; border-radius: 5px; 
-            border: 1px solid red; background-image: linear-gradient(lightblue,rgba(50, 50, 255, 0.685));
-            background-color: rgba(39, 109, 200); color: darkred;">
+            <button class="float-right button" id="hideBtn">
                 &times;
             </button>
-            <div class="container title" style="background: whitesmoke; ">
+            <div class="container" style="background: whitesmoke; ">
                 <cite>Upload Walkthough</cite>
             </div>
             <div class="row lead">
@@ -72,42 +68,38 @@
         </div>
             <div class="row" style="width: 65%; margin: auto;">
                 <div class="text-center stroke-wide" style="border: 0px solid black; margin: auto auto;">
-                    <h1 class="display-4" style="border: 0px solid blue;">Planetary Image Publication Server</h1>
+                    <h1 class="display-4 stroke-wide">Planetary Image Publication Server</h1>
                     <h4 class="display-5" style="color: white">
                         <a href="https://isis.astrogeology.usgs.gov/index.html" class="text-stroke" 
-                        title="Learn More" style="background-color: transparent; font-size: 125%; color: white">
+                        title="Learn More" style="background-color: transparent;">
                             Powered by ISIS3
                         </a>
                     </h4>
                 </div>
             </div>
-            <div class="row" style="margin-bottom: .5%;">
-                <br/>
-                <div class="title text-center" style="width: 75%; border: 5px solid black; background: #e7c492;
-                padding-left: 0; padding-right:0; margin:auto auto;">
-                    <p class="lead" style="margin-left: auto; margin-right: auto; width:100%;padding:0;
-                    font-size: 2rem; color: black;">
+            <br>
+            <div class="row">
+                <div class="index-box-1  text-center title themeBox">
+                    <p class="index-box-1-text lead title-text-small">
                         Upload a .cub or .tif file to begin.
                     </p>
-                    <a id="helpBtn" class="btn btn-primary btn-lg" title="Get Started" 
-                    style="border: 2px solid black; color: white;" role="button" onclick="showHelp(this)">Help</a>
-                    <a class="btn btn-primary btn-lg" style= "border: 2px solid black; color: white;" 
-                    title="Template File" href= '/tpl' role="button">
-                        What is a TPL file?
-                    </a>
+                    <div class="flex-box">
+                        <a id="helpBtn" class="btn btn-primary btn-lg index-menu-btn1" title="Get Started" role="button" onclick="showHelp(this)">Get Started</a>
+                        <a class="btn btn-primary btn-lg index-menu-btn2" title="Template File" href= '/tpl' role="button">
+                            What is a TPL file?
+                        </a>
+                    </div>
                 </div>
             </div>
             <br/>
-            <div class="row" style="height: 85%;">
+            <div class="row" style="height: 90%;">
                 <!-- Input Area -->
-                <div class="container float-center" style="margin-left:auto; margin-right: auto;">
+                <div class="container float-center mainUploadBox">
                     <form name="uploadForm" class="text-center" action="/captionWriter" method="POST" 
                     enctype="multipart/form-data">
                         <div class="row" style="margin-bottom: 1%; height: 20%;">
-                            <div class="btn btn-dark btn-lg form-group" 
-                            style="color:black; margin: auto auto; display:inline-block;
-                            background:#e7c492; border: 5px solid black;">
-                                <label for="cubUpload" style="font-size: x-large; color:black;">
+                            <div class="btn btn-lg form-group themeBox index-file-input-1">
+                                <label for="cubUpload" class="title-text-small">
                                     <cite>Choose an ISIS Cube or TIFF File</cite>
                                 </label>
                                 <input name="uploadFile" accept=".cub, .tif, .tiff, .TIF, .TIFF, .CUB"
@@ -115,32 +107,31 @@
                             </div>
                         </div>
                          <!-- Options -->
-                        <div class="row" style="padding: 1%; color: black; margin: auto auto; background: #e7c492;
-                          display:none; border: 5px solid black; width: 102%;" id="optionBox">
+                        <div class="row themeBox" id="optionBox">
                           <div class="col-8" style="width: 75%; margin: 0; padding: 0;">
                             <div class="row" style="width: 100%; text-align: center;">
-                                <div class="col-2" style="width:85%;">                                        
+                                <div class="col-2 title-text-small" style="width:85%;">                                        
                                     <label id="logCheckboxLabel" for="logCheckbox" 
                                     style="color:black; margin: auto auto;">
-                                        <cite style="font-size: 95%; padding-top: 10%;">Log ISIS Output to File?</cite>
+                                        <cite>Log ISIS Output to File?</cite>
                                     </label>
                                 </div>
-                                <div class="col-5" style="text-align: right">
-                                    <h4 style="margin: auto auto; margin-top: 0;">Options</h4>
+                                <div class="col-5" style="text-align: center"></div>
+                                <div class="col-5">
+                                    <h4 class="title-text"style="margin: 0 0 auto auto;">Options</h4>
                                 </div>
-                                <div class="col-5"></div>
                             </div>
                             <div class="row" style="width: 100%; height: 30%;">
                                 <div class="col-2" style="padding: 1%; padding-top:5%;">
                                     <div class="row">
-                                        <div class="col-2" style="padding: 0; padding-left: 15%; padding-top: 3%;">Off</div>
+                                        <div class="col-2 title-text-small" style="padding: 0; padding-left: 10%;">Off</div>
                                         <div class="col-6" style="padding: 0; padding-left: 10%;">
                                             <label class="switch index" style="right: 0;">
                                                 <input type="checkbox" id="logCheckbox" name="logToFile" title="Shift + Alt + N">
                                                 <span class="slider round" id="logAnimation"></span>
                                             </label> 
                                         </div>
-                                        <div class="col-4" style="padding: 0; padding-top: 3%;">On</div>
+                                        <div class="col-4 title-text-small" style="padding: 0;">On</div>
                                     </div>  
                                 </div>
                                 <div class="col-10">
@@ -155,25 +146,22 @@
                                     <div class="row" style="width: 100%;">
                                         <div class="col-3">
                                             <button type="button" id="journalOption1" class="btn btn-lg button"
-                                            style="width: 100%; margin:auto auto; padding: 2%; font-size: 75%;"
+                                            style="width: 100%;"
                                             title="Elsevier">
                                                 Elsevier
                                             </button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option1" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 65%;">Single Column</button>
+                                            style="visibility: hidden;">Single Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option2" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 75%;">1.5 Column</button>
+                                            style="visibility: hidden;">1.5 Column</button>
                                         </div>
                                         <div class="col-3">
                                             <button type="button" id="j1Option3" class="journal btn btn-lg button" 
-                                            style="visibility: hidden; width: 100%; margin:auto auto; 
-                                            padding: 2%; font-size: 65%;">Double Column</button>
+                                            style="visibility: hidden;">Double Column</button>
                                         </div>
                                     </div>
                                     <br/>
@@ -231,29 +219,27 @@
                             </div>
                         </div>   
                    
-                        <div class="col-4" style="width: 25%; margin:0; padding: 2%;">
-                            <div class="container" id="dimensionInput"
-                            style="width:auto; visibility: visible; border-top:0;color: black; margin: auto auto;
-                                background: #e7c492; border: 5px solid black;">
+                        <div class="col-4 size-input">
+                            <div class="container themeBox widthInput" id="dimensionInput">
                                 <div class="form-group float-center" 
-                                style="width: 100%;color: black;">
+                                style="width: 100%; color: black;">
                                     <div class="col">
-                                        <label for="widthInput" style="color: black;">
+                                        <label class="title-text-small" for="widthInput" style="color: black;">
                                             Width of output (pixels)
                                         </label>
-                                        <input class="form-control form-control-sm text-center" type="text" 
+                                        <input class="form-control form-control-md text-center" type="text" 
                                         id="widthInput" name="desiredWidth" placeholder="Output Width (px)"
                                         title="Output Width"/>
                                     </div>
+                                    <br>
                                     <div class="col">
-                                        <label for="heightInput" style="color: black;">
+                                        <label class="title-text-small" for="heightInput" style="color: black;">
                                             Height of output (pixels)
                                         </label>
-                                        <input class="form-control form-control-sm text-center"
+                                        <input class="form-control form-control-md text-center"
                                         type="text" id="heightInput" name="desiredHeight" 
                                         placeholder="Output Height (px)" title="Output Height"/>
                                     </div>
-                                
                                 </div>
                             </div>
                         </div>
@@ -262,9 +248,8 @@
                         <!-- Template upload-->
                         <div class="row" style="height: 40%;">
                             <input id="tplCode" name="tplCode" type="number" style="display: none;" value="0">
-                            <div class="btn btn-dark btn-lg form-group" 
-                            style="color: black; margin: auto auto; background: #e7c492; border: 5px solid black;">
-                                <label for="tplUpload" style="font-size: larger; color:black;
+                            <div class="btn form-group themeBox index-file-input-2">
+                                <label for="tplUpload" class="title-text-small" style="color:black;
                                 border-bottom: 2px solid black;">
                                     Choose a Template File
                                 </label>
@@ -274,7 +259,7 @@
                                             Template 1
                                         </label>
                                         <br/>
-                                        <button type="button" id="mosaicBtn" class="template btn btn-md button" 
+                                        <button type="button" id="mosaicBtn" class="template btn btn-lg button" 
                                         style="width: 100%; max-width:none; font-size: small">Mosaic</button>
                                     </div>
                                     <div class="col">
@@ -282,7 +267,7 @@
                                                 Template 2
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small;"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%;  max-width:none; font-size: small;"
                                          id="mapProjectedBtn">Map Projected</button>
                                     </div>
                                     <div class="col">
@@ -290,7 +275,7 @@
                                                 Template 3
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%;  max-width:none; font-size: small"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%;  max-width:none; font-size: small"
                                         id="compositeBtn">Composite</button>
                                     </div>
                                     <!-- Placeholder buttons for more templates later -->
@@ -299,7 +284,7 @@
                                                 Template 4
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button" style="width: 100%"
+                                        <button type="button" class="template btn btn-lg button" style="width: 100%"
                                         id="otherBtn">Choice 4</button>
                                     </div>
                                     <!-- Placeholder buttons for more templates later -->
@@ -308,13 +293,13 @@
                                                 Template 5
                                         </label>
                                         <br/>
-                                        <button type="button" class="template btn btn-md button"style="width: 100%"
+                                        <button type="button" class="template btn btn-lg button"style="width: 100%"
                                          id="other2Btn">Choice 5</button>
                                     </div>
                                 </div>
                                 <div class="col">
-                                        <label for="tplUpload" 
-                                        style="font-size: larger; margin: auto auto;
+                                        <label class="title-text-small" for="tplUpload" 
+                                        style="margin: auto auto;
                                         color:black; border-bottom: 2px solid black;">
                                             Custom Upload
                                         </label>
@@ -326,9 +311,8 @@
                         </div>
                     
                         <!-- Submit button -->
-                        <div class="row" style="height: 10%; margin-top: 1%;">
-                            <input type="button" class="btn button btn-lg" name="SubmitCube" value="Upload" 
-                                style="width: auto; margin:auto auto;  font-size: small; border: 1px solid black;" 
+                        <div class="row" style="margin-top: 1%;">
+                            <input type="button" class="btn btn-lg button" name="SubmitCube" value="Upload" 
                                 title="Submit Upload" onclick="loaderActivate()" />
                         </div>
                     </form>
