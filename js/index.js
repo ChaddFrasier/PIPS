@@ -5,7 +5,7 @@
  * @version 1.0
  * 
  * @since 09/17/2019
- * @updated 10/15/2019
+ * @updated 02/14/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -13,8 +13,8 @@
  *              from the index.ejs file
  * 
  * @see {server.js} Read the header before editing
- */
- // TODO: major code clean
+*/
+
 /** Variables  */
 // get needed DOM element
 var loader,
@@ -123,21 +123,33 @@ function resetOtherButtons(currentBtn, classofButton){
     });
 }
 
-// TODO: commment
+/**
+ * @function checkForPhone
+ * 
+ * @description this function will check to usable screen space and if the screen is too small to process data properly,
+ *       display a cover over the page to tell the user to use a different device
+ */
 function checkForPhone() {
+    // if the width visible on screen is less than 1100px and there is not already a cover ove the page
     if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
-        console.log("STOP THAT")
+        
+        // variables used for UI element
         var mainContainer = document.createElement("div"),
             titleText = document.createElement("h3");
 
+        // set css class rules
         mainContainer.className = "errorDivBox";
-        titleText.style.margin = "auto auto";
-        titleText.innerHTML = "<p class='errorTitle'>User Error: Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
 
+        // set the margin of the text and the innerHTML
+        titleText.style.margin = "auto auto";
+        titleText.innerHTML = "<p class='errorTitle'>User Error:<br/> Please sign on with a <i><b>Laptop</b></i> or <i><b>PC</b></i></p>";
+
+        // create the UI element and then add it to the document body before any other elements
         mainContainer.appendChild(titleText);
         document.body.insertAdjacentElement("afterbegin", mainContainer);
     }
     else if(window.innerWidth >= 1100 && document.getElementsByClassName("errorDivBox").length > 0){
+        // otherwise make sure there is no cover over the screen
         document.getElementsByClassName("errorDivBox")[0].remove();
     }
 }
@@ -185,14 +197,23 @@ function showHelp(btn){
     btn.className = btn.className.replace("btn-primary","btn-secondary disabled");
 }
 
-// TODO:
+/**
+ * @function detectLeftButton
+ * 
+ * @param { event } evt 
+ * 
+ * @description this function takes in an event and checks to see if it was a left click event
+*/
 function detectLeftButton(evt) {
+    // if evt is null then get the currently active window event
     evt = evt || window.event;
 
+    // if browser has which then use which code check
     if ("which" in evt) {
         return evt.which == 1;
     }
     
+    // otherwise check for the button code
     var button = evt.buttons || evt.button;   
     return button == 1;
 }
@@ -259,8 +280,10 @@ $(document).ready(function(){
     widthInputBox = document.getElementById("widthInput");
     heightInputBox = document.getElementById("heightInput");
 
+    // check for invalid size of interface
     setInterval(checkForPhone, 1000);
 
+    // parse and grab pageVariables
     var pageVariable = document.getElementById("pageVariable");
 
     for(let i=0;i<pageVariable.childElementCount;i++){
@@ -269,13 +292,14 @@ $(document).ready(function(){
         }
     }
 
-
+    // erase the cache cookies by setting max-life to 0 days to expire
     if(getCookie("uscap") != ""){
         createCookie("uscap","",0);
     }
     if(getCookie("usimg") != ""){
         createCookie("usimg","",0);
     }
+
     /**
      * @function helpBtn 'mousedown' event handler
      * 

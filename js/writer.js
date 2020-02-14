@@ -5,7 +5,7 @@
  * @version 2.0
  * 
  * @since 09/20/2019
- * @updated 01/15/2020
+ * @updated 02/14/2020
  * 
  * @requires Jquery 2.0.0
  * 
@@ -14,8 +14,8 @@
  * @see {server.js} Read the header before editing
  * @see {Rangy:Save-Restore-Module}
  *      @link https://github.com/timdown/rangy/wiki/Selection-Save-Restore-Module
- */
- // TODO: major code clean
+*/
+
 /** Variables */
 var outputName,
     loader,
@@ -57,15 +57,26 @@ function filterTags(){
     }
 }
 
-// TODO:
+/**
+ * @function detectLeftButton
+ * 
+ * @param { event } evt 
+ * 
+ * @description this function takes in an event and checks to see if it was a left click event
+*/
 function detectLeftButton(evt) {
+    // get the event element if evt is null
     evt = evt || window.event;
 
+    // if the browser has which, use the which code
     if ("which" in evt) {
+        // return logical
         return evt.which == 1;
     }
     
-    var button = evt.buttons || evt.button;   
+    // use button code insteas 
+    var button = evt.buttons || evt.button;
+    // return logical
     return button == 1;
 }
 
@@ -81,10 +92,17 @@ function setOutput(){
 }
 
 
-// TODO: comment this
+
+/**
+ * @function checkForPhone
+ * 
+ * @description this function will check to usable screen space and if the screen is too small to process data properly,
+ *       display a cover over the page to tell the user to use a different device
+ * 
+ * SAME AS INDEX.JS
+ */
 function checkForPhone() {
     if(window.innerWidth < 1100 && document.getElementsByClassName("errorDivBox").length === 0){
-        console.log("STOP THAT")
         var mainContainer = document.createElement("div"),
             titleText = document.createElement("h3");
 
@@ -753,12 +771,9 @@ $(document).ready(function(){
     var varDiv = document.getElementById("pageVariables"),
         goForward = false;
 
-        /* TODO: this function runs on history.back in chrome
-                - check for cookie
-                    - yes: update the text
-                    - no: use the default 
-        */
+        // check cache cookie for info
        if(getCookie("uscap") && getCookie("uscap") !== ""){
+           // if found then set the template text
         document.getElementById("template-text").innerHTML = decodeURIComponent(getCookie("uscap"));
     }
     //init history
@@ -768,8 +783,8 @@ $(document).ready(function(){
     loader = document.getElementById('loading');
 
 
+    // check for small interfaces
     setInterval(checkForPhone, 1000);
-
 
     // grab the variables from the server
     for(let i=0; i<varDiv.childElementCount;i++){
@@ -777,7 +792,6 @@ $(document).ready(function(){
             outputName = varDiv.children[i].innerHTML;
         }
     }
-
 
     var menuArr = document.getElementsByClassName("dropdownMenu");
 
@@ -937,8 +951,7 @@ $(document).ready(function(){
             // select for touch screens
             output.setSelectionRange(0,99999);
 
-            var code = document.execCommand("copy");
-
+            document.execCommand("copy");
         
             output.style.visibility = "hidden";
             // set up the alert to inform the user
@@ -1071,7 +1084,7 @@ $(document).ready(function(){
             valInput.placeholder = "New Value";
 
             title.innerHTML = "Create a New Tag";
-            title.style.position = "relative";
+            title.style.borderBottom = "2px solid black";
             title.style.color = "black";
             title.style.margin = "auto auto";
 
@@ -1344,7 +1357,7 @@ $(document).ready(function(){
         var pre = document.getElementById("template-text");
         setTimeout(function() {
             pre.focus();
-        }, 0);
+        }, 10);
     });
 
     $("#template-text").on("drop", (e)=> {
@@ -1352,7 +1365,7 @@ $(document).ready(function(){
         var pre = document.getElementById("template-text");
         setTimeout(function() {
             pre.focus();
-        }, 0);
+        }, 10);
         // return true to place whatever is being dropped
         return true;
     });
