@@ -150,7 +150,11 @@ var cubeArray = [],
 var numUsers = 0;
 
 // use express middleware declarations
-app.use(fileUpload());
+app.use(fileUpload({
+    safeFileNames: true,
+    useTempFiles: true
+}));
+
 app.use(cookieparser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
