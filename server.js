@@ -150,11 +150,7 @@ var cubeArray = [],
 var numUsers = 0;
 
 // use express middleware declarations
-app.use(fileUpload({
-    safeFileNames: true,
-    useTempFiles: true
-}));
-
+app.use(fileUpload());
 app.use(cookieparser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -477,16 +473,16 @@ app.post('/captionWriter', async function(request, response){
                     cubeObj.impData = {};
                 }
             }
-
+                        
             // remove the file that was uploaded to allow for a clean file read from the fs module
             try{fs.unlinkSync('./uploads/' + cubeObj.name);}
             catch(err){/* Catch file error if file is not on server*/}
-            
+
             // save the cube upload to upload folder
-            await cubeFile.mv('./uploads/' + cubeObj.name , function(err){
+            await cubeFile.mv( path.join(__dirname,'uploads',cubeObj.name) , function(err){
                 // report error if it occurs
                 if(err){
-                    console.log('This Error could have been because "/uploads" folder does not exist');
+                    console.log('Make Sure "/uploads" folder exists');
                     return response.status(500).send(err);
                 }
             });
@@ -1579,6 +1575,8 @@ app.post("/resizeFigure",function(request, response){
                 var rawW = dimensions.w,
                     rawH = dimensions.h;
 
+                    console.log(rawW);
+                    console.log(rawH);
 
                 // scaleFactor is the factor that it takes to shrink the lowest dimension to the new dimension
                 scaleFactor = (rawW <= rawH) ? rawH/newHeight : rawW/newWidth;

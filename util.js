@@ -388,8 +388,11 @@ module.exports = {
                 if(code === 0){
                     resolve(cubeName.replace("u-","r-"));
                 }
-                else{
+                else if(code){
                     reject(isisCall + 'Error: ' + code.toString() + "\n");
+                }
+                else{
+                    reject(isisCall + 'Error: Reduce Function Exited with NULL  \n');
                 }
             });
 
