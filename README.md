@@ -50,14 +50,12 @@ any changes that you would like to make, after review by the repository leads yo
 request will either be merged or closed without merge depending on what has been done. 
 Any request will be considered.
 
-Read the update paragraph in the [server.js](https://github.com/ChaddFrasier/PIPS/blob/master/server.js)
-file before contributing to understand what is currently working, do not depricate any functions without
+Do not depricate any functions without
 consent from the repository managers.
 
 Post and issue if you wish to become a contributor stating who you are 
 and why you feel you could benefit the project. 
 Also feel post issues if you find bugs or have suggestions to better the project.
-
 
 ## Developing 
 
